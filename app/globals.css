@@ -5,6 +5,17 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+
+  /* Primary Colors */
+  --primary: #149295; /* Default primary color */
+  --primary-light: #1FAAA8; /* Lighter shade of primary */
+  --primary-dark: #0D706A; /* Darker shade of primary */
+
+  /* Secondary Colors */
+  --secondary: #3BBFAD; /* Default secondary color */
+  --secondary-light: #51C6B7; /* Lighter shade of secondary */
+  --secondary-dark: #2D9C95; /* Darker shade of secondary */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,4 +29,16 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.gutter {
+  background-color: #5ab5a9;
+}
+
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+}
+
+.gutter.gutter-vertical {
+  cursor: row-resize;
 }
