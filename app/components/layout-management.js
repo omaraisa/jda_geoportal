@@ -1,26 +1,26 @@
 export const defaultLayout = {
   // Left Pane
   leftPaneSize: 20, // Percentage width of the left pane
-  leftPaneMinSize: 10, // Minimum percentage width
+  leftPaneMinSize: 0.1, // Minimum percentage width
   leftPaneMaxSize: 30, // Maximum percentage width
-  leftPaneArrow: "▶",
+  leftPaneArrow: "◀",
   leftPaneMinimized: false,
 
   // Right Pane
   rightPaneSize: 20, // Percentage width of the right pane
-  rightPaneMinSize: 10, // Minimum percentage width
+  rightPaneMinSize: 0.1, // Minimum percentage width
   rightPaneMaxSize: 30, // Maximum percentage width
   rightPaneArrow: "▶",
   rightPaneMinimized: false,
 
   // Middle Pane (Map View)
-  middlePaneSize: 60, // Percentage width of the middle pane
-  middlePaneMinSize: 40, // Minimum percentage width
+  middlePaneSize: 80, // Percentage width of the middle pane
+  middlePaneMinSize: 20, // Minimum percentage width
 
   // Bottom Pane
   bottomPaneSize: 20, // Percentage height of the bottom pane
-  bottomPaneMinSize: 10, // Minimum percentage height
-  bottomPaneMaxSize: 40, // Maximum percentage height
+  bottomPaneMinSize: 0.1, // Minimum percentage height
+  bottomPaneMaxSize: 80, // Maximum percentage height
   bottomPaneArrow: "▲",
   bottomPaneMinimized: false,
 
@@ -72,42 +72,60 @@ export const LayoutManager = (state,action) => {
     return {mapPaneFlex,bottomPaneFlex,bottomPaneMaxSize,bottomPaneMinSize,bottomPaneArrow,bottomPaneMinimized}
   }
 
-   const toggleMenus = (state,{side})  =>  {
-     const toggleSides = {
-       right: () => toogleRightMenu(),
-       left: () => toogleLeftMenu(),
-       bottom: () => toogleBottomMenu(),
-     }
-     function toogleRightMenu() {
-       const newLayout = state.layout.rightPaneMinimized?
-       {...state.layout,...updateMenusProps(["right",(state.layout.middlePaneFlex - 0.2),"▶",0.21,200,500,false,true])}
-       :
-       {...state.layout,...updateMenusProps(["right",(state.layout.middlePaneFlex + state.layout.rightPaneFlex),"◀",0,0,1,true,true])}
-       const newState = {...state,layout:newLayout}
-       return newState
-      }
+const toggleMenus = (state, { side }) => {
+  const toggleSides = {
+    right: () => toggleRightMenu(),
+    left: () => toggleLeftMenu(),
+    bottom: () => toggleBottomMenu(),
+  };
 
-     function toogleLeftMenu() {
-       const newLayout = state.layout.leftPaneMinimized?
-       {...state.layout,...updateMenusProps(["left",(state.layout.middlePaneFlex - 0.2),"◀",0.21,250,500,false,true])}
-       :
-       {...state.layout,...updateMenusProps(["left",(state.layout.middlePaneFlex + state.layout.leftPaneFlex),"▶",0,0,1,true,true])}
-       const newState = {...state,layout:newLayout}
-       return newState
-      }
-      
-      function toogleBottomMenu() {
-       const newLayout = state.layout.bottomPaneMinimized?
-       {...state.layout,...updateMiddlePaneProps(0.6,0.4,2000,50,"▼",false)}
-       :
-       {...state.layout,...updateMiddlePaneProps(1,0,1,0,"▲",true)}
-       const newState = {...state,layout:newLayout}
-       return newState
-      }
+  function toggleRightMenu() {
+    const isMinimized = state.layout.rightPaneMinimized;
 
-      return toggleSides[side]()
-   
+    const newLayout = {
+      ...state.layout,
+      rightPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
+      rightPaneArrow: isMinimized ? "▶" : "◀", // Update arrow direction
+      rightPaneMinimized: !isMinimized, // Toggle minimized state
+      middlePaneSize: isMinimized
+        ? state.layout.middlePaneSize - 20 + state.layout.rightPaneSize
+        : state.layout.middlePaneSize + 20 - state.layout.rightPaneSize, // Adjust middle pane size
+    };
+
+    return { ...state, layout: newLayout };
   }
+
+  function toggleLeftMenu() {
+    const isMinimized = state.layout.leftPaneMinimized;
+
+    const newLayout = {
+      ...state.layout,
+      leftPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
+      leftPaneArrow: isMinimized ? "▶" : "◀", // Update arrow direction
+      leftPaneMinimized: !isMinimized, // Toggle minimized state
+      middlePaneSize: isMinimized
+        ? state.layout.middlePaneSize - 20 + state.layout.leftPaneSize
+        : state.layout.middlePaneSize + 20 - state.layout.leftPaneSize, // Adjust middle pane size
+    };
+    return { ...state, layout: newLayout };
+  }
+
+  function toggleBottomMenu() {
+    const isMinimized = state.layout.bottomPaneMinimized;
+
+    const newLayout = {
+      ...state.layout,
+      bottomPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
+      bottomPaneArrow: isMinimized ? "▲" : "▼", // Update arrow direction
+      bottomPaneMinimized: !isMinimized, // Toggle minimized state
+    };
+
+    return { ...state, layout: newLayout };
+  }
+
+  return toggleSides[side]();
+};
+
 
   
    const changeLayout = (state,{event, targetPaneFlex})   => {
