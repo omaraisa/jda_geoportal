@@ -49,7 +49,7 @@ export default function App() {
                 : "none",
             }}
           >
-            <SubMenu />
+            <MainMenu />
           </div>
 
           {/* Middle Pane with Nested Vertical Split */}
@@ -107,7 +107,7 @@ export default function App() {
                 ? "0.5s ease-in-out"
                 : "none",
             }}>
-            <MainMenu />
+            <SubMenu />
             <MinimizeMenu
               vertical={true}
               Onducked={() => dispatch({ type: "toggleMenus", side: "right" })}
