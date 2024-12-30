@@ -142,7 +142,7 @@ export default function Home() {
                 : "none",
             }}>
             <Split
-              sizes={[state.layout.middlePaneSize, state.layout.bottomPaneSize]} // Map Pane (80%) | Bottom Pane (20%)
+              sizes={[state.layout.mapContainerSize, state.layout.bottomPaneSize]} // Map Pane (80%) | Bottom Pane (20%)
               minSize={[200, 1]} // Minimum sizes in pixels
               gutterSize={4} // Gutter height in pixels
               direction="vertical"
@@ -176,7 +176,7 @@ export default function Home() {
                   Onducked={() =>
                     dispatch({ type: "toggleMenus", side: "bottom" })
                   }
-                  arrow="▲"
+                  arrow={state.layout.bottomPaneArrow}
                   className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
                 />
                 <BottomPane />
@@ -194,7 +194,7 @@ export default function Home() {
             <MinimizeMenu
               vertical={true}
               Onducked={() => dispatch({ type: "toggleMenus", side: "right" })}
-              arrow="▶"
+              arrow={state.layout.rightPaneArrow}
               className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
             />
           </div>

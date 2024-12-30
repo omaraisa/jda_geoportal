@@ -14,15 +14,19 @@ export const defaultLayout = {
   rightPaneMinimized: false,
 
   // Middle Pane (Map View)
-  middlePaneSize: 80, // Percentage width of the middle pane
+  middlePaneSize: 100, // Percentage width of the middle pane
   middlePaneMinSize: 20, // Minimum percentage width
 
+    // Map Container
+    mapContainerSize: 100, // Percentage width of the map container
+    mapContainerMinSize: 20, // Minimum percentage width
+
   // Bottom Pane
-  bottomPaneSize: 20, // Percentage height of the bottom pane
+  bottomPaneSize: 0, // Percentage height of the bottom pane
   bottomPaneMinSize: 0.1, // Minimum percentage height
   bottomPaneMaxSize: 80, // Maximum percentage height
   bottomPaneArrow: "▲",
-  bottomPaneMinimized: false,
+  bottomPaneMinimized: true,
 
   // Animation
   animationOn: true, // Enables smooth resizing animations
@@ -57,20 +61,6 @@ export const LayoutManager = (state,action) => {
 
 }
 
-   const updateMenusProps = ([side,newMiddlePaneFlex,paneArrow,paneFlex,paneMinSize,paneMaxSize,paneMinimized,animationOn]) => {
-    const updatedMenuProps = {}
-    updatedMenuProps[`middlePaneFlex`] = newMiddlePaneFlex
-    updatedMenuProps[`${side}PaneArrow`] = paneArrow
-    updatedMenuProps[`${side}PaneFlex`] = paneFlex
-    updatedMenuProps[`${side}PaneMinSize`] = paneMinSize
-    updatedMenuProps[`${side}PaneMaxSize`] = paneMaxSize
-    updatedMenuProps[`${side}PaneMinimized`] = paneMinimized
-    updatedMenuProps[`animationOn`] = animationOn
-    return updatedMenuProps
-  }
-   const updateMiddlePaneProps = (mapPaneFlex,bottomPaneFlex,bottomPaneMaxSize,bottomPaneMinSize,bottomPaneArrow,bottomPaneMinimized) => {
-    return {mapPaneFlex,bottomPaneFlex,bottomPaneMaxSize,bottomPaneMinSize,bottomPaneArrow,bottomPaneMinimized}
-  }
 
 const toggleMenus = (state, { side }) => {
   const toggleSides = {
@@ -85,11 +75,11 @@ const toggleMenus = (state, { side }) => {
     const newLayout = {
       ...state.layout,
       rightPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
-      rightPaneArrow: isMinimized ? "▶" : "◀", // Update arrow direction
+      rightPaneArrow: isMinimized ?  "▶" :"◀", // Update arrow direction
       rightPaneMinimized: !isMinimized, // Toggle minimized state
       middlePaneSize: isMinimized
-        ? state.layout.middlePaneSize - 20 + state.layout.rightPaneSize
-        : state.layout.middlePaneSize + 20 - state.layout.rightPaneSize, // Adjust middle pane size
+        ? state.layout.middlePaneSize - 20 
+        : state.layout.middlePaneSize + 20, // Adjust middle pane size
     };
 
     return { ...state, layout: newLayout };
@@ -101,11 +91,11 @@ const toggleMenus = (state, { side }) => {
     const newLayout = {
       ...state.layout,
       leftPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
-      leftPaneArrow: isMinimized ? "▶" : "◀", // Update arrow direction
+      leftPaneArrow: isMinimized ? "◀" : "▶", // Update arrow direction
       leftPaneMinimized: !isMinimized, // Toggle minimized state
       middlePaneSize: isMinimized
-        ? state.layout.middlePaneSize - 20 + state.layout.leftPaneSize
-        : state.layout.middlePaneSize + 20 - state.layout.leftPaneSize, // Adjust middle pane size
+        ? state.layout.middlePaneSize - 20 
+        : state.layout.middlePaneSize + 20 
     };
     return { ...state, layout: newLayout };
   }
@@ -115,8 +105,14 @@ const toggleMenus = (state, { side }) => {
 
     const newLayout = {
       ...state.layout,
-      bottomPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
-      bottomPaneArrow: isMinimized ? "▲" : "▼", // Update arrow direction
+      bottomPaneSize: isMinimized ? 20 : 1, // Restore to 20% or collapse to 0%
+      middlePaneSize: isMinimized
+        ? state.layout.middlePaneSize - 20 
+        : state.layout.middlePaneSize + 20 ,
+        mapContainerSize: isMinimized
+        ? state.layout.middlePaneSize - 20 
+        : state.layout.middlePaneSize + 20 ,
+      bottomPaneArrow: isMinimized ? "▼": "▲" , // Update arrow direction
       bottomPaneMinimized: !isMinimized, // Toggle minimized state
     };
 
