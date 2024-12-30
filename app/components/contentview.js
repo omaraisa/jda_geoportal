@@ -1,5 +1,5 @@
 import React from 'react';
-import MainMap from './main-map';
+const MainMap = React.lazy(() => import("./main-map"));
 
 function ContentView() {
     return (

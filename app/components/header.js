@@ -59,12 +59,7 @@ export default function Header(props) {
           activeNav={props.activeSubMenu === "GPortalInfo"}
           goTo={() => props.goTo(props.activeSubMenu === "GPortalInfo" ? "DefaultPane" : "GPortalInfo")}
         />
-        <NavButton
-          toolTip="Feedback and Suggestions"
-          iconClass="fas fa-bug"
-          activeNav={props.activeSubMenu === "Feedback"}
-          goTo={() => props.goTo(props.activeSubMenu === "Feedback" ? "DefaultPane" : "Feedback")}
-        />
+        
       </div>
       
     </div>
