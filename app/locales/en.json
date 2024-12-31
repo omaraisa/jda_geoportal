@@ -1,0 +1,24 @@
+
+  {
+    "header": {
+      "logoAlt": "JDA Logo",
+      "title": "JDA Geoportal",
+      "nav": {
+        "selectFeatures": "Select Features",
+        "basemaps": "Basemaps",
+        "drawingEditing": "Drawing and Editing",
+        "bookmarks": "Bookmarks",
+        "printMap": "Print Map",
+        "saveMap": "Save Map",
+        "openMap": "Open Map",
+        "languageSwitch": "Switch Language"
+      }
+    },
+    "menu": {
+      "layers": "Layers",
+      "legend": "Legend",
+      "addLayer": "Add Layer",
+      "query": "Query"
+    }
+  }
+  

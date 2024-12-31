@@ -17,6 +17,7 @@ import { defaultLayout, LayoutManager } from "./components/layout-management";
   import BottomPane from "./components/bottom-pane";
   import { useAppContext  } from "./context/AppContext"; 
   import Split from "react-split";
+  import "./i18n";
 
 export default function App() {
   const { state, dispatch } = useAppContext();

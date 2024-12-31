@@ -18,6 +18,17 @@
   --secondary-dark: #2D9C95; /* Darker shade of secondary */
 }
 
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--font-droid-arabic-kufi), sans-serif;
+}
+[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+}
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -28,7 +39,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-droid-arabic-kufi), Arial, Helvetica, sans-serif;
   overflow: hidden; /* Prevent scrolling */
   height: 100%; /* Ensure full height usage */
   margin: 0; /* Remove default margins */

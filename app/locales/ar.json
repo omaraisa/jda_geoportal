@@ -1,0 +1,22 @@
+{
+  "header": {
+    "logoAlt": "شعار JDA",
+    "title": "بوابة جدة الجغرافية",
+    "nav": {
+      "selectFeatures": "اختيار المعالم",
+      "basemaps": "خرائط الأساس",
+      "drawingEditing": "الرسم والتعديل",
+      "bookmarks": "الإشارات المرجعية",
+      "printMap": "طباعة الخريطة",
+      "saveMap": "حفظ الخريطة",
+      "openMap": "فتح الخريطة",
+      "languageSwitch": "تغيير اللغة"
+    }
+  },
+  "menu": {
+    "layers": "قائمة الطبقات",
+    "legend": "مفتاح الخريطة",
+    "addLayer": "إضافة طبقة",
+    "query": "استعلام"
+  }
+}

@@ -1,3 +1,4 @@
+import localFont from "next/font/local";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -14,16 +15,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const droidArabicKufi = localFont({
+  src: [
+    {
+      path: "/fonts/alfont_com_AlFont_com_Droid-Arabic-Kufi.ttf",
+      weight: "400",
+      style: "normal",
+    }
+  ],
+  variable: "--font-droid-arabic-kufi",
+});
+
 export const metadata = {
   title: "JDA Geoportal",
   description: "JDA Geoportal is a web-based GIS application",
 };
 
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${droidArabicKufi.variable} antialiased`}
       >
         {children}
       </body>
