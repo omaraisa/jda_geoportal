@@ -3,7 +3,10 @@ import { defaultLayout, LayoutManager } from "./components/layout-management";
 
 const useStateStore = create((set, get) => ({
   // Initial State
+  language: "en",
   layout: defaultLayout,
+  activeSubMenu: "DefaultComponent",
+  previousSubMenu: null,
   map: null,
   view: null,
   layers: [],
@@ -14,6 +17,12 @@ const useStateStore = create((set, get) => ({
   },
 
   // Actions
+  setLanguage: (lang) => {
+    set({ language: lang });
+    document.documentElement.lang = lang; // Update <html> lang attribute
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; // Set direction
+  },
+  
   toggleMenus: (side) => {
     const state = get();
     const action = { type: "toggleMenus", side };
@@ -31,6 +40,11 @@ const useStateStore = create((set, get) => ({
       set({ layout: layoutResponse });
     }
   },
+
+  setActiveSubMenu: (component) => set({ activeSubMenu: component }),
+  setPreviousSubMenu: (component) => set({ previousSubMenu: component }),
+
+
   goToBottomPane: (targetComponent) => {
     const state = get();
     const action = { type: "goToBottomPane", targetComponent };
@@ -39,6 +53,8 @@ const useStateStore = create((set, get) => ({
       set({ layout: layoutResponse });
     }
   },
+updateMap: (map) => set({ map }),
+updateView: (view) => set({ view }),
   updateLayers: (layers) => set({ layers }),
   updateLayerSources: (layerSources) =>
     set((state) => ({
@@ -48,7 +64,6 @@ const useStateStore = create((set, get) => ({
     set((state) => ({
       targetLayers: { ...state.targetLayers, ...layer },
     })),
-  sendBackMapView: (map, view) => set({ map, view }),
 }));
 
 export default useStateStore;
