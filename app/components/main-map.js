@@ -4,14 +4,12 @@ import React, { useRef, useEffect } from 'react';
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import esriConfig from "@arcgis/core/config";
-import { useAppContext } from "../context/AppContext";
 import dotenv from 'dotenv'
 dotenv.config();
 const ArcGISAPIKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
 
 
 const MainMap = () => {
-  const { state, dispatch } = useAppContext();
   const mapRef = useRef(null);
 
   useEffect(() => {

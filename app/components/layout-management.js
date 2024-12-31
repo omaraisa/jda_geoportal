@@ -35,33 +35,28 @@ export const defaultLayout = {
   subMenuCurrentComponent: "DefaultPane", // Active component in the submenu
   bottomPaneCurrentComponent: "DefaultPane", // Active component in the bottom pane
 };
-
-export const LayoutManager = (state, action) => {
+export const LayoutManager = (layout, action) => {
   switch (action.type) {
     case "goToSubMenu":
-      return goToSubMenu(state, action.targetComponent);
+      return goToSubMenu(layout, action.targetComponent);
     case "goToPreSubMenu":
-      return goToPreSubMenu(state, action);
+      return goToPreSubMenu(layout, action.previousComponent);
     case "goToBottomPane":
-      return goToBottomPane(state, action.targetComponent);
+      return goToBottomPane(layout, action.targetComponent);
     case "goToPreBottomPane":
-      return goToPreBottomPane(state, action);
+      return goToPreBottomPane(layout, action.previousComponent);
     case "changeLayout":
-      return changeLayout(state, action);
+      return changeLayout(layout, action);
     case "resizeMenu":
-      return resizeMenu(state, action);
+      return resizeMenu(layout, action.dragStatus);
     case "toggleMenus":
-      return toggleMenus(state, action);
+      return toggleMenus(layout, action.side);
     default:
-      return {
-        type: "error",
-        title: "إجراء خاطئ",
-        body: "تعذر تعديل واجهة التطبيق بالشكل الذي تريده",
-      };
+      return layout; // Return the original layout if the action type is unknown
   }
 };
 
-const toggleMenus = (state, { side }) => {
+const toggleMenus = (layout, side) => {
   const toggleSides = {
     right: () => toggleRightMenu(),
     left: () => toggleLeftMenu(),
@@ -69,138 +64,113 @@ const toggleMenus = (state, { side }) => {
   };
 
   function toggleRightMenu() {
-    const isMinimized = state.layout.rightPaneMinimized;
+    const isMinimized = layout.rightPaneMinimized;
 
-    const newLayout = {
-      ...state.layout,
-      rightPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
+    return {
+      ...layout,
+      rightPaneSize: isMinimized ? 20 : 0, // Restore or collapse
       rightPaneArrow: isMinimized ? "▶" : "◀", // Update arrow direction
-      rightPaneMinimized: !isMinimized, // Toggle minimized state
+      rightPaneMinimized: !isMinimized, // Toggle state
       middlePaneSize: isMinimized
-        ? state.layout.middlePaneSize - 20
-        : state.layout.middlePaneSize + state.layout.rightPaneSize, // Adjust middle pane size
+        ? layout.middlePaneSize - 20
+        : layout.middlePaneSize + layout.rightPaneSize, // Adjust middle pane
     };
-
-    return { ...state, layout: newLayout };
   }
 
   function toggleLeftMenu() {
-    const isMinimized = state.layout.leftPaneMinimized;
+    const isMinimized = layout.leftPaneMinimized;
 
-    const newLayout = {
-      ...state.layout,
-      leftPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
+    return {
+      ...layout,
+      leftPaneSize: isMinimized ? 20 : 0, // Restore or collapse
       leftPaneArrow: isMinimized ? "◀" : "▶", // Update arrow direction
-      leftPaneMinimized: !isMinimized, // Toggle minimized state
+      leftPaneMinimized: !isMinimized, // Toggle state
       middlePaneSize: isMinimized
-        ? state.layout.middlePaneSize - 20
-        : state.layout.middlePaneSize + state.layout.leftPaneSize,
+        ? layout.middlePaneSize - 20
+        : layout.middlePaneSize + layout.leftPaneSize, // Adjust middle pane
     };
-    return { ...state, layout: newLayout };
   }
 
   function toggleBottomMenu() {
-    const isMinimized = state.layout.bottomPaneMinimized;
+    const isMinimized = layout.bottomPaneMinimized;
 
-    const newLayout = {
-      ...state.layout,
-      bottomPaneSize: isMinimized ? 20 : 0, // Restore to 20% or collapse to 0%
-      // middlePaneSize: isMinimized
-      //   ? state.layout.middlePaneSize - 20
-      //   : state.layout.middlePaneSize + 20,
-      mapContainerSize: isMinimized
-        ? 80
-        : 100,
+    return {
+      ...layout,
+      bottomPaneSize: isMinimized ? 20 : 0, // Restore or collapse
+      mapContainerSize: isMinimized ? 80 : 100, // Adjust map container size
       bottomPaneArrow: isMinimized ? "▼" : "▲", // Update arrow direction
-      bottomPaneMinimized: !isMinimized, // Toggle minimized state
+      bottomPaneMinimized: !isMinimized, // Toggle state
     };
-
-    return { ...state, layout: newLayout };
   }
 
   return toggleSides[side]();
 };
 
-const changeLayout = (state, { event, targetPaneFlex }) => {
+const changeLayout = (layout, { event, targetPaneFlex }) => {
   const newPaneFlex = event.component.props.flex;
-  const deltaFlex = newPaneFlex - state.layout[targetPaneFlex];
-  const newMiddlePaneFlex = state.layout.middlePaneFlex - deltaFlex;
-  let newState = {
-    ...state,
-    layout: { ...state.layout, middlePaneFlex: newMiddlePaneFlex },
+  const deltaFlex = newPaneFlex - layout[targetPaneFlex];
+  const newMiddlePaneFlex = layout.middlePaneFlex - deltaFlex;
+
+  return {
+    ...layout,
+    [targetPaneFlex]: newPaneFlex,
+    middlePaneFlex: newMiddlePaneFlex,
   };
-  newState.layout[targetPaneFlex] = newPaneFlex;
-  return newState;
 };
 
-const resizeMenu = (state, { dragStatus }) => {
-  if (dragStatus === "start")
-    return { ...state, layout: { ...state.layout, animationOn: false } };
-  if (dragStatus === "end")
-    return { ...state, layout: { ...state.layout, animationOn: true } };
+const resizeMenu = (layout, dragStatus) => {
+  return {
+    ...layout,
+    animationOn: dragStatus === "end",
+  };
 };
 
-const goToSubMenu = (state, targetComponent) => {
+const goToSubMenu = (layout, targetComponent) => {
   const expandPaneProps = {
     leftPaneArrow: "◀",
-    leftPaneFlex: 0.2,
-    leftPaneMinSize: 250,
-    leftPaneMaxSize: 500,
+    leftPaneSize: 20,
     leftPaneMinimized: false,
-    middlePaneFlex: state.layout.middlePaneFlex - 0.2,
+    middlePaneSize: layout.middlePaneSize - 20,
   };
   const minimizePaneProps = {
     leftPaneArrow: "▶",
-    leftPaneFlex: 0,
-    leftPaneMinSize: 0,
-    leftPaneMaxSize: 1,
+    leftPaneSize: 0,
     leftPaneMinimized: true,
-    middlePaneFlex: state.layout.middlePaneFlex + 0.2,
+    middlePaneSize: layout.middlePaneSize + 20,
   };
 
-  let newLayout = { ...state.layout, subMenuCurrentComponent: targetComponent };
+  let newLayout = { ...layout, subMenuCurrentComponent: targetComponent };
 
-  if (state.layout.leftPaneMinimized)
-    newLayout = { ...newLayout, ...expandPaneProps };
+  if (layout.leftPaneMinimized) newLayout = { ...newLayout, ...expandPaneProps };
 
   if (targetComponent === "DefaultPane")
     newLayout = { ...newLayout, ...minimizePaneProps };
 
-  return { ...state, layout: newLayout };
-
-  // return {...state,layout:{...state.layout,subMenuCurrentComponent:targetComponent}}
+  return newLayout;
 };
 
-const goToPreSubMenu = (state, { previousComponent }) => {
+const goToPreSubMenu = (layout, previousComponent) => {
   if (previousComponent)
-    return {
-      ...state,
-      layout: { ...state.layout, subMenuCurrentComponent: previousComponent },
-    };
+    return { ...layout, subMenuCurrentComponent: previousComponent };
+  return layout;
 };
 
-const goToBottomPane = (state, targetComponent) => {
+const goToBottomPane = (layout, targetComponent) => {
   const expandPaneProps = {
-    mapPaneFlex: 0.6,
-    bottomPaneFlex: 0.4,
+    mapContainerSize: 60,
+    bottomPaneSize: 40,
     bottomPaneArrow: "▼",
-    bottomPaneMaxSize: 2000,
     bottomPaneMinimized: false,
   };
 
-  let newLayout = {
-    ...state.layout,
-    bottomPaneCurrentComponent: targetComponent,
-  };
-  if (state.layout.bottomPaneMinimized)
+  let newLayout = { ...layout, bottomPaneCurrentComponent: targetComponent };
+
+  if (layout.bottomPaneMinimized)
     newLayout = { ...newLayout, ...expandPaneProps };
 
-  return { ...state, layout: newLayout };
+  return newLayout;
 };
 
-const goToPreBottomPane = (state, { previousComponent }) => {
-  return {
-    ...state,
-    layout: { ...state.layout, bottomPaneCurrentComponent: previousComponent },
-  };
+const goToPreBottomPane = (layout, previousComponent) => {
+  return { ...layout, bottomPaneCurrentComponent: previousComponent };
 };

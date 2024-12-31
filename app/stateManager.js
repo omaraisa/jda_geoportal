@@ -14,10 +14,19 @@ const useStateStore = create((set, get) => ({
   },
 
   // Actions
+  toggleMenus: (side) => {
+    const state = get();
+    const action = { type: "toggleMenus", side };
+    const layoutResponse = LayoutManager(state.layout, action);
+    if (layoutResponse.type !== "error") {
+      set({ layout: layoutResponse  });
+    }
+  },
+
   goToSubMenu: (targetComponent) => {
     const state = get();
     const action = { type: "goToSubMenu", targetComponent };
-    const layoutResponse = LayoutManager(state, action);
+    const layoutResponse = LayoutManager(state.layout, action);
     if (layoutResponse.type !== "error") {
       set({ layout: layoutResponse });
     }
@@ -25,7 +34,7 @@ const useStateStore = create((set, get) => ({
   goToBottomPane: (targetComponent) => {
     const state = get();
     const action = { type: "goToBottomPane", targetComponent };
-    const layoutResponse = LayoutManager(state, action);
+    const layoutResponse = LayoutManager(state.layout, action);
     if (layoutResponse.type !== "error") {
       set({ layout: layoutResponse });
     }
