@@ -15,6 +15,9 @@ const useStateStore = create((set, get) => ({
   mapDefinition: {
     layerSources: [],
   },
+  previousSubMenus: {
+    DefaultComponent: null,
+  },
 
   // Actions
   setLanguage: (lang) => {
@@ -32,27 +35,16 @@ const useStateStore = create((set, get) => ({
     }
   },
 
-  goToSubMenu: (targetComponent) => {
-    const state = get();
-    const action = { type: "goToSubMenu", targetComponent };
-    const layoutResponse = LayoutManager(state.layout, action);
-    if (layoutResponse.type !== "error") {
-      set({ layout: layoutResponse });
-    }
-  },
-
-  setActiveSubMenu: (component) => set({ activeSubMenu: component }),
-  setPreviousSubMenu: (component) => set({ previousSubMenu: component }),
+  setActiveSubMenu: (component) => {
+  const state = get();
+  const previousSubMenu = state.previousSubMenus[component] || null;
+  set({
+    activeSubMenu: component,
+    previousSubMenu: previousSubMenu,
+  });
+},
 
 
-  goToBottomPane: (targetComponent) => {
-    const state = get();
-    const action = { type: "goToBottomPane", targetComponent };
-    const layoutResponse = LayoutManager(state.layout, action);
-    if (layoutResponse.type !== "error") {
-      set({ layout: layoutResponse });
-    }
-  },
 updateMap: (map) => set({ map }),
 updateView: (view) => set({ view }),
   updateLayers: (layers) => set({ layers }),

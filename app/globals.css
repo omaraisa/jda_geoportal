@@ -16,6 +16,10 @@
   --secondary: #3BBFAD; /* Default secondary color */
   --secondary-light: #51C6B7; /* Lighter shade of secondary */
   --secondary-dark: #2D9C95; /* Darker shade of secondary */
+
+  --yellow: #e7af39;
+  --yellow-light: #f8c862;
+  --yellow-dark: #bb8f30;
 }
 
 [dir="rtl"] {

@@ -1,29 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import Header from "./components/header";
 import MainMenu from "./components/main-menu";
 import SubMenu from "./components/sub-menu";
 import ContentView from "./components/contentview";
 import React from "react";
 import useStateStore from "./stateManager";
-// import Loading from "./components/sub_components/loading";
-// import MessagesContainer from "./components/messages-container";
-import { defaultLayout, LayoutManager } from "./components/layout-management";
-// import {
-  //   updateMessageStatus,
-  //   msgExpirationChecker,
-  //   attachMessage,
-  // } from "./components/messages-manager";
-  import MinimizeMenu from "./components/sub_components/minimize-menu";
-  import BottomPane from "./components/bottom-pane";
-  import Split from "react-split";
-  import "./i18n";
+import MinimizeMenu from "./components/sub_components/minimize-menu";
+import BottomPane from "./components/bottom-pane";
+import Split from "react-split";
+import "./i18n";
 
 export default function App() {
+  const layoutState = useStateStore((state) => state.layout);
+  const toggleMenus = useStateStore((state) => state.toggleMenus);
 
-const layoutState = useStateStore((state) => state.layout);
-const toggleMenus = useStateStore((state) => state.toggleMenus);
+  // Local state to control animation
+  const [isDragging, setIsDragging] = useState(false);
 
+  const handleDragStart = () => setIsDragging(true);
+  const handleDragEnd = () => setIsDragging(false);
 
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden">
@@ -38,17 +35,21 @@ const toggleMenus = useStateStore((state) => state.toggleMenus);
             layoutState.leftPaneSize,
             layoutState.middlePaneSize,
             layoutState.rightPaneSize,
-          ]} // Initial sizes in percentages
-          minSize={[0, 40, 0]} // Minimum sizes in percentages
-          gutterSize={4} // Gutter width in pixels
+          ]}
+          minSize={[0, 40, 0]}
+          gutterSize={4}
           direction="horizontal"
           className="flex h-full"
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
         >
           {/* Left Pane */}
           <div
             className="bg-gray-100 border-r border-gray-300"
             style={{
-              transition: layoutState.animationOn
+              transition: isDragging
+                ? "none"
+                : layoutState.animationOn
                 ? "0.5s ease-in-out"
                 : "none",
             }}
@@ -57,24 +58,36 @@ const toggleMenus = useStateStore((state) => state.toggleMenus);
           </div>
 
           {/* Middle Pane with Nested Vertical Split */}
-          <div className="flex flex-col h-full" style={{
-              transition: layoutState.animationOn
+          <div
+            className="flex flex-col h-full"
+            style={{
+              transition: isDragging
+                ? "none"
+                : layoutState.animationOn
                 ? "0.5s ease-in-out"
                 : "none",
-            }}>
+            }}
+          >
             <Split
-              sizes={[layoutState.mapContainerSize, layoutState.bottomPaneSize]} // Map Pane (80%) | Bottom Pane (20%)
-              minSize={[200, 1]} // Minimum sizes in pixels
-              gutterSize={4} // Gutter height in pixels
+              sizes={[layoutState.mapContainerSize, layoutState.bottomPaneSize]}
+              minSize={[200, 1]}
+              gutterSize={4}
               direction="vertical"
-              className="h-full" // Gutter background color
+              className="h-full"
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
             >
               {/* Map Pane */}
-              <div className="bg-white" style={{
-              transition: layoutState.animationOn
-                ? "0.5s ease-in-out"
-                : "none",
-            }}>
+              <div
+                className="bg-white"
+                style={{
+                  transition: isDragging
+                    ? "none"
+                    : layoutState.animationOn
+                    ? "0.5s ease-in-out"
+                    : "none",
+                }}
+              >
                 <ContentView />
                 <MinimizeMenu
                   vertical={true}
@@ -85,11 +98,16 @@ const toggleMenus = useStateStore((state) => state.toggleMenus);
               </div>
 
               {/* Bottom Pane */}
-              <div className="bg-gray-100 border-t border-gray-300" style={{
-              transition: layoutState.animationOn
-                ? "0.5s ease-in-out"
-                : "none",
-            }}>
+              <div
+                className="bg-gray-100 border-t border-gray-300"
+                style={{
+                  transition: isDragging
+                    ? "none"
+                    : layoutState.animationOn
+                    ? "0.5s ease-in-out"
+                    : "none",
+                }}
+              >
                 <MinimizeMenu
                   vertical={false}
                   Onducked={() => toggleMenus("bottom")}
@@ -102,11 +120,16 @@ const toggleMenus = useStateStore((state) => state.toggleMenus);
           </div>
 
           {/* Right Pane */}
-          <div className="bg-gray-100 border-l border-gray-300" style={{
-              transition: layoutState.animationOn
+          <div
+            className="bg-gray-100 border-l border-gray-300"
+            style={{
+              transition: isDragging
+                ? "none"
+                : layoutState.animationOn
                 ? "0.5s ease-in-out"
                 : "none",
-            }}>
+            }}
+          >
             <SubMenu />
             <MinimizeMenu
               vertical={true}

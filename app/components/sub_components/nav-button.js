@@ -1,16 +1,31 @@
-export default function NavButton(props) {
-  const toolTip = props.toolTip;
+import useStateStore from "../../stateManager"; // Import Zustand state
 
-  // Dynamic Tailwind class based on props
-  const NavButtonClass = props.activeNav
-    ? "bg-blue-500 text-white shadow-md cursor-pointer hover:bg-blue-600"
-    : "bg-white text-primary shadow-md cursor-pointer hover:bg-gray-100";
+export default function NavButton({ toolTip, iconClass, targetComponent }) {
+  const activeSubMenu = useStateStore((state) => state.activeSubMenu);
+  const setActiveSubMenu = useStateStore((state) => state.setActiveSubMenu);
+
+  // Dynamic Tailwind class based on active state
+  const isActive = activeSubMenu === targetComponent;
+  const NavButtonClass = isActive
+  ? "bg-white text-primary shadow-md cursor-pointer" 
+  : "text-white cursor-pointer hover:bg-white hover:text-primary";
+
+
+  // Handle Button Click
+  const handleClick = () => {
+    // setActiveSubMenu(isActive ? "DefaultComponent" : targetComponent);
+    // setActiveSubMenu("DefaultComponent");
+    setActiveSubMenu("BasemapGalleryComponent");
+  };
 
   return (
     <div className="relative group">
       {/* Button */}
-      <div className={`${NavButtonClass} w-10 h-10 flex items-center justify-center rounded-lg`}>
-        <i className={`${props.iconClass} text-xl`}></i>
+      <div
+        onClick={handleClick}
+        className={`${NavButtonClass} w-10 h-10 flex items-center justify-center`}
+      >
+        <i className={`${iconClass}`} style={{ width: "24px", height: "24px", fontSize: "24px" }}></i>
       </div>
 
       {/* Tooltip Below the Button */}
