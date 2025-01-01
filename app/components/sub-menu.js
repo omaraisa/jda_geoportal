@@ -3,13 +3,21 @@ import Loading from "./sub_components/loading";
 import DefaultComponent from "./sub_components/default-component";
 import useStateStore from "../stateManager";
 import SubmenuHeader from "./sub_components/submenu-header";
-// import BasemapGalleryComponent from "../widgets/basemap-gallery";
-const BasemapGalleryComponent = React.lazy(() => import('../widgets/basemap-gallery'))
+import BasemapGalleryComponent from "../widgets/basemap-gallery";
+import EditorWidgetComponent from "../widgets/editor";
+import PrintWidgetComponent from "../widgets/print";
+import LayerListWidgetComponent from "../widgets/layer-list";
+import LegendWidgetComponent from "../widgets/legend";
+
 
 const components = {
   Loading,
   DefaultComponent,
   BasemapGalleryComponent, 
+  EditorWidgetComponent,
+  PrintWidgetComponent,
+    LayerListWidgetComponent,
+    LegendWidgetComponent
 };
 
 export default function SubMenu(props) {
@@ -17,7 +25,6 @@ export default function SubMenu(props) {
   const CurrentComponent = components[currentComponentName];
 
   if (!CurrentComponent) {
-    console.error(`Component "${currentComponentName}" is not defined.`);
     return (
       <div className="h-full flex justify-center items-center">
         <p className="text-red-500">Component not found: {currentComponentName}</p>
@@ -30,11 +37,11 @@ export default function SubMenu(props) {
       className="h-[95vh] w-auto flex items-stretch flex-col flex-wrap gap-2 overflow-y-auto relative"
     >
       <SubmenuHeader />
-      {/* <Suspense fallback={<Loading />}> */}
+      <Suspense fallback={<Loading />}>
         <div className="flex-1 overflow-hidden">
           <CurrentComponent />
         </div>
-      {/* </Suspense> */}
+      </Suspense>
     </div>
   );
 }

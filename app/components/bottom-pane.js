@@ -1,12 +1,14 @@
+import useStateStore from "../stateManager";
 import DefaultComponent from "./sub_components/default-component";
+import AttributeTableWidgetComponent from "../widgets/attribute-table";
 
 const components = {
     DefaultComponent,
+    AttributeTableWidgetComponent
   };
 
 const BottomPane = () => {
-    //   const currentComponentName = useStateStore((state) => state.activeSubMenu);
-      const currentComponentName = "DefaultComponent";
+      const currentComponentName = useStateStore((state) => state.activeBottomPane);
       const CurrentComponent = components[currentComponentName];
 
     return (

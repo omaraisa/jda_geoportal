@@ -28,7 +28,7 @@ export default function BasemapGalleryComponent() {
   return (
     <div
       ref={basemapGalleryRef}
-      className="h-full w-full bg-gray-100 border border-gray-300 rounded-md"
+      className="h-full w-full"
     ></div>
   );
 }

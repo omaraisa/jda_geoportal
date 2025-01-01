@@ -37,7 +37,7 @@ export default function Header() {
         <NavButton
           toolTip={t("header.nav.drawingEditing")}
           iconClass="esri-icon-edit"
-          targetComponent="Editor"
+          targetComponent="EditorWidgetComponent"
         />
         <NavButton
           toolTip={t("header.nav.bookmarks")}
@@ -47,7 +47,7 @@ export default function Header() {
         <NavButton
           toolTip={t("header.nav.printMap")}
           iconClass="esri-icon-printer"
-          targetComponent="Print"
+          targetComponent="PrintWidgetComponent"
         />
         <NavButton
           toolTip={t("header.nav.saveMap")}

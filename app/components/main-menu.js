@@ -1,14 +1,16 @@
 import React, { Suspense, useState } from "react";
 import Loading from "./sub_components/loading";
 import { useTranslation } from "react-i18next";
+import LayerListWidgetComponent from "../widgets/layer-list";
+import LegendWidgetComponent from "../widgets/legend";
 // import AnalysisManager from "./widgets/analysis-manager";
 // import Query from "./widgets/query";
 // import Tools from "./widgets/tools";
 // import MapFrames from "./widgets/maps-frames";
 // import StatisticalAnalysis from "./widgets/statistical-analysis";
 
-// const LegendComponent = React.lazy(() => import("./widgets/legend"));
-// const LayerListComponent = React.lazy(() => import("./widgets/layerlist"));
+// const LegendWidgetComponent = React.lazy(() => import("./widgets/legend"));
+// const LayerListWidgetComponent = React.lazy(() => import("./widgets/layerlist"));
 
 export default function MainMenu(props) {
     const { t } = useTranslation();
@@ -33,9 +35,9 @@ export default function MainMenu(props) {
           </button>
           {activeIndex === 0 && (
             <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out">
-              {/* <Suspense fallback={<Loading />}>
-                <LayerListComponent sendBackWidget={props.sendBackWidget} />
-              </Suspense> */}
+              <Suspense fallback={<Loading />}>
+                <LayerListWidgetComponent sendBackWidget={props.sendBackWidget} />
+              </Suspense>
         </div>
       )}
     </div>
@@ -52,13 +54,9 @@ export default function MainMenu(props) {
       </button>
       {activeIndex === 1 && (
         <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out">
-          {/* <Suspense fallback={<Loading />}>
-            <LegendComponent
-              view={props.view}
-              sendMessage={(message) => sendMessage(message)}
-              sendBackWidget={props.sendBackWidget}
-            />
-          </Suspense> */}
+          <Suspense fallback={<Loading />}>
+            <LegendWidgetComponent/>
+          </Suspense>
         </div>
       )}
     </div>
