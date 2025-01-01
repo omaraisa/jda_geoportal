@@ -3,19 +3,23 @@ import useStateStore from "../../stateManager"; // Import Zustand state
 export default function NavButton({ toolTip, iconClass, targetComponent }) {
   const activeSubMenu = useStateStore((state) => state.activeSubMenu);
   const setActiveSubMenu = useStateStore((state) => state.setActiveSubMenu);
+  const toggleMenus = useStateStore((state) => state.toggleMenus);
+  const secondaryPaneMinimized = useStateStore(
+    (state) => state.layout.secondaryPaneMinimized
+  );
 
   // Dynamic Tailwind class based on active state
   const isActive = activeSubMenu === targetComponent;
   const NavButtonClass = isActive
-  ? "bg-white text-primary shadow-md cursor-pointer" 
-  : "text-white cursor-pointer hover:bg-white hover:text-primary";
-
+    ? "bg-white text-primary shadow-md cursor-pointer"
+    : "text-white cursor-pointer hover:bg-white hover:text-primary";
 
   // Handle Button Click
   const handleClick = () => {
-    // setActiveSubMenu(isActive ? "DefaultComponent" : targetComponent);
-    // setActiveSubMenu("DefaultComponent");
-    setActiveSubMenu("BasemapGalleryComponent");
+    if (secondaryPaneMinimized) {
+      toggleMenus("secondary"); // Open the secondary pane if minimized
+    }
+    setActiveSubMenu(targetComponent); // Set the target submenu
   };
 
   return (
@@ -25,7 +29,10 @@ export default function NavButton({ toolTip, iconClass, targetComponent }) {
         onClick={handleClick}
         className={`${NavButtonClass} w-10 h-10 flex items-center justify-center`}
       >
-        <i className={`${iconClass}`} style={{ width: "24px", height: "24px", fontSize: "24px" }}></i>
+        <i
+          className={`${iconClass}`}
+          style={{ width: "24px", height: "24px", fontSize: "24px" }}
+        ></i>
       </div>
 
       {/* Tooltip Below the Button */}

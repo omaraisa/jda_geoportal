@@ -1,7 +1,7 @@
 {
   "header": {
     "logoAlt": "شعار JDA",
-    "title": "بوابة جدة الجغرافية",
+    "title": "بوابة جدة الجيومكانية",
     "nav": {
       "selectFeatures": "اختيار المعالم",
       "basemaps": "خرائط الأساس",
@@ -18,5 +18,10 @@
     "legend": "مفتاح الخريطة",
     "addLayer": "إضافة طبقة",
     "query": "استعلام"
+  },
+  "submenu" : {
+    "titles": {
+        "BasemapGalleryComponent": "خرائط الأساس"
+      }
   }
 }

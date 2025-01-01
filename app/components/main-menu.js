@@ -22,21 +22,20 @@ export default function MainMenu(props) {
     <div className="bg-gray-100  shadow">
   {/** Accordion Items */}
   <div >
-    {/* Layers List */}
-    <div>
-      <button
-        className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out"
-        style={{ backgroundColor: "var(--primary)" }}
-        onClick={() => toggleAccordion(0)}
-      >
-        <h5 className="text-left">{t("menu.layers")}</h5>
-        <i className="esri-icon-layer-list ml-2" />
-      </button>
-      {activeIndex === 0 && (
-        <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out">
-          {/* <Suspense fallback={<Loading />}>
-            <LayerListComponent sendBackWidget={props.sendBackWidget} />
-          </Suspense> */}
+        <div>
+          <button
+            className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out border-b-2 border-primary-dark"
+            style={{ backgroundColor: "var(--primary)" }}
+            onClick={() => toggleAccordion(0)}
+          >
+            <h5 className="text-left">{t("menu.layers")}</h5>
+            <i className="esri-icon-layer-list ml-2" />
+          </button>
+          {activeIndex === 0 && (
+            <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out">
+              {/* <Suspense fallback={<Loading />}>
+                <LayerListComponent sendBackWidget={props.sendBackWidget} />
+              </Suspense> */}
         </div>
       )}
     </div>
@@ -44,7 +43,7 @@ export default function MainMenu(props) {
     {/* Legend */}
     <div>
       <button
-        className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out"
+        className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out border-b-2 border-primary-dark"
         style={{ backgroundColor: "var(--primary)" }}
         onClick={() => toggleAccordion(1)}
       >
@@ -67,7 +66,7 @@ export default function MainMenu(props) {
     {/* Add Layer */}
     <div>
       <button
-        className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out"
+        className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out border-b-2 border-primary-dark"
         style={{ backgroundColor: "var(--primary)" }}
         onClick={() => toggleAccordion(2)}
       >
@@ -119,7 +118,7 @@ export default function MainMenu(props) {
     {/* Query */}
     <div>
       <button
-        className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out"
+        className="flex justify-between items-center w-full py-2 px-4 text-white  hover:opacity-90  transition-all duration-300 ease-in-out border-b-2 border-primary-dark"
         style={{ backgroundColor: "var(--primary)" }}
         onClick={() => toggleAccordion(3)}
       >

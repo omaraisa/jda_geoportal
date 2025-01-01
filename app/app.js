@@ -29,12 +29,12 @@ export default function App() {
 
       {/* Main Content */}
       <main className="flex-1">
-        {/* Outer Horizontal Split: Left Pane | Middle Pane | Right Pane */}
+        {/* Outer Horizontal Split: Primary Pane | Middle Pane | Secondary Pane */}
         <Split
           sizes={[
-            layoutState.leftPaneSize,
+            layoutState.primaryPaneSize,
             layoutState.middlePaneSize,
-            layoutState.rightPaneSize,
+            layoutState.secondaryPaneSize,
           ]}
           minSize={[0, 40, 0]}
           gutterSize={4}
@@ -43,7 +43,7 @@ export default function App() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          {/* Left Pane */}
+          {/* Primary Pane */}
           <div
             className="bg-gray-100 border-r border-gray-300"
             style={{
@@ -91,8 +91,8 @@ export default function App() {
                 <ContentView />
                 <MinimizeMenu
                   vertical={true}
-                  Onducked={() => toggleMenus("left")}
-                  arrow={layoutState.leftPaneArrow}
+                  Onducked={() => toggleMenus("primary")}
+                  arrow={layoutState.primaryPaneArrow}
                   className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
                 />
               </div>
@@ -119,7 +119,7 @@ export default function App() {
             </Split>
           </div>
 
-          {/* Right Pane */}
+          {/* Secondary Pane */}
           <div
             className="bg-gray-100 border-l border-gray-300"
             style={{
@@ -133,8 +133,8 @@ export default function App() {
             <SubMenu />
             <MinimizeMenu
               vertical={true}
-              Onducked={() => toggleMenus("right")}
-              arrow={layoutState.rightPaneArrow}
+              Onducked={() => toggleMenus("secondary")}
+              arrow={layoutState.secondaryPaneArrow}
               className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
             />
           </div>

@@ -1,21 +1,21 @@
 export const defaultLayout = {
-  // Left Pane
-  leftPaneSize: 20, // Percentage width of the left pane
-  leftPaneMinSize: 0.1, // Minimum percentage width
-  leftPaneMaxSize: 30, // Maximum percentage width
-  leftPaneArrow: "◀",
-  leftPaneMinimized: false,
+  // Primary Pane
+  primaryPaneSize: 20, // Percentage width of the primary pane
+  primaryPaneMinSize: 0.1, // Minimum percentage width
+  primaryPaneMaxSize: 30, // Maximum percentage width
+  primaryPaneArrow: "◀",
+  primaryPaneMinimized: false,
 
-  // Right Pane
-  rightPaneSize: 20, // Percentage width of the right pane
-  rightPaneMinSize: 0.1, // Minimum percentage width
-  rightPaneMaxSize: 30, // Maximum percentage width
-  rightPaneArrow: "▶",
-  rightPaneMinimized: false,
+  // Secondary Pane
+  secondaryPaneSize: 0, // Percentage width of the secondary pane
+  secondaryPaneMinSize: 0, // Minimum percentage width
+  secondaryPaneMaxSize: 30, // Maximum percentage width
+  secondaryPaneArrow: "◀",
+  secondaryPaneMinimized: true,
 
   // Middle Pane (Map View)
-  middlePaneSize: 100, // Percentage width of the middle pane
-  middlePaneMinSize: 20, // Minimum percentage width
+  middlePaneSize: 80, // Percentage width of the middle pane
+  middlePaneMinSize: 40, // Minimum percentage width
 
   // Map Container
   mapContainerSize: 100, // Percentage width of the map container
@@ -35,6 +35,7 @@ export const defaultLayout = {
   subMenuCurrentComponent: "DefaultPane", // Active component in the submenu
   bottomPaneCurrentComponent: "DefaultPane", // Active component in the bottom pane
 };
+
 export const LayoutManager = (layout, action) => {
   switch (action.type) {
     case "goToSubMenu":
@@ -58,36 +59,36 @@ export const LayoutManager = (layout, action) => {
 
 const toggleMenus = (layout, side) => {
   const toggleSides = {
-    right: () => toggleRightMenu(),
-    left: () => toggleLeftMenu(),
+    secondary: () => toggleSecondaryMenu(),
+    primary: () => togglePrimaryMenu(),
     bottom: () => toggleBottomMenu(),
   };
 
-  function toggleRightMenu() {
-    const isMinimized = layout.rightPaneMinimized;
+  function toggleSecondaryMenu() {
+    const isMinimized = layout.secondaryPaneMinimized;
 
     return {
       ...layout,
-      rightPaneSize: isMinimized ? 20 : 0, // Restore or collapse
-      rightPaneArrow: isMinimized ? "▶" : "◀", // Update arrow direction
-      rightPaneMinimized: !isMinimized, // Toggle state
+      secondaryPaneSize: isMinimized ? 20 : 0, // Restore or collapse
+      secondaryPaneArrow: isMinimized ? "▶" : "◀", // Update arrow direction
+      secondaryPaneMinimized: !isMinimized, // Toggle state
       middlePaneSize: isMinimized
         ? layout.middlePaneSize - 20
-        : layout.middlePaneSize + layout.rightPaneSize, // Adjust middle pane
+        : layout.middlePaneSize + layout.secondaryPaneSize, // Adjust middle pane
     };
   }
 
-  function toggleLeftMenu() {
-    const isMinimized = layout.leftPaneMinimized;
+  function togglePrimaryMenu() {
+    const isMinimized = layout.primaryPaneMinimized;
 
     return {
       ...layout,
-      leftPaneSize: isMinimized ? 20 : 0, // Restore or collapse
-      leftPaneArrow: isMinimized ? "◀" : "▶", // Update arrow direction
-      leftPaneMinimized: !isMinimized, // Toggle state
+      primaryPaneSize: isMinimized ? 20 : 0, // Restore or collapse
+      primaryPaneArrow: isMinimized ? "◀" : "▶", // Update arrow direction
+      primaryPaneMinimized: !isMinimized, // Toggle state
       middlePaneSize: isMinimized
         ? layout.middlePaneSize - 20
-        : layout.middlePaneSize + layout.leftPaneSize, // Adjust middle pane
+        : layout.middlePaneSize + layout.primaryPaneSize, // Adjust middle pane
     };
   }
 
@@ -127,21 +128,21 @@ const resizeMenu = (layout, dragStatus) => {
 
 const goToSubMenu = (layout, targetComponent) => {
   const expandPaneProps = {
-    leftPaneArrow: "◀",
-    leftPaneSize: 20,
-    leftPaneMinimized: false,
+    primaryPaneArrow: "◀",
+    primaryPaneSize: 20,
+    primaryPaneMinimized: false,
     middlePaneSize: layout.middlePaneSize - 20,
   };
   const minimizePaneProps = {
-    leftPaneArrow: "▶",
-    leftPaneSize: 0,
-    leftPaneMinimized: true,
+    primaryPaneArrow: "▶",
+    primaryPaneSize: 0,
+    primaryPaneMinimized: true,
     middlePaneSize: layout.middlePaneSize + 20,
   };
 
   let newLayout = { ...layout, subMenuCurrentComponent: targetComponent };
 
-  if (layout.leftPaneMinimized) newLayout = { ...newLayout, ...expandPaneProps };
+  if (layout.primaryPaneMinimized) newLayout = { ...newLayout, ...expandPaneProps };
 
   if (targetComponent === "DefaultPane")
     newLayout = { ...newLayout, ...minimizePaneProps };

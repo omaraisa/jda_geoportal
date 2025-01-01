@@ -19,6 +19,11 @@
       "legend": "Legend",
       "addLayer": "Add Layer",
       "query": "Query"
+    },
+    "submenu" : {
+      "titles": {
+          "BasemapGalleryComponent": "Basemap Gallery"
+        }
     }
   }
   

@@ -14,8 +14,8 @@ export default function MinimizeMenu({ vertical, Onducked, arrow }) {
 
   return (
     <div
-      className={`absolute bg-primary text-white rounded-full text-sm cursor-pointer flex items-center justify-center`}
-      style={{
+    className={`absolute bg-primary text-white rounded-full text-2xl cursor-pointer flex items-center justify-center`}
+    style={{
         top: vertical ? "50%" : undefined,
         left: vertical ? undefined : "50%",
         transform: vertical
