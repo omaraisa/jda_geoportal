@@ -7,10 +7,6 @@ export default function LayerListWidgetComponent() {
   const view = useStateStore((state) => state.view);
   const setActiveBottomPane = useStateStore((state) => state.setActiveBottomPane);
   const setTargetLayerId = useStateStore((state) => state.setTargetLayerId);
-  const toggleMenus = useStateStore((state) => state.toggleMenus);
-  const bottomPaneMinimized = useStateStore(
-    (state) => state.layout.bottomPaneMinimized
-  );
 
 
   useEffect(() => {
@@ -124,9 +120,6 @@ export default function LayerListWidgetComponent() {
 const showAttributeTable = (layer) => {
     if (layer.type === "feature") {
         openAttributeTable(layer);
-        if (bottomPaneMinimized) {
-            toggleMenus("bottom"); // Open the secondary pane if minimized
-          }
     } else {
         console.log("This layer does not support attribute tables.");
     }

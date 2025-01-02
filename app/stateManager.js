@@ -8,11 +8,15 @@ const useStateStore = create((set, get) => ({
   activeSubMenu: "DefaultComponent",
   previousSubMenu: null,
   activeBottomPane: "DefaultComponent",
+  viewMode: "2D",
   map: null,
   view: null,
   layers: [],
   widgets: {},
   targetLayerId: null,
+  center: [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
+  zoom: 12, // Default zoom level for 2D
+  scale: 500000, // Default scale for 3D
   mapDefinition: {
     layerSources: [],
   },
@@ -61,10 +65,13 @@ const useStateStore = create((set, get) => ({
       targetLayers: { ...state.targetLayers, ...layer },
     })),
 
-    setTargetLayerId: (id) => {
-        console.log("Setting target layer id:", id );
-        console.log("Current state:", get());
+  setTargetLayerId: (id) => {
     set({ targetLayerId: id });
+  },
+
+  // Update center and zoom/scale when switching views
+  updateViewLocation: (center, zoom, scale) => {
+    set({ center, zoom, scale });
   },
 
   // Get the target layer from the map
@@ -72,6 +79,20 @@ const useStateStore = create((set, get) => ({
     const map = get().map;
     const targetLayerId = get().targetLayerId;
     return map ? map.findLayerById(targetLayerId) : null;
+  },
+
+  // Switch between 2D and 3D views
+  switchViewMode: (mode) => {
+    const { view } = get();
+    if (view) {
+      // Save the current center, zoom, and scale before switching
+      const center = view.center.clone();
+      const zoom = view.zoom;
+      const scale = view.scale;
+      set({ viewMode: mode, center, zoom, scale });
+    } else {
+      set({ viewMode: mode });
+    }
   },
 }));
 

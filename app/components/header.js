@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./sub_components/lang-switcher";
 import useStateStore from "../stateManager"; // Import Zustand state
+import ViewSwitcher from "./sub_components/view-switcher";
 
 export default function Header() {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export default function Header() {
           language === "ar" ? "mr-auto" : "ml-auto"
         }`}
       >
+        <ViewSwitcher />
         <NavButton
           toolTip={t("header.nav.selectFeatures")}
           iconClass="esri-icon-cursor-marquee"
