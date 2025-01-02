@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react";
 import FeatureTable from "@arcgis/core/widgets/FeatureTable";
 import useStateStore from "../stateManager";
 
-let featureTableWidget; // Global reference to the FeatureTable widget
-
+let featureTableWidget;
 export default function AttributeTableWidgetComponent() {
   const tableRef = useRef(null);
 
@@ -14,7 +13,6 @@ export default function AttributeTableWidgetComponent() {
   useEffect(() => {
     if (!view || !targetLayerId) return;
 
-    // Find the target layer by ID
     const targetLayer = view.map.findLayerById(targetLayerId);
 
     if (!targetLayer) {
@@ -29,38 +27,30 @@ export default function AttributeTableWidgetComponent() {
       visible: true,
     }));
 
-    // Decide to update or insert the FeatureTable
-    featureTableWidget
-      ? updateFeatureTable(targetLayer, fieldConfigs)
-      : insertFeatureTable(targetLayer, fieldConfigs);
+    // Create or update the FeatureTable widget
+    if (featureTableWidget) {
+      updateFeatureTable(targetLayer, fieldConfigs);
+    } else {
+      featureTableWidget = new FeatureTable({
+        view: view,
+        layer: targetLayer,
+        fieldConfigs: fieldConfigs,
+        container: tableRef.current,
+      });
+    }
 
     function updateFeatureTable(layer, fieldConfigs) {
       featureTableWidget.layer = layer;
       featureTableWidget.fieldConfigs = fieldConfigs;
     }
 
-    function insertFeatureTable(layer, fieldConfigs) {
-      featureTableWidget = new FeatureTable({
-        view: view,
-        layer: layer,
-        fieldConfigs: fieldConfigs,
-        container: tableRef.current,
-      });
-      featureTableWidget.render();
-    }
-
-    // Cleanup on unmount or when dependencies change
-    return () => {
-      if (featureTableWidget) {
-        // featureTableWidget.destroy();
-        featureTableWidget = null;
-      }
-    };
+    
   }, [view, targetLayerId]); // Re-run when view or targetLayerId changes
 
   return (
     <div
       ref={tableRef}
+      style={{ direction: "ltr" }} // Enforce LTR direction
       className="h-full w-full"
     ></div>
   );
