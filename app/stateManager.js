@@ -24,6 +24,7 @@ const useStateStore = create((set, get) => ({
     DefaultComponent: null,
   },
   messages: {},
+  bookmarks: [],
 
   // Actions
   setLanguage: (lang) => {
@@ -126,6 +127,33 @@ const useStateStore = create((set, get) => ({
     });
   },
 
+  addBookmark: (name, extent) => {
+    const id = Date.now() + Math.floor(Math.random() * 999);
+    const newBookmark = { id, name, extent };
+    set((state) => {
+      const updatedBookmarks = [...state.bookmarks, newBookmark];
+      localStorage.setItem("localBookmarks", JSON.stringify(updatedBookmarks));
+      return { bookmarks: updatedBookmarks };
+    });
+  },
+
+  deleteBookmark: (id) => {
+    set((state) => {
+      const updatedBookmarks = state.bookmarks.filter(
+        (bookmark) => bookmark.id !== id
+      );
+      localStorage.setItem("localBookmarks", JSON.stringify(updatedBookmarks));
+      return { bookmarks: updatedBookmarks };
+    });
+  },
+
+  loadBookmarks: () => {
+    const savedBookmarks = JSON.parse(localStorage.getItem("localBookmarks")) || [];
+    set({ bookmarks: savedBookmarks });
+  },
+
+
+  
 }));
 
 export default useStateStore;

@@ -9,6 +9,7 @@ const EditorWidgetComponent = dynamic(() => import("../widgets/editor"), { ssr: 
 const PrintWidgetComponent = dynamic(() => import("../widgets/print"), { ssr: false });
 const LayerListWidgetComponent = dynamic(() => import("../widgets/layer-list"), { ssr: false });
 const LegendWidgetComponent = dynamic(() => import("../widgets/legend"), { ssr: false });
+const BookmarkWidgetComponent = dynamic(() => import("../widgets/bookmarks"), { ssr: false });
 
 
 const components = {
@@ -18,7 +19,8 @@ const components = {
   EditorWidgetComponent,
   PrintWidgetComponent,
     LayerListWidgetComponent,
-    LegendWidgetComponent
+    LegendWidgetComponent,
+    BookmarkWidgetComponent
 };
 
 export default function SubMenu(props) {

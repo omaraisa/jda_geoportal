@@ -13,9 +13,11 @@ const ArcGISAPIKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
 const MainScene = () => {
   const sceneRef = useRef(null); // Ref to attach the scene view container
   const addMessage = useStateStore((state) => state.addMessage); // Zustand message function
+  const center = useStateStore((state) => state.center); // Get the center from the state
+  const scale = useStateStore((state) => state.scale); // Get the scale from the state
+  const updateView = useStateStore((state) => state.updateView); // Update the view in the state
 
   useEffect(() => {
-    // Set the ArcGIS API Key
     esriConfig.apiKey = ArcGISAPIKey;
 
     let view;
@@ -31,13 +33,13 @@ const MainScene = () => {
       view = new SceneView({
         container: sceneRef.current, // Attach to the DOM element
         map: scene,
-        center: [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
-        scale: 500000, // Default scale for the 3D view
+        center, // Use the center from the state
+        scale, // Use the scale from the state
       });
 
-      // Catch errors while initializing the view
+      // Update the view in the state when it is successfully initialized
       view.when(() => {
-        console.log("SceneView successfully initialized.");
+        updateView(view);
       }).catch((error) => {
         console.error("Error initializing SceneView:", error);
         addMessage({
@@ -48,7 +50,6 @@ const MainScene = () => {
         });
       });
     } catch (error) {
-      // Handle errors while creating the scene or view
       console.error("Error creating WebScene or SceneView:", error);
       addMessage({
         title: "Scene Creation Error",
@@ -62,9 +63,10 @@ const MainScene = () => {
     return () => {
       if (view) {
         view.destroy();
+        updateView(null); // Reset the view in the state when unmounting
       }
     };
-  }, [addMessage]); // Dependency on addMessage to ensure it's available
+  }, [addMessage, center, scale, updateView]); // Dependencies for initial configuration
 
   return <div ref={sceneRef} style={{ width: "100%", height: "100%" }} />;
 };

@@ -20,6 +20,11 @@
   --yellow: #e7af39;
   --yellow-light: #f8c862;
   --yellow-dark: #bb8f30;
+
+  /* Danger Colors */
+  --danger: #ca5551; /* Default danger color */
+  --danger-light: #f1a5a2; /* Lighter shade of danger */
+  --danger-dark: #a3302c; /* Darker shade of danger */
 }
 
 [dir="rtl"] {

@@ -22,7 +22,8 @@
     },
     "submenu" : {
       "titles": {
-          "BasemapGalleryComponent": "Basemap Gallery"
+          "BasemapGalleryComponent": "Basemap Gallery",
+          "BookmarkWidgetComponent": "Bookmarks"
         }
     }
   }

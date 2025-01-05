@@ -44,7 +44,7 @@ export default function Header() {
         <NavButton
           toolTip={t("header.nav.bookmarks")}
           iconClass="esri-icon-bookmark"
-          targetComponent="Bookmarks"
+          targetComponent="BookmarkWidgetComponent"
         />
         <NavButton
           toolTip={t("header.nav.printMap")}
