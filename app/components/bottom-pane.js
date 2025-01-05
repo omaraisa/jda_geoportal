@@ -1,6 +1,8 @@
 import useStateStore from "../stateManager";
 import DefaultComponent from "./sub_components/default-component";
-import AttributeTableWidgetComponent from "../widgets/attribute-table";
+import dynamic from "next/dynamic";
+const AttributeTableWidgetComponent = dynamic(() => import("../widgets/attribute-table"), { ssr: false });
+
 
 const components = {
     DefaultComponent,

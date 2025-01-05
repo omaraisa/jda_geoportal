@@ -1,8 +1,9 @@
 import React, { Suspense, useState } from "react";
 import Loading from "./sub_components/loading";
 import { useTranslation } from "react-i18next";
-import LayerListWidgetComponent from "../widgets/layer-list";
-import LegendWidgetComponent from "../widgets/legend";
+import dynamic from "next/dynamic";
+const LayerListWidgetComponent = dynamic(() => import("../widgets/layer-list"), { ssr: false });
+const LegendWidgetComponent = dynamic(() => import("../widgets/legend"), { ssr: false });
 // import AnalysisManager from "./widgets/analysis-manager";
 // import Query from "./widgets/query";
 // import Tools from "./widgets/tools";

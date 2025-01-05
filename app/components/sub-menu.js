@@ -3,11 +3,12 @@ import Loading from "./sub_components/loading";
 import DefaultComponent from "./sub_components/default-component";
 import useStateStore from "../stateManager";
 import SubmenuHeader from "./sub_components/submenu-header";
-import BasemapGalleryComponent from "../widgets/basemap-gallery";
-import EditorWidgetComponent from "../widgets/editor";
-import PrintWidgetComponent from "../widgets/print";
-import LayerListWidgetComponent from "../widgets/layer-list";
-import LegendWidgetComponent from "../widgets/legend";
+import dynamic from "next/dynamic";
+const BasemapGalleryComponent = dynamic(() => import("../widgets/basemap-gallery"), { ssr: false });
+const EditorWidgetComponent = dynamic(() => import("../widgets/editor"), { ssr: false });
+const PrintWidgetComponent = dynamic(() => import("../widgets/print"), { ssr: false });
+const LayerListWidgetComponent = dynamic(() => import("../widgets/layer-list"), { ssr: false });
+const LegendWidgetComponent = dynamic(() => import("../widgets/legend"), { ssr: false });
 
 
 const components = {
