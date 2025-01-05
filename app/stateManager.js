@@ -23,6 +23,7 @@ const useStateStore = create((set, get) => ({
   previousSubMenus: {
     DefaultComponent: null,
   },
+  messages: {},
 
   // Actions
   setLanguage: (lang) => {
@@ -94,6 +95,37 @@ const useStateStore = create((set, get) => ({
       set({ viewMode: mode });
     }
   },
+
+  addMessage: ({ title, body, type, duration = 10 }) => {
+    const id = Date.now(); // Unique ID based on timestamp
+    const expireAt = Date.now() + duration * 1000;
+    const newMessage = { id, title, body, type, expireAt, expired: false };
+
+    set((state) => ({
+      messages: { ...state.messages, [id]: newMessage },
+    }));
+
+    setTimeout(() => get().expireMessage(id), duration * 1000);
+  },
+
+  expireMessage: (id) => {
+    set((state) => {
+      const updatedMessages = { ...state.messages };
+      if (updatedMessages[id]) {
+        updatedMessages[id].expired = true;
+      }
+      return { messages: updatedMessages };
+    });
+  },
+
+  removeMessage: (id) => {
+    set((state) => {
+      const updatedMessages = { ...state.messages };
+      delete updatedMessages[id];
+      return { messages: updatedMessages };
+    });
+  },
+
 }));
 
 export default useStateStore;

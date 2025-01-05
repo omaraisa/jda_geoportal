@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <div className="flex flex-row justify-between items-center pr-5 min-h-16 text-white bg-gradient-to-r from-primary to-secondary text-white p-4 shadow-md z-10">
       {/* Logo and Title */}
-      <div className="flex flex-row items-center">
+      <div className="flex flex-row items-center" >
         <Image src="/logo.png" alt={t("header.logoAlt")} width="40" height="40" />
         <h1 className="ml-2 mr-2 text-2xl">{t("header.title")}</h1>
       </div>

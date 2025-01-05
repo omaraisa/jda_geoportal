@@ -1,0 +1,83 @@
+.messagesContainer {
+    position: absolute; /* Make it an overlay */
+    bottom: 0; /* Align to the bottom of the viewport */
+    left: 0; /* Align to the left */
+    width: 100%; /* Full width of the map canvas */
+    max-height: 100%; /* Ensure it doesn't exceed the viewport height */
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping when there's no more vertical space */
+    flex-direction: row-reverse; /* Stack messages from right to left */
+    justify-content: flex-end; /* Align messages to the right */
+    align-items: flex-end; /* Align items to the bottom */
+    padding: 1rem;
+    gap: 1rem;
+    z-index: 9999; /* Ensure it appears above all other content */
+    pointer-events: none; /* Prevent blocking clicks on the map */
+    overflow: hidden; /* Prevent overflow outside the container */
+  }
+  
+  .message {
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 25%; /* Adjust width to fit multiple messages side by side */
+    max-width: 300px; /* Set a maximum width for each message */
+    min-width: 200px; /* Set a minimum width for readability */
+    margin: 0; /* Remove additional margins */
+    animation: slideIn 0.3s ease-out;
+    background: #f5f5f5; /* Default background */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  
+  .messageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+  
+  .messageBody {
+    margin-top: 0.5rem;
+  }
+  
+  .closeButton {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+  
+  /* Category-specific styles */
+  .errorMessage {
+    background-color: #fff;
+    color: #8f2d37;
+    border-left: 4px solid #e64555;
+  }
+  
+  .warningMessage {
+    background-color: #fff;
+    color: #856404;
+    border-left: 4px solid var(--yellow);
+  }
+  
+  .infoMessage {
+    background-color: #fff;
+    color: #0c5460;
+    border-left: 4px solid #149295;
+  }
+  
+  /* Animation */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
