@@ -5,91 +5,146 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import esriConfig from "@arcgis/core/config";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import dotenv from "dotenv";
 import useStateStore from "../stateManager";
 
-dotenv.config();
-const ArcGISAPIKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
-
 const MainMap = () => {
-  const mapRef = useRef(null);
-  const addMessage = useStateStore((state) => state.addMessage); // Zustand message function
-  const center = useStateStore((state) => state.center); // Get the center from the state
-  const zoom = useStateStore((state) => state.zoom); // Get the zoom from the state
-  const updateView = useStateStore((state) => state.updateView); // Update the view in the state
+  const mapRef = useRef(null); // Reference to the MapView container
+  const viewRef = useRef(null); // Reference to the MapView instance
+
+  // Extract state and actions from Zustand store
+  const addMessage = useStateStore((state) => state.addMessage);
+  const center = useStateStore((state) => state.center);
+  const zoom = useStateStore((state) => state.zoom);
+  const stateView = useStateStore((state) => state.view);
+  const secondaryView = useStateStore((state) => state.secondaryView);
+  const updateView = useStateStore((state) => state.updateView);
+  const updateSecondaryView = useStateStore((state) => state.updateSecondaryView);
+  const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
+  const swapViews = useStateStore((state) => state.swapViews);
 
   useEffect(() => {
-    esriConfig.apiKey = ArcGISAPIKey;
-
-    let view;
+    // Set the ArcGIS API Key
+    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
 
     try {
-      // Create the Map instance
-      const map = new Map({
-        basemap: "arcgis-topographic", // Example basemap
-      });
+      // Initialize the Map and MapView
+      const map = new Map({ basemap: "arcgis-topographic" });
 
-      // Create the MapView instance
-      view = new MapView({
-        container: mapRef.current, // Attach to the DOM element
+      const mapView = new MapView({
+        container: mapRef.current,
         map: map,
-        center, // Use the center from the state
-        zoom, // Use the zoom level from the state
+        center,
+        zoom,
       });
 
-      // Add the FeatureLayer to the map when the view is ready
-      view.when(() => {
-        // Update the view in the state when it is successfully initialized
-        updateView(view);
+      viewRef.current = mapView;
 
-        try {
-          const featureLayer = new FeatureLayer({
-            url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/SAU_Boundaries_2022/FeatureServer/1",
-          });
+      mapView
+        .when(() => {
+          updateView(mapView);
 
-          const featureLayer3 = new FeatureLayer({
-            url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
-          });
-
-          // Add the layers to the map
-          map.add(featureLayer);
-          map.add(featureLayer3);
-        } catch (error) {
-          console.error("Error adding feature layers to the map:", error);
+          // Add FeatureLayers to the map
+          try {
+            map.addMany([
+              new FeatureLayer({
+                url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/SAU_Boundaries_2022/FeatureServer/1",
+              }),
+              new FeatureLayer({
+                url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
+              }),
+            ]);
+          } catch (error) {
+            addMessage({
+              title: "Map Error",
+              body: `Failed to add layers to the map. ${error.message}`,
+              type: "error",
+              duration: 10,
+            });
+          }
+        })
+        .catch((error) => {
           addMessage({
-            title: "Map Error",
-            body: `Failed to add layers to the map. ${error.message}`,
+            title: "Map Initialization Error",
+            body: `Failed to initialize the map view. ${error.message}`,
             type: "error",
-            duration: 10, // Display for 10 seconds
+            duration: 10,
           });
-        }
-      }).catch((error) => {
-        console.error("Error initializing the map view:", error);
-        addMessage({
-          title: "Map Initialization Error",
-          body: `Failed to initialize the map view. ${error.message}`,
-          type: "error",
-          duration: 10, // Display for 10 seconds
         });
-      });
     } catch (error) {
-      console.error("Error creating Map or MapView:", error);
       addMessage({
         title: "Map Creation Error",
         body: `An error occurred while creating the map. ${error.message}`,
         type: "error",
-        duration: 10, // Display for 10 seconds
+        duration: 10,
       });
     }
 
-    // Cleanup: Destroy the view when the component is unmounted
+    // Cleanup on component unmount
     return () => {
-      if (view) {
-        view.destroy();
-        updateView(null); // Reset the view in the state when unmounting
+      if (viewRef.current) {
+        viewRef.current.destroy();
+        // updateView(null);
       }
     };
-  }, [addMessage, center, zoom, updateView]); // Dependencies for initial configuration
+  }, [addMessage, center, zoom, updateView]);
+  
+    useEffect(() => {
+      if (viewsSyncOn && !secondaryView && viewRef.current) {
+        updateView(viewRef.current);
+      }
+    }, [viewsSyncOn]);
+
+  useEffect(() => {
+    if (viewsSyncOn && viewRef.current && secondaryView) {
+      // Sync the MapView's center and scale with the secondaryView
+      let handleCenterChange
+      if(secondaryView.type === "3d")
+        { 
+        handleCenterChange = viewRef.current.watch("center", () => {
+          secondaryView.center = viewRef.current.center;
+          secondaryView.scale = viewRef.current.scale;
+      });
+    }
+
+      return () => {
+        if (handleCenterChange) {
+          handleCenterChange.remove(); // Cleanup watcher
+        }
+      };
+    }
+  }, [viewsSyncOn,secondaryView]);
+
+  useEffect(() => {
+    if (viewRef.current) {
+      // Ensure no duplicate listeners are attached
+      const existingHandlers = viewRef.current.eventHandlers || {};
+  
+      if (!existingHandlers["pointer-down"]) {
+        const handlePointerDown = () => {
+          if (viewRef.current !== stateView) {
+            swapViews(); // Swap views only if the current view does not match the state view
+          }
+        };
+  
+        // Add the event handler
+        const pointerDownHandler = viewRef.current.on("pointer-down", handlePointerDown);
+  
+        // Track the handler for cleanup
+        existingHandlers["pointer-down"] = pointerDownHandler;
+        viewRef.current.eventHandlers = existingHandlers;
+  
+        // Cleanup listener
+        return () => {
+          if (pointerDownHandler) {
+            pointerDownHandler.remove(); // Properly remove the listener
+            delete viewRef.current.eventHandlers["pointer-down"];
+          }
+        };
+      }
+    }
+  }, [viewsSyncOn, stateView, swapViews]);
+
+  
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 };

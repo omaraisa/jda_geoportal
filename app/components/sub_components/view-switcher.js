@@ -5,6 +5,7 @@ const ViewSwitcher = () => {
   const switchViewMode = useStateStore((state) => state.switchViewMode);
   const view = useStateStore((state) => state.view);
   const updateViewLocation = useStateStore((state) => state.updateViewLocation);
+  const setSyncing = useStateStore((state) => state.setSyncing);
 
   const toggleView = () => {
 
@@ -13,6 +14,7 @@ const ViewSwitcher = () => {
     const zoom = view.zoom;
     const scale = view.scale;
     updateViewLocation(center, zoom, scale); // Save the current view state
+    setSyncing(false)
   }
 
     // Switch the view mode and ensure the current location is saved

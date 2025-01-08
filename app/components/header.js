@@ -33,11 +33,11 @@ export default function Header() {
       >
         <ViewSwitcher />
         <ViewSplitter />
-        <NavButton
+        {/* <NavButton
           toolTip={t("header.nav.selectFeatures")}
           iconClass="esri-icon-cursor-marquee"
           targetComponent="SelectFeatures"
-        />
+        /> */}
         <NavButton
           toolTip={t("header.nav.basemaps")}
           iconClass="esri-icon-basemap"

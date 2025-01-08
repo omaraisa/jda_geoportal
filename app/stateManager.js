@@ -11,12 +11,24 @@ const useStateStore = create((set, get) => ({
   viewMode: "2D",
   map: null,
   view: null,
+  secondaryView:null,
   layers: [],
   widgets: {},
   targetLayerId: null,
   center: [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
   zoom: 12, // Default zoom level for 2D
   scale: 500000, // Default scale for 3D
+  viewsSyncOn: false,
+  syncedLocation: {
+    "2D": {
+    "center": [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
+    "zoom": 12, // Default zoom level for 2D
+  },
+    "3D": {
+    "center": [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
+    "zoom": 12, // Default zoom level for 2D
+  },},
+
   mapDefinition: {
     layerSources: [],
   },
@@ -25,6 +37,7 @@ const useStateStore = create((set, get) => ({
   },
   messages: {},
   bookmarks: [],
+
 
   // Actions
   setLanguage: (lang) => {
@@ -55,8 +68,31 @@ const useStateStore = create((set, get) => ({
     set({ activeBottomPane: component });
   },
 
+  startDragging: () =>
+    set((state) => ({
+      layout: {
+        ...state.layout,
+        animationOn: false,
+      },
+    })),
+
+  endDragging: () =>
+    set((state) => ({
+      layout: {
+        ...state.layout,
+        animationOn: true,
+      },
+    })),
+
   updateMap: (map) => set({ map }),
   updateView: (view) => set({ view }),
+  updateSecondaryView: (secondaryView) => set({ secondaryView }),
+  swapViews: () => {
+    set((state) => ({
+      view: state.secondaryView,
+      secondaryView: state.view,
+    }));
+  },
   updateLayers: (layers) => set({ layers }),
   updateLayerSources: (layerSources) =>
     set((state) => ({
@@ -75,6 +111,11 @@ const useStateStore = create((set, get) => ({
   updateViewLocation: (center, zoom, scale) => {
     set({ center, zoom, scale });
   },
+
+  setSyncing: (isOn) =>
+    set((state) => ({
+      viewsSyncOn: isOn,
+    })),
 
   // Get the target layer from the map
   getTargetLayer: () => {
