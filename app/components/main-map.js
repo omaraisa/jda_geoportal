@@ -18,9 +18,9 @@ const MainMap = () => {
   const stateView = useStateStore((state) => state.view);
   const secondaryView = useStateStore((state) => state.secondaryView);
   const updateView = useStateStore((state) => state.updateView);
-  const updateSecondaryView = useStateStore((state) => state.updateSecondaryView);
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
   const swapViews = useStateStore((state) => state.swapViews);
+  const addLayer = useStateStore((state) => state.addLayer);
 
   useEffect(() => {
     // Set the ArcGIS API Key
@@ -45,14 +45,10 @@ const MainMap = () => {
 
           // Add FeatureLayers to the map
           try {
-            map.addMany([
-              new FeatureLayer({
-                url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/SAU_Boundaries_2022/FeatureServer/1",
-              }),
-              new FeatureLayer({
-                url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
-              }),
-            ]);
+            const pacelLayer =  new FeatureLayer({
+                url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
+              })
+              addLayer(pacelLayer)
           } catch (error) {
             addMessage({
               title: "Map Error",

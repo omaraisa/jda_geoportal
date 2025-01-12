@@ -7,6 +7,7 @@
       "basemaps": "خرائط الأساس",
       "drawingEditing": "الرسم والتعديل",
       "bookmarks": "الإشارات المرجعية",
+      "attributeQuery": "استعلام وصفي",
       "printMap": "طباعة الخريطة",
       "saveMap": "حفظ الخريطة",
       "openMap": "فتح الخريطة",
@@ -21,7 +22,67 @@
   },
   "submenu" : {
     "titles": {
-        "BasemapGalleryComponent": "خرائط الأساس"
+        "BasemapGalleryComponent": "خرائط الأساس",
+        "BookmarkWidgetComponent": "العلامات المرجعية"
       }
+  },
+  "widgets": {
+    "query": {
+      "selectLayer": "اختر الطبقة",
+      "select": "اختر",
+      "selectField": "اختر الحقل",
+      "selectQueryCondition": "اختر شرط الاستعلام",
+      "greaterThan": "أكبر من",
+      "lessThan": "أصغر من",
+      "equals": "يساوي",
+      "selectInputType": "اختر نوع الإدخال",
+      "manualInput": "إدخال يدوي",
+      "fromData": "من البيانات",
+      "enterValue": "أدخل القيمة",
+      "selectValue": "اختر القيمة",
+      "search": "بحث",
+      "createNewLayer": "إنشاء طبقة جديدة",
+      "clearSearch": "مسح البحث"
+    },
+    "bookmarks": {
+      "addBookmark": "إضافة علامة مرجعية",
+      "noBookmarks": "لا توجد إشارات مرجعية متاحة",
+      "bookmarkName": "اسم العلامة المرجعية",
+      "enterName": "أدخل اسمًا",
+      "saveBookmark": "حفظ العلامة المرجعية",
+      "cancel": "إلغاء"
+    }
+  },
+  "systemMessages": {
+    "info": {
+      "queryCompleted": {
+        "title": "استعلام",
+        "body": "تم استكمال الاستعلام للطبقة "
+      }
+    },
+    "error": {
+      "queryError": {
+        "title": "خطأ في الاستعلام",
+        "body": "حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى."
+      },
+      "failedToCollectData": {
+        "title": "خطأ في الاستعلام",
+        "body": "فشل في جمع البيانات للطبقة المحددة."
+      },
+      "completeSearchRequirements": {
+        "title": "خطأ في الاستعلام",
+        "body": "يرجى استكمال متطلبات البحث."
+      },
+      "noResultsFound": {
+        "title": "خطأ في الاستعلام",
+        "body": "لم يتم العثور على نتائج لهذا الاستعلام."
+      },
+      "searchError": {
+        "title": "خطأ في الاستعلام",
+        "body": "حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى."
+      }
+    },
+    "warning": {
+    }
   }
 }

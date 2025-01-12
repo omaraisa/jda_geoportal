@@ -93,7 +93,50 @@ const useStateStore = create((set, get) => ({
       secondaryView: state.view,
     }));
   },
-  updateLayers: (layers) => set({ layers }),
+  
+  addLayer: (layer) => {
+    const { view, layers } = get();
+    if (!view) {
+      console.error("View is not initialized.");
+      return;
+    }
+
+    // Add the layer to the map
+    view.map.add(layer);
+
+    // Update the layers array in the state
+    set({ layers: [...layers, layer] });
+  },
+
+  // Remove a layer from the map and state
+  removeLayer: (layerId) => {
+    const { view, layers } = get();
+    if (!view) {
+      console.error("View is not initialized.");
+      return;
+    }
+
+    // Find the layer by ID
+    const layerToRemove = view.map.findLayerById(layerId);
+    if (!layerToRemove) {
+      console.error(`Layer with ID ${layerId} not found.`);
+      return;
+    }
+
+    // Remove the layer from the map
+    view.map.remove(layerToRemove);
+
+    // Update the layers array in the state
+    const updatedLayers = layers.filter((layer) => layer.id !== layerId);
+    set({ layers: updatedLayers });
+  },
+
+  // Update layers in the state (e.g., after reordering)
+  updateLayers: (newLayers) => {
+    set({ layers: newLayers });
+  },
+
+  
   updateLayerSources: (layerSources) =>
     set((state) => ({
       mapDefinition: { ...state.mapDefinition, layerSources },

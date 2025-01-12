@@ -1,5 +1,4 @@
-
-  {
+{
     "header": {
       "logoAlt": "JDA Logo",
       "title": "JDA Geoportal",
@@ -8,6 +7,7 @@
         "basemaps": "Basemaps",
         "drawingEditing": "Drawing and Editing",
         "bookmarks": "Bookmarks",
+        "attributeQuery": "Attribute Query",
         "printMap": "Print Map",
         "saveMap": "Save Map",
         "openMap": "Open Map",
@@ -23,8 +23,67 @@
     "submenu" : {
       "titles": {
           "BasemapGalleryComponent": "Basemap Gallery",
-          "BookmarkWidgetComponent": "Bookmarks"
+          "BookmarkWidgetComponent": "Bookmarks",
+          "AttributeQueryComponent": "Attribute Query"
+        }
+    },
+    "widgets" : {
+      "query": {
+        "selectLayer": "Select Layer",
+        "select": "Select",
+        "selectField": "Select Field",
+        "selectQueryCondition": "Select Query Condition",
+        "greaterThan": "Greater Than",
+        "lessThan": "Less Than",
+        "equals": "Equals",
+        "selectInputType": "Select Input Type",
+        "manualInput": "Manual Input",
+        "fromData": "From Data",
+        "enterValue": "Enter Value",
+        "selectValue": "Select Value",
+        "search": "Search",
+        "createNewLayer": "Create New Layer",
+        "clearSearch": "Clear Search"
+      },
+      "bookmarks": {
+        "addBookmark": "Add Bookmark",
+        "noBookmarks": "No bookmarks available",
+        "bookmarkName": "Bookmark Name",
+        "enterName": "Enter a name",
+        "saveBookmark": "Save Bookmark",
+        "cancel": "Cancel"
+      }
+    },
+    "systemMessages": {
+        "info": {
+            "queryCompleted": {
+                "title": "Query",
+                "body": "Query completed for layer "
+            }
+        },
+        "error": {
+            "queryError": {
+                "title": "Query Error",
+                "body": "An error occurred while searching. Please try again."
+            },
+            "failedToCollectData": {
+                "title": "Query Error",
+                "body": "Failed to collect data for the selected layer."
+            },
+            "completeSearchRequirements": {
+                "title": "Query Error",
+                "body": "Please complete the search requirements."
+            },
+            "noResultsFound": {
+                "title": "Query Error",
+                "body": "No results found for this query."
+            },
+            "searchError": {
+                "title": "Query Error",
+                "body": "An error occurred while searching. Please try again."
+            }
+        },
+        "warning": {
         }
     }
-  }
-  
+}

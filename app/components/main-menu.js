@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import dynamic from "next/dynamic";
 const LayerListWidgetComponent = dynamic(() => import("../widgets/layer-list"), { ssr: false });
 const LegendWidgetComponent = dynamic(() => import("../widgets/legend"), { ssr: false });
+const AttributeQueryComponent = dynamic(() => import("../widgets/attribute-query"), { ssr: false });
 // import AnalysisManager from "./widgets/analysis-manager";
 // import Query from "./widgets/query";
 // import Tools from "./widgets/tools";
@@ -35,7 +36,7 @@ export default function MainMenu(props) {
             <i className="esri-icon-layer-list ml-2" />
           </button>
           {activeIndex === 0 && (
-            <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out">
+            <div className="p-4   mt-2  transition-all duration-300 ease-in-out">
               <Suspense fallback={<Loading />}>
                 <LayerListWidgetComponent sendBackWidget={props.sendBackWidget} />
               </Suspense>
@@ -54,7 +55,7 @@ export default function MainMenu(props) {
         <i className="esri-icon-legend ml-2" />
       </button>
       {activeIndex === 1 && (
-        <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out">
+        <div className="p-4   mt-2  transition-all duration-300 ease-in-out">
           <Suspense fallback={<Loading />}>
             <LegendWidgetComponent/>
           </Suspense>
@@ -73,7 +74,7 @@ export default function MainMenu(props) {
         <i className="esri-icon-add-attachment ml-2" />
       </button>
       {activeIndex === 2 && (
-        <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out space-y-2">
+        <div className="p-4   mt-2  transition-all duration-300 ease-in-out space-y-2">
           <button
             onClick={() => props.goToSubMenu("AddScratchLayer")}
             className="w-full py-2 px-4 bg-gray-300 text-gray-700  hover:bg-gray-400 flex justify-between"
@@ -125,8 +126,10 @@ export default function MainMenu(props) {
         <i className="esri-icon-search ml-2" />
       </button>
       {activeIndex === 3 && (
-        <div className="p-4 bg-gray-200  mt-2  transition-all duration-300 ease-in-out">
-          {/* <Query /> */}
+        <div className="p-4   mt-2  transition-all duration-300 ease-in-out">
+         <Suspense fallback={<Loading />}>
+                <AttributeQueryComponent sendBackWidget={props.sendBackWidget} />
+              </Suspense>
         </div>
       )}
     </div>

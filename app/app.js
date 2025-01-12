@@ -51,12 +51,7 @@ export default function App() {
             }}
           >
             <MainMenu />
-            <MinimizeMenu
-              vertical={true}
-              Onducked={() => toggleMenus("primary")}
-              arrow={layoutState.primaryPaneArrow}
-              className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
-            />
+            
           </div>
 
           {/* Middle Pane with Nested Vertical Split */}

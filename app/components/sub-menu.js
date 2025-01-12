@@ -10,6 +10,7 @@ const PrintWidgetComponent = dynamic(() => import("../widgets/print"), { ssr: fa
 const LayerListWidgetComponent = dynamic(() => import("../widgets/layer-list"), { ssr: false });
 const LegendWidgetComponent = dynamic(() => import("../widgets/legend"), { ssr: false });
 const BookmarkWidgetComponent = dynamic(() => import("../widgets/bookmarks"), { ssr: false });
+const AttributeQueryComponent = dynamic(() => import("../widgets/attribute-query"), { ssr: false });
 
 
 const components = {
@@ -20,7 +21,8 @@ const components = {
   PrintWidgetComponent,
     LayerListWidgetComponent,
     LegendWidgetComponent,
-    BookmarkWidgetComponent
+    BookmarkWidgetComponent,
+    AttributeQueryComponent
 };
 
 export default function SubMenu(props) {

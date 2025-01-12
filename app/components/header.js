@@ -58,6 +58,11 @@ export default function Header() {
           iconClass="esri-icon-printer"
           targetComponent="PrintWidgetComponent"
         />
+        <NavButton
+          toolTip={t("header.nav.attributeQuery")}
+          iconClass="esri-icon-search"
+          targetComponent="AttributeQueryComponent"
+        />
         <LanguageSwitcher />
       </div>
     </div>
