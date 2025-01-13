@@ -56,12 +56,20 @@
     },
     "systemMessages": {
         "info": {
+            "genericSuccess": {
+                "title": "Notification",
+                "body": "Task completed successfully 👌."
+            },
             "queryCompleted": {
                 "title": "Query",
                 "body": "Query completed for layer "
             }
         },
         "error": {
+            "genericError": {
+                "title": "Error",
+                "body": "An unexpected error has occurred 😣. Please try again later."
+            },
             "queryError": {
                 "title": "Query Error",
                 "body": "An error occurred while searching. Please try again."
@@ -84,6 +92,10 @@
             }
         },
         "warning": {
+          "genericWarning": {
+                "title": "Warning",
+                "body": "Something is not right 😥. Please try again."
+            }
         }
     }
 }

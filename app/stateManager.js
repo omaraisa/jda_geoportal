@@ -19,16 +19,6 @@ const useStateStore = create((set, get) => ({
   zoom: 12, // Default zoom level for 2D
   scale: 500000, // Default scale for 3D
   viewsSyncOn: false,
-  syncedLocation: {
-    "2D": {
-    "center": [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
-    "zoom": 12, // Default zoom level for 2D
-  },
-    "3D": {
-    "center": [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
-    "zoom": 12, // Default zoom level for 2D
-  },},
-
   mapDefinition: {
     layerSources: [],
   },

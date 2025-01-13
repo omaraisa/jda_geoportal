@@ -34,7 +34,6 @@ export default function App() {
             layoutState.secondaryPaneSize,
           ]}
           minSize={[layoutState.primaryPaneMinSize, layoutState.middlePaneMinSize, layoutState.secondaryPaneMinSize]}
-          maxSize={[layoutState.primaryPaneMaxSize, Infinity, layoutState.secondaryPaneMaxSize]}
           gutterSize={4}
           direction="horizontal"
           className="flex h-full"
@@ -66,7 +65,6 @@ export default function App() {
             <Split
               sizes={[layoutState.mapContainerSize, layoutState.bottomPaneSize]}
               minSize={[layoutState.mapContainerMinSize, layoutState.bottomPaneMinSize]}
-              maxSize={[Infinity, layoutState.bottomPaneMaxSize]}
               gutterSize={4}
               direction="vertical"
               className="h-full"

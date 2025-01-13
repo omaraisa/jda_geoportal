@@ -5,6 +5,8 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import esriConfig from "@arcgis/core/config";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import IdentityManager from "@arcgis/core/identity/IdentityManager";
+import ServerInfo from "@arcgis/core/identity/ServerInfo";
 import useStateStore from "../stateManager";
 
 const MainMap = () => {
@@ -22,10 +24,32 @@ const MainMap = () => {
   const swapViews = useStateStore((state) => state.swapViews);
   const addLayer = useStateStore((state) => state.addLayer);
 
-  useEffect(() => {
-    // Set the ArcGIS API Key
-    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
+  
 
+  useEffect(() => {
+    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
+    const username = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_USERNAME;
+    const password = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_PASSWORD;
+    let serverInfo = new ServerInfo();
+    serverInfo.server = process.env.NEXT_PUBLIC_PORTAL_URL;
+    serverInfo.tokenServiceUrl = process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL;
+    serverInfo.hasServer = true;
+    IdentityManager.registerServers([serverInfo]);
+
+
+    IdentityManager.generateToken(serverInfo, {
+      username: username,
+      password: password,
+      client: "referer",
+        referer: window.location.origin
+    })
+    .then(function(response) {
+      IdentityManager.registerToken({
+        server: serverInfo.server,
+        token: response.token,
+        expires: response.expires
+      });
+    
     try {
       // Initialize the Map and MapView
       const map = new Map({ basemap: "arcgis-topographic" });
@@ -45,10 +69,18 @@ const MainMap = () => {
 
           // Add FeatureLayers to the map
           try {
-            const pacelLayer =  new FeatureLayer({
-                url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
-              })
-              addLayer(pacelLayer)
+            const pacelLayer = new FeatureLayer({
+              url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
+              visible: false,
+            });
+            addLayer(pacelLayer);
+
+            const JeddahHistorical = new FeatureLayer({
+              url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
+              visible: false
+            });
+            addLayer(JeddahHistorical);
+
           } catch (error) {
             addMessage({
               title: "Map Error",
@@ -74,6 +106,7 @@ const MainMap = () => {
         duration: 10,
       });
     }
+  });
 
     // Cleanup on component unmount
     return () => {

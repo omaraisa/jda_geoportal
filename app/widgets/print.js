@@ -13,7 +13,7 @@ export default function PrintWidgetComponent() {
     const printWidget = new Print({
       view: view,
       container: printRef.current,
-      printServiceUrl: "https://utility.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task", // Update to your print service URL if different
+      printServiceUrl: "https://gis.jda.gov.sa/agserver/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task", // Update to your print service URL if different
     });
 
     return () => {

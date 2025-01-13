@@ -1,21 +1,19 @@
 export const defaultLayout = {
   // Primary Pane
   primaryPaneSize: 20, // Percentage width of the primary pane
-  primaryPaneMinSize: 0.1, // Minimum percentage width
-  primaryPaneMaxSize: 30, // Maximum percentage width
+  primaryPaneMinSize: 0, // Minimum percentage width
   primaryPaneArrow: "◀",
   primaryPaneMinimized: false,
 
   // Secondary Pane
   secondaryPaneSize: 0, // Percentage width of the secondary pane
   secondaryPaneMinSize: 0, // Minimum percentage width
-  secondaryPaneMaxSize: 30, // Maximum percentage width
   secondaryPaneArrow: "◀",
   secondaryPaneMinimized: true,
 
   // Middle Pane (Map View)
   middlePaneSize: 80, // Percentage width of the middle pane
-  middlePaneMinSize: 40, // Minimum percentage width
+  middlePaneMinSize: 60, // Minimum percentage width
 
   // Map Container
   mapContainerSize: 100, // Percentage width of the map container
@@ -23,8 +21,7 @@ export const defaultLayout = {
 
   // Bottom Pane
   bottomPaneSize: 0, // Percentage height of the bottom pane
-  bottomPaneMinSize: 0.1, // Minimum percentage height
-  bottomPaneMaxSize: 80, // Maximum percentage height
+  bottomPaneMinSize: 0, // Minimum percentage height
   bottomPaneArrow: "▲",
   bottomPaneMinimized: true,
 
@@ -107,24 +104,6 @@ const toggleMenus = (layout, side) => {
   return toggleSides[side]();
 };
 
-const changeLayout = (layout, { event, targetPaneFlex }) => {
-  const newPaneFlex = event.component.props.flex;
-  const deltaFlex = newPaneFlex - layout[targetPaneFlex];
-  const newMiddlePaneFlex = layout.middlePaneFlex - deltaFlex;
-
-  return {
-    ...layout,
-    [targetPaneFlex]: newPaneFlex,
-    middlePaneFlex: newMiddlePaneFlex,
-  };
-};
-
-const resizeMenu = (layout, dragStatus) => {
-  return {
-    ...layout,
-    animationOn: dragStatus === "end",
-  };
-};
 
 const goToSubMenu = (layout, targetComponent) => {
   const expandPaneProps = {
