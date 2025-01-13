@@ -6,12 +6,13 @@ const useStateStore = create((set, get) => ({
   language: "en",
   layout: defaultLayout,
   activeSubMenu: "DefaultComponent",
+  appReady: false,
   previousSubMenu: null,
   activeBottomPane: "DefaultComponent",
   viewMode: "2D",
   map: null,
   view: null,
-  secondaryView:null,
+  secondaryView: null,
   layers: [],
   widgets: {},
   targetLayerId: null,
@@ -28,7 +29,9 @@ const useStateStore = create((set, get) => ({
   messages: {},
   bookmarks: [],
 
-
+  setAppReady: (isReady) => {
+    set({ appReady: isReady });
+  },
   // Actions
   setLanguage: (lang) => {
     set({ language: lang });
@@ -83,7 +86,7 @@ const useStateStore = create((set, get) => ({
       secondaryView: state.view,
     }));
   },
-  
+
   addLayer: (layer) => {
     const { view, layers } = get();
     if (!view) {
@@ -126,7 +129,6 @@ const useStateStore = create((set, get) => ({
     set({ layers: newLayers });
   },
 
-  
   updateLayerSources: (layerSources) =>
     set((state) => ({
       mapDefinition: { ...state.mapDefinition, layerSources },
@@ -222,12 +224,10 @@ const useStateStore = create((set, get) => ({
   },
 
   loadBookmarks: () => {
-    const savedBookmarks = JSON.parse(localStorage.getItem("localBookmarks")) || [];
+    const savedBookmarks =
+      JSON.parse(localStorage.getItem("localBookmarks")) || [];
     set({ bookmarks: savedBookmarks });
   },
-
-
-  
 }));
 
 export default useStateStore;

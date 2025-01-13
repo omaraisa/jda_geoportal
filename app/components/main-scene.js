@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import esriConfig from "@arcgis/core/config";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import useStateStore from "../stateManager";
+import Loading from "./sub_components/loading";
 
 const MainScene = () => {
   const sceneRef = useRef(null); // Reference to the SceneView container
   const viewRef = useRef(null); // Reference to the SceneView instance
+  const [loading, setLoading] = useState(true); // Loading state
 
   // Extract state and actions from Zustand store
   const addMessage = useStateStore((state) => state.addMessage);
@@ -48,9 +50,10 @@ const MainScene = () => {
       // When the SceneView is ready, perform additional setup
       sceneView
         .when(() => {
-            if (!viewsSyncOn) {
+          if (!viewsSyncOn) {
             updateView(sceneView);
-            }
+          }
+          setLoading(false); // Set loading to false when the scene view is ready
 
           try {
             // Add FeatureLayers to the scene
@@ -97,38 +100,14 @@ const MainScene = () => {
     };
   }, [addMessage, center, zoom, scale, updateView]);
 
-  
-    // useEffect(() => {
-    //   if (viewsSyncOn && viewRef.current) {
-    //     // Sync the MapView's center and scale with the secondaryView
-    //     const handleCenterChange = viewRef.current.watch("center", () => {
-    //       if (secondaryView) {
-    //         updateSecondaryView({
-    //           ...secondaryView,
-    //           center: {
-    //             ...secondaryView.center,
-    //             longitude: viewRef.current.center.longitude,
-    //             latitude: viewRef.current.center.latitude,
-    //           },
-    //           scale: viewRef.current.scale,
-    //         });
-    //       }
-    //     });
-  
-    //     return () => {
-    //       handleCenterChange.remove(); // Cleanup watcher
-    //     };
-    //   }
-    // }, [viewsSyncOn, secondaryView, updateSecondaryView]);
   useEffect(() => {
     if (viewsSyncOn && viewRef.current && secondaryView) {
       // Sync the MapView's center and scale with the secondaryView
-      let handleCenterChange
-      if(secondaryView.type === "2d")
-        {
+      let handleCenterChange;
+      if (secondaryView.type === "2d") {
         handleCenterChange = viewRef.current.watch("center", () => {
-            secondaryView.center = viewRef.current.center;
-            secondaryView.scale = viewRef.current.scale;
+          secondaryView.center = viewRef.current.center;
+          secondaryView.scale = viewRef.current.scale;
         });
       }
 
@@ -138,9 +117,8 @@ const MainScene = () => {
         }
       };
     }
-  }, [viewsSyncOn,secondaryView]);
-  
-    
+  }, [viewsSyncOn, secondaryView]);
+
   useEffect(() => {
     // Sync the SceneView with secondaryView on initial load
     if (viewsSyncOn && viewRef.current && !secondaryView) {
@@ -148,26 +126,25 @@ const MainScene = () => {
     }
   }, [viewsSyncOn]);
 
-  
   useEffect(() => {
     if (viewRef.current) {
       // Ensure no duplicate listeners are attached
       const existingHandlers = viewRef.current.eventHandlers || {};
-  
+
       if (!existingHandlers["pointer-down"]) {
         const handlePointerDown = () => {
           if (viewRef.current !== stateView) {
             swapViews(); // Swap views only if the current view does not match the state view
           }
         };
-  
+
         // Add the event handler
         const pointerDownHandler = viewRef.current.on("pointer-down", handlePointerDown);
-  
+
         // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
         viewRef.current.eventHandlers = existingHandlers;
-  
+
         // Cleanup listener
         return () => {
           if (pointerDownHandler) {
@@ -178,9 +155,13 @@ const MainScene = () => {
       }
     }
   }, [viewsSyncOn, stateView, swapViews]);
-  
 
-  return <div ref={sceneRef} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <div style={{ width: "100%", height: "100%" }}>
+      {loading && <Loading />}
+      <div ref={sceneRef} style={{ width: "100%", height: "100%" }} />
+    </div>
+  );
 };
 
 export default MainScene;

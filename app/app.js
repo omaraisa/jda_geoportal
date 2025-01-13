@@ -11,6 +11,7 @@ import MinimizeMenu from "./components/sub_components/minimize-menu";
 import BottomPane from "./components/bottom-pane";
 import Split from "react-split";
 import "./i18n";
+import AppLoader from "./components/app-loader";
 
 export default function App() {
   // Extract necessary state and actions from the store
@@ -18,10 +19,26 @@ export default function App() {
   const toggleMenus = useStateStore((state) => state.toggleMenus);
   const startDragging = useStateStore((state) => state.startDragging);
   const endDragging = useStateStore((state) => state.endDragging);
+  const appReady = useStateStore((state) => state.appReady);
+  const setAppReady = useStateStore((state) => state.setAppReady);
 
+  // Simulate app loading | Must be removed in production
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setAppReady(true);
+    }, 7000);
+
+    return () => clearTimeout(timer);
+  }, []);
+  
   return (
     <div className="w-screen h-screen flex flex-col overflow-hidden">
-      {/* Header */}
+      {!appReady && (
+        <>
+          {/* App Loader */}
+          <AppLoader />
+        </>
+      )}
       <Header />
 
       {/* Main Content */}

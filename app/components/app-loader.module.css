@@ -1,0 +1,49 @@
+.loaderWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  .loader {
+    --c: no-repeat linear-gradient(var(--yellow) 0 0);
+    background: 
+      var(--c), var(--c), var(--c),
+      var(--c), var(--c), var(--c),
+      var(--c), var(--c), var(--c);
+    background-size: 16px 16px;
+    width: 65px; /* Fixed size */
+    height: 65px; /* Fixed size */
+    animation: l32-2 1s infinite;
+  }
+  
+  .loaderText {
+    margin-top: 20px;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  @keyframes l32-2 {
+    0%, 40%  { background-position: 0 0, 0 50%, 0 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0, 50% 0, 50% 50%; }
+    60%, 100% { background-position: 0 50%, 0 100%, 50% 100%, 100% 100%, 100% 50%, 100% 0, 50% 0, 0 0, 50% 50%; }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  

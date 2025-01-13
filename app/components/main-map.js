@@ -23,8 +23,7 @@ const MainMap = () => {
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
   const swapViews = useStateStore((state) => state.swapViews);
   const addLayer = useStateStore((state) => state.addLayer);
-
-  
+  const setAppReady = useStateStore((state) => state.setAppReady);
 
   useEffect(() => {
     esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
@@ -36,12 +35,11 @@ const MainMap = () => {
     serverInfo.hasServer = true;
     IdentityManager.registerServers([serverInfo]);
 
-
     IdentityManager.generateToken(serverInfo, {
       username: username,
       password: password,
       client: "referer",
-        referer: window.location.origin
+      referer: window.location.origin
     })
     .then(function(response) {
       IdentityManager.registerToken({
@@ -49,64 +47,92 @@ const MainMap = () => {
         token: response.token,
         expires: response.expires
       });
-    
-    try {
-      // Initialize the Map and MapView
-      const map = new Map({ basemap: "arcgis-topographic" });
 
-      const mapView = new MapView({
-        container: mapRef.current,
-        map: map,
-        center,
-        zoom,
-      });
+      try {
+        // Initialize the Map and MapView
+        const map = new Map({ basemap: "satellite" });
 
-      viewRef.current = mapView;
+        const mapView = new MapView({
+          container: mapRef.current,
+          map: map,
+          center,
+          zoom,
+        });
 
-      mapView
-        .when(() => {
-          updateView(mapView);
+        viewRef.current = mapView;
 
-          // Add FeatureLayers to the map
-          try {
-            const pacelLayer = new FeatureLayer({
-              url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
-              visible: false,
-            });
-            addLayer(pacelLayer);
+        mapView
+          .when(() => {
+            updateView(mapView);
+            // setAppReady(true); 
 
-            const JeddahHistorical = new FeatureLayer({
-              url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
-              visible: false
-            });
-            addLayer(JeddahHistorical);
+            // Add FeatureLayers to the map
+            try {
+              const pacelLayer = new FeatureLayer({
+                url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
+                visible: false,
+                renderer: {
+                  type: "simple",
+                  symbol: {
+                    type: "simple-fill",
+                    // White with 50% transparency
+                    outline: {
+                      color: [255, 255, 0, 1], // Yellow outline
+                      width: 1
+                    }
+                  }
+                },
+                labelingInfo: [{
+                  labelExpressionInfo: { expression: "$feature.parcelnumber" },
+                  symbol: {
+                    type: "text",
+                    color: "yellow",
+                    haloColor: "black",
+                    haloSize: "1px",
+                    font: {
+                      size: 12,
+                      family: "Arial",
+                      weight: "bold"
+                    }
+                  },
+                  minScale: 5000,
+                  maxScale: 100
+                }]
+              });
+              addLayer(pacelLayer);
 
-          } catch (error) {
+              const JeddahHistorical = new FeatureLayer({
+                url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
+                visible: false
+              });
+              addLayer(JeddahHistorical);
+
+            } catch (error) {
+              addMessage({
+                title: "Map Error",
+                body: `Failed to add layers to the map. ${error.message}`,
+                type: "error",
+                duration: 10,
+              });
+            }
+          })
+          .catch((error) => {
             addMessage({
-              title: "Map Error",
-              body: `Failed to add layers to the map. ${error.message}`,
+              title: "Map Initialization Error",
+              body: `Failed to initialize the map view. ${error.message}`,
               type: "error",
               duration: 10,
             });
-          }
-        })
-        .catch((error) => {
-          addMessage({
-            title: "Map Initialization Error",
-            body: `Failed to initialize the map view. ${error.message}`,
-            type: "error",
-            duration: 10,
           });
+      } catch (error) {
+        addMessage({
+          title: "Map Creation Error",
+          body: `An error occurred while creating the map. ${error.message}`,
+          type: "error",
+          duration: 10,
         });
-    } catch (error) {
-      addMessage({
-        title: "Map Creation Error",
-        body: `An error occurred while creating the map. ${error.message}`,
-        type: "error",
-        duration: 10,
-      });
-    }
-  });
+      }
+    });
 
     // Cleanup on component unmount
     return () => {
@@ -115,13 +141,13 @@ const MainMap = () => {
         // updateView(null);
       }
     };
-  }, [addMessage, center, zoom, updateView]);
-  
-    useEffect(() => {
-      if (viewsSyncOn && !secondaryView && viewRef.current) {
-        updateView(viewRef.current);
-      }
-    }, [viewsSyncOn]);
+  }, [addMessage, center, zoom, updateView, setAppReady]);
+
+  useEffect(() => {
+    if (viewsSyncOn && !secondaryView && viewRef.current) {
+      updateView(viewRef.current);
+    }
+  }, [viewsSyncOn]);
 
   useEffect(() => {
     if (viewsSyncOn && viewRef.current && secondaryView) {
@@ -147,21 +173,21 @@ const MainMap = () => {
     if (viewRef.current) {
       // Ensure no duplicate listeners are attached
       const existingHandlers = viewRef.current.eventHandlers || {};
-  
+
       if (!existingHandlers["pointer-down"]) {
         const handlePointerDown = () => {
           if (viewRef.current !== stateView) {
             swapViews(); // Swap views only if the current view does not match the state view
           }
         };
-  
+
         // Add the event handler
         const pointerDownHandler = viewRef.current.on("pointer-down", handlePointerDown);
-  
+
         // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
         viewRef.current.eventHandlers = existingHandlers;
-  
+
         // Cleanup listener
         return () => {
           if (pointerDownHandler) {
@@ -172,8 +198,6 @@ const MainMap = () => {
       }
     }
   }, [viewsSyncOn, stateView, swapViews]);
-
-  
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 };
