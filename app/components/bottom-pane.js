@@ -12,11 +12,12 @@ const components = {
 const BottomPane = () => {
       const currentComponentName = useStateStore((state) => state.activeBottomPane);
       const CurrentComponent = components[currentComponentName];
+      console.log(currentComponentName)
 
     return (
-        <div className="flex justify-center items-center h-full">
-            <CurrentComponent />
-        </div>
+      <div className="flex justify-center items-center h-full">
+        {!useStateStore((state) => state.layout.bottomPaneMinimized) && <CurrentComponent />}
+      </div>
     );
 };
 

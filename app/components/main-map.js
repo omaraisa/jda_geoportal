@@ -103,7 +103,7 @@ const MainMap = () => {
 
               const JeddahHistorical = new FeatureLayer({
                 url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
-                visible: false
+                // visible: false
               });
               addLayer(JeddahHistorical);
 
