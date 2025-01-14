@@ -1,9 +1,12 @@
 import React from "react";
 
-export default function Bookmark({ id, name, extent, view, deleteBookmark }) {
+export default function Bookmark({ id, name, center, zoom, view, deleteBookmark }) {
   const zoomToBookmark = () => {
     if (view) {
-      view.goTo(extent); // Zoom to the stored extent
+      view.goTo({
+        center: [center.x, center.y], // Pass center as [x, y]
+        zoom, // Pass zoom level
+      });
     }
   };
 

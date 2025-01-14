@@ -203,9 +203,16 @@ const useStateStore = create((set, get) => ({
     });
   },
 
-  addBookmark: (name, extent) => {
+  addBookmark: (name, view) => {
     const id = Date.now() + Math.floor(Math.random() * 999);
-    const newBookmark = { id, name, extent };
+    const center = view.center; // Get the center of the view
+    const zoom = view.zoom; // Get the current zoom level
+    const newBookmark = {
+      id,
+      name,
+      center: { x: center.longitude, y: center.latitude }, // Save center as x, y
+      zoom, // Save zoom level
+    };
     set((state) => {
       const updatedBookmarks = [...state.bookmarks, newBookmark];
       localStorage.setItem("localBookmarks", JSON.stringify(updatedBookmarks));
@@ -224,10 +231,9 @@ const useStateStore = create((set, get) => ({
   },
 
   loadBookmarks: () => {
-    const savedBookmarks =
-      JSON.parse(localStorage.getItem("localBookmarks")) || [];
-    set({ bookmarks: savedBookmarks });
-  },
+  const savedBookmarks = JSON.parse(localStorage.getItem("localBookmarks")) || [];
+  set({ bookmarks: savedBookmarks });
+},
 }));
 
 export default useStateStore;

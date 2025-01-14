@@ -26,7 +26,8 @@ export default function App() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setAppReady(true);
-    }, 7000);
+    }, 500);
+    // }, 7000);
 
     return () => clearTimeout(timer);
   }, []);

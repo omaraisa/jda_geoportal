@@ -9,17 +9,15 @@ export default function BookmarkWidgetComponent() {
   const bookmarkName = useRef();
   const { bookmarks, addBookmark, deleteBookmark, loadBookmarks } =
     useStateStore();
-
   const [formVisible, setFormVisibility] = useState(false);
 
   useEffect(() => {
     loadBookmarks(); // Load bookmarks on mount
-  }, []);
+  }, [loadBookmarks]); // Add loadBookmarks to the dependency array
 
   const handleAddBookmark = () => {
     const name = bookmarkName.current.value;
-    const extent = view.extent;
-    addBookmark(name, extent);
+    addBookmark(name, view); // Pass the view object
     setFormVisibility(false);
   };
 

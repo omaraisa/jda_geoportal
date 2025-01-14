@@ -17,7 +17,7 @@ const messages = [
     const interval = setInterval(() => {
       index = (index + 1) % messages.length; // Cycle through messages
       setCurrentMessage(messages[index]);
-    }, 2000); // Change message every 2 seconds
+    }, 1500); 
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
