@@ -18,7 +18,7 @@ export default function AttributeQueryComponent() {
   ] = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
 
   // Zustand state management
-  const view = useStateStore((state) => state.view);
+  const view = useStateStore((state) => state.targetView);
   const layers = useStateStore((state) => state.layers);
   const addMessage = useStateStore((state) => state.addMessage);
 

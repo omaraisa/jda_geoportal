@@ -1,5 +1,7 @@
 import { create } from "zustand";
+import { initialMapLayers ,initialSceneLayers } from "./components/initial-layers";
 import { defaultLayout, LayoutManager } from "./components/layout-management";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 const useStateStore = create((set, get) => ({
   // Initial State
@@ -10,10 +12,12 @@ const useStateStore = create((set, get) => ({
   previousSubMenu: null,
   activeBottomPane: "DefaultComponent",
   viewMode: "2D",
-  map: null,
-  view: null,
+  targetView: null, 
+  mapView: null,    
+  sceneView: null,
   secondaryView: null,
-  layers: [],
+  maplayers: initialMapLayers,
+  scenelayers: initialSceneLayers,
   widgets: {},
   targetLayerId: null,
   center: [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
@@ -77,29 +81,71 @@ const useStateStore = create((set, get) => ({
       },
     })),
 
-  updateMap: (map) => set({ map }),
-  updateView: (view) => set({ view }),
+  updateTargetView: (targetView) => set({ targetView }),
+  updateMapView: (mapView) => set({ mapView }),       
+  updateSceneView: (sceneView) => set({ sceneView }),
   updateSecondaryView: (secondaryView) => set({ secondaryView }),
-  swapViews: () => {
-    set((state) => ({
-      view: state.secondaryView,
-      secondaryView: state.view,
-    }));
+ 
+
+    // Function to create a layer from the configuration
+    createLayer: ({ sourceType, url, title, visible, opacity, minScale, maxScale, portalItemId, renderer }) => {
+      let layer;
+      if (sourceType === "url") {
+      layer = new FeatureLayer({
+        url,
+        title,
+        visible,
+        opacity,
+        minScale,
+        maxScale,
+      });
+      } else if (sourceType === "portal") {
+      layer = new FeatureLayer({
+        portalItem: {
+        id: portalItemId,
+        },
+        title,
+        visible,
+        opacity,
+        minScale,
+        maxScale,
+      });
+      }
+      if (layer && renderer) {
+      layer.renderer = renderer;
+      }
+      return layer;
+    },
+
+  // Add layers to the map or scene
+  addInitialLayers: (layers, targetView) => {
+    if (!targetView) return;
+  
+    const viewType = targetView.type; // '2d' | '3d'
+  
+    layers.forEach((layerConfig) => {
+      const layer = get().createLayer(layerConfig);
+      if (layer) {
+        targetView.map.add(layer);
+      }
+    });
   },
 
-  addLayer: (layer) => {
-    const { view, layers } = get();
-    if (!view) {
-      console.error("View is not initialized.");
-      return;
-    }
 
-    // Add the layer to the map
-    view.map.add(layer);
 
-    // Update the layers array in the state
-    set({ layers: [...layers, layer] });
-  },
+  //   addLayer: (layer) => {
+  //   const { view, layers } = get();
+  //   if (!view) {
+  //     console.error("View is not initialized.");
+  //     return;
+  //   }
+
+  //   // Add the layer to the map
+  //   view.map.add(layer);
+
+  //   // Update the layers array in the state
+  //   set({ layers: [...layers, layer] });
+  // },
 
   // Remove a layer from the map and state
   removeLayer: (layerId) => {

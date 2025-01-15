@@ -4,7 +4,7 @@ import useStateStore from "../stateManager";
 
 export default function LayerListWidgetComponent() {
   const layerListRef = useRef(null);
-  const view = useStateStore((state) => state.view);
+  const view = useStateStore((state) => state.targetView);
   const setActiveBottomPane = useStateStore((state) => state.setActiveBottomPane);
   
   const setTargetLayerId = useStateStore((state) => state.setTargetLayerId);

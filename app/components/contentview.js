@@ -6,57 +6,65 @@ import useStateStore from "../stateManager";
 import Loading from "./sub_components/loading";
 import MessageContainer from "./messages-container";
 
+// Dynamically import components
 const MainMap = dynamic(() => import("./main-map"), { ssr: false });
 const MainScene = dynamic(() => import("./main-scene"), { ssr: false });
 
 function ContentView() {
   // Extract necessary state and actions from the store
   const viewMode = useStateStore((state) => state.viewMode);
-  const layoutState = useStateStore((state) => state.layout);
-  const startDragging = useStateStore((state) => state.startDragging);
-  const endDragging = useStateStore((state) => state.endDragging);
+
+   // State to manage split sizes
+   const [splitSizes, setSplitSizes] = React.useState([50, 50]);
+
+   // Effect to adjust split sizes based on viewMode
+   React.useEffect(() => {
+     if (viewMode === "2D") {
+       setSplitSizes([100, 0]); // Full width for MainMap, hide MainScene
+     } else if (viewMode === "3D") {
+       setSplitSizes([0, 100]); // Full width for MainScene, hide MainMap
+     } else if (viewMode === "Dual") {
+       setSplitSizes([50, 50]); // Equal split for both
+     }
+   }, [viewMode]);
+
 
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <MessageContainer />
       <React.Suspense fallback={<Loading />}>
-        {viewMode === "2D" && <MainMap />}
-        {viewMode === "3D" && <MainScene />}
-        {viewMode === "Dual" && (
-          <Split
-            sizes={[50, 50]} // Equal size split
-            minSize={[10, 10]} // Minimum size for each pane
-            gutterSize={4} // Draggable gutter size
-            direction="horizontal" // Horizontal split
-            className="flex h-full"
-            onDragStart={startDragging}
-            onDragEnd={endDragging}
+        <Split
+          sizes={splitSizes} // Dynamic sizes based on viewMode
+          minSize={[0, 0]} // Minimum size for each pane
+          gutterSize={useStateStore((state) => state.viewMode) === "Dual" ? 4 : 0} // Hide gutter when not in Dual mode
+          direction="horizontal" // Horizontal split
+          style={{ display: "flex", width: "100%", height: "100%" }}
+          
+        >
+          {/* First Pane - MainMap */}
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              display: splitSizes[0] > 0 ? "block" : "none", // Hide if width is 0
+            }}
           >
-            {/* First Pane */}
-            <div
-              className="bg-lightblue flex items-center justify-center h-full relative"
-              style={{
-                transition: layoutState.animationOn
-                  ? "0.5s ease-in-out"
-                  : "none",
-              }}
-            >
-              <MainMap />
-            </div>
+            <MainMap />
+          </div>
 
-            {/* Second Pane */}
-            <div
-              className="bg-lightcoral flex items-center justify-center h-full relative"
-              style={{
-                transition: layoutState.animationOn
-                  ? "0.5s ease-in-out"
-                  : "none",
-              }}
-            >
-              <MainScene />
-            </div>
-          </Split>
-        )}
+          {/* Second Pane - MainScene */}
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              position: "relative",
+              display: splitSizes[1] > 0 ? "block" : "none", // Hide if width is 0
+            }}
+          >
+            <MainScene />
+          </div>
+        </Split>
       </React.Suspense>
     </div>
   );

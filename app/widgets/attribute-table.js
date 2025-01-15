@@ -7,7 +7,7 @@ export default function AttributeTableWidgetComponent() {
   const tableRef = useRef(null);
 
   // Access `view` and `targetLayerId` from Zustand state
-  const view = useStateStore((state) => state.view);
+  const view = useStateStore((state) => state.targetView);
   const targetLayerId = useStateStore((state) => state.targetLayerId);
   const bottomPaneMinimized = useStateStore((state) => state.layout.bottomPaneMinimized);
 

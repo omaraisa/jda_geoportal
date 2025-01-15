@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 export default function BookmarkWidgetComponent() {
   const { t } = useTranslation();
-  const view = useStateStore((state) => state.view); // Get the current view (2D or 3D) from Zustand
+  const view = useStateStore((state) => state.targetView); // Get the current view (2D or 3D) from Zustand
   const bookmarkName = useRef();
   const { bookmarks, addBookmark, deleteBookmark, loadBookmarks } =
     useStateStore();

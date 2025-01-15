@@ -5,7 +5,7 @@ import useStateStore from "../stateManager";
 export default function BasemapGalleryComponent() {
   const basemapGalleryRef = useRef(null); // Reference for the widget container
   const basemapGalleryWidgetRef = useRef(null); // Reference for the BasemapGallery widget
-  const view = useStateStore((state) => state.view); // Get the current view (2D or 3D) from Zustand
+  const view = useStateStore((state) => state.targetView); // Get the current view (2D or 3D) from Zustand
 
   useEffect(() => {
     if (!view) return;
@@ -20,7 +20,7 @@ export default function BasemapGalleryComponent() {
       // Update the view of the existing widget when the view changes
       basemapGalleryWidgetRef.current.view = view;
     }
-  }, [view]); // Re-run effect when the view changes
+  }, [useStateStore((state) => state.targetView)]); // Re-run effect when the view changes
 
   return <div ref={basemapGalleryRef} className="h-full w-full"></div>;
 }

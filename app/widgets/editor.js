@@ -4,26 +4,31 @@ import useStateStore from "../stateManager";
 
 export default function EditorWidgetComponent() {
   const editorRef = useRef(null);
+  const editorWidget = useRef(null); // Persist the Editor widget
 
-  // Access the `view` from Zustand state
-  const view = useStateStore((state) => state.view);
+  const view = useStateStore((state) => state.targetView);
 
   useEffect(() => {
     if (!view) return;
 
-    // Initialize the Editor widget
-    const editorWidget = new Editor({
-      view: view,
-      container: editorRef.current,
-    });
+    // Initialize or update the Editor widget
+    if (editorWidget.current) {
+      editorWidget.current.view = view; // Update the view of the existing widget
+    } else {
+      editorWidget.current = new Editor({
+        view: view,
+        container: editorRef.current,
+      });
+    }
 
-    // Cleanup on unmount
+    // Cleanup on unmount or dependency change
     return () => {
-      if (editorWidget) {
-        editorWidget.destroy();
+      if (editorWidget.current) {
+        // Do not destroy, simply unbind the view if needed
+        editorWidget.current.view = null;
       }
     };
-  }, [view]);
+  }, [view]); // Re-run when the view changes
 
   return (
     <div

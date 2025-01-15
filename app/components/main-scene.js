@@ -18,17 +18,19 @@ const MainScene = () => {
   const center = useStateStore((state) => state.center);
   const zoom = useStateStore((state) => state.zoom);
   const scale = useStateStore((state) => state.scale);
-  const stateView = useStateStore((state) => state.view);
-  const secondaryView = useStateStore((state) => state.secondaryView);
-  const updateView = useStateStore((state) => state.updateView);
-  const updateSecondaryView = useStateStore((state) => state.updateSecondaryView);
+  const mapView = useStateStore((state) => state.mapView);
+  const targetView = useStateStore((state) => state.targetView);
+  const updateSceneView = useStateStore((state) => state.updateSceneView);
+  const updateTargetView = useStateStore((state) => state.updateTargetView);
+  // const updatemapView = useStateStore((state) => state.updatemapView);
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
-  const swapViews = useStateStore((state) => state.swapViews);
+  const scenelayers = useStateStore((state) => state.scenelayers);
+  const addInitialLayers = useStateStore((state) => state.addInitialLayers);
 
   useEffect(() => {
     // Set the ArcGIS API Key
     esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
-
+    if(!viewRef.current) {
     try {
       // Initialize the WebScene
       const scene = new WebScene({
@@ -37,7 +39,7 @@ const MainScene = () => {
       });
 
       // Initialize the SceneView
-      const sceneView = new SceneView({
+      viewRef.current = new SceneView({
         container: sceneRef.current,
         map: scene,
         center,
@@ -45,34 +47,32 @@ const MainScene = () => {
         scale,
       });
 
-      viewRef.current = sceneView;
 
       // When the SceneView is ready, perform additional setup
-      sceneView
+      viewRef.current
         .when(() => {
-          if (!viewsSyncOn) {
-            updateView(sceneView);
-          }
+          updateSceneView(viewRef.current);
           setLoading(false); // Set loading to false when the scene view is ready
+          addInitialLayers(scenelayers, viewRef.current);
 
-          try {
-            // Add FeatureLayers to the scene
-            // scene.addMany([
-            //   new FeatureLayer({
-            //     url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/SAU_Boundaries_2022/FeatureServer/1",
-            //   }),
-            //   new FeatureLayer({
-            //     url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
-            //   }),
-            // ]);
-          } catch (error) {
-            addMessage({
-              title: "Scene Error",
-              body: `Failed to add layers to the scene. ${error.message}`,
-              type: "error",
-              duration: 10,
-            });
-          }
+          // try {
+          //   // Add FeatureLayers to the scene
+          //   scene.addMany([
+          //     new FeatureLayer({
+          //       url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/SAU_Boundaries_2022/FeatureServer/1",
+          //     }),
+          //     new FeatureLayer({
+          //       url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
+          //     }),
+          //   ]);
+          // } catch (error) {
+          //   addMessage({
+          //     title: "Scene Error",
+          //     body: `Failed to add layers to the scene. ${error.message}`,
+          //     type: "error",
+          //     duration: 10,
+          //   });
+          // }
         })
         .catch((error) => {
           addMessage({
@@ -90,25 +90,65 @@ const MainScene = () => {
         duration: 10,
       });
     }
+  }
+  else {
+      setLoading(false);
+  }
 
     // Cleanup function to destroy the SceneView
     return () => {
       if (viewRef.current) {
-        viewRef.current.destroy();
-        // updateView(null); // Reset the view in the Zustand store
+        // viewRef.current.destroy();
+        // updateSceneView(null); // Reset the view in the Zustand store
       }
     };
-  }, [addMessage, center, zoom, scale, updateView]);
+  }, [addMessage, center, zoom, scale, updateSceneView]);
+
+  // useEffect(() => {
+  //   if (viewsSyncOn && viewRef.current && mapView) {
+  //     // Sync the MapView's center and scale with the mapView
+  //     let handleCenterChange;
+  //     if (mapView.type === "2d") {
+  //       handleCenterChange = viewRef.current.watch("center", () => {
+  //         mapView.center = viewRef.current.center;
+  //         mapView.scale = viewRef.current.scale;
+  //       });
+  //     }
+
+  //     return () => {
+  //       if (handleCenterChange) {
+  //         handleCenterChange.remove(); // Cleanup watcher
+  //       }
+  //     };
+  //   }
+  // }, [viewsSyncOn, mapView]);
+//  useEffect(() => {
+//     if (viewsSyncOn && viewRef.current && mapView) {
+//       // console.log("here", targetView)
+//       let handleCenterChange
+//         handleCenterChange = viewRef.current.watch("center", () => {
+//           mapView.center = viewRef.current.center;
+//           mapView.scale = viewRef.current.scale;
+//       });
+
+//       return () => {
+//         if (handleCenterChange) {
+//           handleCenterChange.remove(); // Cleanup watcher
+//         }
+//       };
+//     }
+//   }, [viewsSyncOn,mapView]);
 
   useEffect(() => {
-    if (viewsSyncOn && viewRef.current && secondaryView) {
-      // Sync the MapView's center and scale with the secondaryView
+    if (viewsSyncOn && viewRef.current && mapView) {
       let handleCenterChange;
-      if (secondaryView.type === "2d") {
+      if (targetView.type === "3d") {
         handleCenterChange = viewRef.current.watch("center", () => {
-          secondaryView.center = viewRef.current.center;
-          secondaryView.scale = viewRef.current.scale;
+          mapView.center = viewRef.current.center;
+          mapView.scale = viewRef.current.scale;
         });
+      } else if (handleCenterChange) {
+        handleCenterChange.remove(); // Cleanup watcher if it exists
       }
 
       return () => {
@@ -117,45 +157,41 @@ const MainScene = () => {
         }
       };
     }
-  }, [viewsSyncOn, secondaryView]);
-
-  useEffect(() => {
-    // Sync the SceneView with secondaryView on initial load
-    if (viewsSyncOn && viewRef.current && !secondaryView) {
-      updateSecondaryView(viewRef.current);
-    }
-  }, [viewsSyncOn]);
+  }, [viewsSyncOn,mapView,targetView]);
 
   useEffect(() => {
     if (viewRef.current) {
-      // Ensure no duplicate listeners are attached
-      const existingHandlers = viewRef.current.eventHandlers || {};
-
+      // Initialize eventHandlers if it doesn't exist
+      if (!viewRef.current.eventHandlers) {
+        viewRef.current.eventHandlers = {};
+      }
+  
+      const existingHandlers = viewRef.current.eventHandlers;
+  
       if (!existingHandlers["pointer-down"]) {
         const handlePointerDown = () => {
-          if (viewRef.current !== stateView) {
-            swapViews(); // Swap views only if the current view does not match the state view
+          if (viewRef.current !== targetView) {
+            updateTargetView(viewRef.current);
           }
         };
-
+  
         // Add the event handler
         const pointerDownHandler = viewRef.current.on("pointer-down", handlePointerDown);
-
+  
         // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
-        viewRef.current.eventHandlers = existingHandlers;
-
+  
         // Cleanup listener
         return () => {
           if (pointerDownHandler) {
             pointerDownHandler.remove(); // Properly remove the listener
-            delete viewRef.current.eventHandlers["pointer-down"];
+            delete existingHandlers["pointer-down"]; // Remove the handler reference
           }
         };
       }
     }
-  }, [viewsSyncOn, stateView, swapViews]);
-
+  }, [viewsSyncOn, viewRef.current, targetView]);
+  
   return (
     <div style={{ width: "100%", height: "100%" }}>
       {loading && <Loading />}

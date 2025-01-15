@@ -3,7 +3,7 @@ import useStateStore from "../../stateManager";
 const ViewSwitcher = () => {
   const viewMode = useStateStore((state) => state.viewMode);
   const switchViewMode = useStateStore((state) => state.switchViewMode);
-  const view = useStateStore((state) => state.view);
+  const view = useStateStore((state) => state.targetView);
   const updateViewLocation = useStateStore((state) => state.updateViewLocation);
   const setSyncing = useStateStore((state) => state.setSyncing);
 
