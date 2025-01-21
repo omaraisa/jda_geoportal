@@ -9,7 +9,7 @@ export default function AttributeTableWidgetComponent() {
   // Access `view` and `targetLayerId` from Zustand state
   const view = useStateStore((state) => state.targetView);
   const targetLayerId = useStateStore((state) => state.targetLayerId);
-  const bottomPaneMinimized = useStateStore((state) => state.layout.bottomPaneMinimized);
+  const bottomPaneOpen = useStateStore((state) => state.layout.bottomPaneOpen);
 
   useEffect(() => {
     if (!view || !tableRef.current) return;
@@ -65,7 +65,7 @@ export default function AttributeTableWidgetComponent() {
         resetFeatureTable(); // Reset the widget during unmount or dependency change
       }
     };
-  }, [view, targetLayerId, bottomPaneMinimized]); // Re-run when view, targetLayerId, or bottomPaneMinimized changes
+  }, [view, targetLayerId, bottomPaneOpen]); // Re-run when view, targetLayerId, or bottomPaneOpen changes
 
   return (
     <div

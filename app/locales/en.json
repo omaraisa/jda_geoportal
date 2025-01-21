@@ -20,7 +20,7 @@
       "addLayer": "Add Layer",
       "query": "Query"
     },
-    "submenu" : {
+    "sidebar" : {
       "titles": {
           "BasemapGalleryComponent": "Basemap Gallery",
           "BookmarkWidgetComponent": "Bookmarks",

@@ -14,6 +14,21 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+const oxanium = localFont({
+  src: [
+    {
+      path: "/fonts/oxanium-Regular.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "/fonts/oxanium-Bold.ttf",
+      weight: "600",
+      style: "normal",
+    }
+  ],
+  variable: "--font-oxanium",
+});
 
 const droidArabicKufi = localFont({
   src: [
@@ -36,7 +51,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${droidArabicKufi.variable} antialiased`}
+        className={`${oxanium.variable} ${geistMono.variable} ${droidArabicKufi.variable} antialiased`}
       >
         {children}
       </body>

@@ -45,6 +45,9 @@ const MainScene = () => {
         center,
         zoom,
         scale,
+        ui: {
+          components: []
+        }
       });
 
 
@@ -55,24 +58,6 @@ const MainScene = () => {
           setLoading(false); // Set loading to false when the scene view is ready
           addInitialLayers(scenelayers, viewRef.current);
 
-          // try {
-          //   // Add FeatureLayers to the scene
-          //   scene.addMany([
-          //     new FeatureLayer({
-          //       url: "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/SAU_Boundaries_2022/FeatureServer/1",
-          //     }),
-          //     new FeatureLayer({
-          //       url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
-          //     }),
-          //   ]);
-          // } catch (error) {
-          //   addMessage({
-          //     title: "Scene Error",
-          //     body: `Failed to add layers to the scene. ${error.message}`,
-          //     type: "error",
-          //     duration: 10,
-          //   });
-          // }
         })
         .catch((error) => {
           addMessage({
@@ -104,40 +89,6 @@ const MainScene = () => {
     };
   }, [addMessage, center, zoom, scale, updateSceneView]);
 
-  // useEffect(() => {
-  //   if (viewsSyncOn && viewRef.current && mapView) {
-  //     // Sync the MapView's center and scale with the mapView
-  //     let handleCenterChange;
-  //     if (mapView.type === "2d") {
-  //       handleCenterChange = viewRef.current.watch("center", () => {
-  //         mapView.center = viewRef.current.center;
-  //         mapView.scale = viewRef.current.scale;
-  //       });
-  //     }
-
-  //     return () => {
-  //       if (handleCenterChange) {
-  //         handleCenterChange.remove(); // Cleanup watcher
-  //       }
-  //     };
-  //   }
-  // }, [viewsSyncOn, mapView]);
-//  useEffect(() => {
-//     if (viewsSyncOn && viewRef.current && mapView) {
-//       // console.log("here", targetView)
-//       let handleCenterChange
-//         handleCenterChange = viewRef.current.watch("center", () => {
-//           mapView.center = viewRef.current.center;
-//           mapView.scale = viewRef.current.scale;
-//       });
-
-//       return () => {
-//         if (handleCenterChange) {
-//           handleCenterChange.remove(); // Cleanup watcher
-//         }
-//       };
-//     }
-//   }, [viewsSyncOn,mapView]);
 
   useEffect(() => {
     if (viewsSyncOn && viewRef.current && mapView) {

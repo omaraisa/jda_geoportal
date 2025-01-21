@@ -13,55 +13,34 @@ export default function Header() {
   const language = useStateStore((state) => state.language);
 
   return (
-    <div className="flex flex-row justify-between items-center pr-5 min-h-16 text-white bg-gradient-to-r from-primary to-secondary text-white p-4 shadow-md z-10">
-      {/* Logo and Title */}
-      <div className="flex flex-row items-center">
+    <div className="absolute top-0 flex flex-row justify-between items-center pr-5 min-h-16 text-white p-4 z-10 w-full">
+      {/* Left Section */}
+      <div className="flex flex-row items-center flex-grow">
         <Image
           src="/logo.png"
           alt={t("header.logoAlt")}
           width="40"
           height="40"
+          className="animate-rotate-3d"
         />
-        <h1 className="ml-2 mr-2 text-2xl">{t("header.title")}</h1>
+        <h1 className="ml-2 mr-2 text-2xl [text-shadow:2px_2px_4px_rgba(0,0,0)]">{t("header.title")}</h1>
       </div>
 
-      {/* Navigation Tools */}
+      {/* Middle Section (View Switcher) */}
+      <div className="flex flex-row items-center justify-center flex-grow">
+        <ViewSwitcher />
+      </div>
+
+      {/* Right Section */}
       <div
-        className={`flex flex-row items-center space-x-2 ${
+        className={`flex flex-row items-center space-x-2 flex-grow justify-end ${
           language === "ar" ? "mr-auto" : "ml-auto"
         }`}
       >
-        <ViewSwitcher />
-        <ViewSplitter />
-        {/* <NavButton
-          toolTip={t("header.nav.selectFeatures")}
-          iconClass="esri-icon-cursor-marquee"
-          targetComponent="SelectFeatures"
-        /> */}
-        <NavButton
-          toolTip={t("header.nav.basemaps")}
-          iconClass="esri-icon-basemap"
-          targetComponent="BasemapGalleryComponent"
-        />
-        <NavButton
-          toolTip={t("header.nav.drawingEditing")}
-          iconClass="esri-icon-edit"
-          targetComponent="EditorWidgetComponent"
-        />
-        <NavButton
-          toolTip={t("header.nav.bookmarks")}
-          iconClass="esri-icon-bookmark"
-          targetComponent="BookmarkWidgetComponent"
-        />
         <NavButton
           toolTip={t("header.nav.printMap")}
-          iconClass="esri-icon-printer"
+          iconClass="esri-icon-user"
           targetComponent="PrintWidgetComponent"
-        />
-        <NavButton
-          toolTip={t("header.nav.attributeQuery")}
-          iconClass="esri-icon-search"
-          targetComponent="AttributeQueryComponent"
         />
         <LanguageSwitcher />
       </div>

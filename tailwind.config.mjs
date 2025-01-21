@@ -11,11 +11,16 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
+          DEFAULT: "#934B96",
+          light: "#cb69ce",
+          dark: "#5b245d",
+        },
+        secondary: {
           DEFAULT: "#149295",
           light: "#1FAAA8",
           dark: "#0D706A",
         },
-        secondary: {
+        tertiary: {
           DEFAULT: "#3BBFAD",
           light: "#51C6B7",
           dark: "#2D9C95",

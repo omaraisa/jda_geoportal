@@ -1,0 +1,21 @@
+.BottomMenuTray {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 15px;
+    background: linear-gradient(to right, #00ffff, #ff00ff, #00ffff);
+    background-size: 200% 100%;
+    animation: shine 3s linear infinite;
+    border-radius: 5px 5px 0 0;
+    transition: width 0.3s ease; /* Add transition for smooth effect */
+}
+
+@keyframes shine {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 200% 50%;
+    }
+}

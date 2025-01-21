@@ -20,7 +20,7 @@
     "addLayer": "إضافة طبقة",
     "query": "استعلام"
   },
-  "submenu" : {
+  "sidebar" : {
     "titles": {
         "BasemapGalleryComponent": "خرائط الأساس",
         "BookmarkWidgetComponent": "العلامات المرجعية"

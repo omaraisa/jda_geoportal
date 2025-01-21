@@ -7,15 +7,14 @@ const useStateStore = create((set, get) => ({
   // Initial State
   language: "en",
   layout: defaultLayout,
-  activeSubMenu: "DefaultComponent",
+  activeSideBar: "DefaultComponent",
   appReady: false,
-  previousSubMenu: null,
+  previousSideBar: null,
   activeBottomPane: "DefaultComponent",
   viewMode: "2D",
   targetView: null, 
   mapView: null,    
   sceneView: null,
-  secondaryView: null,
   maplayers: initialMapLayers,
   scenelayers: initialSceneLayers,
   widgets: {},
@@ -24,10 +23,7 @@ const useStateStore = create((set, get) => ({
   zoom: 12, // Default zoom level for 2D
   scale: 500000, // Default scale for 3D
   viewsSyncOn: false,
-  mapDefinition: {
-    layerSources: [],
-  },
-  previousSubMenus: {
+  previousSideBars: {
     DefaultComponent: null,
   },
   messages: {},
@@ -43,21 +39,42 @@ const useStateStore = create((set, get) => ({
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; // Set direction
   },
 
-  toggleMenus: (side) => {
-    const state = get();
-    const action = { type: "toggleMenus", side };
-    const layoutResponse = LayoutManager(state.layout, action);
-    if (layoutResponse.type !== "error") {
-      set({ layout: layoutResponse });
-    }
+  setToolsMenuExpansion: (isExpanded) => {
+    set((state) => ({
+      layout: {
+        ...state.layout,
+        toolsMenuExpanded: isExpanded,
+      },
+    }))
   },
 
-  setActiveSubMenu: (component) => {
+  toggleSidebar: (isOpen) => {
+    set((state) => ({
+      layout: {
+        ...state.layout,
+        sidebarOpen: isOpen,
+        sidebarHeight:isOpen? 80 :0,
+      },
+    }));
+  },
+
+  toggleBottomPane: (isOpen) => {
+    set((state) => ({
+      layout: {
+        ...state.layout,
+        bottomPaneOpen: isOpen,
+        bottomPaneHeight:isOpen? 30 :0,
+      },
+    }));
+  },
+
+
+  setActiveSideBar: (component) => {
     const state = get();
-    const previousSubMenu = state.previousSubMenus[component] || null;
+    const previousSideBar = state.previousSideBars[component] || null;
     set({
-      activeSubMenu: component,
-      previousSubMenu: previousSubMenu,
+      activeSideBar: component,
+      previousSideBar: previousSideBar,
     });
   },
 
@@ -65,89 +82,59 @@ const useStateStore = create((set, get) => ({
     set({ activeBottomPane: component });
   },
 
-  startDragging: () =>
-    set((state) => ({
-      layout: {
-        ...state.layout,
-        animationOn: false,
-      },
-    })),
-
-  endDragging: () =>
-    set((state) => ({
-      layout: {
-        ...state.layout,
-        animationOn: true,
-      },
-    })),
-
   updateTargetView: (targetView) => set({ targetView }),
   updateMapView: (mapView) => set({ mapView }),       
   updateSceneView: (sceneView) => set({ sceneView }),
-  updateSecondaryView: (secondaryView) => set({ secondaryView }),
  
+// Function to create a layer from the configuration
+createLayer: ({ sourceType, url, title, visible, opacity, minScale, maxScale, portalItemId, renderer, labelingInfo,visualVariables }) => {
+  let layer;
 
-    // Function to create a layer from the configuration
-    createLayer: ({ sourceType, url, title, visible, opacity, minScale, maxScale, portalItemId, renderer }) => {
-      let layer;
-      if (sourceType === "url") {
-      layer = new FeatureLayer({
-        url,
-        title,
-        visible,
-        opacity,
-        minScale,
-        maxScale,
-      });
-      } else if (sourceType === "portal") {
-      layer = new FeatureLayer({
-        portalItem: {
-        id: portalItemId,
-        },
-        title,
-        visible,
-        opacity,
-        minScale,
-        maxScale,
-      });
-      }
-      if (layer && renderer) {
-      layer.renderer = renderer;
-      }
-      return layer;
-    },
+  // Base configuration for the layer
+  const layerConfig = {
+    title,
+    visible,
+    opacity,
+    minScale,
+    maxScale,
+    ...(labelingInfo && { labelingInfo }),
+    ...(renderer && { renderer }),
+  };
 
-  // Add layers to the map or scene
-  addInitialLayers: (layers, targetView) => {
-    if (!targetView) return;
-  
-    const viewType = targetView.type; // '2d' | '3d'
-  
-    layers.forEach((layerConfig) => {
-      const layer = get().createLayer(layerConfig);
-      if (layer) {
-        targetView.map.add(layer);
-      }
+  if (sourceType === "url") {
+    layer = new FeatureLayer({
+      url,
+      ...layerConfig,
+      elevationInfo: {
+        mode: 'on-the-ground', // Ensure buildings are extruded from the ground
+      },
+      
     });
-  },
+  } else if (sourceType === "portal") {
+    layer = new FeatureLayer({
+      portalItem: {
+        id: portalItemId,
+      },
+      ...layerConfig // Spread the base configuration
+    });
+  }
+
+  return layer;
+},
+
+// Add layers to the map or scene
+addInitialLayers: (layers, targetView) => {
+  if (!targetView) return;
+
+  layers.forEach((layerConfig) => {
+    const layer = get().createLayer(layerConfig);
+    if (layer) {
+      targetView.map.add(layer);
+    }
+  });
+},
 
 
-
-  //   addLayer: (layer) => {
-  //   const { view, layers } = get();
-  //   if (!view) {
-  //     console.error("View is not initialized.");
-  //     return;
-  //   }
-
-  //   // Add the layer to the map
-  //   view.map.add(layer);
-
-  //   // Update the layers array in the state
-  //   set({ layers: [...layers, layer] });
-  // },
-
-  // Remove a layer from the map and state
   removeLayer: (layerId) => {
     const { view, layers } = get();
     if (!view) {
@@ -175,15 +162,6 @@ const useStateStore = create((set, get) => ({
     set({ layers: newLayers });
   },
 
-  updateLayerSources: (layerSources) =>
-    set((state) => ({
-      mapDefinition: { ...state.mapDefinition, layerSources },
-    })),
-  updateTargetLayers: (layer) =>
-    set((state) => ({
-      targetLayers: { ...state.targetLayers, ...layer },
-    })),
-
   setTargetLayerId: (id) => {
     set({ targetLayerId: id });
   },
@@ -207,13 +185,14 @@ const useStateStore = create((set, get) => ({
 
   // Switch between 2D and 3D views
   switchViewMode: (mode) => {
-    const { view } = get();
-    if (view) {
+    const { targetView } = get();
+    if (targetView) {
       // Save the current center, zoom, and scale before switching
-      const center = view.center.clone();
-      const zoom = view.zoom;
-      const scale = view.scale;
+      const center = targetView.center.clone();
+      const zoom = targetView.zoom;
+      const scale = targetView.scale;
       set({ viewMode: mode, center, zoom, scale });
+      set({ targetView: mode === "2D" ? get().mapView : get().sceneView });
     } else {
       set({ viewMode: mode });
     }

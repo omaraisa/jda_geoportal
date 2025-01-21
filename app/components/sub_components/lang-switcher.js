@@ -19,16 +19,10 @@ const LanguageSwitcher = () => {
   return (
     <div className="flex items-center">
       <button
-        className="text-gray-700 p-2 bg-white rounded-full hover:bg-gray-200 focus:outline-none"
+        className="text-gray-700 p-2 bg-white rounded-full hover:bg-gray-200 focus:outline-none w-10 h-10 flex items-center justify-center"
         onClick={toggleLanguage}
-        title={i18n.language === "ar" ? "English" : "عربي"}
       >
-        <Image
-          src={i18n.language === "ar" ? "/uk_flag.svg" : "/ksa_flag.svg"}
-          alt={i18n.language === "ar" ? "UK Flag" : "KSA Flag"}
-          width={24}
-          height={24}
-        />
+        {i18n.language === "ar" ? "En" : "ع"}
       </button>
     </div>
   );

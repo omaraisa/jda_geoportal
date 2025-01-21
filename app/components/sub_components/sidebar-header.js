@@ -1,28 +1,24 @@
 import useStateStore from "../../stateManager";
 import { useTranslation } from "react-i18next";
 
-const SubmenuHeader = () => {
+export default function SidebarHeader() {
   const { t } = useTranslation();
-  const previousComponent = useStateStore((state) => state.previousSubMenu);
-  const activeComponent = useStateStore((state) => state.activeSubMenu);
-  const setActiveSubMenu = useStateStore((state) => state.setActiveSubMenu);
-  const toggleMenus = useStateStore((state) => state.toggleMenus);
+  const previousComponent = useStateStore((state) => state.previousSideBar);
+  const activeComponent = useStateStore((state) => state.activeSideBar);
+  const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
+  const toggleSidebar = useStateStore((state) => state.toggleSidebar);
 
   const handleBack = () => {
     if (previousComponent) {
-      setActiveSubMenu(previousComponent);
+      setActiveSideBar(previousComponent);
     }
   };
 
-  const handleClose = () => {
-    setActiveSubMenu("DefaultComponent"); // Reset to default component
-  };
-
   // Dynamically fetch the title for the active component
-  const title = t(`submenu.titles.${activeComponent}`, "");
+  const title = t(`sidebar.titles.${activeComponent}`, "");
 
   return (
-    <div className="relative flex items-center w-full py-2 px-4 text-white bg-primary min-h-10">
+    <div className="relative flex items-center w-full py-2 px-4 text-white min-h-10">
       {/* Back Button */}
       {previousComponent && (
         <button
@@ -39,7 +35,7 @@ const SubmenuHeader = () => {
       {/* Close Button */}
       <button
         className="absolute right-4 text-white focus:outline-none transform hover:rotate-180 transition-transform duration-300 ease-in-out w-8 h-8 flex items-center justify-center"
-        onClick={()=> toggleMenus("secondary")} // Close the submenu
+        onClick={()=> toggleSidebar(false)} // Close the 
       >
         <i className="fas fa-times"></i>
       </button>
@@ -47,4 +43,3 @@ const SubmenuHeader = () => {
   );
 };
 
-export default SubmenuHeader;

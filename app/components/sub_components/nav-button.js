@@ -1,15 +1,15 @@
 import useStateStore from "../../stateManager"; // Import Zustand state
 
 export default function NavButton({ toolTip, iconClass, targetComponent }) {
-  const activeSubMenu = useStateStore((state) => state.activeSubMenu);
-  const setActiveSubMenu = useStateStore((state) => state.setActiveSubMenu);
+  const activeSideBar = useStateStore((state) => state.activeSideBar);
+  const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
   const toggleMenus = useStateStore((state) => state.toggleMenus);
   const secondaryPaneMinimized = useStateStore(
     (state) => state.layout.secondaryPaneMinimized
   );
 
   // Dynamic Tailwind class based on active state
-  const isActive = activeSubMenu === targetComponent;
+  const isActive = activeSideBar === targetComponent;
   const NavButtonClass = isActive
     ? "bg-white text-primary shadow-md cursor-pointer"
     : "text-white cursor-pointer hover:bg-white hover:text-primary";
@@ -19,7 +19,7 @@ export default function NavButton({ toolTip, iconClass, targetComponent }) {
     if (secondaryPaneMinimized) {
       toggleMenus("secondary"); // Open the secondary pane if minimized
     }
-    setActiveSubMenu(targetComponent); // Set the target submenu
+    setActiveSideBar(targetComponent); // Set the target SideBar
   };
 
   return (

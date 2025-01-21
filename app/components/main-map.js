@@ -55,15 +55,17 @@ const MainMap = () => {
 
       try {
         // Initialize the Map and MapView
-        const map = new Map({ basemap: "satellite" });
+        const map = new Map({ basemap: "dark-gray" });
 
         viewRef.current = new MapView({
           container: mapRef.current,
           map: map,
           center,
           zoom,
+          ui: {
+            components: [] 
+          }
         });
-
 
         viewRef.current
           .when(() => {
@@ -71,71 +73,6 @@ const MainMap = () => {
           updateTargetView(viewRef.current);
           addInitialLayers(maplayers, viewRef.current);
             
-            
-            // try {
-            //   const pacelLayer = new FeatureLayer({
-            //     url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
-            //     visible: false,
-            //     renderer: {
-            //       type: "simple",
-            //       symbol: {
-            //         type: "simple-fill",
-            //         // White with 50% transparency
-            //         outline: {
-            //           color: [255, 255, 0, 1], // Yellow outline
-            //           width: 1
-            //         }
-            //       }
-            //     },
-            //     labelingInfo: [{
-            //       labelExpressionInfo: { expression: "$feature.parcelnumber" },
-            //       symbol: {
-            //         type: "text",
-            //         color: "yellow",
-            //         haloColor: "black",
-            //         haloSize: "1px",
-            //         font: {
-            //           size: 12,
-            //           family: "Arial",
-            //           weight: "bold"
-            //         }
-            //       },
-            //       minScale: 5000,
-            //       maxScale: 100
-            //     }]
-            //   });
-            //   addLayer(pacelLayer);
-
-            //   const JeddahHistorical = new FeatureLayer({
-            //     url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
-            //     // visible: false
-            //   });
-            //   addLayer(JeddahHistorical);
-
-            //   pacelLayer.when(() => {
-            //   const fieldInfos = pacelLayer.fields.map((field) => {
-            //     return { fieldName: field.name };
-            //   });
-          
-            //   const popupTemplate = {
-            //     content: [
-            //       {
-            //         type: "fields",
-            //         fieldInfos: fieldInfos,
-            //       },
-            //     ],
-            //   };
-            //   pacelLayer.popupTemplate = popupTemplate;
-            // });
-
-            // } catch (error) {
-            //   addMessage({
-            //     title: "Map Error",
-            //     body: `Failed to add layers to the map. ${error.message}`,
-            //     type: "error",
-            //     duration: 10,
-            //   });
-            // }
           })
           .catch((error) => {
             addMessage({
@@ -164,14 +101,6 @@ const MainMap = () => {
       }
     };
   }, [addMessage, center, zoom, updateMapView, setAppReady]);
-
-  // useEffect(() => {
-  //   if (viewsSyncOn && viewRef.current) {
-  //     updateMapView(viewRef.current);
-  //   }
-  // }, [viewsSyncOn]);
-
-  
 
    useEffect(() => {
       if (viewsSyncOn && viewRef.current && sceneView) {

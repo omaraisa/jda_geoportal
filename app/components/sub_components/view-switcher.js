@@ -31,7 +31,7 @@ const ViewSwitcher = () => {
       onClick={toggleView}
     >
       <div
-        className={`absolute left-1 transition-transform duration-300 ease-in-out w-8 h-8 bg-primary rounded-full ${
+        className={`absolute left-1 transition-transform duration-300 ease-in-out w-8 h-8 bg-primary-light rounded-full ${
           viewMode === "3D" ? "translate-x-10" : ""
         }`}
       ></div>

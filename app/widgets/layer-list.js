@@ -8,7 +8,7 @@ export default function LayerListWidgetComponent() {
   const setActiveBottomPane = useStateStore((state) => state.setActiveBottomPane);
   
   const setTargetLayerId = useStateStore((state) => state.setTargetLayerId);
-  const toggleMenus = useStateStore((state) => state.toggleMenus);
+  const toggleBottomPane = useStateStore((state) => state.toggleBottomPane);
 
   const layerListWidgetRef = useRef(null); // Persist LayerList widget
   let triggerActionHandler; // Reference to the event handler
@@ -137,10 +137,7 @@ export default function LayerListWidgetComponent() {
   setTargetLayerId(layer.id);
   setActiveBottomPane("AttributeTableWidgetComponent");
 
-  const isBottomPaneMinimized = useStateStore.getState().layout.bottomPaneMinimized;
-  if (isBottomPaneMinimized) {
-    toggleMenus("bottom");
-  }
+    toggleBottomPane(true);
 };
 
 

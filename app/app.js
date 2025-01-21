@@ -1,24 +1,19 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
 import Header from "./components/header";
-import MainMenu from "./components/main-menu";
-import SubMenu from "./components/sub-menu";
+import Sidebar from "./components/sidebar";
 import ContentView from "./components/contentview";
 import useStateStore from "./stateManager";
-import MinimizeMenu from "./components/sub_components/minimize-menu";
-import BottomPane from "./components/bottom-pane";
-import Split from "react-split";
 import "./i18n";
 import AppLoader from "./components/app-loader";
+import ToolsMenu from "./components/tools-menu";
+import BottomMenuTray from "./components/sub_components/bottom-menu-tray";
+import BottomPane from "./components/bottom-pane";
 
 export default function App() {
   // Extract necessary state and actions from the store
   const layoutState = useStateStore((state) => state.layout);
-  const toggleMenus = useStateStore((state) => state.toggleMenus);
-  const startDragging = useStateStore((state) => state.startDragging);
-  const endDragging = useStateStore((state) => state.endDragging);
   const appReady = useStateStore((state) => state.appReady);
   const setAppReady = useStateStore((state) => state.setAppReady);
 
@@ -26,126 +21,66 @@ export default function App() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setAppReady(true);
-    }, 500);
-    // }, 7000);
+    }, 0); // 50 seconds delay
+    // }, 5000); // 50 seconds delay
 
     return () => clearTimeout(timer);
   }, []);
-  
+
   return (
-    <div className="w-screen h-screen flex flex-col overflow-hidden">
+    <div className="absolute w-screen h-screen flex flex-col overflow-hidden">
+      {/* App Loader - Covers the entire screen */}
       {!appReady && (
-        <>
-          {/* App Loader */}
+        <div className="absolute inset-0 z-50 bg-[#182726]  text-white flex justify-center items-center">
           <AppLoader />
-        </>
+        </div>
       )}
+
+      {/* Header */}
       <Header />
 
       {/* Main Content */}
-      <main className="flex-1">
-        {/* Outer Horizontal Split: Primary Pane | Middle Pane | Secondary Pane */}
-        <Split
-          sizes={[
-            layoutState.primaryPaneSize,
-            layoutState.middlePaneSize,
-            layoutState.secondaryPaneSize,
-          ]}
-          minSize={[layoutState.primaryPaneMinSize, layoutState.middlePaneMinSize, layoutState.secondaryPaneMinSize]}
-          gutterSize={4}
-          direction="horizontal"
-          className="flex h-full"
-          onDragStart={startDragging}
-          onDragEnd={endDragging}
-        >
-          {/* Primary Pane */}
-          <div
-            className="bg-gray-100 border-r border-gray-300 relative"
-            style={{
-              transition: layoutState.animationOn
-                ? "0.5s ease-in-out"
-                : "none",
-            }}
-          >
-            <MainMenu />
-            
+      <div
+        className="relative w-full h-full border-1 border-transparent"
+        style={{
+          background: "linear-gradient(to right, #00ffff, #ff00ff, #00ffff)",
+          backgroundSize: "200% 100%",
+          animation: "shine 3s linear infinite",
+        }}
+      >
+        {/* Inner content area */}
+        <div className="absolute inset-1 bg-[#182726] flex flex-col">
+          {/* ContentView (fills remaining space) */}
+          <div className="flex-1 relative">
+            <ContentView />
           </div>
 
-          {/* Middle Pane with Nested Vertical Split */}
           <div
-            className="flex flex-col h-full"
-            style={{
-              transition: layoutState.animationOn
-                ? "0.5s ease-in-out"
-                : "none",
-            }}
+            className="absolute left-5 top-1/2 py-6 transform -translate-y-1/2 w-[300px] bg-transparent z-20 transition-all duration-1000 overflow-hidden"
+            style={{ height: `${layoutState.sidebarHeight}vh` }} // Add "vh" here
           >
-            <Split
-              sizes={[layoutState.mapContainerSize, layoutState.bottomPaneSize]}
-              minSize={[layoutState.mapContainerMinSize, layoutState.bottomPaneMinSize]}
-              gutterSize={4}
-              direction="vertical"
-              className="h-full"
-              onDragStart={startDragging}
-              onDragEnd={endDragging}
-            >
-              {/* Map Pane */}
-              <div
-                className="bg-white relative"
-                style={{
-                  transition: layoutState.animationOn
-                    ? "0.5s ease-in-out"
-                    : "none",
-                }}
-              >
-                <ContentView />
-                <MinimizeMenu
-                  vertical={true}
-                  Onducked={() => toggleMenus("primary")}
-                  arrow={layoutState.primaryPaneArrow}
-                  className="absolute top-1/2 -right-4 transform -translate-y-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
-                />
-              </div>
-
-              {/* Bottom Pane */}
-              <div
-                className="bg-gray-100 border-t border-gray-300 relative"
-                style={{
-                  transition: layoutState.animationOn
-                    ? "0.5s ease-in-out"
-                    : "none",
-                }}
-              >
-                <MinimizeMenu
-                  vertical={false}
-                  Onducked={() => toggleMenus("bottom")}
-                  arrow={layoutState.bottomPaneArrow}
-                  className="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
-                />
-                <BottomPane />
-              </div>
-            </Split>
+            <Sidebar />
           </div>
 
-          {/* Secondary Pane */}
           <div
-            className="bg-gray-100 border-l border-gray-300 relative"
-            style={{
-              transition: layoutState.animationOn
-                ? "0.5s ease-in-out"
-                : "none",
-            }}
-          >
-            <SubMenu />
-            <MinimizeMenu
-              vertical={true}
-              Onducked={() => toggleMenus("secondary")}
-              arrow={layoutState.secondaryPaneArrow}
-              className="absolute top-1/2 -left-4 transform -translate-y-1/2 bg-primary text-white rounded shadow p-1 cursor-pointer"
-            />
+  className="absolute px-6 py-3 bottom-20 left-1/2 transform -translate-x-1/2 w-[calc(100%-600px)] max-w-[1200px] bg-transparent rounded-lg overflow-hidden"
+  style={{
+    // Static height instead of dynamic vh value
+    height: '40vh', // Set this to your desired fixed height
+  }}
+>
+  <BottomPane />
+</div>
+
+          {/* Tools Menu */}
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10">
+            <ToolsMenu />
           </div>
-        </Split>
-      </main>
+
+          {/* Bottom Menu Tray */}
+          <BottomMenuTray />
+        </div>
+      </div>
     </div>
   );
 }

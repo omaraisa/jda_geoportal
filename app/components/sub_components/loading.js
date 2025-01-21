@@ -5,7 +5,7 @@ export default function Loading() {
         <style jsx>{`
           .loader {
             border: 8px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #0D706A;
+            border-left-color: #934B96;
             border-radius: 50%;
             width: 50px;
             height: 50px;

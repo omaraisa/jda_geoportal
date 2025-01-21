@@ -3,12 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
-import FeatureTable from "@arcgis/core/widgets/FeatureTable";
 import useStateStore from "../stateManager";
 import { useTranslation } from "react-i18next";
-import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 
-export default function AttributeQueryComponent() {
+export default function SpatialQueryComponent() {
   const { t } = useTranslation();
   const [
     layerSelector,
@@ -21,10 +19,9 @@ export default function AttributeQueryComponent() {
 
   // Zustand state management
   const view = useStateStore((state) => state.targetView);
-  // const layers = useStateStore((state) => state.layers);
+  const layers = useStateStore((state) => state.layers);
   const addMessage = useStateStore((state) => state.addMessage);
-  const [featureTable, setFeatureTable] = useState(null);
-  
+
   const [state, setState] = useState({
     targetLayer: null,
     queryResultLayer: null,
@@ -35,18 +32,13 @@ export default function AttributeQueryComponent() {
     downloadBtnDisabled: true,
     allFeatures: [],
     activeListener: false,
-    graphicsLayer: null, // Added empty graphic layer parameter
   });
 
   const supportedLayerTypes = ["csv", "feature", "geojson", "map-image"];
 
   useEffect(() => {
-    if(view)
-      {
-      console.log("view", view.map.layers.items)
-      setState({ ...state, layersArray: view.map.layers.items, activeListener: true });
-    }
-  }, [view]);
+    setState({ ...state, layersArray: layers, activeListener: true });
+  }, [layers]);
 
   function prepareQueryParams(state) {
     const layerIndex = layerSelector.current.value;
@@ -153,121 +145,103 @@ export default function AttributeQueryComponent() {
   }
 
   function addQueryResult(response) {
-    // Remove any existing graphics from the map
-    if (state.graphicsLayer) {
-      state.graphicsLayer.removeAll();
-      view.map.remove(state.graphicsLayer);
-  }
-    
-    // Get the layer view for the target layer
-    view.whenLayerView(state.targetLayer).then((layerView) => {
-      const objectIds = response.features.map((feature) => feature.attributes[state.targetLayer.objectIdField]);
-        // Extract the geometries of the selected features
-        const features = response.features;
+    const symbols = {
+      point: {
+        type: "simple-marker",
+        style: "circle",
+        color: "rgba(0,255,255,1)",
+        size: "8px",
+      },
+      polyline: {
+        type: "simple-line",
+        color: "rgba(0,255,255,1)",
+        width: 3,
+      },
+      polygon: {
+        type: "simple-fill",
+        color: "rgba(255,255,255,0)",
+        outline: {
+          width: 2,
+          color: "rgba(0,255,255,1)",
+        },
+      },
+    };
+    const querySymbol = symbols[state.targetLayer.geometryType];
+    const renderer = {
+      type: "simple",
+      symbol: querySymbol,
+    };
 
-        layerView.featureEffect = {
-          filter: {
-              where: `${state.targetLayer.objectIdField} IN (${objectIds.join(",")})`
-          },
-          excludedEffect: "blur(2px) opacity(50%)" // Dim and blur non-selected features
-      };
-
-        // Create a graphics layer to hold the outline graphics
-        const graphicsLayer = state.graphicsLayer || new GraphicsLayer({title: "Query Results"});
-        view.map.add(graphicsLayer);
-        
-        // Loop through the selected features and create outline graphics
-        features.forEach((feature) => {
-          const geometry = feature.geometry;
-          
-          // Create a graphic with a cyan outline
-            const outlineGraphic = new Graphic({
-                geometry: geometry,
-                symbol: {
-                    type: "simple-fill", // For polygon features
-                    color: [0, 0, 0, 0], // Transparent fill
-                    outline: {
-                        color: "cyan",
-                        width: "2px"
-                    }
-                  }
-                });
-                
-                // Add the graphic to the graphics layer
-                graphicsLayer.add(outlineGraphic);
-              });
-
-              setState((prevState) => ({
-                ...prevState,
-                graphicsLayer: graphicsLayer, // Store the new graphics layer in state
-                queryResult: response.features,
-                downloadBtnDisabled: false,
-            }));
-
-    // Zoom to the selected features
-    view.goTo(response.features);
-
-      // if (featureTable) {
-      //   featureTable.destroy(); // Clean up the existing table
-      // }
-    
-        // // Create a new FeatureTable widget
-        // const table = new FeatureTable({
-        //   view: view,
-        //   layer: state.targetLayer,
-        //   container: document.createElement("div"), // Create a container for the table
-        //   visibleElements: {
-        //     menu: false, // Hide the menu
-        //     columnMenus: false, // Hide column menus
-        //   },
-        // });
-    
-        // // Filter the table to show only the selected features
-        // table.filterGeometry = {
-        //   type: "multipoint",
-        //   points: state.queryResult.map((feature) => feature.geometry),
-        // };
-    
-        // // Add the table to the DOM
-        // document.getElementById("attributeTableContainer").appendChild(table.container);
-    
-        // // Save the table instance in state
-        // setFeatureTable(table);
-     
-  
-      // Show a success message
-      addMessage({
-        type: "info",
-        title: t('systemMessages.info.queryCompleted.title'),
-        body: `${t('systemMessages.info.queryCompleted.body')} ${state.targetLayer.title}`,
-        duration: 10,
+    const source = response.features.map((feature) => {
+      const queryGraphic = new Graphic({
+        geometry: feature.geometry,
+        attributes: feature.attributes,
+        symbol: querySymbol,
       });
-  
-      // Update the state with the query result
-    
+      return queryGraphic;
+    });
+    const fieldInfos = state.targetLayer.fields.map((field) => {
+      return { fieldName: field.name };
+    });
+
+    const popupTemplate = {
+      content: [
+        {
+          type: "fields",
+          fieldInfos: fieldInfos,
+        },
+      ],
+    };
+
+    const fields = state.targetLayer.fields;
+    if (!fields.some((field) => field.type === "oid")) {
+      fields.unshift({
+        name: "ObjectID",
+        type: "oid",
+      });
+    }
+    const resultLayerParameters = {
+      title: state.targetLayer.title + " Query Result",
+      geometryType: state.targetLayer.geometryType,
+      spatialReference: state.targetLayer.spatialReference,
+      popupEnabled: true,
+      source,
+      fields,
+      renderer,
+      popupTemplate,
+    };
+    const queryResultLayer = new FeatureLayer(resultLayerParameters);
+
+    view.map.add(queryResultLayer);
+    queryResultLayer.queryExtent().then(function (result) {
+      view.goTo(result.extent);
+    addMessage({
+      type: "info",
+      title: t('systemMessages.info.queryCompleted.title'),
+      body: `${t('systemMessages.info.queryCompleted.body')} ${state.targetLayer.title}`,
+      duration: 10,
+    });
+      const layersArray = [...view.map.layers.items];
+      setState({
+        ...state,
+        layersArray,
+        queryResultLayer,
+        queryResult: response.features,
+        downloadBtnDisabled: false,
+        resultLayerParameters,
+      });
     });
   }
 
   function clearSearch(state) {
-    // Clear the feature effect
-    view.whenLayerView(state.targetLayer).then((layerView) => {
-        layerView.featureEffect = null; // Remove the highlight effect
+    view.map.remove(state.queryResultLayer);
+    setState({
+      ...state,
+      queryResultLayer: null,
+      downloadBtnDisabled: true,
+      allFeatures: [],
     });
-
-    // Clear the graphics layer (if it exists)
-    if (state.graphicsLayer) {
-        state.graphicsLayer.removeAll(); // Remove all graphics from the layer
-        view.map.remove(state.graphicsLayer); // Remove the graphics layer from the map
-    }
-
-    // Update the state
-    setState((prevState) => ({
-        ...prevState,
-        queryResult: null,
-        downloadBtnDisabled: true,
-        graphicsLayer: null, // Clear the graphics layer reference
-    }));
-}
+  }
 
   function CreateSeparateLayer(state) {
     const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -306,15 +280,15 @@ export default function AttributeQueryComponent() {
   }
 
   return (
-    <div className="flex flex-col space-y-4 p-4 text-white">
+    <div className="flex flex-col space-y-4 p-4 ">
       <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="layerSelector" className="font-semibold">
+        <label htmlFor="layerSelector" className="font-semibold text-gray-700">
           {t('widgets.query.selectLayer')}
         </label>
         <select
           ref={layerSelector}
           id="layerSelector"
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
+          className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-all duration-300 w-full"
           onChange={() => prepareQueryParams(state)}
         >
           <option value="" hidden>
@@ -333,13 +307,13 @@ export default function AttributeQueryComponent() {
       </div>
   
       <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="fieldSelector" className="font-semibold">
+        <label htmlFor="fieldSelector" className="font-semibold text-gray-700">
           {t('widgets.query.selectField')}
         </label>
         <select
           ref={fieldSelector}
           id="fieldSelector"
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
+          className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-all duration-300 w-full"
         >
           <option value="" hidden>
             {t('widgets.query.select')}
@@ -355,29 +329,32 @@ export default function AttributeQueryComponent() {
       </div>
   
       <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="operatorSelector" className="font-semibold">
+        <label htmlFor="operatorSelector" className="font-semibold text-gray-700">
           {t('widgets.query.selectQueryCondition')}
         </label>
         <select
           ref={operatorSelector}
           id="operatorSelector"
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
+          className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-all duration-300 w-full"
         >
-          <option value="=">{t('widgets.query.equals')}</option>
+          <option value="" hidden>
+            {t('widgets.query.select')}
+          </option>
           <option value=">">{t('widgets.query.greaterThan')}</option>
           <option value="<">{t('widgets.query.lessThan')}</option>
+          <option value="=">{t('widgets.query.equals')}</option>
         </select>
       </div>
   
       <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="inputTypeSelector" className="font-semibold">
+        <label htmlFor="inputTypeSelector" className="font-semibold text-gray-700">
           {t('widgets.query.selectInputType')}
         </label>
         <select
           ref={inputTypeSelector}
           id="inputTypeSelector"
           onChange={() => toggleInputMode(state, inputTypeSelector.current.value)}
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
+          className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-all duration-300 w-full"
         >
           <option value={"manual"}>{t('widgets.query.manualInput')}</option>
           <option value={"from data"}>{t('widgets.query.fromData')}</option>
@@ -386,25 +363,25 @@ export default function AttributeQueryComponent() {
   
       {state.inputMethod === "manual" ? (
         <div className="flex flex-col space-y-2 w-full">
-          <label htmlFor="queryInput" className="font-semibold">
+          <label htmlFor="queryInput" className="font-semibold text-gray-700">
             {t('widgets.query.enterValue')}
           </label>
           <input
             ref={insertedQueryValue}
             type="text"
             id="queryInput"
-            className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
+            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-all duration-300 w-full"
           />
         </div>
       ) : (
         <div className="flex flex-col space-y-2 w-full">
-          <label htmlFor="queryValues" className="font-semibold">
+          <label htmlFor="queryValues" className="font-semibold text-gray-700">
             {t('widgets.query.selectValue')}
           </label>
           <select
             ref={selectedQueryValue}
             id="queryValues"
-            className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
+            className="p-1 border border-gray-300 rounded-lg focus:outline-none focus:border-primary transition-all duration-300 w-full"
           >
             <option value="" hidden>
               {t('widgets.query.select')}
@@ -424,25 +401,23 @@ export default function AttributeQueryComponent() {
   
       <div className="flex space-x-2 w-full">
         <button
-          className="flex-grow p-2 bg-primary text-white rounded-sm hover:bg-primary-dark transition-all duration-200 text-center"
+          className="flex-grow p-1 bg-primary text-white rounded-lg hover:bg-primary-dark transition-all duration-200"
           onClick={() => search(state)}
         >
           {t('widgets.query.search')}
         </button>
         <button
-          className="p-2 bg-red-500 text-white rounded-sm hover:bg-red-600 transition-all duration-200 text-center"
-          onClick={() => clearSearch(state)}
-        >
-          {t('widgets.query.clearSearch')}
-        </button>
-      </div>
-      <div className="flex space-x-2 w-full">
-        <button
-          className="flex-grow p-2 bg-green-500 text-white rounded-sm hover:bg-green-600 transition-all duration-200 text-center"
+          className="p-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-200"
           disabled={state.downloadBtnDisabled}
           onClick={() => CreateSeparateLayer(state)}
         >
           {t('widgets.query.createNewLayer')}
+        </button>
+        <button
+          className="p-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200"
+          onClick={() => clearSearch(state)}
+        >
+          {t('widgets.query.clearSearch')}
         </button>
       </div>
     </div>
