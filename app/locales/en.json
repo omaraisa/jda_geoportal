@@ -23,7 +23,7 @@
     "sidebar" : {
       "titles": {
           "BasemapGalleryComponent": "Basemap Gallery",
-          "BookmarkWidgetComponent": "Bookmarks",
+          "BookmarkComponent": "Bookmarks",
           "AttributeQueryComponent": "Attribute Query"
         }
     },
@@ -68,7 +68,7 @@
         "error": {
             "genericError": {
                 "title": "Error",
-                "body": "An unexpected error has occurred 😣. Please try again later."
+                "body": "An unexpected error has occurred❗. Please try again later."
             },
             "queryError": {
                 "title": "Query Error",
@@ -94,7 +94,7 @@
         "warning": {
           "genericWarning": {
                 "title": "Warning",
-                "body": "Something is not right 😥. Please try again."
+                "body": "Something is not right❗. Please try again."
             }
         }
     }

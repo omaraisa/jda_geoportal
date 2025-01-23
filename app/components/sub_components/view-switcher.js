@@ -1,55 +1,62 @@
 import useStateStore from "../../stateManager";
+import styles from "./view-switcher.module.css";
+import { useState, useCallback, useEffect } from "react";
+
+const modes = [
+  { label: "2D", value: "2D" },
+  { label: "3D", value: "3D" },
+  { label: "◧", value: "Dual" }
+];
 
 const ViewSwitcher = () => {
-  const viewMode = useStateStore((state) => state.viewMode);
-  const switchViewMode = useStateStore((state) => state.switchViewMode);
-  const view = useStateStore((state) => state.targetView);
-  const updateViewLocation = useStateStore((state) => state.updateViewLocation);
-  const setSyncing = useStateStore((state) => state.setSyncing);
+  const { switchViewMode, setSyncing } = useStateStore();
+  const [step, setStep] = useState(0);
 
-  const toggleView = () => {
+  const positions = [
+    { left: '28%', top: '20%' },
+    { left: '50%', top: '65%' },
+    { left: '73%', top: '20%' },
+  ];
 
-  if (view) {
-    const center = view.center.clone();
-    const zoom = view.zoom;
-    const scale = view.scale;
-    updateViewLocation(center, zoom, scale); // Save the current view state
-    setSyncing(false)
-  }
+  const activeIndex = step % modes.length;
 
-    // Switch the view mode and ensure the current location is saved
-    if (viewMode === "2D") {
-      switchViewMode("3D"); // Save current 2D location and switch to 3D
-    } else {
-      switchViewMode("2D"); // Save current 3D location and switch to 2D
-    }
-  };
+  const reorderedPositions = [
+    positions[(activeIndex + 1) % modes.length],
+    positions[activeIndex],
+    positions[(activeIndex + 2) % modes.length],
+  ];
+
+  useEffect(() => {
+    const activeMode = modes[activeIndex].value;
+    switchViewMode(activeMode);
+    setSyncing(activeMode === 'Dual');
+    console.log('Active mode:', activeMode);
+  }, [activeIndex, switchViewMode]);
+
+  const toggleView = useCallback(() => {
+    setStep(prev => (prev + 1) % modes.length);
+  }, []);
 
   return (
-    <div
-      className="relative w-20 h-10 bg-white rounded-full p-1 flex items-center cursor-pointer"
-      onClick={toggleView}
-    >
-      <div
-        className={`absolute left-1 transition-transform duration-300 ease-in-out w-8 h-8 bg-primary-light rounded-full ${
-          viewMode === "3D" ? "translate-x-10" : ""
-        }`}
-      ></div>
-      <div
-        className={`absolute left-2 text-xs font-bold ${
-          viewMode === "2D" ? "text-white" : "text-gray-500"
-        }`}
-      >
-        2D
-      </div>
-      <div
-        className={`absolute right-2 text-xs font-bold ${
-          viewMode === "3D" ? "text-white" : "text-gray-500"
-        }`}
-      >
-        3D
-      </div>
-    </div>
+    <button className={styles.switcher} onClick={toggleView}>
+      {modes.map((mode, index) => {
+        const position = reorderedPositions[index];
+        return (
+          <div
+            key={mode.value}
+            className={`${styles.modeBtn} ${
+              activeIndex === index ? styles.activeModeBtn : ''
+            }`}
+            style={{
+              left: position.left,
+              top: position.top
+            }}
+          >
+            {mode.label}
+          </div>
+        );
+      })}
+    </button>
   );
 };
 

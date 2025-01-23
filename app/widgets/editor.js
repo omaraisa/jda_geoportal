@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import Editor from "@arcgis/core/widgets/Editor";
 import useStateStore from "../stateManager";
 
-export default function EditorWidgetComponent() {
+export default function EditorComponent() {
   const editorRef = useRef(null);
   const editorWidget = useRef(null); // Persist the Editor widget
 

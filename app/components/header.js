@@ -4,16 +4,13 @@ import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./sub_components/lang-switcher";
 import useStateStore from "../stateManager"; // Import Zustand state
 import ViewSwitcher from "./sub_components/view-switcher";
-import ViewSplitter from "./sub_components/view-splitter";
 
 export default function Header() {
   const { t } = useTranslation();
-
-  // Access `language` from Zustand state
   const language = useStateStore((state) => state.language);
 
   return (
-    <div className="absolute top-0 flex flex-row justify-between items-center pr-5 min-h-16 text-white p-4 z-10 w-full">
+    <div className="absolute top-0 flex flex-row justify-between items-center pr-5 min-h-16 text-white p-2 z-10 w-full">
       {/* Left Section */}
       <div className="flex flex-row items-center flex-grow">
         <Image
@@ -40,7 +37,7 @@ export default function Header() {
         <NavButton
           toolTip={t("header.nav.printMap")}
           iconClass="esri-icon-user"
-          targetComponent="PrintWidgetComponent"
+          targetComponent="PrintComponent"
         />
         <LanguageSwitcher />
       </div>

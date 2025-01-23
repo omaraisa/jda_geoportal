@@ -9,24 +9,28 @@ const BasemapGalleryComponent = dynamic(
   () => import("../widgets/basemap-gallery"),
   { ssr: false }
 );
-const EditorWidgetComponent = dynamic(() => import("../widgets/editor"), {
+const EditorComponent = dynamic(() => import("../widgets/editor"), {
   ssr: false,
 });
-const PrintWidgetComponent = dynamic(() => import("../widgets/print"), {
+const PrintComponent = dynamic(() => import("../widgets/print"), {
   ssr: false,
 });
-const LayerListWidgetComponent = dynamic(
+const LayerListComponent = dynamic(
   () => import("../widgets/layer-list"),
   { ssr: false }
 );
-const LegendWidgetComponent = dynamic(() => import("../widgets/legend"), {
+const LegendComponent = dynamic(() => import("../widgets/legend"), {
   ssr: false,
 });
-const BookmarkWidgetComponent = dynamic(() => import("../widgets/bookmarks"), {
+const BookmarkComponent = dynamic(() => import("../widgets/bookmarks"), {
   ssr: false,
 });
 const AttributeQueryComponent = dynamic(
   () => import("../widgets/attribute-query"),
+  { ssr: false }
+);
+const SpatialQueryComponent = dynamic(
+  () => import("../widgets/spatial-query"),
   { ssr: false }
 );
 
@@ -34,12 +38,13 @@ const components = {
   Loading,
   DefaultComponent,
   BasemapGalleryComponent,
-  EditorWidgetComponent,
-  PrintWidgetComponent,
-  LayerListWidgetComponent,
-  LegendWidgetComponent,
-  BookmarkWidgetComponent,
+  EditorComponent,
+  PrintComponent,
+  LayerListComponent,
+  LegendComponent,
+  BookmarkComponent,
   AttributeQueryComponent,
+  SpatialQueryComponent,
 };
 
 export default function Sidebar() {
@@ -58,12 +63,7 @@ export default function Sidebar() {
 
 return (
     <div
-        className="flex flex-col text-white w-full h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-3000"
-        style={{
-            transform: "perspective(700px) rotateY(10deg)", // Tilt the div
-            transformOrigin: "center", // Ensure the rotation is centered
-            backfaceVisibility: "hidden", // Improve rendering performance
-          }}
+        className="flex flex-col w-full h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-3000"
     >
         <div
             className="w-full rounded-t-2xl"

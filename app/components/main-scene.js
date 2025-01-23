@@ -30,55 +30,53 @@ const MainScene = () => {
   useEffect(() => {
     // Set the ArcGIS API Key
     esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
-    if(!viewRef.current) {
-    try {
-      // Initialize the WebScene
-      const scene = new WebScene({
-        basemap: "arcgis-imagery",
-        ground: "world-elevation",
-      });
-
-      // Initialize the SceneView
-      viewRef.current = new SceneView({
-        container: sceneRef.current,
-        map: scene,
-        center,
-        zoom,
-        scale,
-        ui: {
-          components: []
-        }
-      });
-
-
-      // When the SceneView is ready, perform additional setup
-      viewRef.current
-        .when(() => {
-          updateSceneView(viewRef.current);
-          setLoading(false); // Set loading to false when the scene view is ready
-          addInitialLayers(scenelayers, viewRef.current);
-
-        })
-        .catch((error) => {
-          addMessage({
-            title: "Scene Initialization Error",
-            body: `Failed to initialize the scene view. ${error.message}`,
-            type: "error",
-            duration: 10,
-          });
+    if (!viewRef.current) {
+      try {
+        // Initialize the WebScene
+        const scene = new WebScene({
+          basemap: "arcgis-imagery",
+          ground: "world-elevation",
         });
-    } catch (error) {
-      addMessage({
-        title: "Scene Creation Error",
-        body: `An error occurred while creating the scene. ${error.message}`,
-        type: "error",
-        duration: 10,
-      });
-    }
-  }
-  else {
+
+        // Initialize the SceneView
+        viewRef.current = new SceneView({
+          container: sceneRef.current,
+          map: scene,
+          center,
+          zoom,
+          scale,
+          heading: 270,
+          ui: {
+            components: [],
+          },
+        });
+
+        // When the SceneView is ready, perform additional setup
+        viewRef.current
+          .when(() => {
+            updateSceneView(viewRef.current);
+            setLoading(false); // Set loading to false when the scene view is ready
+            addInitialLayers(scenelayers, viewRef.current);
+          })
+          .catch((error) => {
+            addMessage({
+              title: "Scene Initialization Error",
+              body: `Failed to initialize the scene view. ${error.message}`,
+              type: "error",
+              duration: 10,
+            });
+          });
+      } catch (error) {
+        addMessage({
+          title: "Scene Creation Error",
+          body: `An error occurred while creating the scene. ${error.message}`,
+          type: "error",
+          duration: 10,
+        });
+      }
+    } else {
       setLoading(false);
-  }
+    }
 
     // Cleanup function to destroy the SceneView
     return () => {
@@ -89,9 +87,8 @@ const MainScene = () => {
     };
   }, [addMessage, center, zoom, scale, updateSceneView]);
 
-
   useEffect(() => {
-    if (viewsSyncOn && viewRef.current && mapView) {
+    if (viewsSyncOn && viewRef.current && mapView && targetView) {
       let handleCenterChange;
       if (targetView.type === "3d") {
         handleCenterChange = viewRef.current.watch("center", () => {
@@ -108,7 +105,7 @@ const MainScene = () => {
         }
       };
     }
-  }, [viewsSyncOn,mapView,targetView]);
+  }, [viewsSyncOn, mapView, targetView]);
 
   useEffect(() => {
     if (viewRef.current) {
@@ -116,22 +113,25 @@ const MainScene = () => {
       if (!viewRef.current.eventHandlers) {
         viewRef.current.eventHandlers = {};
       }
-  
+
       const existingHandlers = viewRef.current.eventHandlers;
-  
+
       if (!existingHandlers["pointer-down"]) {
         const handlePointerDown = () => {
           if (viewRef.current !== targetView) {
             updateTargetView(viewRef.current);
           }
         };
-  
+
         // Add the event handler
-        const pointerDownHandler = viewRef.current.on("pointer-down", handlePointerDown);
-  
+        const pointerDownHandler = viewRef.current.on(
+          "pointer-down",
+          handlePointerDown
+        );
+
         // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
-  
+
         // Cleanup listener
         return () => {
           if (pointerDownHandler) {
@@ -142,7 +142,7 @@ const MainScene = () => {
       }
     }
   }, [viewsSyncOn, viewRef.current, targetView]);
-  
+
   return (
     <div style={{ width: "100%", height: "100%" }}>
       {loading && <Loading />}

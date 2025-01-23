@@ -8,6 +8,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import IdentityManager from "@arcgis/core/identity/IdentityManager";
 import ServerInfo from "@arcgis/core/identity/ServerInfo";
 import useStateStore from "../stateManager";
+import BasemapToggle from "@arcgis/core/widgets/BasemapToggle";
 
 const MainMap = () => {
   const mapRef = useRef(null); // Reference to the MapView container
@@ -62,6 +63,7 @@ const MainMap = () => {
           map: map,
           center,
           zoom,
+          rotation: 270, // Set default rotation to 90 degrees
           ui: {
             components: [] 
           }
@@ -69,6 +71,14 @@ const MainMap = () => {
 
         viewRef.current
           .when(() => {
+            const basemapToggle = new BasemapToggle({
+              view: viewRef.current,
+              nextBasemap: "satellite"
+            });
+
+            viewRef.current.ui.add(basemapToggle, {
+              position: "bottom-right"
+            });
             updateMapView(viewRef.current);
           updateTargetView(viewRef.current);
           addInitialLayers(maplayers, viewRef.current);
@@ -103,7 +113,8 @@ const MainMap = () => {
   }, [addMessage, center, zoom, updateMapView, setAppReady]);
 
    useEffect(() => {
-      if (viewsSyncOn && viewRef.current && sceneView) {
+      if (viewsSyncOn && viewRef.current && sceneView && targetView) {
+        console.log(targetView)
         let handleCenterChange;
         if (targetView.type === "2d") {
           handleCenterChange = viewRef.current.watch("center", () => {

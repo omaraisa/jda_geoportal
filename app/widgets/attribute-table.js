@@ -3,12 +3,13 @@ import FeatureTable from "@arcgis/core/widgets/FeatureTable";
 import useStateStore from "../stateManager";
 
 let featureTableWidget; // Keep the widget as a persistent instance
-export default function AttributeTableWidgetComponent() {
+export default function FeatureTableComponent() {
   const tableRef = useRef(null);
 
   // Access `view` and `targetLayerId` from Zustand state
   const view = useStateStore((state) => state.targetView);
   const targetLayerId = useStateStore((state) => state.targetLayerId);
+  const addWidget = useStateStore((state) => state.addWidget);
   const bottomPaneOpen = useStateStore((state) => state.layout.bottomPaneOpen);
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function AttributeTableWidgetComponent() {
         fieldConfigs: fieldConfigs,
         container: tableRef.current,
       });
+      addWidget("featureTableWidget",featureTableWidget)
     }
 
     function resetFeatureTable() {

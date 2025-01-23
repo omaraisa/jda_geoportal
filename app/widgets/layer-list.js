@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import useStateStore from "../stateManager";
 
-export default function LayerListWidgetComponent() {
+export default function LayerListComponent() {
   const layerListRef = useRef(null);
   const view = useStateStore((state) => state.targetView);
   const setActiveBottomPane = useStateStore((state) => state.setActiveBottomPane);
@@ -135,7 +135,7 @@ export default function LayerListWidgetComponent() {
 
   const openAttributeTable = (layer) => {
   setTargetLayerId(layer.id);
-  setActiveBottomPane("AttributeTableWidgetComponent");
+  setActiveBottomPane("FeatureTableComponent");
 
     toggleBottomPane(true);
 };

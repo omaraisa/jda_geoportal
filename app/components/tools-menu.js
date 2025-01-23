@@ -4,6 +4,7 @@ import styles from "./tools-menu.module.css";
 
 export default function ToolsMenu() {
   const toolsMenuExpanded = useStateStore((state) => state.layout.toolsMenuExpanded);
+  const sidebarOpen = useStateStore((state) => state.layout.sidebarOpen);
   const setToolsMenuExpansion = useStateStore((state) => state.setToolsMenuExpansion);
   const activeSideBar = useStateStore((state) => state.activeSideBar);
   const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
@@ -22,32 +23,37 @@ export default function ToolsMenu() {
     {
       icon: "esri-icon-edit", // Editor Widget
       tooltip: "Editor Widget",
-      targetComponent: "EditorWidgetComponent",
+      targetComponent: "EditorComponent",
     },
     {
       icon: "esri-icon-printer", // Print Widget
       tooltip: "Print Widget",
-      targetComponent: "PrintWidgetComponent",
+      targetComponent: "PrintComponent",
     },
     {
       icon: "esri-icon-layers", // Layer List Widget
       tooltip: "Layer List Widget",
-      targetComponent: "LayerListWidgetComponent",
-    },
-    {
-      icon: "esri-icon-legend", // Legend Widget
-      tooltip: "Legend Widget",
-      targetComponent: "LegendWidgetComponent",
-    },
-    {
-      icon: "esri-icon-bookmark", // Bookmark Widget
-      tooltip: "Bookmark Widget",
-      targetComponent: "BookmarkWidgetComponent",
+      targetComponent: "LayerListComponent",
     },
     {
       icon: "esri-icon-search", // Attribute Query
       tooltip: "Attribute Query",
       targetComponent: "AttributeQueryComponent",
+    },
+    // {
+    //   icon: "esri-icon-cursor-marquee", // Layer List Widget
+    //   tooltip: "Spatial Query",
+    //   targetComponent: "SpatialQueryComponent",
+    // },
+    {
+      icon: "esri-icon-legend", // Legend Widget
+      tooltip: "Legend Widget",
+      targetComponent: "LegendComponent",
+    },
+    {
+      icon: "esri-icon-bookmark", // Bookmark Widget
+      tooltip: "Bookmark Widget",
+      targetComponent: "BookmarkComponent",
     },
   ];
 
@@ -93,13 +99,24 @@ export default function ToolsMenu() {
 
   // Move item to the middle and set the active SideBar
   const handleClick = (index) => {
+    if (menuItems[index].targetComponent === activeSideBar && sidebarOpen) {
+      return; // Do nothing if the selected menu item is the current one
+    }
+
+    if (sidebarOpen) {
+      toggleSidebar(false); // Close the sidebar first
+      setTimeout(() => {
+        toggleSidebar(true); // Open the sidebar after 1 second
+        setActiveSideBar(menuItems[index].targetComponent); // Set the target SideBar
+      }, 800); // Run after 1 second
+    } else {
+      toggleSidebar(true); // Open the sidebar immediately if the menu is not expanded
+      setActiveSideBar(menuItems[index].targetComponent); // Set the target SideBar
+    }
+
     const middleIndex = Math.floor(visibleItems / 2);
     const offset = (index - currentIndex + totalItems) % totalItems;
     setCurrentIndex((prevIndex) => (prevIndex + offset - middleIndex + totalItems) % totalItems);
-
-    toggleSidebar(true); // Open the sidebar
-    setActiveSideBar(menuItems[index].targetComponent); // Set the target SideBar
-
     // Extend the timer by 10 seconds on click
     extendTimer();
   };

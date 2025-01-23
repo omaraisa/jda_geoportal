@@ -1,83 +1,131 @@
 .messagesContainer {
-    position: absolute; /* Make it an overlay */
-    bottom: 0; /* Align to the bottom of the viewport */
-    left: 0; /* Align to the left */
-    width: 100%; /* Full width of the map canvas */
-    max-height: 100%; /* Ensure it doesn't exceed the viewport height */
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping when there's no more vertical space */
-    flex-direction: row-reverse; /* Stack messages from right to left */
-    justify-content: flex-end; /* Align messages to the right */
-    align-items: flex-end; /* Align items to the bottom */
-    padding: 1rem;
-    gap: 1rem;
-    z-index: 9999; /* Ensure it appears above all other content */
-    pointer-events: none; /* Prevent blocking clicks on the map */
-    overflow: hidden; /* Prevent overflow outside the container */
-  }
-  
-  .message {
-    pointer-events: auto;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    border-radius: 8px;
-    width: 25%; /* Adjust width to fit multiple messages side by side */
-    max-width: 300px; /* Set a maximum width for each message */
-    min-width: 200px; /* Set a minimum width for readability */
-    margin: 0; /* Remove additional margins */
-    animation: slideIn 0.3s ease-out;
-    background: #f5f5f5; /* Default background */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
+  position: absolute; /* Make it an overlay */
+  bottom: 0; /* Align to the bottom of the viewport */
+  width: 50%; /* Set the width to 50% */
+  max-height: 100%; /* Ensure it doesn't exceed the viewport height */
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping when there's no more vertical space */
+  justify-content: flex-end; /* Default alignment for LTR */
+  align-items: flex-end; /* Align items to the bottom */
+  padding: 1rem;
+  gap: 1rem;
+  z-index: 3; /* Ensure it appears above all other content */
+  pointer-events: none; /* Prevent blocking clicks on the map */
+  overflow: hidden; /* Prevent overflow outside the container */
+}
 
-  
-  .messageHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
+.message {
+  position: relative; /* Ensure the bar is positioned correctly */
+  overflow: hidden; /* Hide the overflow of the bar animation */
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* Remove padding to allow header to span full width */
+  border-radius: 8px;
+  width: 40%; /* Adjust width to fit multiple messages side by side */
+  max-width: 400px; /* Set a maximum width for each message */
+  min-width: 200px; /* Set a minimum width for readability */
+  margin: 0; /* Remove additional margins */
+  animation: slideIn 0.3s ease-out;
+  background: #f5f5f5; /* Default background */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.messageBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px; /* Height of the bar */
+  animation: shrinkWidth linear forwards;
+}
+
+/* Inherit the border color from the parent message */
+.errorMessage .messageBar {
+  background-color: #e64555; /* Red for error */
+}
+
+.warningMessage .messageBar {
+  background-color: var(--yellow); /* Yellow for warning */
+}
+
+.infoMessage .messageBar {
+  background-color: #2f9d75; /* Green for info */
+}
+
+@keyframes shrinkWidth {
+  from {
+    width: 100%;
   }
-  
-  .messageBody {
-    margin-top: 0.5rem;
+  to {
+    width: 0%;
   }
-  
-  .closeButton {
-    background: transparent;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
+}
+
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  padding: 1rem; /* Add padding to the header */
+  border-top-left-radius: 8px; /* Match the message border radius */
+  border-top-right-radius: 8px; /* Match the message border radius */
+}
+
+/* Bright background colors for the header based on message type */
+.errorMessage .messageHeader {
+  background-color: #efacac; /* Bright red for error */
+  color: #962929; /* White text for better contrast */
+}
+
+.warningMessage .messageHeader {
+  background-color: #efdaa9; /* Bright yellow for warning */
+  color: #976d0b; /* Dark text for better contrast */
+}
+
+.infoMessage .messageHeader {
+  background-color: #87ceb4; /* Bright green for info */
+  color: #1d5641; /* White text for better contrast */
+}
+
+.messageBody {
+  padding: 1rem; /* Add padding to the body */
+  margin-top: 0; /* Remove margin-top */
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: inherit; /* Inherit the text color from the header */
+}
+
+/* Category-specific styles */
+.errorMessage {
+  background-color: #fff;
+  color: #8f2d37;
+}
+
+.warningMessage {
+  background-color: #fff;
+  color: #856404;
+}
+
+.infoMessage {
+  background-color: #fff;
+  color: #127b54;
+}
+
+/* Animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  /* Category-specific styles */
-  .errorMessage {
-    background-color: #fff;
-    color: #8f2d37;
-    border-left: 4px solid #e64555;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .warningMessage {
-    background-color: #fff;
-    color: #856404;
-    border-left: 4px solid var(--yellow);
-  }
-  
-  .infoMessage {
-    background-color: #fff;
-    color: #0c5460;
-    border-left: 4px solid #149295;
-  }
-  
-  /* Animation */
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
+}

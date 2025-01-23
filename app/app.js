@@ -56,28 +56,27 @@ export default function App() {
           </div>
 
           <div
-            className="absolute left-5 top-1/2 py-6 transform -translate-y-1/2 w-[300px] bg-transparent z-20 transition-all duration-1000 overflow-hidden"
+            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[300px] bg-transparent z-20 transition-all duration-1000 overflow-hidden ${
+              useStateStore((state) => state.language) === "en" ? "left-5" : "right-5" // Flip position based on language
+            }`}
             style={{ height: `${layoutState.sidebarHeight}vh` }} // Add "vh" here
-          >
+            >
             <Sidebar />
-          </div>
+            </div>
 
-          <div
-  className="absolute px-6 py-3 bottom-20 left-1/2 transform -translate-x-1/2 w-[calc(100%-600px)] max-w-[1200px] bg-transparent rounded-lg overflow-hidden"
-  style={{
-    // Static height instead of dynamic vh value
-    height: '40vh', // Set this to your desired fixed height
-  }}
->
-  <BottomPane />
-</div>
+            <div
+            className={`absolute px-6 py-3 bottom-20 left-1/2 transform -translate-x-1/2 w-[calc(100%-600px)] h-[40vh] max-w-[1200px] bg-transparent rounded-lg overflow-hidden transition-all duration-1000 ${
+              layoutState.bottomPaneOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+            }`}
+            >
+            <BottomPane />
+            </div>
 
-          {/* Tools Menu */}
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10">
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10">
             <ToolsMenu />
-          </div>
+            </div>
 
-          {/* Bottom Menu Tray */}
+            {/* Bottom Menu Tray */}
           <BottomMenuTray />
         </div>
       </div>

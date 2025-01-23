@@ -19,7 +19,7 @@ const useStateStore = create((set, get) => ({
   scenelayers: initialSceneLayers,
   widgets: {},
   targetLayerId: null,
-  center: [39.19797, 21.48581], // Default center (Jeddah, Saudi Arabia)
+  center: [39.19797, 21.51581], // Default center (Jeddah, Saudi Arabia)
   zoom: 12, // Default zoom level for 2D
   scale: 500000, // Default scale for 3D
   viewsSyncOn: false,
@@ -63,7 +63,6 @@ const useStateStore = create((set, get) => ({
       layout: {
         ...state.layout,
         bottomPaneOpen: isOpen,
-        bottomPaneHeight:isOpen? 30 :0,
       },
     }));
   },
@@ -138,14 +137,12 @@ addInitialLayers: (layers, targetView) => {
   removeLayer: (layerId) => {
     const { view, layers } = get();
     if (!view) {
-      console.error("View is not initialized.");
       return;
     }
 
     // Find the layer by ID
     const layerToRemove = view.map.findLayerById(layerId);
     if (!layerToRemove) {
-      console.error(`Layer with ID ${layerId} not found.`);
       return;
     }
 
@@ -198,15 +195,35 @@ addInitialLayers: (layers, targetView) => {
     }
   },
 
+
+   // Add a new widget instance
+   addWidget: (widgetId, widgetInstance) => {
+    set((state) => {
+      const updatedWidgets = { ...state.widgets };
+      updatedWidgets[widgetId] = widgetInstance; // Store the widget instance
+      return { widgets: updatedWidgets };
+    });
+  },
+
+  // Remove a widget
+  removeWidget: (widgetId) => {
+    set((state) => {
+      const updatedWidgets = { ...state.widgets };
+      delete updatedWidgets[widgetId]; // Remove the widget
+      return { widgets: updatedWidgets };
+    });
+  },
+
+
   addMessage: ({ title, body, type, duration = 10 }) => {
     const id = Date.now(); // Unique ID based on timestamp
     const expireAt = Date.now() + duration * 1000;
-    const newMessage = { id, title, body, type, expireAt, expired: false };
-
+    const newMessage = { id, title, body, type, duration, expireAt, expired: false };
+  
     set((state) => ({
       messages: { ...state.messages, [id]: newMessage },
     }));
-
+  
     setTimeout(() => get().expireMessage(id), duration * 1000);
   },
 

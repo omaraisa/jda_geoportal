@@ -1,11 +1,11 @@
 import useStateStore from "../stateManager";
 import DefaultComponent from "./sub_components/default-component";
 import dynamic from "next/dynamic";
-const AttributeTableWidgetComponent = dynamic(() => import("../widgets/attribute-table"), { ssr: false });
+const FeatureTableComponent = dynamic(() => import("../widgets/attribute-table"), { ssr: false });
 
 const components = {
   DefaultComponent,
-  AttributeTableWidgetComponent,
+  FeatureTableComponent,
 };
 
 const BottomPane = () => {
@@ -16,14 +16,8 @@ const BottomPane = () => {
 
   return (
     <div
-      className="flex flex-col justify-center items-center h-full rounded-lg mx-5 shadow-lg transition-all duration-500"
-      style={{
-        transform: `perspective(700px) rotateX(10deg) translateY(${isOpen ? '0' : '100%'})`,
-        transformOrigin: "center",
-        backfaceVisibility: "hidden",
-        opacity: isOpen ? 1 : 0,
-        pointerEvents: isOpen ? 'auto' : 'none',
-      }}
+      className="flex flex-col justify-center items-center h-full rounded-lg shadow-lg transition-all duration-500"
+     
     >
       {/* Header with Close Button */}
       <div
@@ -32,7 +26,7 @@ const BottomPane = () => {
       >
         <span>Attribute Table</span>
         <button
-          className="absolute right-4 text-white focus:outline-none transform hover:rotate-180 transition-transform duration-300 ease-in-out w-8 h-8 flex items-center justify-center"
+          className="text-white focus:outline-none transform hover:rotate-180 transition-transform duration-300 ease-in-out w-8 h-8 flex items-center justify-center"
           onClick={() => toggleBottomPane(false)}
         >
           <i className="fas fa-times"></i>
@@ -46,6 +40,10 @@ const BottomPane = () => {
       >
         {CurrentComponent && <CurrentComponent />}
       </div>
+      <div
+            className="w-full h-[5px] rounded-b-sm"
+            style={{ backgroundColor: "#5b245dd7" }}
+        ></div>
     </div>
   );
 };

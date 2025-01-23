@@ -1,0 +1,44 @@
+.label {
+  background-color: transparent;
+  border: 2px solid #cb69ce;
+  display: flex;
+  align-items: center;
+  border-radius: 50px;
+  width: 250px;
+  height: 50px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  padding: 5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.input {
+  display: none;
+}
+
+.title {
+  font-size: 17px;
+  color: #fff;
+  transition: all 0.4s ease;
+  position: absolute;
+  left: 18px;
+}
+
+.circle {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  transition: all 0.4s ease;
+  position: absolute;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}

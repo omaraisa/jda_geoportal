@@ -3,7 +3,7 @@ import Legend from "@arcgis/core/widgets/Legend";
 import useStateStore from "../stateManager";
 
 
-export default function LegendWidgetComponent() {
+export default function LegendComponent() {
   const legendRef = useRef(null);
   const legendWidget = useRef(null);
 

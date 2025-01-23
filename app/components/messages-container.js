@@ -4,8 +4,7 @@ import PopupMessage from "./popup-message";
 import styles from "./popup-message.module.css";
 
 export default function MessagesContainer() {
-  const messages = useStateStore((state) => state.messages);
-  const removeMessage = useStateStore((state) => state.removeMessage);
+  const {language ,messages ,removeMessage} = useStateStore();
 
   useEffect(() => {
     // Remove expired messages after their animation ends
@@ -21,7 +20,10 @@ export default function MessagesContainer() {
   }, [messages, removeMessage]);
 
   return (
-    <div className={styles.messagesContainer}>
+    <div
+      className={styles.messagesContainer}
+      style={{ right: language === "en" ? 0 : "auto", left: language === "ar" ? 0 : "auto" }}
+    >
       {Object.values(messages).map((message) =>
         !message.expired ? (
           <PopupMessage key={message.id} message={message} />

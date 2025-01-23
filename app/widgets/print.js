@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import Print from "@arcgis/core/widgets/Print";
 import useStateStore from "../stateManager";
 
-export default function PrintWidgetComponent() {
+export default function PrintComponent() {
   const printRef = useRef(null);
   const printWidget = useRef(null); // Persist the Print widget
 

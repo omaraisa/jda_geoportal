@@ -3,7 +3,7 @@ import useStateStore from "../stateManager";
 import Bookmark from "../components/sub_components/bookmark";
 import { useTranslation } from "react-i18next";
 
-export default function BookmarkWidgetComponent() {
+export default function BookmarkComponent() {
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView); // Get the current view (2D or 3D) from Zustand
   const bookmarkName = useRef();
@@ -32,7 +32,7 @@ export default function BookmarkWidgetComponent() {
   return (
     <div className="flex-column-container">
       {!formVisible && (
-        <div className="flex-column-container mx-3">
+        <div className="flex-column-container mx-3 text-white">
           <button
             className="w-full bg-primary-light text-white font-semibold py-3 mx-auto my-5 hover:bg-primary-dark transition-all duration-300 flex items-center justify-center shadow-md"
             onClick={initAddBookmarkForm}
