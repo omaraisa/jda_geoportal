@@ -40,11 +40,11 @@ export default function ToolsMenu() {
       tooltip: "Attribute Query",
       targetComponent: "AttributeQueryComponent",
     },
-    // {
-    //   icon: "esri-icon-cursor-marquee", // Layer List Widget
-    //   tooltip: "Spatial Query",
-    //   targetComponent: "SpatialQueryComponent",
-    // },
+    {
+      icon: "esri-icon-cursor-marquee", // Layer List Widget
+      tooltip: "Spatial Query",
+      targetComponent: "SpatialQueryComponent",
+    },
     {
       icon: "esri-icon-legend", // Legend Widget
       tooltip: "Legend Widget",

@@ -29,7 +29,8 @@
     },
     "widgets" : {
       "query": {
-        "selectLayer": "Select Layer",
+        "selectLayer": "Target Layer",
+        "selectionLayer": "Selection Layer",
         "select": "Select",
         "selectField": "Select Field",
         "selectQueryCondition": "Select Query Condition",

@@ -42,10 +42,11 @@ const MainScene = () => {
         viewRef.current = new SceneView({
           container: sceneRef.current,
           map: scene,
-          center,
-          zoom,
-          scale,
-          heading: 270,
+          camera: {
+            position: { x: 39.03797, y: 21.51581, z: 4000 },
+            heading: 90,
+            tilt: 80,
+          },
           ui: {
             components: [],
           },
