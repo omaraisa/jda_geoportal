@@ -5,7 +5,7 @@ import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Sketch from "@arcgis/core/widgets/Sketch";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import { useTranslation } from "react-i18next";
 import styles from "./spatial-query.module.css";
 
@@ -210,15 +210,21 @@ export default function SpatialQueryComponent() {
 
 function clearSelection() {
   // Clear graphics and FeatureTable selection
-  graphicsLayerRef.current.removeAll();
+  if (graphicsLayerRef.current) {
+    graphicsLayerRef.current.removeAll();
+  }
+
   if (widgets.featureTableWidget) {
     widgets.featureTableWidget.highlightIds.removeAll();
   }
 
-
-  view.whenLayerView(state.targetLayer).then((layerView) => {
-    layerView.featureEffect = null; // Remove the highlight effect
-  });
+  if (state.targetLayer) {
+    view.whenLayerView(state.targetLayer).then((layerView) => {
+      if (layerView) {
+        layerView.featureEffect = null; // Remove the highlight effect
+      }
+    });
+  }
 
   view.map.layers.forEach((layer) => {
     if (layer.title === "Query Layer" || layer.title === "Query Results") {
@@ -226,7 +232,9 @@ function clearSelection() {
     }
   });
 
-  view.graphics.removeAll();
+  if (view.graphics) {
+    view.graphics.removeAll();
+  }
 
 }
 
@@ -291,14 +299,14 @@ return (
             !state.selectionMethodChecked ? styles.visible : styles.hidden
           }`}
         >
-          By Drawing
+          By Layer
         </p>
         <p
           className={`${styles.title} ${
             state.selectionMethodChecked ? styles.visible : styles.hidden
           }`}
         >
-          By Layer
+          By Drawing
         </p>
       </label>
     </div>
@@ -308,9 +316,9 @@ return (
         display: state.selectionMethodChecked ? "block" : "none",
       }}
     ></div>
-    <div
+    <div  className="flex flex-col w-full space-y-2"
       style={{
-        display: !state.selectionMethodChecked ? "block" : "none",
+        display: !state.selectionMethodChecked ? "flex" : "none",
       }}
     >
       <label htmlFor="selectionLayer" className="font-semibold text-white">
@@ -338,7 +346,7 @@ return (
         className="flex-grow p-2 bg-primary rounded-sm hover:bg-primary-dark transition-all duration-200 text-center text-white mt-2"
         onClick={runQueryByLayer}
       >
-        {t("widgets.query.runQuery")}
+        {t("widgets.query.search")}
       </button>
     </div>
     <div className="flex space-x-2 w-full">

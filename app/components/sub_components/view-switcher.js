@@ -1,4 +1,4 @@
-import useStateStore from "../../stateManager";
+import useStateStore from "@/stateManager";
 import styles from "./view-switcher.module.css";
 import { useState, useCallback, useEffect } from "react";
 

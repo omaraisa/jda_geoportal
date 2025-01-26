@@ -1,4 +1,4 @@
-import useStateStore from "../../stateManager";
+import useStateStore from "@/stateManager";
 import { useTranslation } from "react-i18next";
 
 export default function SidebarHeader() {

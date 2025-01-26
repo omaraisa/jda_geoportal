@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import { useTranslation } from "react-i18next";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 

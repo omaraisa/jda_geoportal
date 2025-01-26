@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import LayerList from "@arcgis/core/widgets/LayerList";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 
 export default function LayerListComponent() {
   const layerListRef = useRef(null);

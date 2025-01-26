@@ -7,8 +7,9 @@ import esriConfig from "@arcgis/core/config";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import IdentityManager from "@arcgis/core/identity/IdentityManager";
 import ServerInfo from "@arcgis/core/identity/ServerInfo";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import BasemapToggle from "@arcgis/core/widgets/BasemapToggle";
+import wgs84ToUtmZone37N from "@/modules/utils/wgs84ToUtmZone37N";
 
 const MainMap = () => {
   const mapRef = useRef(null); // Reference to the MapView container
@@ -23,35 +24,31 @@ const MainMap = () => {
   const updateMapView = useStateStore((state) => state.updateMapView);
   const updateTargetView = useStateStore((state) => state.updateTargetView);
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
-  // const swapViews = useStateStore((state) => state.swapViews);
-  const addLayer = useStateStore((state) => state.addLayer);
   const setAppReady = useStateStore((state) => state.setAppReady);
   const maplayers = useStateStore((state) => state.maplayers);
   const addInitialLayers = useStateStore((state) => state.addInitialLayers);
 
-  useEffect(() => {
-
-    if(!viewRef.current) {
-      esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
-      const username = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_USERNAME;
-      const password = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_PASSWORD;
-      let serverInfo = new ServerInfo();
-      serverInfo.server = process.env.NEXT_PUBLIC_PORTAL_URL;
-      serverInfo.tokenServiceUrl = process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL;
-      serverInfo.hasServer = true;
-      IdentityManager.registerServers([serverInfo]);
+  if (!viewRef.current) {
+    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
+    const username = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_USERNAME;
+    const password = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_PASSWORD;
+    let serverInfo = new ServerInfo();
+    serverInfo.server = process.env.NEXT_PUBLIC_PORTAL_URL;
+    serverInfo.tokenServiceUrl =
+      process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL;
+    serverInfo.hasServer = true;
+    IdentityManager.registerServers([serverInfo]);
 
     IdentityManager.generateToken(serverInfo, {
       username: username,
       password: password,
       client: "referer",
-      referer: window.location.origin
-    })
-    .then(function(response) {
+      referer: window.location.origin,
+    }).then(function (response) {
       IdentityManager.registerToken({
         server: serverInfo.server,
         token: response.token,
-        expires: response.expires
+        expires: response.expires,
       });
 
       try {
@@ -65,24 +62,69 @@ const MainMap = () => {
           zoom,
           rotation: 270, // Set default rotation to 90 degrees
           ui: {
-            components: [] 
-          }
+            components: [],
+          },
         });
 
         viewRef.current
           .when(() => {
             const basemapToggle = new BasemapToggle({
               view: viewRef.current,
-              nextBasemap: "satellite"
+              nextBasemap: "satellite",
             });
 
             viewRef.current.ui.add(basemapToggle, {
-              position: "bottom-right"
+              position: "bottom-right",
             });
+
+            // Create a div for coordinates
+            const coordinatesDiv = document.createElement("div");
+            coordinatesDiv.style.position = "absolute";
+            coordinatesDiv.style.bottom = "10px";
+            coordinatesDiv.style.left = "10px";
+            coordinatesDiv.style.padding = "5px";
+            coordinatesDiv.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+            coordinatesDiv.style.fontSize = "12px";
+            coordinatesDiv.style.zIndex = "10";
+            coordinatesDiv.innerHTML = "Lat: 0, Lon: 0, UTM: 0, 0";
+            viewRef.current.container.appendChild(coordinatesDiv);
+
+            const pointerMoveHandler = viewRef.current.on("pointer-move", (event) => {
+              // Get the screen point (x, y) of the mouse pointer
+              const screenPoint = {
+                x: event.x,
+                y: event.y,
+              };
+
+              // Convert the screen point to a map point (longitude, latitude)
+              const mapPoint = viewRef.current.toMap(screenPoint);
+
+              // Convert the map point to geographic coordinates (longitude, latitude)
+              const lon = mapPoint.longitude.toFixed(6);
+              const lat = mapPoint.latitude.toFixed(6);
+
+              const utmPoint = wgs84ToUtmZone37N(lat, lon);
+
+                // Get the UTM coordinates
+                const utmPointX = utmPoint.x.toFixed(1); // UTM Easting
+                const utmPointY = utmPoint.y.toFixed(1); // UTM Northing
+
+                // Update the coordinates display
+                coordinatesDiv.innerHTML = `Lat: ${lat}, Lon: ${lon}     |     UTM: ${utmPointX}, ${utmPointY}`;
+         
+            });
+
+            // Cleanup the pointer-move listener on unmount
+            return () => {
+              if (pointerMoveHandler) {
+                console.log("out")
+                pointerMoveHandler.remove();
+              }
+            };
+
             updateMapView(viewRef.current);
-          updateTargetView(viewRef.current);
-          addInitialLayers(maplayers, viewRef.current);
-            
+            updateTargetView(viewRef.current);
+            addInitialLayers(maplayers, viewRef.current);
           })
           .catch((error) => {
             addMessage({
@@ -102,37 +144,27 @@ const MainMap = () => {
       }
     });
   }
-    // Cleanup on component unmount
-    return () => {
-      if (viewRef.current) {
-        // viewRef.current.destroy();
-        // updateMapView(null);
 
+  useEffect(() => {
+    if (viewsSyncOn && viewRef.current && sceneView && targetView) {
+      console.log(targetView);
+      let handleCenterChange;
+      if (targetView.type === "2d") {
+        handleCenterChange = viewRef.current.watch("center", () => {
+          sceneView.center = viewRef.current.center;
+          sceneView.scale = viewRef.current.scale;
+        });
+      } else if (handleCenterChange) {
+        handleCenterChange.remove(); // Cleanup watcher if it exists
       }
-    };
-  }, [addMessage, center, zoom, updateMapView, setAppReady]);
 
-   useEffect(() => {
-      if (viewsSyncOn && viewRef.current && sceneView && targetView) {
-        console.log(targetView)
-        let handleCenterChange;
-        if (targetView.type === "2d") {
-          handleCenterChange = viewRef.current.watch("center", () => {
-            sceneView.center = viewRef.current.center;
-            sceneView.scale = viewRef.current.scale;
-          });
-        } else if (handleCenterChange) {
-          handleCenterChange.remove(); // Cleanup watcher if it exists
+      return () => {
+        if (handleCenterChange) {
+          handleCenterChange.remove(); // Cleanup watcher
         }
-            
-        return () => {
-          if (handleCenterChange) {
-            handleCenterChange.remove(); // Cleanup watcher
-          }
-        };
-      }
-    }, [viewsSyncOn,sceneView,targetView]);
-
+      };
+    }
+  }, [viewsSyncOn, sceneView, targetView]);
 
   useEffect(() => {
     if (viewRef.current) {
@@ -140,22 +172,25 @@ const MainMap = () => {
       if (!viewRef.current.eventHandlers) {
         viewRef.current.eventHandlers = {};
       }
-  
+
       const existingHandlers = viewRef.current.eventHandlers;
-  
+
       if (!existingHandlers["pointer-down"]) {
         const handlePointerDown = () => {
           if (viewRef.current !== targetView) {
             updateTargetView(viewRef.current);
           }
         };
-  
+
         // Add the event handler
-        const pointerDownHandler = viewRef.current.on("pointer-down", handlePointerDown);
-  
+        const pointerDownHandler = viewRef.current.on(
+          "pointer-down",
+          handlePointerDown
+        );
+
         // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
-  
+
         // Cleanup listener
         return () => {
           if (pointerDownHandler) {
@@ -166,9 +201,6 @@ const MainMap = () => {
       }
     }
   }, [viewsSyncOn, viewRef.current, targetView]);
-
-
-
 
   return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 };

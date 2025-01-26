@@ -1,5 +1,5 @@
 import styles from "./popup-message.module.css";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import { useEffect, useRef } from "react";
 
 export default function PopupMessage({ message }) {

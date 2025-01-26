@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import FeatureTable from "@arcgis/core/widgets/FeatureTable";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 
 let featureTableWidget; // Keep the widget as a persistent instance
 export default function FeatureTableComponent() {

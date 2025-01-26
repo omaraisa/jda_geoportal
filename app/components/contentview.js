@@ -2,7 +2,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import Split from "react-split";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import Loading from "./sub_components/loading";
 import MessageContainer from "./messages-container";
 
@@ -36,7 +36,7 @@ function ContentView() {
         <Split
           sizes={splitSizes} // Dynamic sizes based on viewMode
           minSize={[0, 0]} // Minimum size for each pane
-          gutterSize={useStateStore((state) => state.viewMode) === "Dual" ? 4 : 0} // Hide gutter when not in Dual mode
+          gutterSize={useStateStore((state) => state.viewMode) === "Dual" ? 6 : 0} // Hide gutter when not in Dual mode
           direction="horizontal" // Horizontal split
           style={{ display: "flex", width: "100%", height: "100%" }}
           

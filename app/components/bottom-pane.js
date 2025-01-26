@@ -1,7 +1,7 @@
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import DefaultComponent from "./sub_components/default-component";
 import dynamic from "next/dynamic";
-const FeatureTableComponent = dynamic(() => import("../widgets/attribute-table"), { ssr: false });
+const FeatureTableComponent = dynamic(() => import("@/widgets/attribute-table"), { ssr: false });
 
 const components = {
   DefaultComponent,
@@ -11,7 +11,6 @@ const components = {
 const BottomPane = () => {
   const currentComponentName = useStateStore((state) => state.activeBottomPane);
   const CurrentComponent = components[currentComponentName];
-  const isOpen = useStateStore((state) => state.layout.bottomPaneOpen);
   const toggleBottomPane = useStateStore((state) => state.toggleBottomPane);
 
   return (

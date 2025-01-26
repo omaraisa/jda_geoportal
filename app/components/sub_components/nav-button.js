@@ -1,4 +1,4 @@
-import useStateStore from "../../stateManager"; // Import Zustand state
+import useStateStore from "@/stateManager"; // Import Zustand state
 
 export default function NavButton({ toolTip, iconClass, targetComponent }) {
   const activeSideBar = useStateStore((state) => state.activeSideBar);

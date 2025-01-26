@@ -77,6 +77,13 @@ button, a, i, [role="button"], [onclick] {
   text-align: right;
 }
 
+button {
+  display: flex;          /* Use flexbox for easy centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center;    /* Center vertically */
+  cursor: pointer;        /* Change cursor to pointer on hover */
+}
+
 .gutter {
   background-color: var(--primary);
 }

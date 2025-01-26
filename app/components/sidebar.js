@@ -1,36 +1,36 @@
 import React, { Suspense } from "react";
 import Loading from "./sub_components/loading";
 import DefaultComponent from "./sub_components/default-component";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import SidebarHeader from "./sub_components/sidebar-header";
 import dynamic from "next/dynamic";
 
 const BasemapGalleryComponent = dynamic(
-  () => import("../widgets/basemap-gallery"),
+  () => import("@/widgets/basemap-gallery"),
   { ssr: false }
 );
-const EditorComponent = dynamic(() => import("../widgets/editor"), {
+const EditorComponent = dynamic(() => import("@/widgets/editor"), {
   ssr: false,
 });
-const PrintComponent = dynamic(() => import("../widgets/print"), {
+const PrintComponent = dynamic(() => import("@/widgets/print"), {
   ssr: false,
 });
 const LayerListComponent = dynamic(
-  () => import("../widgets/layer-list"),
+  () => import("@/widgets/layer-list"),
   { ssr: false }
 );
-const LegendComponent = dynamic(() => import("../widgets/legend"), {
+const LegendComponent = dynamic(() => import("@/widgets/legend"), {
   ssr: false,
 });
-const BookmarkComponent = dynamic(() => import("../widgets/bookmarks"), {
+const BookmarkComponent = dynamic(() => import("@/widgets/bookmarks"), {
   ssr: false,
 });
 const AttributeQueryComponent = dynamic(
-  () => import("../widgets/attribute-query"),
+  () => import("@/widgets/attribute-query"),
   { ssr: false }
 );
 const SpatialQueryComponent = dynamic(
-  () => import("../widgets/spatial-query"),
+  () => import("@/widgets/spatial-query"),
   { ssr: false }
 );
 

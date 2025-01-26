@@ -5,7 +5,7 @@ import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import esriConfig from "@arcgis/core/config";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import Loading from "./sub_components/loading";
 
 const MainScene = () => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import useStateStore from "../stateManager";
+import useStateStore from "@/stateManager";
 import styles from "./tools-menu.module.css";
 
 export default function ToolsMenu() {

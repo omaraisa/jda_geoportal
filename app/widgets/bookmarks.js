@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import useStateStore from "../stateManager";
-import Bookmark from "../components/sub_components/bookmark";
+import useStateStore from "@/stateManager";
+import Bookmark from "@/components/sub_components/bookmark";
 import { useTranslation } from "react-i18next";
 
 export default function BookmarkComponent() {
