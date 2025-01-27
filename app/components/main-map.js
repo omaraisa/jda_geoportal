@@ -114,14 +114,7 @@ const MainMap = () => {
          
             });
 
-            // Cleanup the pointer-move listener on unmount
-            return () => {
-              if (pointerMoveHandler) {
-                console.log("out")
-                pointerMoveHandler.remove();
-              }
-            };
-
+            
             updateMapView(viewRef.current);
             updateTargetView(viewRef.current);
             addInitialLayers(maplayers, viewRef.current);

@@ -69,7 +69,7 @@ export default function BookmarkComponent() {
             placeholder={t('widgets.bookmarks.enterName')}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300 mb-4"
           />
-          <div className="flex space-x-4">
+          <div className="flex gap-4">
             <button
               className="w-full bg-primary-light text-white font-semibold py-3 rounded-lg hover:bg-primary-dark transition-all duration-300 flex items-center justify-center shadow-md"
               onClick={handleAddBookmark}

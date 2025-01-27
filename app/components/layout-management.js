@@ -1,7 +1,7 @@
 export const defaultLayout = {
   toolsMenuExpanded: false,
-  sidebarOpen: false,
-  sidebarHeight: 0, 
+  sidebarOpen: true,
+  sidebarHeight: 90, 
   bottomPaneOpen: false,
 
 };

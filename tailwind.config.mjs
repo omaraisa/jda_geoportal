@@ -11,14 +11,14 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "#934B96",
-          light: "#cb69ce",
-          dark: "#5b245d",
-        },
-        secondary: {
           DEFAULT: "#149295",
           light: "#1FAAA8",
           dark: "#0D706A",
+        },
+        secondary: {
+          DEFAULT: "#e7af39",
+          light: "#f8c862",
+          dark: "#bb8f30",
         },
         tertiary: {
           DEFAULT: "#3BBFAD",
@@ -29,6 +29,11 @@ export default {
           DEFAULT: "#ca5551",
           light: "#f1a5a2",
           dark: "#a3302c",
+        },
+        yellow: {
+          DEFAULT: "var(--yellow)",
+          light: "var(--yellow-light)",
+          dark: "var(--yellow-dark)",
         },
       },
     },

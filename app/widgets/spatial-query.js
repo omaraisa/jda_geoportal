@@ -274,9 +274,10 @@ return (
       <label
         className={styles.label}
         style={{
+          background: "white",
           border: !state.selectionMethodChecked
-            ? "2px solid #1FAAA8"
-            : " 2px solid #cb69ce",
+            ? "2px solid var(--yellow)"
+            : " 2px solid var(--primary)",
         }}
       >
         <input
@@ -289,8 +290,8 @@ return (
           className={styles.circle}
           style={{
             backgroundColor: !state.selectionMethodChecked
-              ? "#1FAAA8"
-              : "#cb69ce",
+              ? "var(--yellow)"
+              : "var(--primary)",
             right: state.selectionMethodChecked ? "calc(100% - 45px)" : "5px",
           }}
         ></span>
@@ -298,6 +299,9 @@ return (
           className={`${styles.title} ${
             !state.selectionMethodChecked ? styles.visible : styles.hidden
           }`}
+          style={{
+              color:"var(--yellow-dark)"
+          }}
         >
           By Layer
         </p>
@@ -305,6 +309,9 @@ return (
           className={`${styles.title} ${
             state.selectionMethodChecked ? styles.visible : styles.hidden
           }`}
+          style={{
+            color:"var(--primary)"
+        }}
         >
           By Drawing
         </p>
@@ -343,13 +350,13 @@ return (
         })}
       </select>
       <button
-        className="flex-grow p-2 bg-primary rounded-sm hover:bg-primary-dark transition-all duration-200 text-center text-white mt-2"
+        className="flex-grow p-2 bg-yellow rounded-sm hover:bg-yellow-dark transition-all duration-200 text-center text-white mt-2"
         onClick={runQueryByLayer}
       >
         {t("widgets.query.search")}
       </button>
     </div>
-    <div className="flex space-x-2 w-full">
+    <div className="flex gap-2 w-full">
       <button
         className="flex-grow p-2 bg-primary rounded-sm hover:bg-primary-dark transition-all duration-200 text-center text-white"
         onClick={clearSelection}

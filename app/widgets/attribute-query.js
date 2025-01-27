@@ -95,7 +95,7 @@ export default function AttributeQueryComponent() {
     };
 
     // Get the selected field's type
-    const selectedField = state.targetLayer.fields.find(
+    const selectedField = state.targetLayer?.fields?.find(
       (field) => field.name === queryParams.queryField
     );
     const isTextField = selectedField?.type === "string"; // Check if the field is of type text/string
@@ -306,151 +306,147 @@ export default function AttributeQueryComponent() {
 
   return (
     <div className="flex flex-col space-y-4 p-4">
-
-      <div className="flex flex-col space-y-2 w-full">
+      <div className="flex flex-col  w-full">
         <label htmlFor="layerSelector" className="font-semibold text-white">
           {t("widgets.query.selectLayer")}
         </label>
-        <select
-          ref={layerSelector}
-          id="layerSelector"
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
-          onChange={() => prepareQueryParams(state)}
-        >
-          <option value="" hidden>
-            {t("widgets.query.select")}
-          </option>
-          {state.layersArray.map((layer, index) => {
-            if (supportedLayerTypes.includes(layer.type)) {
-              return (
-                <option key={layer.id} value={index}>
-                  {layer.title}
-                </option>
-              );
-            }
-          })}
-        </select>
-      </div>
-
-      <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="fieldSelector" className="font-semibold text-white">
-          {t("widgets.query.selectField")}
-        </label>
-        <select
-          ref={fieldSelector}
-          id="fieldSelector"
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
-        >
-          <option value="" hidden>
-            {t("widgets.query.select")}
-          </option>
-          {state.fieldsNames.map((fieldName, index) => {
-            return (
-              <option key={index} value={fieldName}>
-                {fieldName}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-
-      <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="operatorSelector" className="font-semibold text-white">
-          {t("widgets.query.selectQueryCondition")}
-        </label>
-        <select
-          ref={operatorSelector}
-          id="operatorSelector"
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
-        >
-          <option value="=">{t("widgets.query.equals")}</option>
-          <option value=">">{t("widgets.query.greaterThan")}</option>
-          <option value="<">{t("widgets.query.lessThan")}</option>
-        </select>
-      </div>
-
-      <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="inputTypeSelector" className="font-semibold text-white">
-          {t("widgets.query.selectInputType")}
-        </label>
-        <select
-          ref={inputTypeSelector}
-          id="inputTypeSelector"
-          onChange={() =>
-            toggleInputMode(state, inputTypeSelector.current.value)
-          }
-          className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
-        >
-          <option value={"manual"}>{t("widgets.query.manualInput")}</option>
-          <option value={"from data"}>{t("widgets.query.fromData")}</option>
-        </select>
-      </div>
-
-      {state.inputMethod === "manual" ? (
-        <div className="flex flex-col space-y-2 w-full">
-          <label htmlFor="queryInput" className="font-semibold text-white">
-            {t("widgets.query.enterValue")}
-          </label>
-          <input
-            ref={insertedQueryValue}
-            type="text"
-            id="queryInput"
-            className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
-          />
-        </div>
-      ) : (
-        <div className="flex flex-col space-y-2 w-full">
-          <label htmlFor="queryValues" className="font-semibold text-white">
-            {t("widgets.query.selectValue")}
-          </label>
+        <div className="select">
           <select
-            ref={selectedQueryValue}
-            id="queryValues"
-            className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
+            defaultValue=""
+            ref={layerSelector}
+            id="layerSelector"
+            onChange={() => prepareQueryParams(state)}
           >
             <option value="" hidden>
               {t("widgets.query.select")}
             </option>
-            {(() => {
-              const targetField = fieldSelector.current.value;
-
-              // Extract unique values using a Set
-              const uniqueValues = [
-                ...new Set(
-                  state.allFeatures
-                    .map((feature) => feature.attributes[targetField])
-                    .filter((value) => value !== null) // Filter out null values
-                ),
-              ];
-
-              // Render unique values as options
-              return uniqueValues.map((value, index) => (
-                <option key={index} value={value}>
-                  {value}
-                </option>
-              ));
-            })()}
+            {state.layersArray.map((layer, index) => {
+              if (supportedLayerTypes.includes(layer.type)) {
+                return (
+                  <option key={layer.id} value={index}>
+                    {layer.title}
+                  </option>
+                );
+              }
+            })}
           </select>
+        </div>
+      </div>
+
+      <div className="flex flex-col  w-full">
+        <label htmlFor="fieldSelector" className="font-semibold text-white">
+          {t("widgets.query.selectField")}
+        </label>
+        <div className="select">
+          <select ref={fieldSelector} id="fieldSelector">
+            <option value="" hidden>
+              {t("widgets.query.select")}
+            </option>
+            {state.fieldsNames.map((fieldName, index) => {
+              return (
+                <option key={index} value={fieldName}>
+                  {fieldName}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      </div>
+
+      <div className="flex flex-col  w-full">
+        <label htmlFor="operatorSelector" className="font-semibold text-white">
+          {t("widgets.query.selectQueryCondition")}
+        </label>
+        <div className="select">
+          <select ref={operatorSelector} id="operatorSelector">
+            <option value="=">{t("widgets.query.equals")}</option>
+            <option value=">">{t("widgets.query.greaterThan")}</option>
+            <option value="<">{t("widgets.query.lessThan")}</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="flex flex-col  w-full">
+        <label htmlFor="inputTypeSelector" className="font-semibold text-white">
+          {t("widgets.query.selectInputType")}
+        </label>
+        <div className="select">
+          <select
+            ref={inputTypeSelector}
+            id="inputTypeSelector"
+            onChange={() =>
+              toggleInputMode(state, inputTypeSelector.current.value)
+            }
+          >
+            <option value={"manual"}>{t("widgets.query.manualInput")}</option>
+            <option value={"from data"}>{t("widgets.query.fromData")}</option>
+          </select>
+        </div>
+      </div>
+
+      {state.inputMethod === "manual" ? (
+        <label htmlFor="queryInput" className="textInput">
+          <input
+            ref={insertedQueryValue}
+            type="text"
+            className="input-text"
+            id="queryInput"
+            placeholder="&nbsp;"
+          />
+          <span className="label">{t("widgets.query.enterValue")}</span>
+        </label>
+      ) : (
+        <div className="flex flex-col  w-full">
+          <label htmlFor="queryValues" className="font-semibold text-white">
+            {t("widgets.query.selectValue")}
+          </label>
+          <div className="select">
+            <select ref={selectedQueryValue} id="queryValues">
+              <option value="" hidden>
+                {t("widgets.query.select")}
+              </option>
+              {(() => {
+                const targetField = fieldSelector.current.value;
+
+                // Extract unique values using a Set
+                const uniqueValues = [
+                  ...new Set(
+                    state.allFeatures
+                      .map((feature) => feature.attributes[targetField])
+                      .filter((value) => value !== null) // Filter out null values
+                  ),
+                ];
+
+                // Render unique values as options
+                return uniqueValues.map((value, index) => (
+                  <option key={index} value={value}>
+                    {value}
+                  </option>
+                ));
+              })()}
+            </select>
+          </div>
         </div>
       )}
 
-      <div className="flex space-x-2 w-full">
+      <div className="flex gap-2 w-full">
         <button
-          className="flex-grow p-2 bg-primary text-white rounded-sm hover:bg-primary-dark transition-all duration-200 text-center"
+          className="btn btn-primary flex-grow"
           onClick={() => search(state)}
         >
           {t("widgets.query.search")}
         </button>
         <button
-          className="p-2 bg-red-500 text-white rounded-sm hover:bg-red-600 transition-all duration-200 text-center"
+          className="btn btn-secondary flex-grow"
           onClick={() => clearSearch(state)}
         >
           {t("widgets.query.clearSearch")}
         </button>
       </div>
-      <div className="flex space-x-2 w-full">
+
+      <div className="flex gap-2 w-full">
         <button
-          className="flex-grow p-2 bg-green-500 text-white rounded-sm hover:bg-green-600 transition-all duration-200 text-center"
+          className="btn btn-green flex-grow"
           disabled={state.downloadBtnDisabled}
           onClick={() => CreateSeparateLayer(state)}
         >
@@ -458,28 +454,47 @@ export default function AttributeQueryComponent() {
         </button>
       </div>
 
-            
-    <div className="flex space-x-2 w-full">
-      <button
-        className="flex-grow p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600 transition-all duration-200 text-center"
-        onClick={() => addMessage({ type: "info", title: t("systemMessages.info.genericSuccess.title"), body: t("systemMessages.info.genericSuccess.body"), duration: 15 })}
-      >
-        Info Message
-      </button>
-      <button
-        className="flex-grow p-2 bg-yellow-500 text-white rounded-sm hover:bg-yellow-600 transition-all duration-200 text-center"
-        onClick={() => addMessage({ type: "warning", title: t("systemMessages.warning.genericWarning.title"), body: t("systemMessages.warning.genericWarning.body"), duration: 15 })}
-      >
-        Warning Message
-      </button>
-      <button
-        className="flex-grow p-2 bg-red-500 text-white rounded-sm hover:bg-red-600 transition-all duration-200 text-center"
-        onClick={() => addMessage({ type: "error", title: t("systemMessages.error.genericError.title"), body: t("systemMessages.error.genericError.body"), duration: 15 })}
-      >
-        Error Message
-      </button>
-    </div>
-
+      <div className="flex gap-2 w-full">
+        <button
+          className="flex-grow p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600 transition-all duration-200 text-center"
+          onClick={() =>
+            addMessage({
+              type: "info",
+              title: t("systemMessages.info.genericSuccess.title"),
+              body: t("systemMessages.info.genericSuccess.body"),
+              duration: 15,
+            })
+          }
+        >
+          Info Message
+        </button>
+        <button
+          className="flex-grow p-2 bg-yellow-500 text-white rounded-sm hover:bg-yellow-600 transition-all duration-200 text-center"
+          onClick={() =>
+            addMessage({
+              type: "warning",
+              title: t("systemMessages.warning.genericWarning.title"),
+              body: t("systemMessages.warning.genericWarning.body"),
+              duration: 15,
+            })
+          }
+        >
+          Warning Message
+        </button>
+        <button
+          className="flex-grow p-2 bg-red-500 text-white rounded-sm hover:bg-red-600 transition-all duration-200 text-center"
+          onClick={() =>
+            addMessage({
+              type: "error",
+              title: t("systemMessages.error.genericError.title"),
+              body: t("systemMessages.error.genericError.body"),
+              duration: 15,
+            })
+          }
+        >
+          Error Message
+        </button>
+      </div>
     </div>
   );
 }

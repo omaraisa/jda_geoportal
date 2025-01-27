@@ -24,7 +24,17 @@
       "titles": {
           "BasemapGalleryComponent": "Basemap Gallery",
           "BookmarkComponent": "Bookmarks",
-          "AttributeQueryComponent": "Attribute Query"
+            "AttributeQueryComponent": "Attribute Query",
+            "LayerListComponent": "Layer List",
+            "LegendComponent": "Legend",
+            "SpatialQueryComponent": "Spatial Query",
+            "EditorComponent": "Editor",
+            "PrintComponent": "Print"
+          }
+    },
+    "bottomPane" : {
+      "titles": {
+          "FeatureTableComponent": "Attribute Table"
         }
     },
     "widgets" : {

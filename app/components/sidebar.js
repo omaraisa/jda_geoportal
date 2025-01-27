@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import Loading from "./sub_components/loading";
 import DefaultComponent from "./sub_components/default-component";
+import HTML_ELEMENTS_TEMPLATES from "./HTML_ELEMENTS_TEMPLATES";
 import useStateStore from "@/stateManager";
 import SidebarHeader from "./sub_components/sidebar-header";
 import dynamic from "next/dynamic";
@@ -67,14 +68,14 @@ return (
     >
         <div
             className="w-full rounded-t-2xl"
-            style={{ backgroundColor: "#5b245dd7" }}
+            style={{ backgroundColor: "var(--primary-dark-transparent)" }}
         >
             <SidebarHeader />
         </div>
 
         <div
             className="w-full flex-1 overflow-y-auto"
-            style={{ backgroundColor: "#934b9647" }}
+            style={{ backgroundColor: "var(--primary-light-transparent)" }}
         >
             <Suspense fallback={<Loading />}>
                 <CurrentComponent />
@@ -83,7 +84,7 @@ return (
 
         <div
             className="w-full h-[30px] rounded-b-2xl"
-            style={{ backgroundColor: "#5b245dd7" }}
+            style={{ backgroundColor: "var(--primary-dark-transparent)" }}
         ></div>
     </div>
 );
