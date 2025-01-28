@@ -27,11 +27,16 @@ export default function NavButton({ toolTip, iconClass, targetComponent }) {
       {/* Button */}
       <div
         onClick={handleClick}
-        className={`${NavButtonClass} w-10 h-10 flex items-center justify-center`}
+        className={`${NavButtonClass} w-10 h-10 flex items-center justify-center `}
       >
         <i
-          className={`${iconClass}`}
-          style={{ width: "24px", height: "24px", fontSize: "24px" }}
+          className={`${iconClass} `}
+          style={{
+            width: "24px",
+            height: "24px",
+            fontSize: "24px",
+            textShadow: "0px 1px 3px rgba(0, 0, 0, 0.8)", // Text shadow for better contrast
+          }}
         ></i>
       </div>
 

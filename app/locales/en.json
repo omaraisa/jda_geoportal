@@ -30,7 +30,8 @@
       "SpatialQueryComponent": "Spatial Query",
       "EditorComponent": "Editor",
       "PrintComponent": "Print",
-      "CoordinateConversionComponent": "Coordinate Conversion"
+      "CoordinateConversionComponent": "Coordinate Conversion",
+      "MeasurementComponent": "Measurement"
     }
   },
   "bottomPane": {
@@ -64,6 +65,13 @@
       "enterName": "Enter a name",
       "saveBookmark": "Save Bookmark",
       "cancel": "Cancel"
+    },
+    "measurements": {
+      "distance": "Distance",
+      "area": "Area",
+      "distanceMeasurement": "Distance Measurement",
+      "areaMeasurement": "Area Measurement",
+      "clear": "Clear"
     }
   },
   "systemMessages": {

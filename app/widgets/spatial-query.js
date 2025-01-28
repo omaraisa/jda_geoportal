@@ -251,14 +251,12 @@ return (
       <label htmlFor="targetLayer" className="font-semibold text-white">
         {t("widgets.query.selectLayer")}
       </label>
-      <select
-        ref={targetLayerRef}
-        id="targetLayer"
-        className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
-        onChange={setTargetLayer}
-      >
+    
+
+      <div className="select">
+      <select ref={targetLayerRef} id="targetLayer">
         <option value="" hidden>
-          {t("widgets.query.select")}
+          {t("widgets.query.selectLayer")}
         </option>
         {view?.map.layers.items.map((layer, index) => {
           if (supportedLayerTypes.includes(layer.type)) {
@@ -270,13 +268,14 @@ return (
           }
         })}
       </select>
+    </div>
 
       <label
         className={styles.label}
         style={{
           background: "white",
           border: !state.selectionMethodChecked
-            ? "2px solid var(--yellow)"
+            ? "2px solid var(--secondary)"
             : " 2px solid var(--primary)",
         }}
       >
@@ -290,7 +289,7 @@ return (
           className={styles.circle}
           style={{
             backgroundColor: !state.selectionMethodChecked
-              ? "var(--yellow)"
+              ? "var(--secondary)"
               : "var(--primary)",
             right: state.selectionMethodChecked ? "calc(100% - 45px)" : "5px",
           }}
@@ -300,7 +299,7 @@ return (
             !state.selectionMethodChecked ? styles.visible : styles.hidden
           }`}
           style={{
-              color:"var(--yellow-dark)"
+              color:"var(--secondary-dark)"
           }}
         >
           By Layer
@@ -331,11 +330,9 @@ return (
       <label htmlFor="selectionLayer" className="font-semibold text-white">
         {t("widgets.query.selectionLayer")}
       </label>
-      <select
-        ref={selectionLayerRef}
-        id="selectionLayer"
-        className="p-1 border border-gray-300 rounded-sm focus:outline-none focus:border-primary transition-all duration-300 w-full"
-      >
+
+      <div className="select">
+      <select ref={selectionLayerRef} id="selectionLayer">
         <option value="" hidden>
           {t("widgets.query.select")}
         </option>
@@ -349,21 +346,21 @@ return (
           }
         })}
       </select>
+    </div>
+
       <button
-        className="flex-grow p-2 bg-yellow rounded-sm hover:bg-yellow-dark transition-all duration-200 text-center text-white mt-2"
+        className="btn btn-primary w-full"
         onClick={runQueryByLayer}
       >
         {t("widgets.query.search")}
       </button>
     </div>
-    <div className="flex gap-2 w-full">
       <button
-        className="flex-grow p-2 bg-primary rounded-sm hover:bg-primary-dark transition-all duration-200 text-center text-white"
+        className="btn btn-danger w-full"
         onClick={clearSelection}
       >
         {t("widgets.query.clearSearch")}
       </button>
-    </div>
   </div>
 );
 }

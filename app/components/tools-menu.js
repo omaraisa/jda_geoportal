@@ -31,6 +31,11 @@ export default function ToolsMenu() {
       targetComponent: "PrintComponent",
     },
     {
+      icon: "esri-icon-measure", // Measurement Widget
+      tooltip: "Measurement Widget",
+      targetComponent: "MeasurementComponent",
+    },
+    {
       icon: "esri-icon-layers", // Layer List Widget
       tooltip: "Layer List Widget",
       targetComponent: "LayerListComponent",
@@ -197,8 +202,6 @@ export default function ToolsMenu() {
           ))}
         </div>
 
-        {/* Underline */}
-        <div className={styles.underline}></div>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1d1d1d;
 
   /* Primary Colors */
   --primary: #047B8B; /* Default primary color */
@@ -149,8 +149,8 @@ button, a, i, [role="button"], [onclick] {
 
 /* Primary button styles */
 .btn-primary {
-  background-color: var(--background);
-  color: var(--primary);
+  background-color: var(--primary-dark-transparent);
+  color: var(--background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 

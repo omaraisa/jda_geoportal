@@ -19,7 +19,7 @@
     color: white;
     z-index: 1;
     transition: opacity 0.5s ease, transform 0.5s ease;
-    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.7));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
   }
   
   .toggleButton.hidden {
@@ -85,7 +85,7 @@
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
+    width: 200%;
     height: 4px;
     background: linear-gradient(90deg, #9a02a8, #b518c4, #dd69e7, #771680);
     background-size: 400%;
@@ -115,22 +115,7 @@
   .navButton.right {
     right: -400px;
   }
-  
-  /* Underline */
-  .underline {
-    position: absolute;
-    bottom: -20px;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, #9a02a8, #b518c4, #dd69e7, #771680);
-    background-size: 400%;
-    animation: bottom-bar-effect 1.5s linear infinite;
-    border-radius: 5px;
-    box-shadow: 0 0 15px #9a02a8, 0 0 30px #b518c4, 0 0 45px #dd69e7;
-    transition: height 0.5s ease;
-  }
-  
+
   .menuContainer.expanded .underline {
     height: 0;
   }

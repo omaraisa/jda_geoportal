@@ -53,7 +53,7 @@ const MainMap = () => {
 
       try {
         // Initialize the Map and MapView
-        const map = new Map({ basemap: "dark-gray" });
+        const map = new Map({ basemap: "topo-vector" });
 
         viewRef.current = new MapView({
           container: mapRef.current,
