@@ -27,7 +27,7 @@ const BottomPane = () => {
       >
         {title}
         <button
-          className="text-white focus:outline-none transform hover:rotate-180 transition-transform duration-300 ease-in-out w-8 h-8 flex items-center justify-center"
+        className="close-btn flex items-center justify-center"
           onClick={() => toggleBottomPane(false)}
         >
           <i className="fas fa-times"></i>

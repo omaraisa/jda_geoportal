@@ -140,7 +140,6 @@ const MainMap = () => {
 
   useEffect(() => {
     if (viewsSyncOn && viewRef.current && sceneView && targetView) {
-      console.log(targetView);
       let handleCenterChange;
       if (targetView.type === "2d") {
         handleCenterChange = viewRef.current.watch("center", () => {

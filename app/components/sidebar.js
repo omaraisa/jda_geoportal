@@ -35,6 +35,11 @@ const SpatialQueryComponent = dynamic(
   { ssr: false }
 );
 
+const CoordinateConversionComponent = dynamic(
+  () => import("@/widgets/coordinates-conversion"),
+  { ssr: false }
+);
+
 const components = {
   Loading,
   DefaultComponent,
@@ -46,6 +51,7 @@ const components = {
   BookmarkComponent,
   AttributeQueryComponent,
   SpatialQueryComponent,
+  CoordinateConversionComponent,
 };
 
 export default function Sidebar() {

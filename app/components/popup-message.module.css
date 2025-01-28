@@ -94,14 +94,6 @@
   margin-top: 0; /* Remove margin-top */
 }
 
-.closeButton {
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: inherit; /* Inherit the text color from the header */
-}
-
 /* Category-specific styles */
 .errorMessage {
   background-color: #fff;

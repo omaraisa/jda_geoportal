@@ -30,7 +30,6 @@ const ViewSwitcher = () => {
     const activeMode = modes[activeIndex].value;
     switchViewMode(activeMode);
     setSyncing(activeMode === 'Dual');
-    console.log('Active mode:', activeMode);
   }, [activeIndex, switchViewMode]);
 
   const toggleView = useCallback(() => {

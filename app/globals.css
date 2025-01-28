@@ -167,6 +167,12 @@ button, a, i, [role="button"], [onclick] {
   color: var(--background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+/* Gray button styles */
+.btn-gray {
+  background-color: var(--gray-light);
+  color: var(--background);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
 /* Danger button styles */
 .btn-danger {
@@ -174,8 +180,22 @@ button, a, i, [role="button"], [onclick] {
   color: var(--background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+/* Close button styles */
+.close-btn {
+  width: 2rem; /* You can adjust the size to fit your design */
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
 
-.glow-btn::before {
+/* Glow effect using ::before */
+.close-btn::before {
   content: '';
   position: absolute;
   top: 50%;
@@ -190,17 +210,26 @@ button, a, i, [role="button"], [onclick] {
   pointer-events: none;
 }
 
-.glow-btn:hover::before {
+/* Hover effect for the glow and rotation */
+.close-btn:hover {
+  transform: rotate(180deg); /* Rotates the button on hover */
+}
+
+.close-btn:hover::before {
   width: 200%;
   height: 200%;
   opacity: 1;
 }
 
-.glow-btn:active::before {
-  width: 250%; 
+/* Active effect (when clicked) */
+.close-btn:active {
+  transform: rotate(360deg); /* Full rotation when clicked */
+}
+
+.close-btn:active::before {
+  width: 250%;
   height: 250%;
   opacity: 0;
-
 }
 
 .switch-input {

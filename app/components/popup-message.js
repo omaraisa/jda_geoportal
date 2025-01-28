@@ -32,7 +32,7 @@ export default function PopupMessage({ message }) {
       <div className={styles.messageHeader}>
         <h4>{title}</h4>
         <button
-          className={styles.closeButton}
+        className="close-btn flex items-center justify-center"
           onClick={() => {
             useStateStore.getState().expireMessage(id);
           }}

@@ -49,7 +49,8 @@ export default function App() {
         }}
       >
         {/* Inner content area */}
-        <div className="absolute inset-1 bg-[#182726] flex flex-col">
+        {/* <div className="absolute inset-1 w-full left-0 bg-[#182726] flex flex-col"> */}
+        <div className="absolute inset-y-1 left-0 right-0 bg-[#182726] flex flex-col">
           {/* ContentView (fills remaining space) */}
           <div className="flex-1 relative">
             <ContentView />

@@ -34,7 +34,7 @@ export default function SidebarHeader() {
 
       {/* Close Button */}
       <button
-        className="glow-btn w-4 h-4 hover:rotate-180 transition-transform duration-300 ease-in-out flex items-center justify-center"
+        className="close-btn flex items-center justify-center"
         onClick={()=> toggleSidebar(false)} // Close the 
       >
         <i className="fas fa-times"></i>

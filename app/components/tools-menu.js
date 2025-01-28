@@ -46,6 +46,11 @@ export default function ToolsMenu() {
       targetComponent: "SpatialQueryComponent",
     },
     {
+      icon: "esri-icon-map-pin", // Coordinate Conversion Widget
+      tooltip: "Coordinate Conversion",
+      targetComponent: "CoordinateConversionComponent",
+    },
+    {
       icon: "esri-icon-legend", // Legend Widget
       tooltip: "Legend Widget",
       targetComponent: "LegendComponent",

@@ -74,7 +74,6 @@ export default function AttributeQueryComponent() {
           type: "error",
           duration: 10,
         });
-        console.log("Query Error", error);
       });
   }
 
@@ -152,7 +151,6 @@ export default function AttributeQueryComponent() {
             type: "error",
             duration: 10,
           });
-          console.log("Query Error", error);
         });
     }
   }
