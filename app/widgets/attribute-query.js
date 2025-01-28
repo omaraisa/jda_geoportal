@@ -25,7 +25,7 @@ export default function AttributeQueryComponent() {
   const [state, setState] = useState({
     targetLayer: null,
     queryResultLayer: null,
-    resultLayerParameters: null,
+    resultLayerSource: null,
     fieldsNames: [],
     layersArray: [],
     inputMethod: "manual",
@@ -205,6 +205,20 @@ export default function AttributeQueryComponent() {
         graphicsLayer.add(outlineGraphic);
       });
 
+      
+
+      const resultLayerSource = response.features.map((feature) => {
+        const queryGraphic = new Graphic({
+          geometry: feature.geometry,
+          attributes: feature.attributes,
+        });
+        return queryGraphic;
+      });
+      setState((prevState) => ({
+        ...prevState,
+        resultLayerSource,
+      }));
+
       // Update the FeatureTable widget
       if (widgets.featureTableWidget) {
         const highlightIds = objectIds; // Use object IDs for highlighting
@@ -223,13 +237,12 @@ export default function AttributeQueryComponent() {
       // Zoom to the selected features
       view.goTo(response.features);
 
-      // Show a success message
-      // addMessage({
-      //   type: "info",
-      //   title: t('systemMessages.info.queryCompleted.title'),
-      //   body: `${t('systemMessages.info.queryCompleted.body')} ${state.targetLayer.title}`,
-      //   duration: 10,
-      // });
+      addMessage({
+        type: "info",
+        title: t('systemMessages.info.queryCompleted.title'),
+        body: `${t('systemMessages.info.queryCompleted.body')} ${state.targetLayer.title}`,
+        duration: 10,
+      });
 
       // Update the state with the query result
     });
@@ -296,9 +309,38 @@ export default function AttributeQueryComponent() {
       symbol: newSymbol,
     };
 
-    const newSelectionLayer = new FeatureLayer(state.resultLayerParameters);
-    newSelectionLayer.title = state.targetLayer.title + "_modified_copy";
-    newSelectionLayer.renderer = renderer;
+    const fieldInfos = state.targetLayer.fields.map((field) => {
+      return { fieldName: field.name };
+    });
+
+    const popupTemplate = {
+      content: [
+        {
+          type: "fields",
+          fieldInfos: fieldInfos,
+        },
+      ],
+    };
+
+    const fields = state.targetLayer.fields;
+    if (!fields.some((field) => field.type === "oid")) {
+      fields.unshift({
+        name: "ObjectID",
+        type: "oid",
+      });
+    }
+
+    const newSelectionLayer = new FeatureLayer({
+      title: state.targetLayer.title + "_modified",
+      geometryType: state.targetLayer.geometryType,
+      spatialReference: state.targetLayer.spatialReference,
+      popupEnabled: true,
+      source: state.resultLayerSource,
+      fields,
+      renderer,
+      popupTemplate,
+    } );
+    
     view.map.layers.add(newSelectionLayer);
   }
 

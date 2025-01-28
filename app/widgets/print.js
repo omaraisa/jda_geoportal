@@ -19,6 +19,8 @@ export default function PrintComponent() {
         view: view,
         container: printRef.current,
         printServiceUrl: "https://gis.jda.gov.sa/agserver/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task", // Update to your print service URL if different
+        // printTemplate: "CustomLayout", // Replace this with your custom layout name
+        // titleText: "Custom Map Title", // Optional: Title to add to the print output
       });
     }
 
@@ -38,3 +40,6 @@ export default function PrintComponent() {
     ></div>
   );
 }
+
+
+
