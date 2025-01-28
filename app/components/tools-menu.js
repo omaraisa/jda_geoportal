@@ -46,6 +46,11 @@ export default function ToolsMenu() {
       targetComponent: "AttributeQueryComponent",
     },
     {
+      icon: "esri-icon-lasso", // Sketch Widget
+      tooltip: "Sketch Widget",
+      targetComponent: "SketchComponent",
+    },
+    {
       icon: "esri-icon-cursor-marquee", // Layer List Widget
       tooltip: "Spatial Query",
       targetComponent: "SpatialQueryComponent",

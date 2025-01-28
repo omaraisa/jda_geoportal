@@ -34,13 +34,14 @@ const SpatialQueryComponent = dynamic(
   () => import("@/widgets/spatial-query"),
   { ssr: false }
 );
-
 const CoordinateConversionComponent = dynamic(
   () => import("@/widgets/coordinates-conversion"),
   { ssr: false }
 );
-
 const MeasurementComponent = dynamic(() => import("@/widgets/measurements"), {
+  ssr: false,
+});
+const SketchComponent = dynamic(() => import("@/widgets/sketch"), {
   ssr: false,
 });
 
@@ -57,6 +58,7 @@ const components = {
   SpatialQueryComponent,
   CoordinateConversionComponent,
   MeasurementComponent,
+  SketchComponent,
 };
 
 export default function Sidebar() {
@@ -73,30 +75,30 @@ export default function Sidebar() {
     );
   }
 
-return (
+  return (
     <div
-        className="flex flex-col w-full h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-3000"
+      className="flex flex-col w-full h-full rounded-2xl overflow-hidden shadow-lg transition-all duration-3000"
     >
-        <div
-            className="w-full rounded-t-2xl"
-            style={{ backgroundColor: "var(--primary-dark-transparent)" }}
-        >
-            <SidebarHeader />
-        </div>
+      <div
+        className="w-full rounded-t-2xl"
+        style={{ backgroundColor: "var(--primary-dark-transparent)" }}
+      >
+        <SidebarHeader />
+      </div>
 
-        <div
-            className="w-full flex-1 overflow-y-auto"
-            style={{ backgroundColor: "var(--primary-light-transparent)" }}
-        >
-            <Suspense fallback={<Loading />}>
-                <CurrentComponent />
-            </Suspense>
-        </div>
+      <div
+        className="w-full flex-1 overflow-y-auto"
+        style={{ backgroundColor: "var(--primary-light-transparent)" }}
+      >
+        <Suspense fallback={<Loading />}>
+          <CurrentComponent />
+        </Suspense>
+      </div>
 
-        <div
-            className="w-full h-[30px] rounded-b-2xl"
-            style={{ backgroundColor: "var(--primary-dark-transparent)" }}
-        ></div>
+      <div
+        className="w-full h-[30px] rounded-b-2xl"
+        style={{ backgroundColor: "var(--primary-dark-transparent)" }}
+      ></div>
     </div>
-);
+  );
 }

@@ -31,7 +31,8 @@
       "EditorComponent": "Editor",
       "PrintComponent": "Print",
       "CoordinateConversionComponent": "Coordinate Conversion",
-      "MeasurementComponent": "Measurement"
+      "MeasurementComponent": "Measurement",
+      "SketchComponent": "Sketch"
     }
   },
   "bottomPane": {
