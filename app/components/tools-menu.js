@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import useStateStore from "@/stateManager";
+import { useTranslation } from "react-i18next";
 import styles from "./tools-menu.module.css";
 
 export default function ToolsMenu() {
+  const { t } = useTranslation();
   const toolsMenuExpanded = useStateStore((state) => state.layout.toolsMenuExpanded);
   const sidebarOpen = useStateStore((state) => state.layout.sidebarOpen);
   const setToolsMenuExpansion = useStateStore((state) => state.setToolsMenuExpansion);
@@ -17,57 +19,57 @@ export default function ToolsMenu() {
   const menuItems = [
     {
       icon: "esri-icon-basemap", // Basemap Gallery
-      tooltip: "Base Map Gallery",
+      tooltip: t("toolsMenu.basemapGallery"),
       targetComponent: "BasemapGalleryComponent",
     },
     {
       icon: "esri-icon-edit", // Editor Widget
-      tooltip: "Editor Widget",
+      tooltip: t("toolsMenu.editorWidget"),
       targetComponent: "EditorComponent",
     },
     {
       icon: "esri-icon-printer", // Print Widget
-      tooltip: "Print Widget",
+      tooltip: t("toolsMenu.printWidget"),
       targetComponent: "PrintComponent",
     },
     {
       icon: "esri-icon-measure", // Measurement Widget
-      tooltip: "Measurement Widget",
+      tooltip: t("toolsMenu.measurementWidget"),
       targetComponent: "MeasurementComponent",
     },
     {
       icon: "esri-icon-layers", // Layer List Widget
-      tooltip: "Layer List Widget",
+      tooltip: t("toolsMenu.layerListWidget"),
       targetComponent: "LayerListComponent",
     },
     {
       icon: "esri-icon-search", // Attribute Query
-      tooltip: "Attribute Query",
+      tooltip: t("toolsMenu.attributeQuery"),
       targetComponent: "AttributeQueryComponent",
     },
     {
       icon: "esri-icon-lasso", // Sketch Widget
-      tooltip: "Sketch Widget",
+      tooltip: t("toolsMenu.sketchWidget"),
       targetComponent: "SketchComponent",
     },
     {
-      icon: "esri-icon-cursor-marquee", // Layer List Widget
-      tooltip: "Spatial Query",
+      icon: "esri-icon-cursor-marquee", // Spatial Query
+      tooltip: t("toolsMenu.spatialQuery"),
       targetComponent: "SpatialQueryComponent",
     },
     {
-      icon: "esri-icon-map-pin", // Coordinate Conversion Widget
-      tooltip: "Coordinate Conversion",
+      icon: "esri-icon-map-pin", // Coordinate Conversion
+      tooltip: t("toolsMenu.coordinateConversion"),
       targetComponent: "CoordinateConversionComponent",
     },
     {
       icon: "esri-icon-legend", // Legend Widget
-      tooltip: "Legend Widget",
+      tooltip: t("toolsMenu.legendWidget"),
       targetComponent: "LegendComponent",
     },
     {
       icon: "esri-icon-bookmark", // Bookmark Widget
-      tooltip: "Bookmark Widget",
+      tooltip: t("toolsMenu.bookmarkWidget"),
       targetComponent: "BookmarkComponent",
     },
   ];

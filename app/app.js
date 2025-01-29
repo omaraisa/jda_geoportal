@@ -14,14 +14,17 @@ import BottomPane from "./components/bottom-pane";
 export default function App() {
   // Extract necessary state and actions from the store
   const layoutState = useStateStore((state) => state.layout);
+  const loadLanguage = useStateStore((state) => state.loadLanguage);
+  // loadLanguage();
   const appReady = useStateStore((state) => state.appReady);
   const setAppReady = useStateStore((state) => state.setAppReady);
 
   // Simulate app loading | Must be removed in production
   React.useEffect(() => {
     const timer = setTimeout(() => {
+      loadLanguage();
       setAppReady(true);
-    }, 0); // 50 seconds delay
+    }, 200); // 50 seconds delay
     // }, 5000); // 50 seconds delay
 
     return () => clearTimeout(timer);

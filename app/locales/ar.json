@@ -74,6 +74,19 @@
       "clear": "مسح"
     }
   },
+  "toolsMenu": {
+    "basemapGallery": "معرض خرائط الأساس",
+    "editorWidget": "أداة التحرير",
+    "printWidget": "أداة الطباعة",
+    "measurementWidget": "أداة القياس",
+    "layerListWidget": "أداة قائمة الطبقات",
+    "attributeQuery": "استعلام وصفي",
+    "sketchWidget": "أداة الرسم",
+    "spatialQuery": "استعلام مكاني",
+    "coordinateConversion": "تحويل الإحداثيات",
+    "legendWidget": "أداة مفتاح الخريطة",
+    "bookmarkWidget": "أداة العلامات المرجعية"
+  },
   "systemMessages": {
     "info": {
       "genericSuccess": {

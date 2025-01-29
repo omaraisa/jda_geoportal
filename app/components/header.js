@@ -12,7 +12,7 @@ export default function Header() {
   return (
 <div className="absolute top-0 flex flex-row justify-between pr-5 min-h-16 text-white p-2 z-10 w-full">
   {/* Left Section */}
-  <div className="flex flex-row items-start flex-grow relative">
+  <div className="flex flex-row items-start flex-1 relative">
   {/* First Image */}
   <Image
     src={language === "ar" ? "/logo-ar.png" : "/logo.png"}
@@ -35,13 +35,13 @@ export default function Header() {
 
 
   {/* Middle Section (View Switcher) */}
-  <div className="flex flex-row items-center justify-center flex-grow">
+  <div className="flex flex-row items-center justify-center flex-1">
     <ViewSwitcher />
   </div>
 
   {/* Right Section */}
   <div
-    className={`flex flex-row items-center gap-2 flex-grow self-start justify-end ${
+    className={`flex flex-row items-center gap-2 flex-1 self-start justify-end ${
       language === "ar" ? "mr-auto" : "ml-auto"
     }`}
   >

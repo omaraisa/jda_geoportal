@@ -75,6 +75,19 @@
       "clear": "Clear"
     }
   },
+  "toolsMenu": {
+    "basemapGallery": "Base Map Gallery",
+    "editorWidget": "Editor Widget",
+    "printWidget": "Print Widget",
+    "measurementWidget": "Measurement Widget",
+    "layerListWidget": "Layer List Widget",
+    "attributeQuery": "Attribute Query",
+    "sketchWidget": "Sketch Widget",
+    "spatialQuery": "Spatial Query",
+    "coordinateConversion": "Coordinate Conversion",
+    "legendWidget": "Legend Widget",
+    "bookmarkWidget": "Bookmark Widget"
+  },
   "systemMessages": {
     "info": {
       "genericSuccess": {
