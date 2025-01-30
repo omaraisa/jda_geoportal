@@ -4,7 +4,7 @@
     left: 50%;
     transform: translateX(-50%);
     height: 15px;
-    background: linear-gradient(to right, #00ffff, #ff00ff, #00ffff);
+    background: linear-gradient(to right, #18def8, #44747a, #18def8);
     background-size: 200% 100%;
     animation: shine 3s linear infinite;
     border-radius: 5px 5px 0 0;

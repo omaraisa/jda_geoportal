@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateManager";
-import Image from 'next/image';
 
-const LanguageSwitcher = () => {
+const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();
 
   const language = useStateStore((state) => state.language);
   const setLanguage = useStateStore((state) => state.setLanguage);
-  
+
   const toggleLanguage = () => {
     const newLang = language === "en" ? "ar" : "en";
     setLanguage(newLang);

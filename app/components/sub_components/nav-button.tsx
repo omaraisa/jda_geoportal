@@ -1,6 +1,13 @@
+import React from "react";
 import useStateStore from "@/stateManager"; // Import Zustand state
 
-export default function NavButton({ toolTip, iconClass, targetComponent }) {
+interface NavButtonProps {
+  toolTip?: string;
+  iconClass: string;
+  targetComponent: string;
+}
+
+const NavButton: React.FC<NavButtonProps> = ({ toolTip, iconClass, targetComponent }) => {
   const activeSideBar = useStateStore((state) => state.activeSideBar);
   const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
   const toggleMenus = useStateStore((state) => state.toggleMenus);
@@ -27,10 +34,10 @@ export default function NavButton({ toolTip, iconClass, targetComponent }) {
       {/* Button */}
       <div
         onClick={handleClick}
-        className={`${NavButtonClass} w-10 h-10 flex items-center justify-center `}
+        className={`${NavButtonClass} w-10 h-10 flex items-center justify-center`}
       >
         <i
-          className={`${iconClass} `}
+          className={iconClass}
           style={{
             width: "24px",
             height: "24px",
@@ -48,4 +55,6 @@ export default function NavButton({ toolTip, iconClass, targetComponent }) {
       )}
     </div>
   );
-}
+};
+
+export default NavButton;

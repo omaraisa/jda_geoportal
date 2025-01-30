@@ -5,7 +5,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 
 const useStateStore = create((set, get) => ({
   // Initial State
-  language:"en",
+  language:localStorage.getItem("appLanguage") || "en",
   layout: defaultLayout,
   activeSideBar: "DefaultComponent",
   appReady: false,
@@ -38,13 +38,6 @@ const useStateStore = create((set, get) => ({
     document.documentElement.lang = lang; // Update <html> lang attribute
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; // Set direction
     localStorage.setItem("appLanguage", lang); // Save language to localStorage
-  },
-
-  loadLanguage: () => {
-    const savedLanguage = localStorage.getItem("appLanguage") || "en";
-    set({ language: savedLanguage });
-    document.documentElement.lang = savedLanguage; // Update <html> lang attribute
-    document.documentElement.dir = savedLanguage === "ar" ? "rtl" : "ltr"; // Set direction
   },
 
   setToolsMenuExpansion: (isExpanded) => {

@@ -7,6 +7,20 @@ import useStateStore from "@/stateManager";
 import { useTranslation } from "react-i18next";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 
+interface State {
+  targetLayer: FeatureLayer | null;
+  queryResultLayer: FeatureLayer | null;
+  resultLayerSource: Graphic[] | null;
+  fieldsNames: string[];
+  layersArray: any[];
+  inputMethod: string;
+  downloadBtnDisabled: boolean;
+  allFeatures: any[];
+  activeListener: boolean;
+  graphicsLayer: GraphicsLayer | null;
+  queryResult?: any[];
+}
+
 export default function AttributeQueryComponent() {
   const { t } = useTranslation();
   const [
@@ -16,13 +30,13 @@ export default function AttributeQueryComponent() {
     inputTypeSelector,
     insertedQueryValue,
     selectedQueryValue,
-  ] = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
+  ] = [useRef<HTMLSelectElement>(null), useRef<HTMLSelectElement>(null), useRef<HTMLSelectElement>(null), useRef<HTMLSelectElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLSelectElement>(null)];
 
   const view = useStateStore((state) => state.targetView);
   const addMessage = useStateStore((state) => state.addMessage);
   const widgets = useStateStore((state) => state.widgets);
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<State>({
     targetLayer: null,
     queryResultLayer: null,
     resultLayerSource: null,
@@ -32,25 +46,25 @@ export default function AttributeQueryComponent() {
     downloadBtnDisabled: true,
     allFeatures: [],
     activeListener: false,
-    graphicsLayer: null, // Added empty graphic layer parameter
+    graphicsLayer: null,
   });
 
   const supportedLayerTypes = ["csv", "feature", "geojson", "map-image"];
 
   useEffect(() => {
     if (view) {
-      setState({
-        ...state,
+      setState((prevState) => ({
+        ...prevState,
         layersArray: view.map.layers.items,
         activeListener: true,
-      });
+      }));
     }
   }, [view]);
 
-  function prepareQueryParams(state) {
-    const layerIndex = layerSelector.current.value;
+  function prepareQueryParams(state: State) {
+    const layerIndex = layerSelector.current?.value;
     const targetLayer = state.layersArray[layerIndex];
-    const fieldsNames = targetLayer.fields.map((field) => field.name);
+    const fieldsNames = targetLayer.fields.map((field: any) => field.name);
     const fetchAllFeaturesQuery = {
       outFields: ["*"],
       returnGeometry: false,
@@ -59,15 +73,15 @@ export default function AttributeQueryComponent() {
 
     targetLayer
       .queryFeatures(fetchAllFeaturesQuery)
-      .then(function (result) {
-        setState({
-          ...state,
+      .then(function (result: any) {
+        setState((prevState) => ({
+          ...prevState,
           targetLayer,
           fieldsNames,
           allFeatures: result.features,
-        });
+        }));
       })
-      .catch((error) => {
+      .catch((error: any) => {
         addMessage({
           title: t("systemMessages.error.queryError.title"),
           body: t("systemMessages.error.failedToCollectData.body"),
@@ -77,30 +91,29 @@ export default function AttributeQueryComponent() {
       });
   }
 
-  function toggleInputMode(state, mode) {
-    setState({ ...state, inputMethod: mode });
+  function toggleInputMode(state: State, mode: string) {
+    setState((prevState) => ({ ...prevState, inputMethod: mode }));
   }
 
-  function search(state) {
+  function search(state: State) {
     let queryValue =
       state.inputMethod === "manual"
-        ? insertedQueryValue.current.value
-        : selectedQueryValue.current.value;
+        ? insertedQueryValue.current?.value
+        : selectedQueryValue.current?.value;
 
     const queryParams = {
-      queryField: fieldSelector.current.value,
-      queryOperator: operatorSelector.current.value,
+      queryField: fieldSelector.current?.value,
+      queryOperator: operatorSelector.current?.value,
       queryValue,
     };
 
-    // Get the selected field's type
     const selectedField = state.targetLayer?.fields?.find(
-      (field) => field.name === queryParams.queryField
+      (field: any) => field.name === queryParams.queryField
     );
-    const isTextField = selectedField?.type === "string"; // Check if the field is of type text/string
-    // Surround the query value with single quotes if the field is text
+    const isTextField = selectedField?.type === "string";
     if (
       isTextField &&
+      queryValue &&
       !queryValue.startsWith("'") &&
       !queryValue.endsWith("'")
     ) {
@@ -133,8 +146,8 @@ export default function AttributeQueryComponent() {
       };
 
       state.targetLayer
-        .queryFeatures(query)
-        .then(function (response) {
+        ?.queryFeatures(query)
+        .then(function (response: any) {
           response.features.length
             ? addQueryResult(response)
             : addMessage({
@@ -144,7 +157,7 @@ export default function AttributeQueryComponent() {
                 duration: 10,
               });
         })
-        .catch((error) => {
+        .catch((error: any) => {
           addMessage({
             title: t("systemMessages.error.queryError.title"),
             body: t("systemMessages.error.searchError.body"),
@@ -155,45 +168,39 @@ export default function AttributeQueryComponent() {
     }
   }
 
-  function addQueryResult(response) {
-    // Remove any existing graphics from the map
+  function addQueryResult(response: any) {
     if (state.graphicsLayer) {
       state.graphicsLayer.removeAll();
       view.map.remove(state.graphicsLayer);
     }
 
-    // Get the layer view for the target layer
-    view.whenLayerView(state.targetLayer).then((layerView) => {
+    view.whenLayerView(state.targetLayer).then((layerView: any) => {
       const objectIds = response.features.map(
-        (feature) => feature.attributes[state.targetLayer.objectIdField]
+        (feature: any) => feature.attributes[state.targetLayer!.objectIdField]
       );
-      // Extract the geometries of the selected features
       const features = response.features;
 
       layerView.featureEffect = {
         filter: {
-          where: `${state.targetLayer.objectIdField} IN (${objectIds.join(
+          where: `${state.targetLayer!.objectIdField} IN (${objectIds.join(
             ","
           )})`,
         },
-        excludedEffect: "blur(2px) opacity(50%)", // Dim and blur non-selected features
+        excludedEffect: "blur(2px) opacity(50%)",
       };
 
-      // Create a graphics layer to hold the outline graphics
       const graphicsLayer =
         state.graphicsLayer || new GraphicsLayer({ title: "Query Results" });
       view.map.add(graphicsLayer);
 
-      // Loop through the selected features and create outline graphics
-      features.forEach((feature) => {
+      features.forEach((feature: any) => {
         const geometry = feature.geometry;
 
-        // Create a graphic with a cyan outline
         const outlineGraphic = new Graphic({
           geometry: geometry,
           symbol: {
-            type: "simple-fill", // For polygon features
-            color: [0, 0, 0, 0], // Transparent fill
+            type: "simple-fill",
+            color: [0, 0, 0, 0],
             outline: {
               color: "cyan",
               width: "2px",
@@ -201,13 +208,10 @@ export default function AttributeQueryComponent() {
           },
         });
 
-        // Add the graphic to the graphics layer
         graphicsLayer.add(outlineGraphic);
       });
 
-      
-
-      const resultLayerSource = response.features.map((feature) => {
+      const resultLayerSource = response.features.map((feature: any) => {
         const queryGraphic = new Graphic({
           geometry: feature.geometry,
           attributes: feature.attributes,
@@ -219,9 +223,8 @@ export default function AttributeQueryComponent() {
         resultLayerSource,
       }));
 
-      // Update the FeatureTable widget
       if (widgets.featureTableWidget) {
-        const highlightIds = objectIds; // Use object IDs for highlighting
+        const highlightIds = objectIds;
         widgets.featureTableWidget.highlightIds.removeAll();
         widgets.featureTableWidget.highlightIds.addMany(highlightIds);
         widgets.featureTableWidget.filterBySelection();
@@ -229,32 +232,28 @@ export default function AttributeQueryComponent() {
 
       setState((prevState) => ({
         ...prevState,
-        graphicsLayer: graphicsLayer, // Store the new graphics layer in state
+        graphicsLayer: graphicsLayer,
         queryResult: response.features,
         downloadBtnDisabled: false,
       }));
 
-      // Zoom to the selected features
       view.goTo(response.features);
 
       addMessage({
         type: "info",
         title: t('systemMessages.info.queryCompleted.title'),
-        body: `${t('systemMessages.info.queryCompleted.body')} ${state.targetLayer.title}`,
+        body: `${t('systemMessages.info.queryCompleted.body')} ${state.targetLayer!.title}`,
         duration: 10,
       });
-
-      // Update the state with the query result
     });
   }
 
-  function clearSearch(state) {
-    // Clear the feature effect
-    view.whenLayerView(state.targetLayer).then((layerView) => {
-      layerView.featureEffect = null; // Remove the highlight effect
+  function clearSearch(state: State) {
+    view.whenLayerView(state.targetLayer).then((layerView: any) => {
+      layerView.featureEffect = null;
     });
 
-    view.map.layers.forEach((layer) => {
+    view.map.layers.forEach((layer: any) => {
       if (layer.title === "Query Layer" || layer.title === "Query Results") {
         view.map.remove(layer);
       }
@@ -263,25 +262,24 @@ export default function AttributeQueryComponent() {
     view.graphics.removeAll();
 
     if (state.graphicsLayer) {
-      state.graphicsLayer.removeAll(); // Remove all graphics from the layer
+      state.graphicsLayer.removeAll();
     }
 
     if (widgets.featureTableWidget) {
       widgets.featureTableWidget.highlightIds.removeAll();
     }
 
-    // Update the state
     setState((prevState) => ({
       ...prevState,
       queryResult: null,
       downloadBtnDisabled: true,
-      graphicsLayer: null, // Clear the graphics layer reference
+      graphicsLayer: null,
     }));
   }
 
-  function CreateSeparateLayer(state) {
+  function CreateSeparateLayer(state: State) {
     const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-    const symbols = {
+    const symbols: any = {
       point: {
         type: "simple-marker",
         style: "circle",
@@ -302,14 +300,14 @@ export default function AttributeQueryComponent() {
         },
       },
     };
-    const newSymbol = symbols[state.targetLayer.geometryType];
+    const newSymbol = symbols[state.targetLayer!.geometryType];
 
     const renderer = {
       type: "simple",
       symbol: newSymbol,
     };
 
-    const fieldInfos = state.targetLayer.fields.map((field) => {
+    const fieldInfos = state.targetLayer!.fields.map((field: any) => {
       return { fieldName: field.name };
     });
 
@@ -322,8 +320,8 @@ export default function AttributeQueryComponent() {
       ],
     };
 
-    const fields = state.targetLayer.fields;
-    if (!fields.some((field) => field.type === "oid")) {
+    const fields = state.targetLayer!.fields;
+    if (!fields.some((field: any) => field.type === "oid")) {
       fields.unshift({
         name: "ObjectID",
         type: "oid",
@@ -331,16 +329,16 @@ export default function AttributeQueryComponent() {
     }
 
     const newSelectionLayer = new FeatureLayer({
-      title: state.targetLayer.title + "_modified",
-      geometryType: state.targetLayer.geometryType,
-      spatialReference: state.targetLayer.spatialReference,
+      title: state.targetLayer!.title + "_modified",
+      geometryType: state.targetLayer!.geometryType,
+      spatialReference: state.targetLayer!.spatialReference,
       popupEnabled: true,
       source: state.resultLayerSource,
       fields,
       renderer,
       popupTemplate,
-    } );
-    
+    });
+
     view.map.layers.add(newSelectionLayer);
   }
 
@@ -415,7 +413,7 @@ export default function AttributeQueryComponent() {
             ref={inputTypeSelector}
             id="inputTypeSelector"
             onChange={() =>
-              toggleInputMode(state, inputTypeSelector.current.value)
+              toggleInputMode(state, inputTypeSelector.current!.value)
             }
           >
             <option value={"manual"}>{t("widgets.query.manualInput")}</option>
@@ -446,18 +444,16 @@ export default function AttributeQueryComponent() {
                 {t("widgets.query.select")}
               </option>
               {(() => {
-                const targetField = fieldSelector.current.value;
+                const targetField = fieldSelector.current?.value;
 
-                // Extract unique values using a Set
                 const uniqueValues = [
                   ...new Set(
                     state.allFeatures
                       .map((feature) => feature.attributes[targetField])
-                      .filter((value) => value !== null) // Filter out null values
+                      .filter((value) => value !== null)
                   ),
                 ];
 
-                // Render unique values as options
                 return uniqueValues.map((value, index) => (
                   <option key={index} value={value}>
                     {value}
@@ -491,48 +487,6 @@ export default function AttributeQueryComponent() {
           onClick={() => CreateSeparateLayer(state)}
         >
           {t("widgets.query.createNewLayer")}
-        </button>
-      </div>
-
-      <div className="flex gap-2 w-full">
-        <button
-          className="flex-grow p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600 transition-all duration-200 text-center"
-          onClick={() =>
-            addMessage({
-              type: "info",
-              title: t("systemMessages.info.genericSuccess.title"),
-              body: t("systemMessages.info.genericSuccess.body"),
-              duration: 15,
-            })
-          }
-        >
-          Info Message
-        </button>
-        <button
-          className="flex-grow p-2 bg-yellow-500 text-white rounded-sm hover:bg-yellow-600 transition-all duration-200 text-center"
-          onClick={() =>
-            addMessage({
-              type: "warning",
-              title: t("systemMessages.warning.genericWarning.title"),
-              body: t("systemMessages.warning.genericWarning.body"),
-              duration: 15,
-            })
-          }
-        >
-          Warning Message
-        </button>
-        <button
-          className="flex-grow p-2 bg-red-500 text-white rounded-sm hover:bg-red-600 transition-all duration-200 text-center"
-          onClick={() =>
-            addMessage({
-              type: "error",
-              title: t("systemMessages.error.genericError.title"),
-              body: t("systemMessages.error.genericError.body"),
-              duration: 15,
-            })
-          }
-        >
-          Error Message
         </button>
       </div>
     </div>

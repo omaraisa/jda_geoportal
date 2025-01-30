@@ -1,7 +1,8 @@
 import useStateStore from "@/stateManager";
 import { useTranslation } from "react-i18next";
+import React from "react";
 
-export default function SidebarHeader() {
+const SidebarHeader: React.FC = () => {
   const { t } = useTranslation();
   const previousComponent = useStateStore((state) => state.previousSideBar);
   const activeComponent = useStateStore((state) => state.activeSideBar);
@@ -35,7 +36,7 @@ export default function SidebarHeader() {
       {/* Close Button */}
       <button
         className="close-btn flex items-center justify-center"
-        onClick={()=> toggleSidebar(false)} // Close the 
+        onClick={() => toggleSidebar(false)} // Close the sidebar
       >
         <i className="fas fa-times"></i>
       </button>
@@ -43,3 +44,4 @@ export default function SidebarHeader() {
   );
 };
 
+export default SidebarHeader;

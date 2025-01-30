@@ -2,21 +2,26 @@ import useStateStore from "@/stateManager";
 import styles from "./view-switcher.module.css";
 import { useState, useCallback, useEffect } from "react";
 
-const modes = [
+interface Mode {
+  label: string;
+  value: string;
+}
+
+const modes: Mode[] = [
   { label: "2D", value: "2D" },
   { label: "3D", value: "3D" },
   { label: "◧", value: "Dual" }
 ];
 
-const ViewSwitcher = () => {
+const positions = [
+  { left: '28%', top: '20%' },
+  { left: '50%', top: '65%' },
+  { left: '73%', top: '20%' },
+];
+
+const ViewSwitcher: React.FC = () => {
   const { switchViewMode, setSyncing } = useStateStore();
   const [step, setStep] = useState(0);
-
-  const positions = [
-    { left: '28%', top: '20%' },
-    { left: '50%', top: '65%' },
-    { left: '73%', top: '20%' },
-  ];
 
   const activeIndex = step % modes.length;
 
@@ -30,7 +35,7 @@ const ViewSwitcher = () => {
     const activeMode = modes[activeIndex].value;
     switchViewMode(activeMode);
     setSyncing(activeMode === 'Dual');
-  }, [activeIndex, switchViewMode]);
+  }, [activeIndex, switchViewMode, setSyncing]);
 
   const toggleView = useCallback(() => {
     setStep(prev => (prev + 1) % modes.length);
@@ -43,9 +48,7 @@ const ViewSwitcher = () => {
         return (
           <div
             key={mode.value}
-            className={`${styles.modeBtn} ${
-              activeIndex === index ? styles.activeModeBtn : ''
-            }`}
+            className={`${styles.modeBtn} ${activeIndex === index ? styles.activeModeBtn : ''}`}
             style={{
               left: position.left,
               top: position.top

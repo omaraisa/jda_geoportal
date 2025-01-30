@@ -87,11 +87,11 @@
     transform: translateX(-50%);
     width: 200%;
     height: 4px;
-    background: linear-gradient(90deg, #9a02a8, #b518c4, #dd69e7, #771680);
+    background: linear-gradient(90deg, #18def8, #44747a, #18def8, #12373b);
     background-size: 400%;
     animation: bottom-bar-effect 1.5s linear infinite;
     border-radius: 5px;
-    box-shadow: 0 0 5px #9a02a8, 0 0 100px #b518c4, 0 0 15px #dd69e7;
+    box-shadow: 0 0 5px #18def8, 0 0 100px #44747a, 0 0 15px #18def8;
   }
   
   /* Navigation Buttons */
