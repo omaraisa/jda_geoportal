@@ -13,7 +13,7 @@ export default function ToolsMenu() {
   const toggleSidebar = useStateStore((state) => state.toggleSidebar);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const hoverTimeoutRef = useRef(null); // Use a ref for the timeout ID
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Use a ref for the timeout ID
 
   // Define a single array of objects for menu items
   const menuItems = [
@@ -83,6 +83,7 @@ export default function ToolsMenu() {
     const items = document.querySelectorAll(`.${styles.menuItem}`);
 
     items.forEach((item, i) => {
+      const element = item as HTMLElement; // Cast item to HTMLElement
       const offset = (i - currentIndex + totalItems) % totalItems;
       let position = offset - middleIndex;
       if (position > middleIndex) position -= totalItems;
@@ -101,21 +102,21 @@ export default function ToolsMenu() {
         visibility = "hidden";
       }
 
-      item.style.transform = `rotateY(${angle}deg) translateZ(300px)`;
-      item.style.zIndex = zIndex;
-      item.style.opacity = opacity;
-      item.classList.toggle(styles.hidden, visibility === "hidden");
+      element.style.transform = `rotateY(${angle}deg) translateZ(300px)`;
+      element.style.zIndex = zIndex.toString();
+      element.style.opacity = opacity.toString();
+      element.classList.toggle(styles.hidden, visibility === "hidden");
     });
   };
 
   // Rotate menu
-  const rotateMenu = (direction) => {
+  const rotateMenu = (direction: number) => {
     setCurrentIndex((prevIndex) => (prevIndex + direction + totalItems) % totalItems);
     extendTimer();
   };
 
   // Move item to the middle and set the active SideBar
-  const handleClick = (index) => {
+  const handleClick = (index: number) => {
     if (menuItems[index].targetComponent === activeSideBar && sidebarOpen) {
       return; // Do nothing if the selected menu item is the current one
     }

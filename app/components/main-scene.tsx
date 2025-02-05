@@ -4,32 +4,27 @@ import React, { useRef, useEffect, useState } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import esriConfig from "@arcgis/core/config";
-import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import useStateStore from "@/stateManager";
 import Loading from "./sub_components/loading";
+import { sceneLayerConfigurations } from "@/lib/initial-layers";
 
-const MainScene = () => {
-  const sceneRef = useRef(null); // Reference to the SceneView container
-  const viewRef = useRef(null); // Reference to the SceneView instance
+declare module "@arcgis/core/views/SceneView" {
+  interface SceneView {
+    eventHandlers?: Record<string, __esri.Handle>; // Define the eventHandlers property
+  }
+}
+const MainScene: React.FC = () => {
+  const sceneRef = useRef<HTMLDivElement | null>(null); // Reference to the SceneView container
+  const viewRef = useRef<__esri.SceneView | null>(null); // Reference to the SceneView instance
   const [loading, setLoading] = useState(true); // Loading state
+  const eventHandlersRef = useRef<Record<string, __esri.Handle>>({});
 
   // Extract state and actions from Zustand store
-  const addMessage = useStateStore((state) => state.addMessage);
-  const center = useStateStore((state) => state.center);
-  const zoom = useStateStore((state) => state.zoom);
-  const scale = useStateStore((state) => state.scale);
-  const mapView = useStateStore((state) => state.mapView);
-  const targetView = useStateStore((state) => state.targetView);
-  const updateSceneView = useStateStore((state) => state.updateSceneView);
-  const updateTargetView = useStateStore((state) => state.updateTargetView);
-  // const updatemapView = useStateStore((state) => state.updatemapView);
-  const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
-  const scenelayers = useStateStore((state) => state.scenelayers);
-  const addInitialLayers = useStateStore((state) => state.addInitialLayers);
-
+  const { addMessage, center, zoom, scale, mapView, targetView, updateSceneView, updateTargetView, viewsSyncOn, scenelayers, addInitialLayers } = useStateStore((state) => state);
+  
   useEffect(() => {
     // Set the ArcGIS API Key
-    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
+    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey as string;
     if (!viewRef.current) {
       try {
         // Initialize the WebScene
@@ -40,7 +35,7 @@ const MainScene = () => {
 
         // Initialize the SceneView
         viewRef.current = new SceneView({
-          container: sceneRef.current,
+          container: sceneRef.current as HTMLDivElement,
           map: scene,
           camera: {
             position: { x: 39.03797, y: 21.51581, z: 4000 },
@@ -57,9 +52,9 @@ const MainScene = () => {
           .when(() => {
             updateSceneView(viewRef.current);
             setLoading(false); // Set loading to false when the scene view is ready
-            addInitialLayers(scenelayers, viewRef.current);
+            if(viewRef.current) addInitialLayers(sceneLayerConfigurations, viewRef.current);
           })
-          .catch((error) => {
+          .catch((error: Error) => {
             addMessage({
               title: "Scene Initialization Error",
               body: `Failed to initialize the scene view. ${error.message}`,
@@ -67,7 +62,7 @@ const MainScene = () => {
               duration: 10,
             });
           });
-      } catch (error) {
+      } catch (error: any) {
         addMessage({
           title: "Scene Creation Error",
           body: `An error occurred while creating the scene. ${error.message}`,
@@ -90,11 +85,11 @@ const MainScene = () => {
 
   useEffect(() => {
     if (viewsSyncOn && viewRef.current && mapView && targetView) {
-      let handleCenterChange;
+      let handleCenterChange: __esri.WatchHandle | undefined;
       if (targetView.type === "3d") {
         handleCenterChange = viewRef.current.watch("center", () => {
-          mapView.center = viewRef.current.center;
-          mapView.scale = viewRef.current.scale;
+          mapView.center = viewRef.current!.center;
+          mapView.scale = viewRef.current!.scale;
         });
       } else if (handleCenterChange) {
         handleCenterChange.remove(); // Cleanup watcher if it exists
@@ -110,29 +105,24 @@ const MainScene = () => {
 
   useEffect(() => {
     if (viewRef.current) {
-      // Initialize eventHandlers if it doesn't exist
-      if (!viewRef.current.eventHandlers) {
-        viewRef.current.eventHandlers = {};
-      }
-
-      const existingHandlers = viewRef.current.eventHandlers;
-
+      const existingHandlers = eventHandlersRef.current;
+  
       if (!existingHandlers["pointer-down"]) {
         const handlePointerDown = () => {
           if (viewRef.current !== targetView) {
             updateTargetView(viewRef.current);
           }
         };
-
+  
         // Add the event handler
         const pointerDownHandler = viewRef.current.on(
           "pointer-down",
           handlePointerDown
         );
-
+  
         // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
-
+  
         // Cleanup listener
         return () => {
           if (pointerDownHandler) {

@@ -47,7 +47,7 @@
 }
 
 .warningMessage .messageBar {
-  background-color: var(--yellow); /* Yellow for warning */
+  background-color: var(--secondary); /* Yellow for warning */
 }
 
 .infoMessage .messageBar {

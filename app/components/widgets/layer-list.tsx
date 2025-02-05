@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import LayerList from "@arcgis/core/widgets/LayerList";
 import useStateStore from "@/stateManager";
+import { useTranslation } from "react-i18next";
 
 export default function LayerListComponent() {
+  const { t } = useTranslation();
   const layerListRef = useRef(null);
   const view = useStateStore((state) => state.targetView);
   const setActiveBottomPane = useStateStore((state) => state.setActiveBottomPane);
@@ -10,49 +12,49 @@ export default function LayerListComponent() {
   const setTargetLayerId = useStateStore((state) => state.setTargetLayerId);
   const toggleBottomPane = useStateStore((state) => state.toggleBottomPane);
 
-  const layerListWidgetRef = useRef(null); // Persist LayerList widget
-  let triggerActionHandler; // Reference to the event handler
+  const layerListWidget = useRef<LayerList | null>(null); // Persist LayerList widget
+  let triggerActionHandler: { remove: () => void; }; // Reference to the event handler
 
   useEffect(() => {
     if (!view) return;
 
-    if (layerListWidgetRef.current) {
-      layerListWidgetRef.current.view = view;
+    if (layerListWidget.current) {
+      layerListWidget.current.view = view;
     } else {
-      layerListWidgetRef.current = new LayerList({
+      layerListWidget.current = new LayerList({
         view: view,
-        container: layerListRef.current,
+        container: layerListRef.current || undefined,
         listItemCreatedFunction: (event) => {
           const item = event.item;
           item.actionsSections = [
             [
               {
-                title: "Show/Hide Labels",
+                title: t("layerList.showHideLabels"),
                 className: "esri-icon-labels",
                 id: "toggle-labels",
               },
               {
-                title: "Show Attribute Table",
+                title: t("layerList.showAttributeTable"),
                 className: "esri-icon-table",
                 id: "show-attribute-table",
               },
               {
-                title: "Zoom to Layer",
+                title: t("layerList.zoomToLayer"),
                 className: "esri-icon-zoom-out-fixed",
                 id: "zoom-to-layer",
               },
               {
-                title: "Move Layer Up",
+                title: t("layerList.moveLayerUp"),
                 className: "esri-icon-up",
                 id: "move-layer-up",
               },
               {
-                title: "Move Layer Down",
+                title: t("layerList.moveLayerDown"),
                 className: "esri-icon-down",
                 id: "move-layer-down",
               },
               {
-                title: "Remove Layer",
+                title: t("layerList.removeLayer"),
                 className: "esri-icon-close",
                 id: "remove-layer",
               },
@@ -68,7 +70,8 @@ export default function LayerListComponent() {
     }
 
     // Add a new event handler and store the reference
-    triggerActionHandler = layerListWidgetRef.current.on("trigger-action", (event) => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    triggerActionHandler = layerListWidget.current.on("trigger-action", (event) => {
       const layer = event.item.layer;
       switch (event.action.id) {
         case "zoom-to-layer":
@@ -90,24 +93,24 @@ export default function LayerListComponent() {
           showAttributeTable(layer);
           break;
         default:
-          console.log(`Unknown action: ${event.action.id}`);
+          console.log(`${t("layerList.unknownAction")}: ${event.action.id}`);
       }
     });
 
     return () => {
-      if (layerListWidgetRef.current) {
-        layerListWidgetRef.current.view = null;
-      }
-      // Remove the event handler when the component unmounts
+      
       if (triggerActionHandler) {
         triggerActionHandler.remove();
+        // Widget destruction is disabled to preserve state. Uncomment to enable cleanup:
+        // layerListWidget.current.destroy();
+        // layerListWidget.current = null;
         
       }
     };
   }, [view]);
 
-  const moveLayer = (map, layer, direction) => {
-    const layers = map.layers.items;
+  const moveLayer = (map: __esri.Map, layer: __esri.Layer, direction: string) => {
+    const layers = map.layers.toArray();
     const layerIndex = layers.indexOf(layer);
 
     if (direction === "up" && layerIndex < layers.length - 1) {
@@ -117,23 +120,23 @@ export default function LayerListComponent() {
     }
   };
 
-  const toggleLayerLabels = (layer) => {
-    if (layer.hasOwnProperty("labelsVisible")) {
+  const toggleLayerLabels = (layer: __esri.Layer) => {
+    if (layer instanceof __esri.FeatureLayer) { // Narrowing to FeatureLayer
       layer.labelsVisible = !layer.labelsVisible;
     } else {
-      console.log("This layer does not support labels.");
+      console.log(t("layerList.noLabelsSupport"));
     }
   };
 
-  const showAttributeTable = (layer) => {
+  const showAttributeTable   = (layer: __esri.Layer) => {
     if (layer.type === "feature") {
       openAttributeTable(layer);
     } else {
-      console.log("This layer does not support attribute tables.");
+      console.log(t("layerList.noAttributeTableSupport"));
     }
   };
 
-  const openAttributeTable = (layer) => {
+  const openAttributeTable  = (layer: __esri.Layer) => {
   setTargetLayerId(layer.id);
   setActiveBottomPane("FeatureTableComponent");
 

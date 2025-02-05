@@ -10,10 +10,7 @@ interface NavButtonProps {
 const NavButton: React.FC<NavButtonProps> = ({ toolTip, iconClass, targetComponent }) => {
   const activeSideBar = useStateStore((state) => state.activeSideBar);
   const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
-  const toggleMenus = useStateStore((state) => state.toggleMenus);
-  const secondaryPaneMinimized = useStateStore(
-    (state) => state.layout.secondaryPaneMinimized
-  );
+
 
   // Dynamic Tailwind class based on active state
   const isActive = activeSideBar === targetComponent;
@@ -23,10 +20,7 @@ const NavButton: React.FC<NavButtonProps> = ({ toolTip, iconClass, targetCompone
 
   // Handle Button Click
   const handleClick = () => {
-    if (secondaryPaneMinimized) {
-      toggleMenus("secondary"); // Open the secondary pane if minimized
-    }
-    setActiveSideBar(targetComponent); // Set the target SideBar
+    console.log("Nav button under construction");
   };
 
   return (

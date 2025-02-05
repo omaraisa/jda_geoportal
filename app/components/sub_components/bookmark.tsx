@@ -1,17 +1,7 @@
 import React from "react";
+import {Bookmark as BookmarkInterface} from "@/interface";
 
-interface BookmarkProps {
-  id: string;
-  name: string;
-  center: { x: number; y: number };
-  zoom: number;
-  view?: {
-    goTo: (params: { center: [number, number]; zoom: number }) => void;
-  };
-  deleteBookmark: (id: string) => void;
-}
-
-const Bookmark: React.FC<BookmarkProps> = ({ id, name, center, zoom, view, deleteBookmark }) => {
+const Bookmark: React.FC<BookmarkInterface> = ({ id, name, center, zoom, view, deleteBookmark }) => {
   const zoomToBookmark = () => {
     if (view) {
       view.goTo({

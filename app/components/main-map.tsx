@@ -9,11 +9,19 @@ import IdentityManager from "@arcgis/core/identity/IdentityManager";
 import ServerInfo from "@arcgis/core/identity/ServerInfo";
 import useStateStore from "@/stateManager";
 import BasemapToggle from "@arcgis/core/widgets/BasemapToggle";
-import wgs84ToUtmZone37N from "@/modules/utils/wgs84ToUtmZone37N";
+import wgs84ToUtmZone37N from "@/lib/utils/wgs84ToUtmZone37N";
+import {authenticate} from "@/lib/auth";
+import { baseMapLayerConfigurations } from "@/lib/initial-layers";
+
+interface CustomMapView extends MapView {
+  eventHandlers?: { [key: string]: __esri.WatchHandle };
+}
+
 
 const MainMap = () => {
   const mapRef = useRef(null); // Reference to the MapView container
-  const viewRef = useRef(null); // Reference to the MapView instance
+  const viewRef = useRef<CustomMapView | null>(null); // Reference to the MapView instance
+  const mapInitializedRef = useRef(false);
 
   // Extract state and actions from Zustand store
   const addMessage = useStateStore((state) => state.addMessage);
@@ -28,123 +36,113 @@ const MainMap = () => {
   const maplayers = useStateStore((state) => state.maplayers);
   const addInitialLayers = useStateStore((state) => state.addInitialLayers);
 
-  if (!viewRef.current) {
-    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey;
-    const username = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_USERNAME;
-    const password = process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_PASSWORD;
-    let serverInfo = new ServerInfo();
-    serverInfo.server = process.env.NEXT_PUBLIC_PORTAL_URL;
-    serverInfo.tokenServiceUrl =
-      process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL;
-    serverInfo.hasServer = true;
-    IdentityManager.registerServers([serverInfo]);
+useEffect(() => {
+  // Authenticate first, then initialize the map
+  if (!mapInitializedRef.current) {
+    mapInitializedRef.current = true;
+  authenticate()
+    .then(() => {
+        try {
+          // Initialize the Map and MapView
+          const map = new Map({ basemap: "topo-vector" });
 
-    IdentityManager.generateToken(serverInfo, {
-      username: username,
-      password: password,
-      client: "referer",
-      referer: window.location.origin,
-    }).then(function (response) {
-      IdentityManager.registerToken({
-        server: serverInfo.server,
-        token: response.token,
-        expires: response.expires,
-      });
+          viewRef.current = new MapView({
+            container: mapRef.current as unknown as HTMLDivElement,
+            map: map,
+            center,
+            zoom,
+            rotation: 270, // Set default rotation to 90 degrees
+            ui: {
+              components: [],
+            },
+          });
 
-      try {
-        // Initialize the Map and MapView
-        const map = new Map({ basemap: "topo-vector" });
+          viewRef.current
+            ?.when(() => {
+              const basemapToggle = new BasemapToggle({
+                view: viewRef.current!,
+                nextBasemap: "satellite",
+              });
 
-        viewRef.current = new MapView({
-          container: mapRef.current,
-          map: map,
-          center,
-          zoom,
-          rotation: 270, // Set default rotation to 90 degrees
-          ui: {
-            components: [],
-          },
-        });
+              viewRef.current!.ui.add(basemapToggle, {
+                position: "bottom-right",
+              });
 
-        viewRef.current
-          .when(() => {
-            const basemapToggle = new BasemapToggle({
-              view: viewRef.current,
-              nextBasemap: "satellite",
-            });
+              // Create a div for coordinates
+              const coordinatesContainer = document.createElement("div");
+              coordinatesContainer.style.position = "absolute";
+              coordinatesContainer.style.bottom = "1em";
+              coordinatesContainer.style.left = "1em";
+              coordinatesContainer.style.padding = "0.5em";
+              coordinatesContainer.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+              coordinatesContainer.style.fontSize = "0.75em";
+              coordinatesContainer.style.zIndex = "10";
+              coordinatesContainer.innerHTML = "Lat: 0, Lon: 0, UTM: 0, 0";
+              viewRef.current!.container.appendChild(coordinatesContainer);
 
-            viewRef.current.ui.add(basemapToggle, {
-              position: "bottom-right",
-            });
+              const pointerMoveHandler = viewRef.current!.on("pointer-move", (event: any) => {
+                // Get the screen point (x, y) of the mouse pointer
+                const screenPoint = {
+                  x: event.x,
+                  y: event.y,
+                };
 
-            // Create a div for coordinates
-            const coordinatesDiv = document.createElement("div");
-            coordinatesDiv.style.position = "absolute";
-            coordinatesDiv.style.bottom = "10px";
-            coordinatesDiv.style.left = "10px";
-            coordinatesDiv.style.padding = "5px";
-            coordinatesDiv.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
-            coordinatesDiv.style.fontSize = "12px";
-            coordinatesDiv.style.zIndex = "10";
-            coordinatesDiv.innerHTML = "Lat: 0, Lon: 0, UTM: 0, 0";
-            viewRef.current.container.appendChild(coordinatesDiv);
+                // Convert the screen point to a map point (longitude, latitude)
+                const mapPoint = viewRef.current!.toMap(screenPoint);
 
-            const pointerMoveHandler = viewRef.current.on("pointer-move", (event) => {
-              // Get the screen point (x, y) of the mouse pointer
-              const screenPoint = {
-                x: event.x,
-                y: event.y,
-              };
+                // Convert the map point to geographic coordinates (longitude, latitude)
+                const lon = mapPoint.longitude.toFixed(6);
+                const lat = mapPoint.latitude.toFixed(6);
 
-              // Convert the screen point to a map point (longitude, latitude)
-              const mapPoint = viewRef.current.toMap(screenPoint);
-
-              // Convert the map point to geographic coordinates (longitude, latitude)
-              const lon = mapPoint.longitude.toFixed(6);
-              const lat = mapPoint.latitude.toFixed(6);
-
-              const utmPoint = wgs84ToUtmZone37N(lat, lon);
+                const utmPoint = wgs84ToUtmZone37N(lat, lon);
 
                 // Get the UTM coordinates
                 const utmPointX = utmPoint.x.toFixed(1); // UTM Easting
                 const utmPointY = utmPoint.y.toFixed(1); // UTM Northing
 
                 // Update the coordinates display
-                coordinatesDiv.innerHTML = `Lat: ${lat}, Lon: ${lon}     |     UTM: ${utmPointX}, ${utmPointY}`;
-         
-            });
+                coordinatesContainer.innerHTML = `Lat: ${lat}, Lon: ${lon}     |     UTM Z37 N: ${utmPointX}, ${utmPointY}`;
+              });
 
-            
-            updateMapView(viewRef.current);
-            updateTargetView(viewRef.current);
-            addInitialLayers(maplayers, viewRef.current);
-          })
-          .catch((error) => {
-            addMessage({
-              title: "Map Initialization Error",
-              body: `Failed to initialize the map view. ${error.message}`,
-              type: "error",
-              duration: 10,
+              updateMapView(viewRef.current!);
+              updateTargetView(viewRef.current!);
+              addInitialLayers(baseMapLayerConfigurations, viewRef.current!);
+            })
+            .catch((error: any) => {
+              addMessage({
+                title: "Map Initialization Error",
+                body: `Failed to initialize the map view. ${(error as Error).message}`,
+                type: "error",
+                duration: 10,
+              });
             });
+        } catch (error: any) {
+          addMessage({
+            title: "Map Creation Error",
+            body: `An error occurred while creating the map. ${(error as Error).message}`,
+            type: "error",
+            duration: 10,
           });
-      } catch (error) {
+        }
+      })
+      .catch((error: any) => {
         addMessage({
-          title: "Map Creation Error",
-          body: `An error occurred while creating the map. ${error.message}`,
+          title: "Authentication Error",
+          body: `Failed to authenticate. ${(error as Error).message}`,
           type: "error",
           duration: 10,
         });
-      }
-    });
-  }
+      });
+    }
+}, []);
 
   useEffect(() => {
     if (viewsSyncOn && viewRef.current && sceneView && targetView) {
-      let handleCenterChange;
+      let handleCenterChange: __esri.WatchHandle | undefined;
       if (targetView.type === "2d") {
         handleCenterChange = viewRef.current.watch("center", () => {
-          sceneView.center = viewRef.current.center;
-          sceneView.scale = viewRef.current.scale;
+          sceneView.center = viewRef.current!.center;
+          sceneView.scale = viewRef.current!.scale;
         });
       } else if (handleCenterChange) {
         handleCenterChange.remove(); // Cleanup watcher if it exists

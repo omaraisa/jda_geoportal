@@ -42,6 +42,7 @@
   },
   "widgets": {
     "query": {
+      "queryLayerTitle": "Query Layer",
       "selectLayer": "Target Layer",
       "selectionLayer": "Selection Layer",
       "select": "Select",
@@ -67,6 +68,9 @@
       "saveBookmark": "Save Bookmark",
       "cancel": "Cancel"
     },
+    "sketch": {
+      "clear": "مسح الرسم"
+    },
     "measurements": {
       "distance": "Distance",
       "area": "Area",
@@ -74,6 +78,20 @@
       "areaMeasurement": "Area Measurement",
       "clear": "Clear"
     }
+  },
+  "layerList": {
+    "showHideLabels": "Show/Hide Labels",
+    "showAttributeTable": "Show Attribute Table",
+    "zoomToLayer": "Zoom to Layer",
+    "moveLayerUp": "Move Layer Up",
+    "moveLayerDown": "Move Layer Down",
+    "removeLayer": "Remove Layer",
+    "unknownAction": "Unknown action",
+    "noLabelsSupport": "This layer does not support labels.",
+    "noAttributeTableSupport": "This layer does not support attribute tables."
+  },
+  "defaultComponent": {
+    "noToolsActivated": "No tools are currently activated"
   },
   "toolsMenu": {
     "basemapGallery": "Base Map Gallery",

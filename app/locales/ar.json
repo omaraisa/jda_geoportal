@@ -36,11 +36,12 @@
   },
   "bottomPane": {
     "titles": {
-      "FeatureTableComponent": "جدول السمات"
+      "FeatureTableComponent": "جدول البيانات الوصفية"
     }
   },
   "widgets": {
     "query": {
+      "queryLayerTitle": "طبقة استعلام",
       "selectLayer": "اختر الطبقة",
       "selectionLayer": "طبقة الاختيار",
       "select": "اختر",
@@ -65,6 +66,9 @@
       "enterName": "أدخل اسمًا",
       "saveBookmark": "حفظ العلامة المرجعية",
       "cancel": "إلغاء"
+    },
+    "sketch": {
+      "clear": "مسح الرسم"
     },
     "measurements": {
       "distance": "المسافة",
@@ -130,5 +134,19 @@
         "body": "هناك شيء غير صحيح ❗. يرجى المحاولة مرة أخرى."
       }
     }
+  },
+  "layerList": {
+    "showHideLabels": "إظهار/إخفاء التسميات",
+    "showAttributeTable": "إظهار جدول البيانات الوصفية",
+    "zoomToLayer": "تكبير إلى الطبقة",
+    "moveLayerUp": "تحريك الطبقة لأعلى",
+    "moveLayerDown": "تحريك الطبقة لأسفل",
+    "removeLayer": "إزالة الطبقة",
+    "unknownAction": "إجراء غير معروف",
+    "noLabelsSupport": "هذه الطبقة لا تدعم التسميات.",
+    "noAttributeTableSupport": "هذه الطبقة لا تدعم جداول البيانات الوصفية."
+  },
+  "defaultComponent": {
+    "noToolsActivated": "لا توجد أدوات مفعلة حالياً"
   }
 }

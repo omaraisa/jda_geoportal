@@ -32,9 +32,9 @@ export default {
           dark: "#a3302c",
         },
         yellow: {
-          DEFAULT: "var(--yellow)",
-          light: "var(--yellow-light)",
-          dark: "var(--yellow-dark)",
+          DEFAULT: "var(--secondary)",
+          light: "var(--secondary-light)",
+          dark: "var(--secondary-dark)",
         },
       },
     },

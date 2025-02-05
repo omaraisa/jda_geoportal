@@ -1,47 +1,47 @@
 import React, { Suspense } from "react";
 import Loading from "./sub_components/loading";
 import DefaultComponent from "./sub_components/default-component";
-import HTML_ELEMENTS_TEMPLATES from "./HTML_ELEMENTS_TEMPLATES";
+// import HTML_ELEMENTS_TEMPLATES from "../modules/HTML_ELEMENTS_TEMPLATES";
 import useStateStore from "@/stateManager";
 import SidebarHeader from "./sub_components/sidebar-header";
 import dynamic from "next/dynamic";
 
 const BasemapGalleryComponent = dynamic(
-  () => import("@/widgets/basemap-gallery"),
+  () => import("@/components/widgets/basemap-gallery"),
   { ssr: false }
 );
-const EditorComponent = dynamic(() => import("@/widgets/editor"), {
+const EditorComponent = dynamic(() => import("@/components/widgets/editor"), {
   ssr: false,
 });
-const PrintComponent = dynamic(() => import("@/widgets/print"), {
+const PrintComponent = dynamic(() => import("@/components/widgets/print"), {
   ssr: false,
 });
 const LayerListComponent = dynamic(
-  () => import("@/widgets/layer-list"),
+  () => import("@/components/widgets/layer-list"),
   { ssr: false }
 );
-const LegendComponent = dynamic(() => import("@/widgets/legend"), {
+const LegendComponent = dynamic(() => import("@/components/widgets/legend"), {
   ssr: false,
 });
-const BookmarkComponent = dynamic(() => import("@/widgets/bookmarks"), {
+const BookmarkComponent = dynamic(() => import("@/components/widgets/bookmarks"), {
   ssr: false,
 });
 const AttributeQueryComponent = dynamic(
-  () => import("@/widgets/attribute-query"),
+  () => import("@/components/widgets/attribute-query"),
   { ssr: false }
 );
 const SpatialQueryComponent = dynamic(
-  () => import("@/widgets/spatial-query"),
+  () => import("@/components/widgets/spatial-query"),
   { ssr: false }
 );
 const CoordinateConversionComponent = dynamic(
-  () => import("@/widgets/coordinates-conversion"),
+  () => import("@/components/widgets/coordinates-conversion"),
   { ssr: false }
 );
-const MeasurementComponent = dynamic(() => import("@/widgets/measurements"), {
+const MeasurementComponent = dynamic(() => import("@/components/widgets/measurements"), {
   ssr: false,
 });
-const SketchComponent = dynamic(() => import("@/widgets/sketch"), {
+const SketchComponent = dynamic(() => import("@/components/widgets/sketch"), {
   ssr: false,
 });
 
@@ -62,8 +62,8 @@ const components = {
 };
 
 export default function Sidebar() {
-  const currentComponentName = useStateStore((state) => state.activeSideBar);
-  const CurrentComponent = components[currentComponentName];
+  const currentComponentName: string = useStateStore((state) => state.activeSideBar) || "DefaultComponent";
+  const CurrentComponent = components[currentComponentName as keyof typeof components];
 
   if (!CurrentComponent) {
     return (

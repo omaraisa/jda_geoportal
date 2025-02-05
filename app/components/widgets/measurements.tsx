@@ -7,11 +7,11 @@ export default function MeasurementComponent() {
   const { t } = useTranslation();
   const distanceMeasurementRef = useRef(null);
   const areaMeasurementRef = useRef(null);
-  const distanceMeasurementWidget = useRef(null);
-  const areaMeasurementWidget = useRef(null);
+  const distanceMeasurementWidget = useRef<Measurement | null>(null);
+  const areaMeasurementWidget = useRef<Measurement | null>(null);
   const [showDistance, setShowDistance] = useState(false); // Track if Distance widget is visible
   const [showArea, setShowArea] = useState(false); // Track if Area widget is visible
-  const [activeTool, setActiveTool] = useState(null); // Track which tool is active (distance/area)
+  const [activeTool, setActiveTool] = useState<string | null>(null); // Track which tool is active (distance/area)
 
   const view = useStateStore((state) => state.targetView);
 
@@ -22,7 +22,7 @@ export default function MeasurementComponent() {
     if (!distanceMeasurementWidget.current) {
       distanceMeasurementWidget.current = new Measurement({
         view: view,
-        container: distanceMeasurementRef.current,
+        container: distanceMeasurementRef.current || undefined,
         activeTool: "distance", // Set to distance measurement
       });
     }
@@ -43,7 +43,7 @@ export default function MeasurementComponent() {
     if (!areaMeasurementWidget.current) {
       areaMeasurementWidget.current = new Measurement({
         view: view,
-        container: areaMeasurementRef.current,
+        container: areaMeasurementRef.current || undefined,
         activeTool: "area", // Set to area measurement
       });
     }
@@ -58,7 +58,7 @@ export default function MeasurementComponent() {
   }, [view, showArea]); // Re-run when view or showArea changes
 
   // Handle tool switching and cleanup
-  const handleToolChange = (tool) => {
+  const handleToolChange = (tool: string) => {
     if (activeTool === tool) return; // Prevent redundant toggles
 
     // Cleanup the current active tool drawing before switching to a new one

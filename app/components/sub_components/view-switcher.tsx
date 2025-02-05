@@ -32,7 +32,7 @@ const ViewSwitcher: React.FC = () => {
   ];
 
   useEffect(() => {
-    const activeMode = modes[activeIndex].value;
+    const activeMode = modes[activeIndex].value as "2D" | "3D" | "Dual";
     switchViewMode(activeMode);
     setSyncing(activeMode === 'Dual');
   }, [activeIndex, switchViewMode, setSyncing]);

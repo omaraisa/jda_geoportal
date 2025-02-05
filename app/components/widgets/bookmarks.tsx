@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 export default function BookmarkComponent() {
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView); // Get the current view (2D or 3D) from Zustand
-  const bookmarkName = useRef();
+  const bookmarkName = useRef<HTMLInputElement>(null);
   const { bookmarks, addBookmark, deleteBookmark, loadBookmarks } =
     useStateStore();
   const [formVisible, setFormVisibility] = useState(false);
@@ -16,9 +16,11 @@ export default function BookmarkComponent() {
   }, [loadBookmarks]); // Add loadBookmarks to the dependency array
 
   const handleAddBookmark = () => {
-    const name = bookmarkName.current.value;
-    addBookmark(name, view); // Pass the view object
-    setFormVisibility(false);
+    if (bookmarkName.current && view) {
+      const name = bookmarkName.current.value;
+      addBookmark(name, view);
+      setFormVisibility(false);
+    }
   };
 
   const initAddBookmarkForm = () => {
@@ -45,8 +47,8 @@ export default function BookmarkComponent() {
               <Bookmark
                 key={bookmark.id}
                 {...bookmark}
-                view={view}
-                deleteBookmark={() => deleteBookmark(bookmark.id)}
+                view={view ?? undefined}
+                deleteBookmark={() => deleteBookmark(Number(bookmark.id))}
               />
             ))
           ) : (
@@ -57,7 +59,6 @@ export default function BookmarkComponent() {
       {formVisible && (
         <div className="add-bookmark p-6 flex flex-col gap-4 w-full">
           <h2
-            htmlFor="textInput"
             className="block text-white font-semibold"
           >
             {t('widgets.bookmarks.bookmarkName')}

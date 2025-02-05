@@ -8,7 +8,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "app/components/layout-management.js", "app/components/initial-layers.js", "app/components/HTML_ELEMENTS_TEMPLATES.js"  ],
+, "app/components/layout-management.js", "app/lib/initial-layers.js", "app/lib/HTML_ELEMENTS_TEMPLATES.js", "app/components/app-loader.js"  ],
   "exclude": [
     "node_modules"
   ]

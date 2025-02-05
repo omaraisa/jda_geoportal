@@ -1,7 +1,7 @@
 // config/initialLayers.js
-export const initialMapLayers = [
+import {InitialLayersConfiguration} from "@/interface";
+export const baseMapLayerConfigurations : InitialLayersConfiguration[] = [
   {
-    id: null,
     title: "Jeddah Historical",
     type: "feature",
     sourceType: "url", // 'url' | 'portal'
@@ -17,7 +17,6 @@ export const initialMapLayers = [
     maxScale: 18,
   },
   {
-    id: null,
     title: "Parcel",
     type: "feature",
     sourceType: "url", // 'url' | 'portal'
@@ -60,9 +59,8 @@ export const initialMapLayers = [
   },
 ];
 
-export const initialSceneLayers = [
+export const sceneLayerConfigurations : InitialLayersConfiguration[] = [
   {
-    id: null,
     title: "Buildings",
     type: "feature",
     sourceType: "url", // 'url' | 'portal'
@@ -105,7 +103,6 @@ export const initialSceneLayers = [
     // },
   },
   {
-    id: null,
     title: "Parcel",
     type: "feature",
     sourceType: "url", // 'url' | 'portal'

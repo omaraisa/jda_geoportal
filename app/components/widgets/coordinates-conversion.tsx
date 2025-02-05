@@ -4,7 +4,7 @@ import useStateStore from "@/stateManager";
 
 export default function CoordinateConversionComponent() {
   const coordinateConversionRef = useRef(null);
-  const coordinateConversionWidget = useRef(null);
+  const coordinateConversionWidget = useRef<CoordinateConversion | null>(null);
 
   const view = useStateStore((state) => state.targetView);
 
@@ -17,18 +17,18 @@ export default function CoordinateConversionComponent() {
     } else {
       coordinateConversionWidget.current = new CoordinateConversion({
         view: view,
-        container: coordinateConversionRef.current,
+        container: coordinateConversionRef.current || undefined,
       });
     }
 
-    // Cleanup on unmount or dependency change
     return () => {
       if (coordinateConversionWidget.current) {
-        // Do not destroy, simply unbind the view if needed
-        coordinateConversionWidget.current.view = null;
+        // Widget destruction is disabled to preserve state. Uncomment to enable cleanup:
+        // coordinateConversionWidget.current.destroy();
+        // coordinateConversionWidget.current = null;
       }
     };
-  }, [view]); // Re-run when the view changes
+  }, [view]); 
 
   return (
     <div

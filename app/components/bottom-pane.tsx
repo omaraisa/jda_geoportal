@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import dynamic from "next/dynamic";
 
 // Dynamically imported component
-const FeatureTableComponent = dynamic(() => import("@/widgets/feature-table"), {
+const FeatureTableComponent = dynamic(() => import("@/components/widgets/feature-table"), {
   ssr: false,
 });
 

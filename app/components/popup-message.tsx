@@ -1,10 +1,15 @@
-import styles from "./popup-message.module.css";
-import useStateStore from "@/stateManager";
 import { useEffect, useRef } from "react";
+import useStateStore from "@/stateManager";
+import styles from "./popup-message.module.css";
+import {Message} from "@/interface";
 
-export default function PopupMessage({ message }) {
+interface PopupMessageProps {
+  message: Message;
+}
+
+export default function PopupMessage({ message }: PopupMessageProps) {
   const { id, title, body, type, duration } = message;
-  const barRef = useRef(null);
+  const barRef = useRef<HTMLDivElement | null>(null);
 
   // Define styles based on message type
   const messageStyles = {
@@ -32,9 +37,9 @@ export default function PopupMessage({ message }) {
       <div className={styles.messageHeader}>
         <h4>{title}</h4>
         <button
-        className="close-btn flex items-center justify-center"
+          className="close-btn flex items-center justify-center"
           onClick={() => {
-            useStateStore.getState().expireMessage(id);
+            useStateStore.getState().expireMessage(Number(id));
           }}
         >
           ✕

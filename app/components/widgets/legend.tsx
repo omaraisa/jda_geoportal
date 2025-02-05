@@ -5,7 +5,7 @@ import useStateStore from "@/stateManager";
 
 export default function LegendComponent() {
   const legendRef = useRef(null);
-  const legendWidget = useRef(null);
+  const legendWidget =useRef<Legend | null>(null);
 
   const view = useStateStore((state) => state.targetView);
 
@@ -18,7 +18,7 @@ export default function LegendComponent() {
     } else {
       legendWidget.current = new Legend({
         view: view,
-        container: legendRef.current,
+        container: legendRef.current || undefined,
       });
     }
 
@@ -26,7 +26,8 @@ export default function LegendComponent() {
     return () => {
       if (legendWidget.current) {
         // Do not destroy, simply unbind the view if needed
-        legendWidget.current.view = null;
+        // legendWidget.current.destroy();
+        // legendWidget.current = null;
       }
     };
   }, [view]); // Re-run when the view changes

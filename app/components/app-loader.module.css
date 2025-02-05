@@ -14,7 +14,7 @@
   }
   
   .loader {
-    --c: no-repeat linear-gradient(var(--yellow) 0 0);
+    --c: no-repeat linear-gradient(var(--secondary) 0 0);
     background: 
       var(--c), var(--c), var(--c),
       var(--c), var(--c), var(--c),
