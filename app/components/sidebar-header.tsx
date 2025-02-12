@@ -1,4 +1,4 @@
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import React from "react";
 

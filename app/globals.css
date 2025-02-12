@@ -161,13 +161,17 @@ button, a, i, [role="button"], [onclick] {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Green button styles */
+.btn-white {
+  background-color: var(--background);
+  color: var(--primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .btn-green {
   background-color: var(--green);
   color: var(--background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-/* Gray button styles */
 .btn-gray {
   background-color: var(--gray-light);
   color: var(--background);

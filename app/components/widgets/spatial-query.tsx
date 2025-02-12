@@ -5,15 +5,16 @@ import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Sketch from "@arcgis/core/widgets/Sketch";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import styles from "./spatial-query.module.css";
 import { addQueryResult, clearSelection, runQuery } from "@/lib/utils/query";
+import {featureBasedLayerTypes} from "@/lib/globalConstants";
 
 export default function SpatialQueryComponent() {
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView);
-  const addMessage = useStateStore((state) => state.addMessage);
+  const sendMessage = useStateStore((state) => state.sendMessage);
   const widgets = useStateStore((state) => state.widgets);
   const targetLayerRef = useRef<HTMLSelectElement>(null);
   const selectionLayerRef = useRef<HTMLSelectElement>(null);
@@ -31,7 +32,6 @@ export default function SpatialQueryComponent() {
     selectionMethodChecked: true,
   });
 
-  const supportedLayerTypes = ["csv", "feature", "geojson", "map-image"];
 
   useEffect(() => {
     if (view && !sketchInitialized.current) {
@@ -70,7 +70,7 @@ export default function SpatialQueryComponent() {
               ? (view.map.layers.toArray()[Number(targetLayerRef.current.value)] as __esri.FeatureLayer)
               : null;
           if (!targetLayer) {
-            addMessage({
+            sendMessage({
               type: "error",
               title: t("systemMessages.error.queryError.title"),
               body: t("systemMessages.error.completeSearchRequirements.body"),
@@ -94,7 +94,7 @@ export default function SpatialQueryComponent() {
       : null;
 
     if (!targetLayer || !selectionLayer) {
-      addMessage({
+      sendMessage({
         type: "error",
         title: t("systemMessages.error.queryError.title"),
         body: t("systemMessages.error.completeSearchRequirements.body"),
@@ -123,7 +123,7 @@ export default function SpatialQueryComponent() {
 
       await handleQuery(targetLayer, query);
     } catch (error) {
-      addMessage({
+      sendMessage({
         type: "error",
         title: t("systemMessages.error.queryError.title"),
         body: t("systemMessages.error.searchError.body"),
@@ -138,7 +138,7 @@ export default function SpatialQueryComponent() {
       if (response && response.features.length) {
         addQueryResult(response.features, graphicsLayerRef.current, view, targetLayer, widgets);
       } else {
-        addMessage({
+        sendMessage({
           type: "error",
           title: t("systemMessages.error.queryError.title"),
           body: t("systemMessages.error.noResultsFound.body"),
@@ -146,7 +146,7 @@ export default function SpatialQueryComponent() {
         });
       }
     } catch (error) {
-      addMessage({
+      sendMessage({
         type: "error",
         title: t("systemMessages.error.queryError.title"),
         body: t("systemMessages.error.searchError.body"),
@@ -176,7 +176,7 @@ export default function SpatialQueryComponent() {
               {t("widgets.query.selectLayer")}
             </option>
             {view?.map.layers.toArray().map((layer, index) => {
-              if (supportedLayerTypes.includes(layer.type)) {
+              if (featureBasedLayerTypes.includes(layer.type)) {
                 return (
                   <option key={layer.id} value={index}>
                     {layer.title}
@@ -247,7 +247,7 @@ export default function SpatialQueryComponent() {
               {t("widgets.query.select")}
             </option>
             {view?.map.layers.toArray().map((layer, index) => {
-              if (supportedLayerTypes.includes(layer.type)) {
+              if (featureBasedLayerTypes.includes(layer.type)) {
                 return (
                   <option key={layer.id} value={index}>
                     {layer.title}

@@ -1,17 +1,20 @@
 import { create } from "zustand";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+import TileLayer from "@arcgis/core/layers/TileLayer";
 import { State, Bookmark } from "@/interface";
+import * as InitialLayersConfiguration from "@/lib/initial-layers";
 
 const useStateStore = create<State>((set, get) => ({
   // Initial State
   language: localStorage.getItem("appLanguage") || "en",
   layout: {
-    toolsMenuExpanded: false,
-    sidebarOpen: false,
-    sidebarHeight: 0,
+    mainMenuExpanded: false,
+    sidebarOpen: true,
+    sidebarHeight: 80,
     bottomPaneOpen: false,
   },
-  activeSideBar: "DefaultComponent",
+  activeSideBar: "LayerListComponent",
   appReady: false,
   previousSideBar: null,
   activeBottomPane: "DefaultComponent",
@@ -19,14 +22,13 @@ const useStateStore = create<State>((set, get) => ({
   targetView: null,
   mapView: null,
   sceneView: null,
-  maplayers: [],
-  scenelayers: [],
   widgets: {},
   targetLayerId: null,
   center: [39.19797, 21.51581], // Default center (Jeddah, Saudi Arabia)
   zoom: 12, // Default zoom level for 2D
   scale: 500000, // Default scale for 3D
   viewsSyncOn: false,
+  activeLayerTheme: "Theme1",
   previousSideBars: {
     DefaultComponent: null,
   },
@@ -44,11 +46,11 @@ const useStateStore = create<State>((set, get) => ({
     localStorage.setItem("appLanguage", lang); // Save language to localStorage
   },
 
-  setToolsMenuExpansion: (isExpanded: boolean) => {
+  setMainMenuExpansion: (isExpanded: boolean) => {
     set((state) => ({
       layout: {
         ...state.layout,
-        toolsMenuExpanded: isExpanded,
+        mainMenuExpanded: isExpanded,
       },
     }));
   },
@@ -89,9 +91,12 @@ const useStateStore = create<State>((set, get) => ({
   updateSceneView: (sceneView) => set({ sceneView }),
 
   createLayer: ({
+    id,
     sourceType,
+    type,
     url,
     title,
+    themes,
     visible,
     opacity,
     minScale,
@@ -99,48 +104,103 @@ const useStateStore = create<State>((set, get) => ({
     portalItemId,
     renderer,
     labelingInfo,
-    visualVariables, 
+    visualVariables,
   }) => {
-    let layer: FeatureLayer | undefined;
+
+    if (!themes?.includes(get().activeLayerTheme)) {
+      return null;
+    }
+
+    let layer;
 
     const layerConfig = {
+      id,
       title,
       visible,
       opacity,
       minScale,
       maxScale,
+      themes,
       ...(labelingInfo && { labelingInfo }),
       ...(renderer && { renderer }),
       visualVariables: visualVariables || [],
     };
 
     if (sourceType === "url") {
-      layer = new FeatureLayer({
-        url,
-        ...layerConfig,
-        elevationInfo: {
-          mode: "on-the-ground",
-        },
-      });
+      if (type === "FeatureLayer") {
+        layer = new FeatureLayer({
+          url,
+          ...layerConfig,
+          elevationInfo: {
+            mode: "on-the-ground",
+          },
+        });
+      } else if (type === "MapImageLayer") {
+        layer = new MapImageLayer({
+          url,
+          ...layerConfig,
+        });
+      } else if (type === "TileLayer") {
+        layer = new TileLayer({
+          url,
+          ...layerConfig,
+        });
+      }
     } else if (sourceType === "portal") {
-      layer = new FeatureLayer({
-        portalItem: {
-          id: portalItemId,
-        },
-        ...layerConfig,
-      });
+      if (type === "FeatureLayer") {
+        layer = new FeatureLayer({
+          portalItem: {
+            id: portalItemId,
+          },
+          ...layerConfig,
+        });
+      } else if (type === "MapImageLayer") {
+        layer = new MapImageLayer({
+          portalItem: {
+            id: portalItemId,
+          },
+          ...layerConfig,
+        });
+      } else if (type === "TileLayer") {
+        layer = new TileLayer({
+          portalItem: {
+            id: portalItemId,
+          },
+          ...layerConfig,
+        });
+      }
     }
 
-    return layer || new FeatureLayer();
+    return layer || null;
   },
-
-  addInitialLayers: (InitialLayerConfig, targetView) => {
+    
+  addBasemapLayers: (activeTheme=get().activeLayerTheme) => {
+    const { targetView } = get()
     if (!targetView) return;
 
-    InitialLayerConfig.forEach((layerConfig) => {
-      const layer = get().createLayer(layerConfig);
-      if (layer) {
-        targetView.map.add(layer);
+      const selectedConfigs =
+        targetView.type === "2d"
+          ? InitialLayersConfiguration.baseMapLayerConfigurations
+          : InitialLayersConfiguration.sceneBasemapConfigurations;
+
+    selectedConfigs.forEach((layerConfig) => {
+      const existingLayer = targetView.map.findLayerById(layerConfig.id);
+      const belongsToActiveTheme = layerConfig.themes?.includes(activeTheme);
+
+      // If layer belongs to the active theme, add if not already in the map
+      if (belongsToActiveTheme) {
+        if (!existingLayer) {
+          const layer = get().createLayer(layerConfig);
+          if (layer) {
+            layer.id = layerConfig.id;
+            targetView.map.add(layer);
+          }
+        }
+      } else {
+        // If layer does not belong to the active theme, remove if it exists
+        if (existingLayer) {
+          targetView.map.remove(existingLayer);
+        }
       }
     });
   },
@@ -192,7 +252,7 @@ const useStateStore = create<State>((set, get) => ({
     });
   },
 
-  addMessage: ({
+  sendMessage: ({
     title,
     body,
     type,
@@ -272,6 +332,9 @@ const useStateStore = create<State>((set, get) => ({
       localStorage.getItem("localBookmarks") || "[]"
     );
     set({ bookmarks: savedBookmarks });
+  },
+  setActiveLayerTheme: (theme) => {
+    set({ activeLayerTheme: theme });
   },
 }));
 

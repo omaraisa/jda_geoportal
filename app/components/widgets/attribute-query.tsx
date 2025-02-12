@@ -4,89 +4,69 @@ import { useState, useRef, useEffect } from "react";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import { addQueryResult, clearSelection, createSeparateLayer } from "@/lib/utils/query";
-
-interface LocalState {
-  targetLayer: FeatureLayer | null;
-  queryResultLayer: FeatureLayer | null;
-  resultLayerSource: Graphic[] | null;
-  fieldsNames: string[];
-  layersArray: any[];
-  inputMethod: string;
-  downloadBtnDisabled: boolean;
-  allFeatures: any[];
-  graphicsLayer: GraphicsLayer | null;
-  queryResult?: any[];
-}
+import LayerSelector from "../ui/layer-selector";
+import Selector from "../ui/selector";
+import {AttributeQueryState} from "@/interface"
 
 export default function AttributeQueryComponent() {
   const { t } = useTranslation();
-  const [state, setState] = useState<LocalState>({
+  const [state, setState] = useState<AttributeQueryState>({
     targetLayer: null,
     queryResultLayer: null,
     resultLayerSource: null,
     fieldsNames: [],
-    layersArray: [],
     inputMethod: "manual",
     downloadBtnDisabled: true,
-    allFeatures: [],
+    uniqueValues: [],
     graphicsLayer: null,
+    selectedField: ""
   });
 
-  const layerSelector = useRef<HTMLSelectElement>(null);
-  const fieldSelector = useRef<HTMLSelectElement>(null);
   const operatorSelector = useRef<HTMLSelectElement>(null);
   const inputTypeSelector = useRef<HTMLSelectElement>(null);
   const insertedQueryValue = useRef<HTMLInputElement>(null);
-  const selectedQueryValue = useRef<HTMLSelectElement>(null);
 
   const view = useStateStore((state) => state.targetView);
-  const addMessage = useStateStore((state) => state.addMessage);
+  const sendMessage = useStateStore((state) => state.sendMessage);
   const widgets = useStateStore((state) => state.widgets);
 
-  const supportedLayerTypes = ["csv", "feature", "geojson", "map-image"];
+  const handleSelectedLayer = (layerId: string) => {
+    const selectedLayer = view?.map.layers.toArray().find((layer) => layer.id === layerId) as FeatureLayer;
+    const fieldsNames = selectedLayer.fields.map((field: any) => field.name);
 
-  useEffect(() => {
-    if (view) {
       setState((prevState) => ({
         ...prevState,
-        layersArray: view.map.layers.toArray(),
+        targetLayer: selectedLayer,
+        fieldsNames,
       }));
-    }
-  }, [view]);
+         
+  }
 
-  const prepareQueryParams = () => {
-    const layerIndex = Number(layerSelector.current?.value);
-    if (layerIndex === undefined || layerIndex === null) {
-      addMessage({
-        title: t("systemMessages.error.queryError.title"),
-        body: t("systemMessages.error.completeSearchRequirements.body"),
-        type: "error",
-        duration: 10,
-      });
-      return;
-    }
-    const targetLayer = state.layersArray[layerIndex];
-    const fieldsNames = targetLayer.fields.map((field: any) => field.name);
-    const fetchAllFeaturesQuery = {
-      outFields: ["*"],
+  const handleFieldChange = (selectedField: string) => {
+    if (!selectedField || selectedField.trim() === "") return;
+
+    const query = {
+      where: "1=1",
+      returnDistinctValues: true,
+      outFields: [selectedField],
+      orderByFields: [selectedField],
       returnGeometry: false,
-      where: "",
     };
 
-    targetLayer.queryFeatures(fetchAllFeaturesQuery)
-      .then((result: any) => {
+    state.targetLayer?.queryFeatures(query)
+      .then((response: any) => {
+        const uniqueValues = response.features.map((feature: any) => feature.attributes[selectedField]);
         setState((prevState) => ({
           ...prevState,
-          targetLayer,
-          fieldsNames,
-          allFeatures: result.features,
+          uniqueValues,
+          selectedField
         }));
       })
       .catch(() => {
-        addMessage({
+        sendMessage({
           title: t("systemMessages.error.queryError.title"),
           body: t("systemMessages.error.failedToCollectData.body"),
           type: "error",
@@ -95,17 +75,18 @@ export default function AttributeQueryComponent() {
       });
   };
 
+  
   const toggleInputMode = (mode: string) => {
     setState((prevState) => ({ ...prevState, inputMethod: mode }));
-  };
+      };
 
-  const search = () => {
+  const search = (selectedQueryValue?:string) => {
     let queryValue = state.inputMethod === "manual"
       ? insertedQueryValue.current?.value
-      : selectedQueryValue.current?.value;
+      : selectedQueryValue;
 
     const queryParams = {
-      queryField: fieldSelector.current?.value,
+      queryField: state.selectedField,
       queryOperator: operatorSelector.current?.value,
       queryValue,
     };
@@ -121,11 +102,10 @@ export default function AttributeQueryComponent() {
     const queryIsValid = Object.values(queryParams).every((parameter) => {
       return parameter != null && parameter.trim() !== "" && parameter !== undefined;
     });
-
     if (queryIsValid) {
       applyQuery(queryParams, queryValue || "");
     } else {
-      addMessage({
+      sendMessage({
         title: t("systemMessages.error.queryError.title"),
         body: t("systemMessages.error.completeSearchRequirements.body"),
         type: "error",
@@ -135,9 +115,20 @@ export default function AttributeQueryComponent() {
   };
 
   const applyQuery = (queryParams: any, queryValue: string) => {
+    const targetLayer = state.targetLayer as FeatureLayer;
+    if (!targetLayer) {
+      sendMessage({
+        title: t("systemMessages.error.queryError.title"),
+        body: t("systemMessages.error.completeSearchRequirements.body"),
+        type: "error",
+        duration: 10,
+      });
+      return;
+    }
+
     if (view && state.queryResultLayer) view.map.remove(state.queryResultLayer);
     if (!queryParams.queryField) {
-      addMessage({
+      sendMessage({
         title: t("systemMessages.error.queryError.title"),
         body: t("systemMessages.error.completeSearchRequirements.body"),
         type: "error",
@@ -152,12 +143,12 @@ export default function AttributeQueryComponent() {
       where: queryExpression,
     };
 
-    state.targetLayer?.queryFeatures(query)
+    targetLayer?.queryFeatures(query)
       .then((response: any) => {
         if (response.features.length) {
           findQueryResult(response);
         } else {
-          addMessage({
+          sendMessage({
             title: t("systemMessages.error.queryError.title"),
             body: t("systemMessages.error.noResultsFound.body"),
             type: "error",
@@ -166,7 +157,7 @@ export default function AttributeQueryComponent() {
         }
       })
       .catch(() => {
-        addMessage({
+        sendMessage({
           title: t("systemMessages.error.queryError.title"),
           body: t("systemMessages.error.searchError.body"),
           type: "error",
@@ -192,7 +183,7 @@ export default function AttributeQueryComponent() {
       downloadBtnDisabled: false,
     }));
 
-    addMessage({
+    sendMessage({
       type: "info",
       title: t("systemMessages.info.queryCompleted.title"),
       body: `${t("systemMessages.info.queryCompleted.body")} ${state.targetLayer!.title}`,
@@ -213,52 +204,9 @@ export default function AttributeQueryComponent() {
 
   return (
     <div className="flex flex-col space-y-4 p-4">
-      <div className="flex flex-col  w-full">
-        <label htmlFor="layerSelector" className="font-semibold text-white">
-          {t("widgets.query.selectLayer")}
-        </label>
-        <div className="select">
-          <select
-            defaultValue=""
-            ref={layerSelector}
-            id="layerSelector"
-            onChange={prepareQueryParams}
-          >
-            <option value="" hidden>
-              {t("widgets.query.select")}
-            </option>
-            {state.layersArray.map((layer, index) => {
-              if (supportedLayerTypes.includes(layer.type)) {
-                return (
-                  <option key={layer.id} value={index}>
-                    {layer.title}
-                  </option>
-                );
-              }
-            })}
-          </select>
-        </div>
-      </div>
+      <LayerSelector getSelectedValue={handleSelectedLayer} />
 
-      <div className="flex flex-col  w-full">
-        <label htmlFor="fieldSelector" className="font-semibold text-white">
-          {t("widgets.query.selectField")}
-        </label>
-        <div className="select">
-          <select ref={fieldSelector} id="fieldSelector">
-            <option value="" hidden>
-              {t("widgets.query.select")}
-            </option>
-            {state.fieldsNames.map((fieldName, index) => {
-              return (
-                <option key={index} value={fieldName}>
-                  {fieldName}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-      </div>
+      <Selector label={t("widgets.query.selectField")} options={state.fieldsNames.map(name => ({ value: name, label: name }))} getSelectedValue={handleFieldChange} />
 
       <div className="flex flex-col  w-full">
         <label htmlFor="operatorSelector" className="font-semibold text-white">
@@ -303,41 +251,13 @@ export default function AttributeQueryComponent() {
           <span className="label">{t("widgets.query.enterValue")}</span>
         </label>
       ) : (
-        <div className="flex flex-col  w-full">
-          <label htmlFor="queryValues" className="font-semibold text-white">
-            {t("widgets.query.selectValue")}
-          </label>
-          <div className="select">
-            <select ref={selectedQueryValue} id="queryValues" onChange={search}>
-              <option value="" hidden>
-              {t("widgets.query.select")}
-              </option>
-              {(() => {
-              const targetField = fieldSelector.current?.value;
-
-              const uniqueValues = [
-                ...new Set(
-                state.allFeatures
-                  .map((feature) => targetField ? feature.attributes[targetField] : null)
-                  .filter((value) => value !== null)
-                ),
-              ];
-
-              return uniqueValues.map((value, index) => (
-                <option key={index} value={value}>
-                {value}
-                </option>
-              ));
-              })()}
-            </select>
-          </div>
-        </div>
+      <Selector label={t("widgets.query.selectField")} options={state.uniqueValues.map(value => ({ value, label: value }))} getSelectedValue={search} />
       )}
 
       <div className="flex gap-2 w-full">
         <button
           className="btn btn-primary flex-grow"
-          onClick={search}
+          onClick={() => search()}
         >
           {t("widgets.query.search")}
         </button>
@@ -351,11 +271,11 @@ export default function AttributeQueryComponent() {
 
       <div className="flex gap-2 w-full">
         <button
-          className="btn btn-green flex-grow"
+          className={`btn ${state.downloadBtnDisabled ? 'btn-gray' : 'btn-white'} flex-grow`}
           disabled={state.downloadBtnDisabled}
           onClick={() => {
             if (state.targetLayer && state.resultLayerSource) {
-                createSeparateLayer(state.targetLayer, state.resultLayerSource, view);
+          createSeparateLayer(state.targetLayer, state.resultLayerSource, view);
             }
           }}
         >

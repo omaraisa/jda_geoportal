@@ -4,9 +4,9 @@ import React, { useRef, useEffect, useState } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import esriConfig from "@arcgis/core/config";
-import useStateStore from "@/stateManager";
-import Loading from "./sub_components/loading";
-import { sceneLayerConfigurations } from "@/lib/initial-layers";
+import useStateStore from "@/stateStore";
+import Loading from "./ui/loading";
+// import { sceneBasemapConfigurations } from "@/lib/initial-layers";
 
 declare module "@arcgis/core/views/SceneView" {
   interface SceneView {
@@ -20,7 +20,7 @@ const MainScene: React.FC = () => {
   const eventHandlersRef = useRef<Record<string, __esri.Handle>>({});
 
   // Extract state and actions from Zustand store
-  const { addMessage, center, zoom, scale, mapView, targetView, updateSceneView, updateTargetView, viewsSyncOn, scenelayers, addInitialLayers } = useStateStore((state) => state);
+  const { sendMessage, center, zoom, scale, mapView, targetView, updateSceneView, updateTargetView, viewsSyncOn, addBasemapLayers } = useStateStore((state) => state);
   
   useEffect(() => {
     // Set the ArcGIS API Key
@@ -52,10 +52,10 @@ const MainScene: React.FC = () => {
           .when(() => {
             updateSceneView(viewRef.current);
             setLoading(false); // Set loading to false when the scene view is ready
-            if(viewRef.current) addInitialLayers(sceneLayerConfigurations, viewRef.current);
+            if(viewRef.current) addBasemapLayers();
           })
           .catch((error: Error) => {
-            addMessage({
+            sendMessage({
               title: "Scene Initialization Error",
               body: `Failed to initialize the scene view. ${error.message}`,
               type: "error",
@@ -63,7 +63,7 @@ const MainScene: React.FC = () => {
             });
           });
       } catch (error: any) {
-        addMessage({
+        sendMessage({
           title: "Scene Creation Error",
           body: `An error occurred while creating the scene. ${error.message}`,
           type: "error",
@@ -81,7 +81,7 @@ const MainScene: React.FC = () => {
         // updateSceneView(null); // Reset the view in the Zustand store
       }
     };
-  }, [addMessage, center, zoom, scale, updateSceneView]);
+  }, [sendMessage, center, zoom, scale, updateSceneView]);
 
   useEffect(() => {
     if (viewsSyncOn && viewRef.current && mapView && targetView) {

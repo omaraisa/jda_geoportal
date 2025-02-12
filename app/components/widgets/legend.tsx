@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Legend from "@arcgis/core/widgets/Legend";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 
 export default function LegendComponent() {

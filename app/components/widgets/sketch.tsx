@@ -1,17 +1,14 @@
 import { useEffect, useRef } from "react";
 import Sketch from "@arcgis/core/widgets/Sketch";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
-import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
-import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import Color from "@arcgis/core/Color";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
+import { pointSymbol, lineSymbol, polygonSymbol } from "@/lib/symbols";
 
 export default function SketchComponent() {
   const { t } = useTranslation();
   const sketchRef = useRef(null);
-  const sketchWidget =useRef<Sketch | null>(null);
+  const sketchWidget = useRef<Sketch | null>(null);
   const graphicsLayer = useRef<GraphicsLayer | null>(null);
 
   const view = useStateStore((state) => state.targetView);
@@ -19,32 +16,6 @@ export default function SketchComponent() {
 
   useEffect(() => {
     if (!view) return;
-
-    // Define colorful symbols
-    const pointSymbol = new SimpleMarkerSymbol({
-      color: [4, 123, 139, 1], // Primary color
-      outline: {
-      color: [29, 29, 29, 1], // Foreground color
-      width: 2,
-      },
-      size: 12,
-      style: "circle",
-    });
-
-    const lineSymbol = new SimpleLineSymbol({
-      color: [231, 175, 57, 1], // Secondary color
-      width: 3,
-      style: "solid",
-    });
-
-    const polygonSymbol = new SimpleFillSymbol({
-      color: [59, 191, 173, 0.5], // Tertiary color with 50% opacity
-      outline: {
-      color: [29, 29, 29, 1], // Foreground color
-      width: 2,
-      },
-      style: "solid",
-    });
 
     // Initialize or update the Sketch widget
     if (sketchWidget.current) {
@@ -109,12 +80,10 @@ export default function SketchComponent() {
 
   return (
     <div className="h-full w-full flex flex-col">
-
-
       <button onClick={clearDrawings} className="btn btn-danger w-full">
         {t('widgets.sketch.clear')}
       </button>
-      <div ref={sketchRef} className="flex flex-grow" ></div>
+      <div ref={sketchRef} className="flex flex-grow"></div>
     </div>
   );
 }

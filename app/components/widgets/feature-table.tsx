@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import FeatureTable from "@arcgis/core/widgets/FeatureTable";
 import TableTemplate from "@arcgis/core/widgets/FeatureTable/support/TableTemplate"; // Correct import
 import FieldColumnTemplate from "@arcgis/core/widgets/FeatureTable/support/FieldColumnTemplate"; // Correct import
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 let featureTableWidget: FeatureTable | null; // Keep the widget as a persistent instance
 

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Split from "react-split";
-import useStateStore from "@/stateManager";
-import Loading from "./sub_components/loading";
+import useStateStore from "@/stateStore";
+import Loading from "./ui/loading";
 import MessageContainer from "./messages-container";
 
 // Dynamically import components
-const MainMap = dynamic(() => import("./main-map"), { ssr: false });
-const MainScene = dynamic(() => import("./main-scene"), { ssr: false });
+const MainMap = dynamic(() => import("./mapview"), { ssr: false });
+const MainScene = dynamic(() => import("./sceneview"), { ssr: false });
 
 const ContentView: React.FC = () => {
   // Extract necessary state and actions from the store
@@ -30,6 +30,7 @@ const ContentView: React.FC = () => {
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <MessageContainer />
+      
       <React.Suspense fallback={<Loading />}>
         <Split
           sizes={splitSizes} // Dynamic sizes based on viewMode

@@ -1,6 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 import en from "./locales/en.json";
 import ar from "./locales/ar.json";

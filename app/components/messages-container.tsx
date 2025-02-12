@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import useStateStore from "@/stateManager";
-import PopupMessage from "./popup-message";
-import styles from "./popup-message.module.css";
+import useStateStore from "@/stateStore";
+import PopupMessage from "./ui/popup-message";
+import styles from "./ui/popup-message.module.css";
 import {Message} from "@/interface";
 
 export default function MessagesContainer() {

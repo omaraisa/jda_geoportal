@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 import styles from "./popup-message.module.css";
 import {Message} from "@/interface";
 

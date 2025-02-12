@@ -1,5 +1,5 @@
 import React from "react";
-import useStateStore from "@/stateManager"; // Import Zustand state
+import useStateStore from "@/stateStore"; // Import Zustand state
 
 interface NavButtonProps {
   toolTip?: string;

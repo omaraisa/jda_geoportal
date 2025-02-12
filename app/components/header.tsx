@@ -1,9 +1,9 @@
-import NavButton from "./sub_components/nav-button";
+import NavButton from "./ui/nav-button";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "./sub_components/lang-switcher";
-import useStateStore from "@/stateManager"; // Import Zustand state
-import ViewSwitcher from "./sub_components/view-switcher";
+import LanguageSwitcher from "./ui/lang-switcher";
+import useStateStore from "@/stateStore"; // Import Zustand state
+import ViewSwitcher from "./ui/view-switcher";
 
 const Header: React.FC = () => {
   const { t } = useTranslation();

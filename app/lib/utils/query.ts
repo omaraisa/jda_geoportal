@@ -1,11 +1,10 @@
 // queryUtils.ts
 import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import useStateStore from "@/stateManager";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import { useTranslation } from "react-i18next";
+import { queryPointSymbol, queryLineSymbol, queryPolygonSymbol } from "@/lib/symbols";
 
 /**
  * Adds query results to the map and updates the state.
@@ -120,25 +119,9 @@ export function createSeparateLayer(
 ) {
     const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
     const symbols: any = {
-        point: {
-            type: "simple-marker",
-            style: "circle",
-            color: randomColor,
-            size: "8px",
-        },
-        polyline: {
-            type: "simple-line",
-            color: randomColor,
-            width: 2,
-        },
-        polygon: {
-            type: "simple-fill",
-            color: randomColor,
-            outline: {
-                width: 2,
-                color: "#fff",
-            },
-        },
+        point: queryPointSymbol,
+        polyline: queryLineSymbol,
+        polygon: queryPolygonSymbol,
     };
     const newSymbol = symbols[targetLayer.geometryType];
 

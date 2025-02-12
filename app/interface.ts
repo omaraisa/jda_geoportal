@@ -1,3 +1,8 @@
+import Graphic from "@arcgis/core/Graphic";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import {layerThemes} from "@/lib/globalConstants";
+
 export interface Message {
   id: string;
   title: string;
@@ -26,12 +31,13 @@ export interface ViewLocation {
 }
 
 export interface InitialLayersConfiguration {
+  id: string;
   title: string;
-  type: string;
+  type: "FeatureLayer" | "MapImageLayer" | "TileLayer";
   sourceType: string;
   url?: string;
   portalItemId?: string | null;
-  groups?: any[];
+  themes?: string[];
   visible?: boolean;
   labelsEnabled?: boolean;
   labelingInfo?: any;
@@ -45,7 +51,7 @@ export interface InitialLayersConfiguration {
 export interface State {
   language: string;
   layout: {
-    toolsMenuExpanded: boolean;
+    mainMenuExpanded: boolean;
     sidebarOpen: boolean;
     sidebarHeight: number;
     bottomPaneOpen: boolean;
@@ -58,20 +64,19 @@ export interface State {
   mapView: __esri.MapView | null;
   sceneView: __esri.SceneView | null;
   targetView: __esri.MapView | __esri.SceneView | null;
-  maplayers: __esri.Layer[];
-  scenelayers: __esri.Layer[];
   widgets: Record<string, __esri.Widget>;
   targetLayerId: string | null;
   center: [number, number];
   zoom: number;
   scale: number;
+  activeLayerTheme: typeof layerThemes[number];
   viewsSyncOn: boolean;
   previousSideBars: Record<string, string | null>;
   messages: Record<number, Message>;
   bookmarks: Bookmark[];
   setAppReady: (isReady: boolean) => void;
   setLanguage: (lang: string) => void;
-  setToolsMenuExpansion: (isExpanded: boolean) => void;
+  setMainMenuExpansion: (isExpanded: boolean) => void;
   toggleSidebar: (isOpen: boolean) => void;
   toggleBottomPane: (isOpen: boolean) => void;
   setActiveSideBar: (component: string) => void;
@@ -79,18 +84,32 @@ export interface State {
   updateTargetView: (targetView: __esri.MapView | __esri.SceneView | null) => void;
   updateMapView: (mapView: __esri.MapView | null) => void;
   updateSceneView: (sceneView: __esri.SceneView | null) => void;
-  createLayer: (params: InitialLayersConfiguration) => __esri.FeatureLayer;
-  addInitialLayers: (layers: InitialLayersConfiguration[], targetView: __esri.MapView | __esri.SceneView) => void;
+  createLayer: (params: InitialLayersConfiguration) => __esri.FeatureLayer | __esri.MapImageLayer | __esri.TileLayer | null;
+  addBasemapLayers: (activeTheme: string) => void;
   setTargetLayerId: (id: string) => void;
   setSyncing: (isOn: boolean) => void;
   getTargetLayer: () => __esri.FeatureLayer | null;
   switchViewMode: (mode: "2D" | "3D" | "Dual") => void;
   addWidget: (widgetId: string, widgetInstance: __esri.Widget) => void;
   removeWidget: (widgetId: string) => void;
-  addMessage: (params: { title: string; body: string; type: "error" | "warning" | "info"; duration?: number }) => void;
+  sendMessage: (params: { title: string; body: string; type: "error" | "warning" | "info"; duration?: number }) => void;
   expireMessage: (id: number) => void;
   removeMessage: (id: number) => void;
   addBookmark: (name: string, view: __esri.MapView | __esri.SceneView) => void;
   deleteBookmark: (id: number) => void;
   loadBookmarks: () => void;
+  setActiveLayerTheme: (theme: typeof layerThemes[number]) => void;
+}
+
+export interface AttributeQueryState {
+  targetLayer: FeatureLayer | null;
+  queryResultLayer: FeatureLayer | null;
+  resultLayerSource: Graphic[] | null;
+  fieldsNames: string[];
+  inputMethod: string;
+  downloadBtnDisabled: boolean;
+  uniqueValues: string[];
+  graphicsLayer: GraphicsLayer | null;
+  queryResult?: any[];
+  selectedField: string;
 }

@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
-import Loading from "./sub_components/loading";
-import DefaultComponent from "./sub_components/default-component";
+import Loading from "./ui/loading";
+import DefaultComponent from "./widgets/default-component";
 // import HTML_ELEMENTS_TEMPLATES from "../modules/HTML_ELEMENTS_TEMPLATES";
-import useStateStore from "@/stateManager";
-import SidebarHeader from "./sub_components/sidebar-header";
+import useStateStore from "@/stateStore";
+import SidebarHeader from "./sidebar-header";
 import dynamic from "next/dynamic";
 
 const BasemapGalleryComponent = dynamic(
@@ -44,6 +44,9 @@ const MeasurementComponent = dynamic(() => import("@/components/widgets/measurem
 const SketchComponent = dynamic(() => import("@/components/widgets/sketch"), {
   ssr: false,
 });
+const LayerListCustom = dynamic(() => import("@/components/widgets/layer-list-custom"), {
+  ssr: false,
+});
 
 const components = {
   Loading,
@@ -59,6 +62,7 @@ const components = {
   CoordinateConversionComponent,
   MeasurementComponent,
   SketchComponent,
+  LayerListCustom
 };
 
 export default function Sidebar() {

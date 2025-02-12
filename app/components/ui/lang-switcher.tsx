@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 const LanguageSwitcher: React.FC = () => {
   const { i18n } = useTranslation();

@@ -4,16 +4,21 @@ import React from "react";
 import Header from "./components/header";
 import Sidebar from "./components/sidebar";
 import ContentView from "./components/contentview";
-import useStateStore from "./stateManager";
+import useStateStore from "./stateStore";
 import "./i18n";
-import AppLoader from "./components/app-loader";
-import ToolsMenu from "./components/tools-menu";
-import BottomMenuTray from "./components/sub_components/bottom-menu-tray";
+import AppLoader from "./components/ui/app-loader";
 import BottomPane from "./components/bottom-pane";
+import LogoMenu from "./components/advanced-main-menu";
 
 export default function App() {
   // Extract necessary state and actions from the store
-  const { layout: layoutState, setLanguage, appReady, setAppReady, language } = useStateStore((state) => state);
+  const {
+    layout: layoutState,
+    setLanguage,
+    appReady,
+    setAppReady,
+    language,
+  } = useStateStore((state) => state);
 
   // Simulate app loading | Must be removed in production
   React.useEffect(() => {
@@ -38,14 +43,12 @@ export default function App() {
         </div>
       )}
 
-      {/* Header */}
       <Header />
-
-      {/* Main Content */}
       <div
         className="relative w-full h-full border-1 border-transparent"
         style={{
-          background: "linear-gradient(to right,  #18def8 ,  #44747a,  #18def8)",
+          background:
+            "linear-gradient(to right,  #18def8 ,  #44747a,  #18def8)",
           backgroundSize: "200% 50%",
           animation: "shine 3s linear infinite",
         }}
@@ -56,27 +59,25 @@ export default function App() {
           </div>
 
           <div
-            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[300px] bg-transparent z-20 transition-all duration-1000 overflow-hidden ${
+            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[250px] bg-transparent z-20 transition-all duration-1000 overflow-hidden ${
               language === "en" ? "left-5" : "right-5" // Flip position based on language
             }`}
             style={{ height: `${layoutState.sidebarHeight}vh` }} // Add "vh" here
-            >
+          >
             <Sidebar />
-            </div>
+          </div>
 
-            <div
+          <div
             className={`absolute px-6 py-3 bottom-20 left-1/2 transform -translate-x-1/2 w-[calc(100%-600px)] h-[40vh] max-w-[1200px] bg-transparent rounded-lg overflow-hidden transition-all duration-1000 ${
-              layoutState.bottomPaneOpen ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+              layoutState.bottomPaneOpen
+                ? "translate-y-0 opacity-100"
+                : "translate-y-full opacity-0"
             }`}
-            >
+          >
             <BottomPane />
-            </div>
+          </div>
+          <LogoMenu />
 
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-10">
-            <ToolsMenu />
-            </div>
-
-          <BottomMenuTray />
         </div>
       </div>
     </div>

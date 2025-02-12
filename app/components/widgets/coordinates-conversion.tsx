@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import CoordinateConversion from "@arcgis/core/widgets/CoordinateConversion";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 export default function CoordinateConversionComponent() {
   const coordinateConversionRef = useRef(null);

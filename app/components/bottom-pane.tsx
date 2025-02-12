@@ -1,5 +1,5 @@
-import useStateStore from "@/stateManager";
-import DefaultComponent from "./sub_components/default-component";
+import useStateStore from "@/stateStore";
+import DefaultComponent from "./widgets/default-component";
 import { useTranslation } from "react-i18next";
 import dynamic from "next/dynamic";
 

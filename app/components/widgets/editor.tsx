@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Editor from "@arcgis/core/widgets/Editor";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 export default function EditorComponent() {
   const editorRef = useRef(null);

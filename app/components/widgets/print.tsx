@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Print from "@arcgis/core/widgets/Print";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 export default function PrintComponent() {
   const printRef = useRef(null);

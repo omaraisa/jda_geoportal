@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import BasemapGallery from "@arcgis/core/widgets/BasemapGallery";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 
 export default function BasemapGalleryComponent() {
   const basemapGalleryRef = useRef(null); // Reference for the widget container

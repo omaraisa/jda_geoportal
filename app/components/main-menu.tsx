@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import useStateStore from "@/stateManager";
+import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
-import styles from "./tools-menu.module.css";
+import styles from "./main-menu.module.css";
 
-export default function ToolsMenu() {
+export default function MainMenu() {
   const { t } = useTranslation();
-  const toolsMenuExpanded = useStateStore((state) => state.layout.toolsMenuExpanded);
+  const mainMenuExpanded = useStateStore((state) => state.layout.mainMenuExpanded);
   const sidebarOpen = useStateStore((state) => state.layout.sidebarOpen);
-  const setToolsMenuExpansion = useStateStore((state) => state.setToolsMenuExpansion);
+  const setMainMenuExpansion = useStateStore((state) => state.setMainMenuExpansion);
   const activeSideBar = useStateStore((state) => state.activeSideBar);
   const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
   const toggleSidebar = useStateStore((state) => state.toggleSidebar);
@@ -19,57 +19,57 @@ export default function ToolsMenu() {
   const menuItems = [
     {
       icon: "esri-icon-basemap", // Basemap Gallery
-      tooltip: t("toolsMenu.basemapGallery"),
+      tooltip: t("mainMenu.basemapGallery"),
       targetComponent: "BasemapGalleryComponent",
     },
     {
       icon: "esri-icon-edit", // Editor Widget
-      tooltip: t("toolsMenu.editorWidget"),
+      tooltip: t("mainMenu.editorWidget"),
       targetComponent: "EditorComponent",
     },
     {
       icon: "esri-icon-printer", // Print Widget
-      tooltip: t("toolsMenu.printWidget"),
+      tooltip: t("mainMenu.printWidget"),
       targetComponent: "PrintComponent",
     },
     {
       icon: "esri-icon-measure", // Measurement Widget
-      tooltip: t("toolsMenu.measurementWidget"),
+      tooltip: t("mainMenu.measurementWidget"),
       targetComponent: "MeasurementComponent",
     },
     {
       icon: "esri-icon-layers", // Layer List Widget
-      tooltip: t("toolsMenu.layerListWidget"),
+      tooltip: t("mainMenu.layerListWidget"),
       targetComponent: "LayerListComponent",
     },
     {
       icon: "esri-icon-search", // Attribute Query
-      tooltip: t("toolsMenu.attributeQuery"),
+      tooltip: t("mainMenu.attributeQuery"),
       targetComponent: "AttributeQueryComponent",
     },
     {
       icon: "esri-icon-lasso", // Sketch Widget
-      tooltip: t("toolsMenu.sketchWidget"),
+      tooltip: t("mainMenu.sketchWidget"),
       targetComponent: "SketchComponent",
     },
     {
       icon: "esri-icon-cursor-marquee", // Spatial Query
-      tooltip: t("toolsMenu.spatialQuery"),
+      tooltip: t("mainMenu.spatialQuery"),
       targetComponent: "SpatialQueryComponent",
     },
     {
       icon: "esri-icon-map-pin", // Coordinate Conversion
-      tooltip: t("toolsMenu.coordinateConversion"),
+      tooltip: t("mainMenu.coordinateConversion"),
       targetComponent: "CoordinateConversionComponent",
     },
     {
       icon: "esri-icon-legend", // Legend Widget
-      tooltip: t("toolsMenu.legendWidget"),
+      tooltip: t("mainMenu.legendWidget"),
       targetComponent: "LegendComponent",
     },
     {
       icon: "esri-icon-bookmark", // Bookmark Widget
-      tooltip: t("toolsMenu.bookmarkWidget"),
+      tooltip: t("mainMenu.bookmarkWidget"),
       targetComponent: "BookmarkComponent",
     },
   ];
@@ -145,7 +145,7 @@ export default function ToolsMenu() {
       clearTimeout(hoverTimeoutRef.current); // Clear the existing timeout
     }
     const newTimeout = setTimeout(() => {
-      setToolsMenuExpansion(false); // Close the menu after 10 seconds
+      setMainMenuExpansion(false); // Close the menu after 10 seconds
     }, 10000); // 10 seconds
     hoverTimeoutRef.current = newTimeout; // Update the ref with the new timeout ID
   };
@@ -157,14 +157,14 @@ export default function ToolsMenu() {
 
   // Auto-hide menu after 10 seconds of inactivity
   useEffect(() => {
-    if (toolsMenuExpanded) {
+    if (mainMenuExpanded) {
       extendTimer(); // Start the timer when the menu is expanded
     } else {
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current); // Clear the timeout when the menu is closed
       }
     }
-  }, [toolsMenuExpanded]);
+  }, [mainMenuExpanded]);
 
   // Update menu when currentIndex changes
   useEffect(() => {
@@ -173,20 +173,20 @@ export default function ToolsMenu() {
 
   return (
     <div
-      className={styles.toolsMenu}
-      style={{ bottom: toolsMenuExpanded ? "60px" : "40px" }}
+      className={styles.mainMenu}
+      style={{ bottom: mainMenuExpanded ? "60px" : "40px" }}
       onMouseEnter={handleHover} // Extend timer on hover over the menu
     >
       {/* Toggle Button */}
       <button
-        className={`${styles.toggleButton} ${toolsMenuExpanded ? styles.hidden : ""}`}
-        onClick={() => setToolsMenuExpansion(true)}
+        className={`${styles.toggleButton} ${mainMenuExpanded ? styles.hidden : ""}`}
+        onClick={() => setMainMenuExpansion(true)}
       >
         <i className="fas fa-tools"></i>
       </button>
 
       {/* Menu Container */}
-      <div className={`${styles.menuContainer} ${toolsMenuExpanded ? styles.expanded : ""}`}>
+      <div className={`${styles.menuContainer} ${mainMenuExpanded ? styles.expanded : ""}`}>
         {/* Navigation Buttons */}
         <button className={`${styles.navButton} ${styles.left}`} onClick={() => rotateMenu(-1)}>
           <i className="fas fa-arrow-left"></i>

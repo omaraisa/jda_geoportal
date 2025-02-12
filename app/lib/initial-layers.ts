@@ -1,13 +1,14 @@
-// config/initialLayers.js
-import {InitialLayersConfiguration} from "@/interface";
-export const baseMapLayerConfigurations : InitialLayersConfiguration[] = [
+import { InitialLayersConfiguration } from "@/interface";
+
+export const baseMapLayerConfigurations: InitialLayersConfiguration[] = [
   {
+    id: "jeddah-historical",
     title: "Jeddah Historical",
-    type: "feature",
-    sourceType: "url", // 'url' | 'portal'
+    type: "FeatureLayer",
+    sourceType: "url",
     url: "https://services.arcgis.com/4TKcmj8FHh5Vtobt/arcgis/rest/services/JeddahHistorical/FeatureServer",
     portalItemId: null,
-    groups: [],
+    themes: ["Theme1"],
     visible: true,
     labelsEnabled: true,
     labelingInfo: null,
@@ -17,12 +18,13 @@ export const baseMapLayerConfigurations : InitialLayersConfiguration[] = [
     maxScale: 18,
   },
   {
+    id: "parcel",
     title: "Parcel",
-    type: "feature",
-    sourceType: "url", // 'url' | 'portal'
+    type: "FeatureLayer",
+    sourceType: "url",
     url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
     portalItemId: null,
-    groups: [],
+    themes: ["Theme2","Theme3"],
     visible: false,
     labelsEnabled: true,
     renderer: {
@@ -30,7 +32,7 @@ export const baseMapLayerConfigurations : InitialLayersConfiguration[] = [
       symbol: {
         type: "simple-fill",
         outline: {
-          color: [255, 255, 0, 1], // Yellow outline
+          color: [255, 255, 0, 1],
           width: 1,
         },
       },
@@ -57,16 +59,161 @@ export const baseMapLayerConfigurations : InitialLayersConfiguration[] = [
     minScale: 0,
     maxScale: 18,
   },
+  {
+    id: "parks",
+    title: "Parks",
+    type: "MapImageLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/DKK/DKKv4/MapServer",
+    portalItemId: null,
+    themes: ["Theme1"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "blocks",
+    title: "Blocks",
+    type: "FeatureLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BGT/BGT_objecttypen/FeatureServer",
+    portalItemId: null,
+    themes: ["Theme2"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "buildings",
+    title: "Buildings",
+    type: "MapImageLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BGT/BGT_objecttypen/MapServer",
+    portalItemId: null,
+    themes: ["Theme3"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "roads",
+    title: "Roads",
+    type: "FeatureLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BAG/BAGv3/FeatureServer",
+    portalItemId: null,
+    themes: ["Theme1", "Theme2"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "waterways",
+    title: "Waterways",
+    type: "MapImageLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BAG/BAGv3/MapServer",
+    portalItemId: null,
+    themes: ["Theme2"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "green-areas",
+    title: "Green Areas",
+    type: "FeatureLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BGT/BGT_standaard/FeatureServer",
+    portalItemId: null,
+    themes: ["Theme1"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "urban-areas",
+    title: "Urban Areas",
+    type: "MapImageLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BGT/BGT_standaard/MapServer",
+    portalItemId: null,
+    themes: ["Theme2"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "mines",
+    title: "Mines",
+    type: "MapImageLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BAG/BAGv3/MapServer",
+    portalItemId: null,
+    themes: ["Theme2"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
+  {
+    id: "roadblock",
+    title: "Roadblock",
+    type: "MapImageLayer",
+    sourceType: "url",
+    url: "https://basisregistraties.arcgisonline.nl/arcgis/rest/services/BGT/BGT_standaard/MapServer",
+    portalItemId: null,
+    themes: ["Theme1", "Theme3"],
+    visible: true,
+    labelsEnabled: false,
+    labelingInfo: null,
+    renderer: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+  },
 ];
 
-export const sceneLayerConfigurations : InitialLayersConfiguration[] = [
+export const sceneBasemapConfigurations: InitialLayersConfiguration[] = [
   {
+    id: "scene-buildings",
     title: "Buildings",
-    type: "feature",
-    sourceType: "url", // 'url' | 'portal'
+    type: "FeatureLayer",
+    sourceType: "url",
     url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Buildings/FeatureServer",
     portalItemId: null,
-    groups: [],
+    themes: ["Theme1"],
     visible: false,
     labelsEnabled: true,
     labelingInfo: null,
@@ -74,16 +221,16 @@ export const sceneLayerConfigurations : InitialLayersConfiguration[] = [
     minScale: 0,
     maxScale: 18,
     renderer: {
-      type: "simple", // autocasts as new SimpleRenderer()
+      type: "simple",
       symbol: {
-        type: "polygon-3d", // autocasts as new PolygonSymbol3D()
+        type: "polygon-3d",
         symbolLayers: [
           {
-            type: "extrude", // autocasts as new ExtrudeSymbol3DLayer()
-            material: { color: [200, 200, 200, 0.8] }, // Light blue with transparency
+            type: "extrude",
+            material: { color: [200, 200, 200, 0.8] },
             edges: {
-              type: "solid", // autocasts as new SolidEdges3D()
-              color: [50, 50, 50, 0.5], // Dark gray edges with transparency
+              type: "solid",
+              color: [50, 50, 50, 0.5],
             },
           },
         ],
@@ -91,24 +238,22 @@ export const sceneLayerConfigurations : InitialLayersConfiguration[] = [
       label: "Buildings",
       visualVariables: [
         {
-          type: "size", // Indicates this is a size visual variable
-          field: "height", // Field containing the height values
-          valueUnit: "meters", // Unit of the height values
-          valueExpression: "$feature.height", // Directly use the height field
+          type: "size",
+          field: "height",
+          valueUnit: "meters",
+          valueExpression: "$feature.height",
         },
       ],
     },
-    // elevationInfo: {
-    //   mode: 'on-the-ground', // Ensure buildings are extruded from the ground
-    // },
   },
   {
+    id: "scene-parcel",
     title: "Parcel",
-    type: "feature",
-    sourceType: "url", // 'url' | 'portal'
+    type: "FeatureLayer",
+    sourceType: "url",
     url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
     portalItemId: null,
-    groups: [],
+    themes: ["Theme2", "Theme3"],
     visible: false,
     labelsEnabled: true,
     labelingInfo: null,
