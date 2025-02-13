@@ -44,9 +44,7 @@ const MeasurementComponent = dynamic(() => import("@/components/widgets/measurem
 const SketchComponent = dynamic(() => import("@/components/widgets/sketch"), {
   ssr: false,
 });
-const LayerListCustom = dynamic(() => import("@/components/widgets/layer-list-custom"), {
-  ssr: false,
-});
+
 
 const components = {
   Loading,
@@ -62,7 +60,6 @@ const components = {
   CoordinateConversionComponent,
   MeasurementComponent,
   SketchComponent,
-  LayerListCustom
 };
 
 export default function Sidebar() {
