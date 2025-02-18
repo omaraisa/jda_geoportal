@@ -1,42 +1,57 @@
-import esriConfig from '@arcgis/core/config';
-import IdentityManager from '@arcgis/core/identity/IdentityManager';
-import ServerInfo from '@arcgis/core/identity/ServerInfo';
+'use server'
 
-const config = {
-    apiKey: process.env.NEXT_PUBLIC_ArcGISAPIKey ?? 'API_KEY_NOT_SET',
-    username: process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_USERNAME ?? 'USERNAME_NOT_SET',
-    password: process.env.NEXT_PUBLIC_PORTAL_PUBLISHER_PASSWORD ?? 'PASSWORD_NOT_SET',
-    portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET',
-    tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
+import { SignJWT, jwtVerify } from "jose";
+import { cookies } from "next/headers";
+
+const secretKey = process.env.TOKEN_SECRET;
+const encodedKey = new TextEncoder().encode(secretKey);
+
+export async function deleteToken() {
+  const cookieStore = await cookies();
+  cookieStore.delete("authToken");
+}
+
+type TokenPayload = {
+  userId: string;
+  expiresAt: Date;
 };
 
-esriConfig.apiKey = config.apiKey;
+export async function encrypt(payload: TokenPayload) {
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(encodedKey);
+}
 
-const serverInfo = new ServerInfo({
-    server: config.portalUrl,
-    tokenServiceUrl: config.tokenServiceUrl,
-});
+export async function decrypt(token: string | undefined = "") {
+  try {
+    const { payload } = await jwtVerify(token, encodedKey, {
+      algorithms: ["HS256"],
+    });
+    return payload;
+  } catch (error) {
+    console.log("Failed to verify auth token", error);
+  }
+}
 
-IdentityManager.registerServers([serverInfo]);
+export async function checkIsAuthenticated() {
+  const cookie = (await cookies()).get("authToken")?.value;
 
-export const authenticate = async () => {
-    try {
-        const response = await IdentityManager.generateToken(serverInfo, {
-            username: config.username,
-            password: config.password,
-            client: "referer",
-            referer: window.location.origin,
-        });
+  if (!cookie) {
+    return false;
+  }
 
-        IdentityManager.registerToken({
-            server: serverInfo.server,
-            token: response.token,
-            expires: response.expires,
-        });
+  const token = await decrypt(cookie);
+  if (!token?.userId) {
+    return false;
+  }
+  const { exp } = token;
+  console.log("Current time:", new Date());
+  console.log("Expiration time:", new Date(exp * 1000));
+  if (exp && Date.now() >= (exp * 1000 - 40000)) {
+    return false;
+  }
 
-        return true;
-    } catch (error) {
-        console.error('Authentication failed:', error);
-        return false;
-    }
-};
+  return true;
+}

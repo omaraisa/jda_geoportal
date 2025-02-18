@@ -55,7 +55,6 @@
     --foreground: #ededed;
   }
 }
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -65,23 +64,24 @@ body {
   padding: 0; /* Remove default paddings */
   cursor: url('/cursor.png'), auto;
 }
+
 button, a, i, [role="button"], [onclick] {
   cursor: url('/cursor-link.png'), pointer;
 }
 
-/* Styles for English (en) */
+/* Language-specific styles */
 :lang(en) {
   font-family: var(--font-oxanium), Arial, Helvetica, sans-serif;
   direction: ltr;
   text-align: left;
 }
 
-/* Styles for Arabic (ar) */
 :lang(ar) {
   font-family: var(--font-droid-arabic-kufi), sans-serif;
   direction: rtl;
   text-align: right;
 }
+
 /* Common button styles */
 .btn {
   align-items: center;
@@ -112,7 +112,6 @@ button, a, i, [role="button"], [onclick] {
   left: 50%;
   width: 0;
   height: 0;
-  font-weight: 500;
   background: rgba(255, 255, 255, 0.3); /* Glow color */
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -143,50 +142,40 @@ button, a, i, [role="button"], [onclick] {
   opacity: 0;
 }
 
-.btn:hover, .btn:active {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Primary button styles */
+/* Button variants */
 .btn-primary {
   background-color: var(--primary-dark-transparent);
   color: var(--background);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Secondary button styles */
 .btn-secondary {
   background-color: var(--secondary);
   color: var(--background);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .btn-white {
   background-color: var(--background);
   color: var(--primary);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .btn-green {
   background-color: var(--green);
   color: var(--background);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .btn-gray {
   background-color: var(--gray-light);
   color: var(--background);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Danger button styles */
 .btn-danger {
   background-color: var(--danger);
   color: var(--background);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 /* Close button styles */
 .close-btn {
-  width: 2rem; /* You can adjust the size to fit your design */
+  width: 2rem;
   height: 2rem;
   display: flex;
   align-items: center;
@@ -198,7 +187,6 @@ button, a, i, [role="button"], [onclick] {
   overflow: hidden;
 }
 
-/* Glow effect using ::before */
 .close-btn::before {
   content: '';
   position: absolute;
@@ -206,7 +194,7 @@ button, a, i, [role="button"], [onclick] {
   left: 50%;
   width: 0;
   height: 0;
-  background: rgba(255, 255, 255, 0.3); /* Glow color */
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: width 0.8s ease, height 0.8s ease, opacity 0.8s ease;
@@ -214,9 +202,8 @@ button, a, i, [role="button"], [onclick] {
   pointer-events: none;
 }
 
-/* Hover effect for the glow and rotation */
 .close-btn:hover {
-  transform: rotate(180deg); /* Rotates the button on hover */
+  transform: rotate(180deg);
 }
 
 .close-btn:hover::before {
@@ -225,9 +212,8 @@ button, a, i, [role="button"], [onclick] {
   opacity: 1;
 }
 
-/* Active effect (when clicked) */
 .close-btn:active {
-  transform: rotate(360deg); /* Full rotation when clicked */
+  transform: rotate(360deg);
 }
 
 .close-btn:active::before {
@@ -236,6 +222,7 @@ button, a, i, [role="button"], [onclick] {
   opacity: 0;
 }
 
+/* Switch styles */
 .switch-input {
   height: 0;
   width: 0;
@@ -245,11 +232,11 @@ button, a, i, [role="button"], [onclick] {
 .switch-lable {
   cursor: pointer;
   text-indent: -9999px;
-  width: 3rem; /* Reduced width */
-  height: 1.5rem; /* Reduced height */
+  width: 3rem;
+  height: 1.5rem;
   background: var(--gray-light);
   display: block;
-  border-radius: 1.5rem; /* Adjusted border-radius */
+  border-radius: 1.5rem;
   position: relative;
 }
 
@@ -257,32 +244,31 @@ button, a, i, [role="button"], [onclick] {
   content: "";
   position: absolute;
   top: 2px;
-  left: 3px; /* Adjusted left position */
-  width: 1.1rem; /* Reduced width */
-  height: 1.1rem; /* Reduced height */
+  left: 3px;
+  width: 1.1rem;
+  height: 1.1rem;
   background: #fff;
-  border-radius: 1.1rem; /* Adjusted border-radius */
+  border-radius: 1.1rem;
   transition: 0.3s;
 }
+
 .switch-lable:hover {
   box-shadow: 1px 1px 8px var(--gray-dark);
 }
 
-.switch-input:checked:hover + .switch-lable:hover {
-  box-shadow: 1px 1px 8px var(--secondary-dark);
-}
-
-input:checked + .switch-lable {
+.switch-input:checked + .switch-lable {
   background: var(--secondary-light);
 }
-input:checked + .switch-lable:after {
-  left: calc(100% - 3px); /* Adjusted left position */
+
+.switch-input:checked + .switch-lable:after {
+  left: calc(100% - 3px);
   transform: translateX(-100%);
 }
 
 .switch-lable:active:after {
-  width: 40px; /* Adjusted width */
+  width: 40px;
 }
+
 .switch-input:disabled + .switch-lable:after {
   background: #c2c2c2;
 }
@@ -291,20 +277,19 @@ input:checked + .switch-lable:after {
   background: #b3caff;
 }
 
-
-
+/* Checkbox styles */
 .checkbox {
   display: none;
 }
+
 .tick-label {
-  min-width: 1.5rem; /* Reduced width */
-  height: 1.5rem; /* Reduced height */
+  min-width: 1.5rem;
+  height: 1.5rem;
   background-color: var(--gray-light);
   transform: translateY(-5%);
   border-radius: 50%;
   cursor: pointer;
-  transition: 0.2s ease transform, 0.2s ease background-color,
-    0.2s ease box-shadow;
+  transition: 0.2s ease transform, 0.2s ease background-color, 0.2s ease box-shadow;
   overflow: hidden;
   z-index: 1;
 }
@@ -315,8 +300,8 @@ input:checked + .switch-lable:after {
   top: 50%;
   right: 0;
   left: 0;
-  width: 1rem; /* Reduced width */
-  height: 1rem; /* Reduced height */
+  width: 1rem;
+  height: 1rem;
   margin: 0 auto;
   background-color: #fff;
   transform: translateY(-50%);
@@ -326,15 +311,8 @@ input:checked + .switch-lable:after {
 }
 
 .tick-label:hover:before {
-  width: 0.8rem; /* Reduced width */
-  height: 0.8rem; /* Reduced height */
-  box-shadow: inset 1 2px 8px var(--gray);
-}
-
-.tick-label:hover:after {
-  width: 0.8rem; /* Reduced width */
-  height: 0.8rem; /* Reduced height */
-  box-shadow: inset 1 2px 8px var(--gray);
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 .tick-label:hover {
@@ -347,11 +325,11 @@ input:checked + .switch-lable:after {
 
 #tick_mark {
   position: absolute;
-  top: 0.75rem; /* Adjusted position */
-  right: 0.375rem; /* Adjusted position */
+  top: 0.75rem;
+  right: 0.375rem;
   left: 0;
-  width: 0.375rem; /* Reduced width */
-  height: 0.375rem; /* Reduced height */
+  width: 0.375rem;
+  height: 0.375rem;
   margin: 0 auto;
   transform: rotateZ(-40deg);
 }
@@ -369,8 +347,8 @@ input:checked + .switch-lable:after {
 #tick_mark:before {
   left: 0;
   bottom: 0;
-  width: 0.1875rem; /* Reduced width */
-  height: 0.6rem; /* Reduced height */
+  width: 0.1875rem;
+  height: 0.6rem;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.23);
   transform: translateY(-68px);
 }
@@ -378,8 +356,8 @@ input:checked + .switch-lable:after {
 #tick_mark:after {
   left: 0;
   bottom: 0;
-  width: 1.05rem; /* Reduced width */
-  height: 0.1875rem; /* Reduced height */
+  width: 1.05rem;
+  height: 0.1875rem;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.23);
   transform: translateX(78px);
 }
@@ -403,7 +381,7 @@ input:checked + .switch-lable:after {
   opacity: 1;
 }
 
-
+/* Input and textarea styles */
 .textInput {
   position: relative;
   margin: auto;
@@ -417,7 +395,7 @@ input:checked + .switch-lable:after {
   top: 20px;
   right: 12px;
   font-size: 1.2rem;
-  color: #fff;
+  color: rgba(255, 255, 255);
   font-weight: 500;
   transform-origin: 0 0;
   transform: translate3d(0, 0, 0);
@@ -433,52 +411,8 @@ input:checked + .switch-lable:after {
   right: 12px;
 }
 
-
-.focus-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.7);
-  z-index: -1;
-  transform: scaleX(0);
-  transform-origin: left;
-}
-
-
-/* Existing Styles */
-.textInput {
-  position: relative;
-  margin: auto;
-  width: 100%;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.label {
-  position: absolute;
-  top: 20px;
-  right: 12px;
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255); /* Fixed rgba syntax */
-  font-weight: 500;
-  transform-origin: 0 0;
-  transform: translate3d(0, 0, 0);
-  transition: all 0.2s ease;
-  pointer-events: none;
-}
-
-:lang(en) .label {
-  left: 12px; /* Label position for English */
-}
-
-:lang(ar) .label {
-  right: 12px; /* Label position for Arabic */
-}
-
 .input-text,
-.textarea-input { /* Shared styles for input and textarea */
+.textarea-input {
   width: 100%;
   border: 0;
   padding: 2rem 1rem 0 2rem;
@@ -486,7 +420,7 @@ input:checked + .switch-lable:after {
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.055);
   color: var(--primary-dark);
   transition: all 0.5s ease;
-  font-size: inherit; /* Ensure font size consistency */
+  font-size: inherit;
 }
 
 .input-text:hover,
@@ -496,7 +430,7 @@ input:checked + .switch-lable:after {
 
 .input-text:not(:placeholder-shown) + .label,
 .textarea-input:not(:placeholder-shown) + .label {
-  color: #fff; /* Fixed rgba syntax */
+  color: #fff;
   transform: translate3d(0, -12px, 0) scale(0.75);
 }
 
@@ -511,27 +445,19 @@ input:checked + .switch-lable:after {
   transform: translate3d(0, -12px, 0) scale(0.75);
 }
 
-.input-text:focus + .label + .focus-bg,
-.textarea-input:focus + .label + .focus-bg {
-  transform: scaleX(1);
-  transition: all 0.1s ease;
-}
-
-/* Textarea-specific styles */
 .textarea-input {
-  resize: vertical; /* Allow vertical resizing */
-  min-height: 100px; /* Set a minimum height */
+  resize: vertical;
+  min-height: 100px;
 }
 
+/* Select styles */
 .select {
   position: relative;
   width: 100%;
 }
 
 .select select {
-  appearance: none; /* Remove default arrow */
-  -webkit-appearance: none; /* Remove default arrow for Safari */
-  -moz-appearance: none; /* Remove default arrow for Firefox */
+  appearance: none;
   width: 100%;
   padding: 8px 15px;
   font-size: 16px;
@@ -548,7 +474,7 @@ input:checked + .switch-lable:after {
   background-color: var(--primary-dark-transparent);
   color: #fff;
 }
-/* Custom dropdown arrow */
+
 .select::after {
   content: "";
   position: absolute;
@@ -557,7 +483,7 @@ input:checked + .switch-lable:after {
   height: 0;
   border: 7px solid transparent;
   border-color: var(--primary) transparent transparent transparent;
-  pointer-events: none; /* Ensure clicks go to the select element */
+  pointer-events: none;
 }
 
 :lang(en) .select::after {
@@ -568,21 +494,17 @@ input:checked + .switch-lable:after {
   left: 10px;
 }
 
-
-/* Change arrow direction when select is focused */
 .select select:focus + .select::after {
   border-color: transparent transparent var(--primary) transparent;
-  top: 40%; /* Adjust position for the new arrow direction */
+  top: 40%;
 }
 
-/* Change default blue color on hover over options */
 .select select option:hover {
   background-color: var(--primary-light);
   color: var(--primary);
 }
 
-
-/* Number Input Styles */
+/* Number input styles */
 input[type="number"] {
   width: 100%;
   padding: 0.5rem;
@@ -615,7 +537,6 @@ input[type="number"]::-moz-outer-spin-button {
   appearance: none;
   margin: 0;
 }
-
 
 
 

@@ -6,7 +6,6 @@ import { State, Bookmark } from "@/interface";
 import * as InitialLayersConfiguration from "@/lib/initial-layers";
 
 const useStateStore = create<State>((set, get) => ({
-  // Initial State
   language: localStorage.getItem("appLanguage") || "en",
   layout: {
     mainMenuExpanded: false,

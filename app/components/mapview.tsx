@@ -5,7 +5,7 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import useStateStore from "@/stateStore";
 import wgs84ToUtmZone37N from "@/lib/utils/wgs84ToUtmZone37N";
-import { authenticate } from "@/lib/auth";
+import { authenticateArcGIS } from "@/lib/authenticateArcGIS";
 // import { baseMapLayerConfigurations } from "@/lib/initial-layers";
 
 interface CustomMapView extends MapView {
@@ -33,7 +33,7 @@ const MainMap = () => {
     // Authenticate first, then initialize the map
     if (!mapInitializedRef.current) {
       mapInitializedRef.current = true;
-      authenticate()
+      authenticateArcGIS()
         .then(() => {
           try {
             // Initialize the Map and MapView
@@ -58,6 +58,7 @@ const MainMap = () => {
                 coordinatesContainer.style.bottom = "1em";
                 coordinatesContainer.style.left = "1em";
                 coordinatesContainer.style.padding = "0.5em";
+                coordinatesContainer.style.color = "rgb(85, 85, 85)";
                 coordinatesContainer.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
                 coordinatesContainer.style.fontSize = "0.75em";
                 coordinatesContainer.style.zIndex = "10";

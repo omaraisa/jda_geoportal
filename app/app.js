@@ -9,8 +9,11 @@ import "./i18n";
 import AppLoader from "./components/ui/app-loader";
 import BottomPane from "./components/bottom-pane";
 import LogoMenu from "./components/advanced-main-menu";
+import useAuthCheck from "@/lib/hooks/use-auth-check";
+
 
 export default function App() {
+  useAuthCheck()
   // Extract necessary state and actions from the store
   const {
     layout: layoutState,
