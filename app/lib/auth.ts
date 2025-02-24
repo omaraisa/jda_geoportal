@@ -47,8 +47,6 @@ export async function checkIsAuthenticated() {
     return false;
   }
   const { exp } = token;
-  console.log("Current time:", new Date());
-  console.log("Expiration time:", new Date(exp * 1000));
   if (exp && Date.now() >= (exp * 1000 - 40000)) {
     return false;
   }

@@ -15,10 +15,47 @@
     }
   },
   "menu": {
+    "AttributeQueryComponent": "Attribute Query",
+    "SpatialQueryComponent": "Spatial Query",
+    
+    "MeasurementComponent": "Measure",
+    "EditorComponent": "Editor",
+    "SketchComponent": "Draw",
+    "LegendComponent": "Legend",
+    "PrintComponent": "Print",
+    "BasemapGalleryComponent": "Basemap",
+    "BookmarkComponent": "Bookmark",
+    "CoordinateConversionComponent": "Coordinate Conversion",
+    "LayerListComponent": "Layer List",
+
+    
     "layers": "Layers",
-    "legend": "Legend",
-    "addLayer": "Add Layer",
-    "query": "Query"
+    "tools": "Tools",
+    "settings": "Settings",
+    "query": "Query",
+    "analysis": "Analysis",
+    "userSettings": "User Settings",
+    "systemSettings": "System Settings",
+      "measureTool": "Measure Tool",
+      "editTool": "Edit Tool",
+      "selectTool": "Select Tool",
+      "drawTool": "Draw Tool",
+      "eraseTool": "Erase Tool",
+      "panTool": "Pan Tool",
+      "bufferAnalysis": "Buffer Analysis",
+      "overlayAnalysis": "Overlay Analysis",
+      "proximityAnalysis": "Proximity Analysis",
+      "statisticalAnalysis": "Statistical Analysis",
+      "terrainAnalysis": "Terrain Analysis",
+      "networkAnalysis": "Network Analysis",
+      "visibilityAnalysis": "Visibility Analysis",
+      "heatmapAnalysis": "Heatmap Analysis",
+      "clusterAnalysis": "Cluster Analysis",
+      "suitabilityAnalysis": "Suitability Analysis",
+      "attributeQuery": "Attribute Query",
+      "spatialQuery": "Spatial Query",
+      "addLayer": "Add Layer",
+      "removeLayer": "Remove Layer"
   },
   "sidebar": {
     "titles": {
@@ -65,7 +102,7 @@
       "noBookmarks": "No bookmarks available",
       "bookmarkName": "Bookmark Name",
       "enterName": "Enter a name",
-      "saveBookmark": "Save Bookmark",
+      "saveBookmark": "Save",
       "cancel": "Cancel"
     },
     "sketch": {

@@ -26,7 +26,7 @@ const SidebarHeader: React.FC = () => {
           className="absolute left-4 text-white focus:outline-none transform transition-transform duration-500 ease-in-out hover:bg-white hover:text-primary rounded-full w-8 h-8 flex items-center justify-center"
           onClick={handleBack}
         >
-          <i className="fas fa-arrow-left"></i>
+          <calcite-icon icon={"chevrons-left"} scale="m" />
         </button>
       )}
 
@@ -38,7 +38,7 @@ const SidebarHeader: React.FC = () => {
         className="close-btn flex items-center justify-center"
         onClick={() => toggleSidebar(false)} // Close the sidebar
       >
-        <i className="fas fa-times"></i>
+       <calcite-icon icon={"x"} scale="m" />
       </button>
     </div>
   );

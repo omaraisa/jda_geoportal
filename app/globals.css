@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #1d1d1d;
+  --foreground: #ffffff;
+  --background: #2c2c2c;
 
   /* Primary Colors */
   --primary: #047B8B; /* Default primary color */
@@ -51,8 +51,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --foreground: #222222;
+    --background: #ededed;
   }
 }
 body {

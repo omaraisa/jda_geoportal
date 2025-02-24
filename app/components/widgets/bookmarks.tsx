@@ -36,11 +36,14 @@ export default function BookmarkComponent() {
       {!formVisible && (
         <div className="flex-column-container mx-3 py-3 text-white">
           <button
-            className="btn btn-secondary w-full"
-            onClick={initAddBookmarkForm}
-          >
-            <i className="esri-icon-plus-circled mr-2"></i> {t('widgets.bookmarks.addBookmark')}
-          </button>
+              className="btn btn-secondary flex-grow flex justify-stretch w-full"
+              onClick={initAddBookmarkForm}
+            >
+              <span className="w-full flex items-center justify-center">
+                <calcite-icon icon="plus-circle" scale="m" />
+                <span className="ml-2">{t('widgets.bookmarks.addBookmark')}</span>
+              </span>
+            </button>
 
           {bookmarks.length > 0 ? (
             bookmarks.map((bookmark) => (
@@ -57,35 +60,42 @@ export default function BookmarkComponent() {
         </div>
       )}
       {formVisible && (
-        <div className="add-bookmark p-6 flex flex-col gap-4 w-full">
+        <div className="add-bookmark p-2 flex flex-col gap-4 w-full">
           <h2
             className="block text-white font-semibold"
           >
             {t('widgets.bookmarks.bookmarkName')}
           </h2>
           <label htmlFor="bookmarkName" className="textInput">
-          <input
-            ref={bookmarkName}
-            type="text"
-            className="input-text"
-            id="bookmarkName"
-            placeholder="&nbsp;"
-          />
-          <span className="label">{t('widgets.bookmarks.enterName')}</span>
-        </label>
+            <input
+              ref={bookmarkName}
+              type="text"
+              className="input-text"
+              id="bookmarkName"
+              placeholder="&nbsp;"
+            />
+            <span className="label">{t('widgets.bookmarks.enterName')}</span>
+          </label>
           <div className="flex gap-4">
             <button
-              className="btn btn-primary flex-grow"
+              className="btn btn-primary flex-grow flex justify-stretch w-full"
               onClick={handleAddBookmark}
             >
-              <i className="esri-icon-save mr-2"></i> {t('widgets.bookmarks.saveBookmark')}
+              <span className="w-full flex items-center justify-center">
+                <calcite-icon icon="save" scale="m" />
+                <span className="ml-2">{t('widgets.bookmarks.saveBookmark')}</span>
+              </span>
             </button>
             <button
-              className="btn btn-gray flex-grow"
+              className="btn btn-gray flex-grow flex justify-stretch w-full"
               onClick={handleCancel}
             >
-              <i className="esri-icon-cancel mr-2"></i> {t('widgets.bookmarks.cancel')}
+              <span className="w-full flex items-center justify-center">
+                <calcite-icon icon="x-circle-f" scale="m" />
+                <span className="ml-2">{t('widgets.bookmarks.cancel')}</span>
+              </span>
             </button>
+
           </div>
         </div>
       )}

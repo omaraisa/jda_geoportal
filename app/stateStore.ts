@@ -6,7 +6,7 @@ import { State, Bookmark } from "@/interface";
 import * as InitialLayersConfiguration from "@/lib/initial-layers";
 
 const useStateStore = create<State>((set, get) => ({
-  language: localStorage.getItem("appLanguage") || "en",
+  language: typeof localStorage !== "undefined" ? localStorage.getItem("appLanguage") || "en" : "en",
   layout: {
     mainMenuExpanded: false,
     sidebarOpen: true,
@@ -27,7 +27,6 @@ const useStateStore = create<State>((set, get) => ({
   zoom: 12, // Default zoom level for 2D
   scale: 500000, // Default scale for 3D
   viewsSyncOn: false,
-  activeLayerTheme: "Theme1",
   previousSideBars: {
     DefaultComponent: null,
   },
@@ -95,7 +94,7 @@ const useStateStore = create<State>((set, get) => ({
     type,
     url,
     title,
-    themes,
+    groups,
     visible,
     opacity,
     minScale,
@@ -106,10 +105,6 @@ const useStateStore = create<State>((set, get) => ({
     visualVariables,
   }) => {
 
-    if (!themes?.includes(get().activeLayerTheme)) {
-      return null;
-    }
-
     let layer;
 
     const layerConfig = {
@@ -119,61 +114,38 @@ const useStateStore = create<State>((set, get) => ({
       opacity,
       minScale,
       maxScale,
-      themes,
+      groups,
       ...(labelingInfo && { labelingInfo }),
       ...(renderer && { renderer }),
       visualVariables: visualVariables || [],
     };
 
-    if (sourceType === "url") {
-      if (type === "FeatureLayer") {
-        layer = new FeatureLayer({
-          url,
-          ...layerConfig,
-          elevationInfo: {
-            mode: "on-the-ground",
-          },
-        });
-      } else if (type === "MapImageLayer") {
-        layer = new MapImageLayer({
-          url,
-          ...layerConfig,
-        });
-      } else if (type === "TileLayer") {
-        layer = new TileLayer({
-          url,
-          ...layerConfig,
-        });
+    const layerTypes = {
+      FeatureLayer,
+      MapImageLayer,
+      TileLayer,
+    };
+
+    const layerConfigWithSource = {
+      url,
+      portalItem: portalItemId ? { id: portalItemId } : undefined,
+      ...layerConfig,
+    };
+
+    if (sourceType === "url" || sourceType === "portal") {
+      const LayerClass = layerTypes[type];
+      if (LayerClass) {
+      layer = new LayerClass(layerConfigWithSource);
+      if (type === "FeatureLayer" && sourceType === "url") {
+        (layer as FeatureLayer).elevationInfo = { mode: "on-the-ground" };
       }
-    } else if (sourceType === "portal") {
-      if (type === "FeatureLayer") {
-        layer = new FeatureLayer({
-          portalItem: {
-            id: portalItemId,
-          },
-          ...layerConfig,
-        });
-      } else if (type === "MapImageLayer") {
-        layer = new MapImageLayer({
-          portalItem: {
-            id: portalItemId,
-          },
-          ...layerConfig,
-        });
-      } else if (type === "TileLayer") {
-        layer = new TileLayer({
-          portalItem: {
-            id: portalItemId,
-          },
-          ...layerConfig,
-        });
       }
     }
 
     return layer || null;
   },
     
-  addBasemapLayers: (activeTheme=get().activeLayerTheme) => {
+  addBasemapLayers: () => {
     const { targetView } = get()
     if (!targetView) return;
 
@@ -183,25 +155,12 @@ const useStateStore = create<State>((set, get) => ({
           : InitialLayersConfiguration.sceneBasemapConfigurations;
 
     selectedConfigs.forEach((layerConfig) => {
-      const existingLayer = targetView.map.findLayerById(layerConfig.id);
-      const belongsToActiveTheme = layerConfig.themes?.includes(activeTheme);
-
-      // If layer belongs to the active theme, add if not already in the map
-      if (belongsToActiveTheme) {
-        if (!existingLayer) {
-          const layer = get().createLayer(layerConfig);
-          if (layer) {
-            layer.id = layerConfig.id;
-            targetView.map.add(layer);
-          }
-        }
-      } else {
-        // If layer does not belong to the active theme, remove if it exists
-        if (existingLayer) {
-          targetView.map.remove(existingLayer);
-        }
+      const layer = get().createLayer(layerConfig);
+      if (layer) {
+        layer.groups = [...layerConfig.groups];
+        targetView.map.add(layer);
       }
-    });
+      })
   },
 
   setTargetLayerId: (id: string) => {
@@ -331,9 +290,6 @@ const useStateStore = create<State>((set, get) => ({
       localStorage.getItem("localBookmarks") || "[]"
     );
     set({ bookmarks: savedBookmarks });
-  },
-  setActiveLayerTheme: (theme) => {
-    set({ activeLayerTheme: theme });
   },
 }));
 

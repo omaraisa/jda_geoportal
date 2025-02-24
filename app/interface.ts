@@ -1,7 +1,7 @@
 import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import {layerThemes} from "@/lib/globalConstants";
+import {layerGroups} from "@/lib/globalConstants";
 
 export interface Message {
   id: string;
@@ -37,7 +37,7 @@ export interface InitialLayersConfiguration {
   sourceType: string;
   url?: string;
   portalItemId?: string | null;
-  themes?: string[];
+  groups?: string[];
   visible?: boolean;
   labelsEnabled?: boolean;
   labelingInfo?: any;
@@ -69,7 +69,6 @@ export interface State {
   center: [number, number];
   zoom: number;
   scale: number;
-  activeLayerTheme: typeof layerThemes[number];
   viewsSyncOn: boolean;
   previousSideBars: Record<string, string | null>;
   messages: Record<number, Message>;
@@ -85,7 +84,7 @@ export interface State {
   updateMapView: (mapView: __esri.MapView | null) => void;
   updateSceneView: (sceneView: __esri.SceneView | null) => void;
   createLayer: (params: InitialLayersConfiguration) => __esri.FeatureLayer | __esri.MapImageLayer | __esri.TileLayer | null;
-  addBasemapLayers: (activeTheme: string) => void;
+  addBasemapLayers: () => void;
   setTargetLayerId: (id: string) => void;
   setSyncing: (isOn: boolean) => void;
   getTargetLayer: () => __esri.FeatureLayer | null;
@@ -98,7 +97,6 @@ export interface State {
   addBookmark: (name: string, view: __esri.MapView | __esri.SceneView) => void;
   deleteBookmark: (id: number) => void;
   loadBookmarks: () => void;
-  setActiveLayerTheme: (theme: typeof layerThemes[number]) => void;
 }
 
 export interface AttributeQueryState {

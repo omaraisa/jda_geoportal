@@ -26,7 +26,8 @@ const Bookmark: React.FC<BookmarkInterface> = ({ id, name, center, zoom, view, d
           deleteBookmark(id);
         }}
       >
-        <i className="esri-icon-trash"></i>
+        <calcite-icon icon={"trash"} scale="m" />
+
       </button>
     </div>
   );

@@ -28,17 +28,9 @@ const NavButton: React.FC<NavButtonProps> = ({ toolTip, iconClass, targetCompone
       {/* Button */}
       <div
         onClick={handleClick}
-        className={`${NavButtonClass} w-10 h-10 flex items-center justify-center`}
+        className={`${NavButtonClass} text-gray-800 p-2 bg-white bg-opacity-60 border border-white rounded-full hover:bg-gray-200 focus:outline-none w-10 h-10 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.8)]`}
       >
-        <i
-          className={iconClass}
-          style={{
-            width: "24px",
-            height: "24px",
-            fontSize: "24px",
-            textShadow: "0px 1px 3px rgba(0, 0, 0, 0.8)", // Text shadow for better contrast
-          }}
-        ></i>
+        <calcite-icon icon={iconClass} scale="m" />
       </div>
 
       {/* Tooltip Below the Button */}

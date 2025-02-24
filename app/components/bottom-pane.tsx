@@ -35,7 +35,7 @@ const BottomPane: React.FC = () => {
           className="close-btn flex items-center justify-center"
           onClick={() => toggleBottomPane(false)}
         >
-          <i className="fas fa-times"></i>
+          <calcite-icon icon={"x"} scale="m" />
         </button>
       </div>
 

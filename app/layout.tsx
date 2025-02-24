@@ -1,7 +1,9 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import "@arcgis/core/assets/esri/themes/light/main.css";
+import '@esri/calcite-components/dist/calcite/calcite.css'; 
+import '@esri/calcite-components';
+
 import { ReactNode } from "react"; // Import ReactNode for the children prop
 
 // Define the local fonts

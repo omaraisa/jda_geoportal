@@ -29,4 +29,4 @@ export const routeLayerTypes = [
     "route"
 ];
 
-export const layerThemes = ["Theme1", "Theme2", "Theme3"];
+export const layerGroups = ["My Layers", "Utility", "Administrative Boundry", "Basemap"];

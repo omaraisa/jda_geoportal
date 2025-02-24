@@ -6,7 +6,6 @@ import MapView from "@arcgis/core/views/MapView";
 import useStateStore from "@/stateStore";
 import wgs84ToUtmZone37N from "@/lib/utils/wgs84ToUtmZone37N";
 import { authenticateArcGIS } from "@/lib/authenticateArcGIS";
-// import { baseMapLayerConfigurations } from "@/lib/initial-layers";
 
 interface CustomMapView extends MapView {
   eventHandlers?: { [key: string]: __esri.WatchHandle };

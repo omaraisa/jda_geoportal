@@ -8,13 +8,18 @@ import useStateStore from "./stateStore";
 import "./i18n";
 import AppLoader from "./components/ui/app-loader";
 import BottomPane from "./components/bottom-pane";
-import LogoMenu from "./components/advanced-main-menu";
+import MainMenu from "./components/ui/main-menu";
 import useAuthCheck from "@/lib/hooks/use-auth-check";
+import { defineCustomElements } from '@esri/calcite-components/dist/loader';
 
 
 export default function App() {
-  useAuthCheck()
-  // Extract necessary state and actions from the store
+  // useAuthCheck()
+  
+    if (typeof window !== "undefined") {
+      defineCustomElements(window);
+    }
+
   const {
     layout: layoutState,
     setLanguage,
@@ -62,7 +67,7 @@ export default function App() {
           </div>
 
           <div
-            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[250px] bg-transparent z-20 transition-all duration-1000 overflow-hidden ${
+            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-20 transition-all duration-1000 overflow-hidden ${
               language === "en" ? "left-5" : "right-5" // Flip position based on language
             }`}
             style={{ height: `${layoutState.sidebarHeight}vh` }} // Add "vh" here
@@ -79,7 +84,7 @@ export default function App() {
           >
             <BottomPane />
           </div>
-          <LogoMenu />
+          <MainMenu />
 
         </div>
       </div>
