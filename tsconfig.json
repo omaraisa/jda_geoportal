@@ -28,15 +28,12 @@
         "app/*"
       ]
     },
-// "types": ["@esri/calcite-components/dist/components"]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-    // "app/lib/calcite-icon.d.ts",
-    // "@esri/calcite-components/dist/components/calcite-icon.d.ts"
 , "app/components/layout-management.js", "app/lib/initial-layers.js", "app/lib/HTML_ELEMENTS_TEMPLATES.js", "app/components/app-loader.js"  ],
   "exclude": [
     "node_modules"

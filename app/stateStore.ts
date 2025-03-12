@@ -157,7 +157,7 @@ const useStateStore = create<State>((set, get) => ({
     selectedConfigs.forEach((layerConfig) => {
       const layer = get().createLayer(layerConfig);
       if (layer) {
-        layer.groups = [...layerConfig.groups];
+        (layer as any).groups = [...(layerConfig.groups || [])];
         targetView.map.add(layer);
       }
       })

@@ -28,5 +28,23 @@ export const realTimeLayerTypes = [
 export const routeLayerTypes = [
     "route"
 ];
-
-export const layerGroups = ["My Layers", "Utility", "Administrative Boundry", "Basemap"];
+export const layerGroups = ["My Layers", "Basemap", "Utility", "Administrative Boundry",
+    "National Adress",
+    "Administrative Regions",
+    "Jeddah Development Authority",
+    "Building",
+    "Elevation",
+    "Geology",
+    "Geographical Names",
+    "Government_Services",
+    "Imagery",
+    "Land Cover",
+    "Land Parcels",
+    "Land Use",
+    "National Address",
+    "PopulationDistribution",
+    "The Saudi Arabia National Spatial Reference System",
+    "Transport",
+    "Utilities",
+    "Water",
+    "Projects"];

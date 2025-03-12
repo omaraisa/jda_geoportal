@@ -44,6 +44,12 @@ const MeasurementComponent = dynamic(() => import("@/components/widgets/measurem
 const SketchComponent = dynamic(() => import("@/components/widgets/sketch"), {
   ssr: false,
 });
+const NetworkAnalysis = dynamic(() => import("@/components/widgets/network-analysis"), {
+  ssr: false,
+});
+const AddLayer = dynamic(() => import("@/components/widgets/add-layer"), {
+  ssr: false,
+});
 
 
 const components = {
@@ -60,6 +66,8 @@ const components = {
   CoordinateConversionComponent,
   MeasurementComponent,
   SketchComponent,
+  NetworkAnalysis,
+  AddLayer
 };
 
 export default function Sidebar() {

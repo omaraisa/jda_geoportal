@@ -1,6 +1,7 @@
 interface MenuOption {
   name: string;
   icon: string;
+  subMenuComponent?: string;
 }
 
 interface MenuOptions {
@@ -9,8 +10,7 @@ interface MenuOptions {
 
 const menuOptions: MenuOptions = {
   settings: [
-    { name: "userSettings", icon: "system-management" },
-    { name: "systemSettings", icon: "gear" },
+    { name: "ViewSwitcher", icon: "system-management", subMenuComponent: "ViewSwitcher",  },
   ],
   tools: [
     { name: "MeasurementComponent", icon: "measure" },
@@ -23,16 +23,7 @@ const menuOptions: MenuOptions = {
     { name: "CoordinateConversionComponent", icon: "coordinate-system" },
   ],
   analysis: [
-    { name: "bufferAnalysis", icon: "buffer-polygon" },
-    { name: "overlayAnalysis", icon: "analysis-overlay" },
-    { name: "proximityAnalysis", icon: "geographic-link-chart-layout" },
-    { name: "statisticalAnalysis", icon: "box-chart" },
-    { name: "terrainAnalysis", icon: "raster-analysis" },
-    { name: "networkAnalysis", icon: "utility-network" },
-    { name: "visibilityAnalysis", icon: "data-clock-chart" },
-    { name: "heatmapAnalysis", icon: "heat-chart" },
-    { name: "clusterAnalysis", icon: "knowledge-graph-data-model" },
-    { name: "suitabilityAnalysis", icon: "check-circle" },
+    { name: "NetworkAnalysis", icon: "utility-network" },
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },
@@ -40,8 +31,7 @@ const menuOptions: MenuOptions = {
   ],
   layers: [
     { name: "LayerListComponent", icon: "list" },
-    { name: "addLayer", icon: "add-layer" },
-    { name: "removeLayer", icon: "x-circle" },
+    { name: "AddLayer", icon: "add-layer" },
   ],
 };
 

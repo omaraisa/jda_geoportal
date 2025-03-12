@@ -87,20 +87,35 @@ html[lang="en"] .mainmenu {
 
   /* Hide Initially */
   max-height: 0;
+  pointer-events: none;
   opacity: 0;
-  overflow: hidden;
-
-  /* Smooth Animation */
   transition: max-height 0.6s ease-in-out, opacity 0.6s ease-in-out;
 }
 
-.options.expanded {
+.subOptions {
+  width: 200px;
+  height: auto;
+  max-height: 80vh;
+  background-color: #ffffff71;
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  right: 100%;
+  color: var(--background);
+  pointer-events: none;
+  opacity: 0;
+  transition: max-height 0.6s ease-in-out, opacity 0.6s ease-in-out;
+}
+
+.expanded {
   max-height: 80vh; /* Adjust height as needed */
   opacity: 1;
+  pointer-events: auto;
 }
 
 .title {
   display: flex;
+  height: 25px;
   justify-content: center;
   align-items: center;
   font-size: 1.2em;
@@ -139,3 +154,4 @@ html[lang="en"] .mainmenu {
 .fixedButton.zoomOut {
   top: 120px;
 }
+

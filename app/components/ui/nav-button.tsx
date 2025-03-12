@@ -1,5 +1,6 @@
 import React from "react";
 import useStateStore from "@/stateStore"; // Import Zustand state
+import { CalciteIcon } from '@esri/calcite-components-react';
 
 interface NavButtonProps {
   toolTip?: string;
@@ -16,7 +17,7 @@ const NavButton: React.FC<NavButtonProps> = ({ toolTip, iconClass, targetCompone
   const isActive = activeSideBar === targetComponent;
   const NavButtonClass = isActive
     ? "bg-white text-primary shadow-md cursor-pointer"
-    : "text-white cursor-pointer hover:bg-white hover:text-primary";
+    : "text-gray-800 cursor-pointer hover:bg-white hover:text-primary";
 
   // Handle Button Click
   const handleClick = () => {
@@ -30,7 +31,7 @@ const NavButton: React.FC<NavButtonProps> = ({ toolTip, iconClass, targetCompone
         onClick={handleClick}
         className={`${NavButtonClass} text-gray-800 p-2 bg-white bg-opacity-60 border border-white rounded-full hover:bg-gray-200 focus:outline-none w-10 h-10 flex items-center justify-center shadow-[0_1px_3px_rgba(0,0,0,0.8)]`}
       >
-        <calcite-icon icon={iconClass} scale="m" />
+        <CalciteIcon icon={iconClass} scale="m" />
       </div>
 
       {/* Tooltip Below the Button */}

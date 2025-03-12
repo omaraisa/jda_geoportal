@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 interface OptionsMenuHeaderProps {
     selectedMenu: string;
-    hideMenu: (status: boolean) => void;
+    hideMenu?: (status: boolean) => void;
 }
 
 const OptionsMenuHeader: React.FC<OptionsMenuHeaderProps> = ({ selectedMenu, hideMenu }) => {
     const { t } = useTranslation();
 
     return (
-        <div className={styles.title} onClick={() => hideMenu(false)}>
+        <div className={styles.title} onClick={() => hideMenu && hideMenu(false)}>
             {t(`menu.${selectedMenu}`)}
         </div>
     );

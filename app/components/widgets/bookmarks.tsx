@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import useStateStore from "@/stateStore";
 import Bookmark from "@/components/ui/bookmark";
 import { useTranslation } from "react-i18next";
+import { CalciteIcon } from "@esri/calcite-components-react";
 
 export default function BookmarkComponent() {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ export default function BookmarkComponent() {
               onClick={initAddBookmarkForm}
             >
               <span className="w-full flex items-center justify-center">
-                <calcite-icon icon="plus-circle" scale="m" />
+                <CalciteIcon icon="plus-circle" scale="m" />
                 <span className="ml-2">{t('widgets.bookmarks.addBookmark')}</span>
               </span>
             </button>
@@ -82,7 +83,7 @@ export default function BookmarkComponent() {
               onClick={handleAddBookmark}
             >
               <span className="w-full flex items-center justify-center">
-                <calcite-icon icon="save" scale="m" />
+                <CalciteIcon icon="save" scale="m" />
                 <span className="ml-2">{t('widgets.bookmarks.saveBookmark')}</span>
               </span>
             </button>
@@ -91,7 +92,7 @@ export default function BookmarkComponent() {
               onClick={handleCancel}
             >
               <span className="w-full flex items-center justify-center">
-                <calcite-icon icon="x-circle-f" scale="m" />
+                <CalciteIcon icon="x-circle-f" scale="m" />
                 <span className="ml-2">{t('widgets.bookmarks.cancel')}</span>
               </span>
             </button>

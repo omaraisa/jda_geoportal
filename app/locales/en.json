@@ -27,6 +27,7 @@
     "BookmarkComponent": "Bookmark",
     "CoordinateConversionComponent": "Coordinate Conversion",
     "LayerListComponent": "Layer List",
+    "ViewSwitcher": "Switch View",
 
     
     "layers": "Layers",
@@ -47,15 +48,14 @@
       "proximityAnalysis": "Proximity Analysis",
       "statisticalAnalysis": "Statistical Analysis",
       "terrainAnalysis": "Terrain Analysis",
-      "networkAnalysis": "Network Analysis",
+      "NetworkAnalysis": "Network Analysis",
       "visibilityAnalysis": "Visibility Analysis",
       "heatmapAnalysis": "Heatmap Analysis",
       "clusterAnalysis": "Cluster Analysis",
       "suitabilityAnalysis": "Suitability Analysis",
       "attributeQuery": "Attribute Query",
       "spatialQuery": "Spatial Query",
-      "addLayer": "Add Layer",
-      "removeLayer": "Remove Layer"
+      "AddLayer": "Add Layer"
   },
   "sidebar": {
     "titles": {
@@ -69,7 +69,8 @@
       "PrintComponent": "Print",
       "CoordinateConversionComponent": "Coordinate Conversion",
       "MeasurementComponent": "Measurement",
-      "SketchComponent": "Sketch"
+      "SketchComponent": "Sketch",
+      "UnderDevelopment": "Under Development"
     }
   },
   "bottomPane": {

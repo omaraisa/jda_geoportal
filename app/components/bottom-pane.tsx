@@ -2,6 +2,7 @@ import useStateStore from "@/stateStore";
 import DefaultComponent from "./widgets/default-component";
 import { useTranslation } from "react-i18next";
 import dynamic from "next/dynamic";
+import { CalciteIcon } from '@esri/calcite-components-react';
 
 // Dynamically imported component
 const FeatureTableComponent = dynamic(() => import("@/components/widgets/feature-table"), {
@@ -35,7 +36,7 @@ const BottomPane: React.FC = () => {
           className="close-btn flex items-center justify-center"
           onClick={() => toggleBottomPane(false)}
         >
-          <calcite-icon icon={"x"} scale="m" />
+          <CalciteIcon icon={"x"} scale="m" />
         </button>
       </div>
 

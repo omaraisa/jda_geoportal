@@ -2,6 +2,7 @@ import {featureBasedLayerTypes} from "@/lib/globalConstants";
 import useLayerActions from "@/lib/hooks/use-layer-list";
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
+import { CalciteIcon } from '@esri/calcite-components-react';
 
 export default function LayerOptions({layer,setLayers}: {layer: __esri.Layer,setLayers: (layers: __esri.Layer[]) => void}) {
     const { moveLayer, toggleLayerLabels, showAttributeTable, handleRemoveLayer } = useLayerActions()
@@ -13,13 +14,13 @@ export default function LayerOptions({layer,setLayers}: {layer: __esri.Layer,set
       <div className="flex gap-2 mt-2 p-2">
         {featureBasedLayerTypes.includes(layer.type) && (
           <>
-            <calcite-icon
+            <CalciteIcon
         icon="label"
         scale="s"
         className="cursor-pointer"
         onClick={() => toggleLayerLabels(layer, setLayers)}
       />
-      <calcite-icon
+      <CalciteIcon
         icon="table"
         scale="s"
         className="cursor-pointer"
@@ -27,25 +28,25 @@ export default function LayerOptions({layer,setLayers}: {layer: __esri.Layer,set
       />
       </>
     )}
-    <calcite-icon
+    <CalciteIcon
       icon="layer-zoom-to"
       scale="s"
       className="cursor-pointer"
       onClick={() => view?.goTo(layer.fullExtent).catch((error) => console.error(error))}
     />
-    <calcite-icon
+    <CalciteIcon
       icon="arrow-down"
       scale="s"
       className="cursor-pointer"
       onClick={() => moveLayer(view?.map, layer, "up", setLayers)}
     />
-    <calcite-icon
+    <CalciteIcon
       icon="arrow-up"
       scale="s"
       className="cursor-pointer"
       onClick={() => moveLayer(view?.map, layer, "down", setLayers)}
     />
-    <calcite-icon
+    <CalciteIcon
       icon="trash"
       scale="s"
       className="cursor-pointer"

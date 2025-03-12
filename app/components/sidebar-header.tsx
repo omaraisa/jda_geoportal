@@ -1,6 +1,7 @@
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import React from "react";
+import { CalciteIcon } from '@esri/calcite-components-react';
 
 const SidebarHeader: React.FC = () => {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ const SidebarHeader: React.FC = () => {
           className="absolute left-4 text-white focus:outline-none transform transition-transform duration-500 ease-in-out hover:bg-white hover:text-primary rounded-full w-8 h-8 flex items-center justify-center"
           onClick={handleBack}
         >
-          <calcite-icon icon={"chevrons-left"} scale="m" />
+          <CalciteIcon icon={"chevrons-left"} scale="m" />
         </button>
       )}
 
@@ -38,7 +39,7 @@ const SidebarHeader: React.FC = () => {
         className="close-btn flex items-center justify-center"
         onClick={() => toggleSidebar(false)} // Close the sidebar
       >
-       <calcite-icon icon={"x"} scale="m" />
+       <CalciteIcon icon={"x"} scale="m" />
       </button>
     </div>
   );

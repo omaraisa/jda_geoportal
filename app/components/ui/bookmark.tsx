@@ -1,5 +1,6 @@
 import React from "react";
 import {Bookmark as BookmarkInterface} from "@/interface";
+import { CalciteIcon } from '@esri/calcite-components-react';
 
 const Bookmark: React.FC<BookmarkInterface> = ({ id, name, center, zoom, view, deleteBookmark }) => {
   const zoomToBookmark = () => {
@@ -26,7 +27,7 @@ const Bookmark: React.FC<BookmarkInterface> = ({ id, name, center, zoom, view, d
           deleteBookmark(id);
         }}
       >
-        <calcite-icon icon={"trash"} scale="m" />
+        <CalciteIcon icon={"trash"} scale="m" />
 
       </button>
     </div>

@@ -1,35 +1,22 @@
 import useStateStore from "@/stateStore";
-import styles from "./view-switcher.module.css";
 import { useState, useCallback, useEffect } from "react";
+import { CalciteIcon } from '@esri/calcite-components-react';
 
 interface Mode {
   label: string;
   value: string;
+  icon: string;
 }
 
 const modes: Mode[] = [
-  { label: "2D", value: "2D" },
-  { label: "3D", value: "3D" },
-  { label: "◧", value: "Dual" }
-];
-
-const positions = [
-  { left: '28%', top: '20%' },
-  { left: '50%', top: '65%' },
-  { left: '73%', top: '20%' },
+  { label: "2D", value: "2D", icon: "color-coded-map" },
+  { label: "3D", value: "3D", icon: "3d-building" },
+  { label: "Dual", value: "Dual", icon: "split-units" }
 ];
 
 const ViewSwitcher: React.FC = () => {
   const { switchViewMode, setSyncing } = useStateStore();
-  const [step, setStep] = useState(0);
-
-  const activeIndex = step % modes.length;
-
-  const reorderedPositions = [
-    positions[(activeIndex + 1) % modes.length],
-    positions[activeIndex],
-    positions[(activeIndex + 2) % modes.length],
-  ];
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const activeMode = modes[activeIndex].value as "2D" | "3D" | "Dual";
@@ -37,28 +24,25 @@ const ViewSwitcher: React.FC = () => {
     setSyncing(activeMode === 'Dual');
   }, [activeIndex, switchViewMode, setSyncing]);
 
-  const toggleView = useCallback(() => {
-    setStep(prev => (prev + 1) % modes.length);
+  const handleClick = useCallback((index: number) => {
+    setActiveIndex(index);
   }, []);
 
   return (
-    <button className={styles.switcher} onClick={toggleView}>
-      {modes.map((mode, index) => {
-        const position = reorderedPositions[index];
-        return (
-          <div
-            key={mode.value}
-            className={`${styles.modeBtn} ${activeIndex === index ? styles.activeModeBtn : ''}`}
-            style={{
-              left: position.left,
-              top: position.top
-            }}
-          >
-            {mode.label}
-          </div>
-        );
-      })}
-    </button>
+    <div className="w-full flex flex-col items-center">
+      {modes.map((mode, index) => (
+        <button
+          key={mode.value}
+          onClick={() => handleClick(index)}
+          className={`w-full flex items-center space-x-2 p-2 rounded transition ${
+            activeIndex === index ? 'bg-white' : 'bg-transparent'
+          } hover:bg-white/50 text-left`}
+        >
+           <CalciteIcon icon={mode.icon} scale="m" />
+          <span>{mode.label}</span>
+        </button>
+      ))}
+    </div>
   );
 };
 

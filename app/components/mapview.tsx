@@ -35,7 +35,6 @@ const MainMap = () => {
       authenticateArcGIS()
         .then(() => {
           try {
-            // Initialize the Map and MapView
             const map = new Map({ basemap: "topo-vector" });
 
             viewRef.current = new MapView({
@@ -43,7 +42,7 @@ const MainMap = () => {
               map: map,
               center,
               zoom,
-              rotation: 270, // Set default rotation to 90 degrees
+              rotation: 270, 
               ui: {
                 components: [],
               },
@@ -51,7 +50,6 @@ const MainMap = () => {
 
             viewRef.current
               ?.when(() => {
-                // Create a div for coordinates
                 const coordinatesContainer = document.createElement("div");
                 coordinatesContainer.style.position = "absolute";
                 coordinatesContainer.style.bottom = "1em";

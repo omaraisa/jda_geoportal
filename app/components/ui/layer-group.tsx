@@ -28,7 +28,7 @@ export default function LayerGroup({group}: {group: string}) {
         {group}
       </div>
       <div className={`${styles.content} ${isExpanded ? styles.contentExpanded : ''}`} id="content">
-        {view?.map.layers.toArray().filter((layer) => layer.groups.includes(group)).map((layer) => (
+        {view?.map.layers.toArray().filter((layer) => (layer as any).groups?.includes(group)).map((layer) => (
           <LayerItem
             key={layer.id}
             layer={layer}
