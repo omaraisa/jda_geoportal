@@ -10,17 +10,11 @@ import AppLoader from "./components/ui/app-loader";
 import BottomPane from "./components/bottom-pane";
 import MainMenu from "./components/ui/main-menu";
 import useAuthCheck from "@/lib/hooks/use-auth-check";
-import { setAssetPath } from '@esri/calcite-components/dist/components';
 import '@esri/calcite-components/dist/components/calcite-icon';
 
 export default function App() {
   // useAuthCheck()
-  
-  React.useEffect(() => {
-    // Set the asset path to the current URL
-    setAssetPath(`${window.location.origin}/assets`);
-  }, []);
-
+ 
   const {
     layout: layoutState,
     setLanguage,

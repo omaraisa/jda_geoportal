@@ -1,7 +1,6 @@
 import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import {layerGroups} from "@/lib/globalConstants";
 
 export interface Message {
   id: string;
