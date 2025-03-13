@@ -6,27 +6,32 @@ import OptionsMenuHeader from "./options-menu-header";
 import SubOptionsMenu from "./sub-options-menu";
 
 interface OptionsProps {
-  isExpanded: boolean;
-  selectedMenu: string;
-  setIsOptionsMenuExpanded: (value: boolean) => void;
+  menuState: {
+    selectedMenu: string;
+    selectedSubMenu: string;
+    isOptionsMenuExpanded: boolean;
+    isSubOptionsMenuExpanded: boolean;
+  },
+  setMenuState: (value: any) => void;
 }
 
-const OptionsMenu: React.FC<OptionsProps> = ({ isExpanded, selectedMenu, setIsOptionsMenuExpanded }) => {
-  const [isSubOptionsMenuExpanded, setIsSubOptionsMenuExpanded] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<string>("");
+const OptionsMenu: React.FC<OptionsProps> = ({ menuState, setMenuState}) => {
 
   const toggleSubOptionsMenu = (optionName: string) => {
-    setSelectedOption(optionName);
-    setIsSubOptionsMenuExpanded(!isSubOptionsMenuExpanded);
+    setMenuState((prev: typeof menuState) => ({
+      ...prev,
+      selectedSubMenu: optionName,
+      isSubOptionsMenuExpanded: prev.selectedSubMenu === optionName ? !prev.isSubOptionsMenuExpanded : true
+    }));
   };
 
   return (
-    <div className={`${styles.options} ${isExpanded ? styles.expanded : ""}`}>
-      <OptionsMenuHeader selectedMenu={selectedMenu} hideMenu={(status: boolean) => setIsOptionsMenuExpanded(status)} />
-      {menuOptions[selectedMenu]?.map((option, index) => (
-        <MenuOption key={index} icon={option.icon} name={option.name} subMenuComponent={option.subMenuComponent} toggleSubOptionsMenu={() => toggleSubOptionsMenu(option.name)} />
+    <div className={`${styles.options} ${menuState.isOptionsMenuExpanded ? styles.expanded : ""}`}>
+      <OptionsMenuHeader selectedMenu={menuState.selectedMenu} hideMenu={() => setMenuState({ ...menuState, isOptionsMenuExpanded: false })} />
+      {menuOptions[menuState.selectedMenu]?.map((option, index) => (
+      <MenuOption key={index} icon={option.icon} name={option.name} subMenuComponent={option.subMenuComponent} toggleSubOptionsMenu={() => toggleSubOptionsMenu(option.name)} />
       ))}
-      <SubOptionsMenu selectedOption={selectedOption} isExpanded={isSubOptionsMenuExpanded} />
+      <SubOptionsMenu selectedOption={menuState.selectedSubMenu} isExpanded={menuState.isSubOptionsMenuExpanded} />
     </div>
   );
 };

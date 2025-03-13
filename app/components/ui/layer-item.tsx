@@ -9,14 +9,14 @@ export default function LayerItem({ layer, activeLayerId, setactiveLayerId, setL
     <div
       className="flex flex-col p-2 m-1"
       style={{
-        backgroundColor: "var(--primary-transparent)",
+        backgroundColor: "var(--secondary-transparent)",
         color: "white",
         borderRadius: ".5rem",
         fontSize: ".8rem",
         transition: "background-color 0.3s ease",
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-dark-transparent)")}
-      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-transparent)")}
+      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--secondary-light-transparent)")}
+      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--secondary-transparent)")}
     >
       <div className="flex items-center justify-between mx-2">
         <span>{layer.title}</span>

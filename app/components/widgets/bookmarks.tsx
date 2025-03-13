@@ -35,7 +35,7 @@ export default function BookmarkComponent() {
   return (
     <div className="flex-column-container">
       {!formVisible && (
-        <div className="flex-column-container mx-3 py-3 text-white">
+        <div className="flex-column-container mx-3 py-3 text-foreground">
           <button
               className="btn btn-secondary flex-grow flex justify-stretch w-full"
               onClick={initAddBookmarkForm}
@@ -63,7 +63,7 @@ export default function BookmarkComponent() {
       {formVisible && (
         <div className="add-bookmark p-2 flex flex-col gap-4 w-full">
           <h2
-            className="block text-white font-semibold"
+            className="block text-foreground font-semibold"
           >
             {t('widgets.bookmarks.bookmarkName')}
           </h2>

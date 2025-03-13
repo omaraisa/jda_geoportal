@@ -3,21 +3,24 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #ffffff;
-  --background: #2c2c2c;
+  --foreground: #2c2c2c;
+  --background: #ffffff;
 
   /* Primary Colors */
-  --primary: #047B8B; /* Default primary color */
-  --primary-transparent: #047b8bc2; /* Default primary color */
-  --primary-light: #3d97a3; /* Lighter shade of primary */
-  --primary-light-transparent: #3d97a39a; /* Lighter shade of primary */
-  --primary-dark: #145058; /* Darker shade of primary */
-  --primary-dark-transparent: #145058b7; /* Darker shade of primary */
+  --primary: #ffffff; /* Default primary color */
+  --primary-transparent: #ffffffc2; /* Default primary color */
+  --primary-light: #d8d8d8; /* Lighter shade of primary */
+  --primary-light-transparent: #d8d8d89a; /* Lighter shade of primary */
+  --primary-dark: #9c9c9c; /* Darker shade of primary */
+  --primary-dark-transparent: #9c9c9c9a; /* Darker shade of primary */
 
   /* Secondary Colors */
-  --secondary: #e7af39; /* Default secondary color */
-  --secondary-light: #f8c862; /* Lighter shade of secondary */
-  --secondary-dark: #bb8f30; /* Darker shade of secondary */
+  --secondary: #7c7c7c; /* Default secondary color */
+  --secondary-transparent: #7c7c7c9a; /* Default secondary color */
+  --secondary-light: #949494; /* Lighter shade of secondary */
+  --secondary-light-transparent: #9494949a; /* Lighter shade of secondary */
+  --secondary-dark: #333333; /* Darker shade of secondary */
+  --secondary-dark-transparent: #3333339a; /* Darker shade of secondary */
 
   /* Tertiary Colors */
   --tertiary: #3BBFAD; /* Default tertiary color */
@@ -25,9 +28,9 @@
   --tertiary-dark: #2D9C95; /* Darker shade of tertiary */
 
   /* Danger Colors */
-  --danger: #ed544f; /* Default danger color */
-  --danger-light: #f7736f; /* Lighter shade of danger */
-  --danger-dark: #9b2c28; /* Darker shade of danger */
+  --danger: #dd8886; /* Default danger color */
+  --danger-light: #e6b1b0; /* Lighter shade of danger */
+  --danger-dark: #a55350; /* Darker shade of danger */
 
   /* Gray Colors */
   --gray: #6d6d6d; /* Default gray color */
@@ -149,7 +152,7 @@ button, a, i, [role="button"], [onclick] {
 }
 
 .btn-secondary {
-  background-color: var(--secondary);
+  background-color: var(--secondary-transparent);
   color: var(--background);
 }
 
@@ -164,7 +167,7 @@ button, a, i, [role="button"], [onclick] {
 }
 
 .btn-gray {
-  background-color: var(--gray-light);
+  background-color: var(--secondary-transparent);
   color: var(--background);
 }
 
@@ -274,7 +277,7 @@ button, a, i, [role="button"], [onclick] {
 }
 
 .switch-input:disabled:checked + .switch-lable:after {
-  background: #b3caff;
+  background: #b6b6b6;
 }
 
 /* Checkbox styles */
@@ -416,7 +419,7 @@ button, a, i, [role="button"], [onclick] {
   width: 100%;
   border: 0;
   padding: 2rem 1rem 0 2rem;
-  background: rgba(255, 255, 255, 0.5);
+  background-color: var(--primary-dark-transparent);
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.055);
   color: var(--primary-dark);
   transition: all 0.5s ease;
@@ -462,7 +465,7 @@ button, a, i, [role="button"], [onclick] {
   padding: 8px 15px;
   font-size: 16px;
   color: var(--primary);
-  background-color: #fff;
+  background-color: var(--secondary-transparent);
   border: none;
   border-radius: 2px;
   cursor: pointer;
@@ -510,7 +513,7 @@ input[type="number"] {
   padding: 0.5rem;
   font-size: 1rem;
   color: var(--primary-dark);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--primary-dark-transparent);
   border: 1px solid var(--gray-light);
   border-radius: 3px;
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.055);

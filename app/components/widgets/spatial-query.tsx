@@ -191,7 +191,7 @@ export default function SpatialQueryComponent() {
           className={styles.label}
           style={{
             background: "white",
-            border: !state.selectionMethodChecked ? "2px solid var(--secondary)" : " 2px solid var(--primary)",
+            border: !state.selectionMethodChecked ? "2px solid var(--secondary)" : " 2px solid var(--primary-dark-transparent)",
           }}
         >
           <input
@@ -203,7 +203,7 @@ export default function SpatialQueryComponent() {
           <span
             className={styles.circle}
             style={{
-              backgroundColor: !state.selectionMethodChecked ? "var(--secondary)" : "var(--primary)",
+              backgroundColor: !state.selectionMethodChecked ? "var(--secondary)" : "var(--primary-dark-transparent)",
               right: state.selectionMethodChecked ? "calc(100% - 45px)" : "5px",
             }}
           ></span>
@@ -218,7 +218,7 @@ export default function SpatialQueryComponent() {
           <p
             className={`${styles.title} ${state.selectionMethodChecked ? styles.visible : styles.hidden}`}
             style={{
-              color: "var(--primary)",
+              color: "var(--secondary-dark)",
             }}
           >
             By Drawing
