@@ -62,9 +62,9 @@ export const baseMapLayerConfigurations: InitialLayersConfiguration[] = [
   {
     id: "Basemap",
     title: "Basemap",
-    type: "MapImageLayer",
+    type: "VectorTileLayer",
     sourceType: "url",
-    url: "https://arcentsrv.jda.local:6443/arcgis/rest/services/jda_basemap_MIL1/MapServer",
+    url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/BasemapClient/VectorTileServer",
     portalItemId: null,
     groups: ["Basemap"],
     visible: true,

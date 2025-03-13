@@ -2,6 +2,7 @@
 import React from 'react';
 import styles from "./main-menu.module.css";
 import { CalciteIcon } from '@esri/calcite-components-react';
+import { useTranslation } from "react-i18next";
 
 
 
@@ -21,6 +22,8 @@ interface MenuButtonProps {
   };
   
   export const MenuButton: React.FC<MenuButtonProps> = ({ option, onClick, containerRotation }) => {
+  const { t } = useTranslation();
+
     return (
       <div
         className={`${styles.button} group relative`}
@@ -30,7 +33,7 @@ interface MenuButtonProps {
         
         <CalciteIcon icon={iconMapping[option]} scale="l" />
         <div className="absolute hidden group-hover:block w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-md z-10 mr-[3em] mb-[5em]">
-          {option}
+        {t(`menu.${option}`)}
         </div>
       </div>
     );

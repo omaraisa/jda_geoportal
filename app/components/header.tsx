@@ -43,11 +43,11 @@ const Header: React.FC = () => {
           language === "ar" ? "mr-auto" : "ml-auto"
         }`}
       >
-        <NavButton
+        {/* <NavButton
           toolTip={t("header.nav.printMap")}
           iconClass="user"
           targetComponent="PrintComponent"
-        />
+        /> */}
         <LanguageSwitcher />
       </div>
     </div>

@@ -1,5 +1,6 @@
 .mainmenu {
   position: absolute;
+  right: 1em;
   bottom: 1em;
   width: 200px;
   height: 200px;
@@ -12,15 +13,6 @@
   background-size: contain;
   background-position: center;
   z-index: 2;
-}
-
-/* Conditional styles */
-html[lang="ar"] .mainmenu {
-  left: 1em;
-}
-
-html[lang="en"] .mainmenu {
-  right: 1em;
 }
 
 .buttons {

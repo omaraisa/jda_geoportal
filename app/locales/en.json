@@ -126,7 +126,30 @@
     "removeLayer": "Remove Layer",
     "unknownAction": "Unknown action",
     "noLabelsSupport": "This layer does not support labels.",
-    "noAttributeTableSupport": "This layer does not support attribute tables."
+    "noAttributeTableSupport": "This layer does not support attribute tables.",
+    "groupTitles": {
+      "MyLayers": "My Layers",
+      "Basemap": "Basemap",
+      "AdministrativeBoundary": "Administrative Boundary",
+      "NationalAddress": "National Address",
+      "AdministrativeRegions": "Administrative Regions",
+      "Building": "Building",
+      "Elevation": "Elevation",
+      "Geology": "Geology",
+      "GeographicalNames": "Geographical Names",
+      "Government_Services": "Government Services",
+      "Imagery": "Imagery",
+      "LandCover": "Land Cover",
+      "LandParcels": "Land Parcels",
+      "LandUse": "Land Use",
+      "Nationaladdress": "National Address",
+      "PopulationDistribution": "Population Distribution",
+      "TheSaudiArabiaNationalSpatialReferenceSystem": "The Saudi Arabia National Spatial Reference System",
+      "Transport": "Transport",
+      "Utilities": "Utilities",
+      "Water": "Water",
+      "Projects": "Projects"
+    }
   },
   "defaultComponent": {
     "noToolsActivated": "No tools are currently activated"

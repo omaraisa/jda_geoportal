@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import { State, Bookmark } from "@/interface";
 import * as InitialLayersConfiguration from "@/lib/initial-layers";
@@ -124,6 +125,7 @@ const useStateStore = create<State>((set, get) => ({
       FeatureLayer,
       MapImageLayer,
       TileLayer,
+      VectorTileLayer,
     };
 
     const layerConfigWithSource = {

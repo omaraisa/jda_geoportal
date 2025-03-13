@@ -68,9 +68,7 @@ export default function App() {
           </div>
 
           <div
-            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-20 transition-all duration-1000 overflow-hidden ${
-              language === "en" ? "left-5" : "right-5" // Flip position based on language
-            }`}
+            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-20 transition-all duration-1000 overflow-hidden left-5`}
             style={{ height: `${layoutState.sidebarHeight}vh` }} // Add "vh" here
           >
             <Sidebar />

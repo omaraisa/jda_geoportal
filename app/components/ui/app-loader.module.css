@@ -13,18 +13,6 @@
     animation: fadeIn 0.5s ease-in-out;
   }
   
-  .loader {
-    --c: no-repeat linear-gradient(var(--secondary) 0 0);
-    background: 
-      var(--c), var(--c), var(--c),
-      var(--c), var(--c), var(--c),
-      var(--c), var(--c), var(--c);
-    background-size: 16px 16px;
-    width: 65px; /* Fixed size */
-    height: 65px; /* Fixed size */
-    animation: l32-2 1s infinite;
-  }
-  
   .loaderText {
     margin-top: 20px;
     color: white;

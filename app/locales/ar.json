@@ -15,16 +15,49 @@
     }
   },
   "menu": {
+    "AttributeQueryComponent": "استعلام وصفي",
+    "SpatialQueryComponent": "استعلام مكاني",
+    "MeasurementComponent": "القياس",
+    "EditorComponent": "المحرر",
+    "SketchComponent": "الرسم",
+    "LegendComponent": "مفتاح الخريطة",
+    "PrintComponent": "طباعة",
+    "BasemapGalleryComponent": "خرائط الأساس",
+    "BookmarkComponent": "الإشارات المرجعية",
+    "CoordinateConversionComponent": "تحويل الإحداثيات",
+    "LayerListComponent": "قائمة الطبقات",
+    "ViewSwitcher": "تبديل العرض",
     "layers": "الطبقات",
     "tools": "الأدوات",
-    "settings": "الاعدادات",
+    "settings": "الإعدادات",
     "query": "الاستعلام",
-    "analysis": "التحليل"
+    "analysis": "التحليل",
+    "userSettings": "إعدادات المستخدم",
+    "systemSettings": "إعدادات النظام",
+    "measureTool": "أداة القياس",
+    "editTool": "أداة التحرير",
+    "selectTool": "أداة التحديد",
+    "drawTool": "أداة الرسم",
+    "eraseTool": "أداة المسح",
+    "panTool": "أداة التحريك",
+    "bufferAnalysis": "تحليل العازل",
+    "overlayAnalysis": "تحليل التراكب",
+    "proximityAnalysis": "تحليل التقارب",
+    "statisticalAnalysis": "التحليل الإحصائي",
+    "terrainAnalysis": "تحليل التضاريس",
+    "NetworkAnalysis": "التحليل الشبكي",
+    "visibilityAnalysis": "تحليل الرؤية",
+    "heatmapAnalysis": "تحليل خريطة الحرارة",
+    "clusterAnalysis": "تحليل التجمعات",
+    "suitabilityAnalysis": "تحليل الملاءمة",
+    "attributeQuery": "استعلام وصفي",
+    "spatialQuery": "استعلام مكاني",
+    "AddLayer": "إضافة طبقة"
   },
   "sidebar": {
     "titles": {
       "BasemapGalleryComponent": "خرائط الأساس",
-      "BookmarkComponent": "العلامات المرجعية",
+      "BookmarkComponent": "الإشارات المرجعية",
       "AttributeQueryComponent": "استعلام وصفي",
       "LayerListComponent": "قائمة الطبقات",
       "LegendComponent": "مفتاح الخريطة",
@@ -32,7 +65,9 @@
       "EditorComponent": "المحرر",
       "PrintComponent": "طباعة",
       "CoordinateConversionComponent": "تحويل الإحداثيات",
-      "MeasurementComponent": "القياس"
+      "MeasurementComponent": "القياس",
+      "SketchComponent": "الرسم",
+      "UnderDevelopment": "قيد التطوير"
     }
   },
   "bottomPane": {
@@ -42,7 +77,7 @@
   },
   "widgets": {
     "query": {
-      "queryLayerTitle": "طبقة استعلام",
+      "queryLayerTitle": "طبقة الاستعلام",
       "selectLayer": "اختر الطبقة",
       "selectionLayer": "طبقة الاختيار",
       "select": "اختر",
@@ -61,11 +96,11 @@
       "clearSearch": "مسح البحث"
     },
     "bookmarks": {
-      "addBookmark": "إضافة علامة مرجعية",
-      "noBookmarks": "لا توجد إشارات مرجعية متاحة",
-      "bookmarkName": "اسم العلامة المرجعية",
-      "enterName": "أدخل اسمًا",
-      "saveBookmark": "حفظ العلامة المرجعية",
+      "addBookmark": "إضافة إشارة مرجعية",
+      "noBookmarks": "لا توجد إشارات مرجعية",
+      "bookmarkName": "اسم الإشارة المرجعية",
+      "enterName": "أدخل الاسم",
+      "saveBookmark": "حفظ",
       "cancel": "إلغاء"
     },
     "sketch": {
@@ -79,24 +114,61 @@
       "clear": "مسح"
     }
   },
+  "layerList": {
+    "showHideLabels": "إظهار/إخفاء التسميات",
+    "showAttributeTable": "إظهار جدول البيانات الوصفية",
+    "zoomToLayer": "تكبير إلى الطبقة",
+    "moveLayerUp": "تحريك الطبقة لأعلى",
+    "moveLayerDown": "تحريك الطبقة لأسفل",
+    "removeLayer": "إزالة الطبقة",
+    "unknownAction": "إجراء غير معروف",
+    "noLabelsSupport": "هذه الطبقة لا تدعم التسميات.",
+    "noAttributeTableSupport": "هذه الطبقة لا تدعم جداول البيانات الوصفية.",
+    "groupTitles": {
+      "MyLayers": "طبقاتي",
+      "Basemap": "خريطة الأساس",
+      "AdministrativeBoundary": "الحدود الإدارية",
+      "NationalAddress": "العنوان الوطني",
+      "AdministrativeRegions": "المناطق الإدارية",
+      "Building": "المباني",
+      "Elevation": "الارتفاع",
+      "Geology": "الجيولوجيا",
+      "GeographicalNames": "الأسماء الجغرافية",
+      "Government_Services": "الخدمات الحكومية",
+      "Imagery": "الصور",
+      "LandCover": "غطاء الأرض",
+      "LandParcels": "قطع الأراضي",
+      "LandUse": "استخدامات الأراضي",
+      "Nationaladdress": "العنوان الوطني",
+      "PopulationDistribution": "توزيع السكان",
+      "TheSaudiArabiaNationalSpatialReferenceSystem": "نظام الإسناد المكاني الوطني السعودي",
+      "Transport": "النقل",
+      "Utilities": "المرافق",
+      "Water": "المياه",
+      "Projects": "المشاريع"
+    }
+  },
+  "defaultComponent": {
+    "noToolsActivated": "لا توجد أدوات مفعلة حالياً"
+  },
   "mainMenu": {
     "basemapGallery": "معرض خرائط الأساس",
-    "editorWidget": "تحرير المعالم",
-    "printWidget": "الطباعة",
-    "measurementWidget": "القياسات",
+    "editorWidget": "أداة التحرير",
+    "printWidget": "أداة الطباعة",
+    "measurementWidget": "أداة القياس",
     "layerListWidget": "قائمة الطبقات",
     "attributeQuery": "استعلام وصفي",
     "sketchWidget": "أداة الرسم",
     "spatialQuery": "استعلام مكاني",
     "coordinateConversion": "تحويل الإحداثيات",
     "legendWidget": "مفتاح الخريطة",
-    "bookmarkWidget": "العلامات المرجعية"
+    "bookmarkWidget": "الإشارات المرجعية"
   },
   "systemMessages": {
     "info": {
       "genericSuccess": {
         "title": "إشعار",
-        "body": "تم إتمام المهمة بنجاح 👌."
+        "body": "تمت المهمة بنجاح 👌."
       },
       "queryCompleted": {
         "title": "استعلام",
@@ -106,7 +178,7 @@
     "error": {
       "genericError": {
         "title": "خطأ",
-        "body": "حدث خطأ غير متوقع ❗. يرجى المحاولة مرة أخرى لاحقًا."
+        "body": "حدث خطأ غير متوقع ❗. يرجى المحاولة لاحقًا."
       },
       "queryError": {
         "title": "خطأ في الاستعلام",
@@ -135,19 +207,5 @@
         "body": "هناك شيء غير صحيح ❗. يرجى المحاولة مرة أخرى."
       }
     }
-  },
-  "layerList": {
-    "showHideLabels": "إظهار/إخفاء التسميات",
-    "showAttributeTable": "إظهار جدول البيانات الوصفية",
-    "zoomToLayer": "تكبير إلى الطبقة",
-    "moveLayerUp": "تحريك الطبقة لأعلى",
-    "moveLayerDown": "تحريك الطبقة لأسفل",
-    "removeLayer": "إزالة الطبقة",
-    "unknownAction": "إجراء غير معروف",
-    "noLabelsSupport": "هذه الطبقة لا تدعم التسميات.",
-    "noAttributeTableSupport": "هذه الطبقة لا تدعم جداول البيانات الوصفية."
-  },
-  "defaultComponent": {
-    "noToolsActivated": "لا توجد أدوات مفعلة حالياً"
   }
 }
