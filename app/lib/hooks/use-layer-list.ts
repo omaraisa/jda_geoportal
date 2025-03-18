@@ -25,6 +25,44 @@ const useLayerActions = () => {
         if (view) setLayers(view.map.layers.toArray());
     }, [view]);
 
+    const toggleLayerPopup = useCallback((layer: __esri.Layer, setLayers: (layers: __esri.Layer[]) => void) => {
+        const featureLayer = layer as __esri.FeatureLayer;
+    
+        // Check if the feature layer already has a popup template
+        if (!featureLayer.popupTemplate) {
+            // Create a default popup template
+            const titleField = getTitleField(featureLayer.fields);
+            featureLayer.popupTemplate = createPopupTemplate(titleField, featureLayer.fields);
+        } else {
+            // Toggle the popup visibility if the template already exists
+            featureLayer.popupEnabled = !featureLayer.popupEnabled;
+        }
+    
+        // Update the layers in the view
+        if (view) {
+            setLayers(view.map.layers.toArray());
+        }
+    }, [view]);
+    
+    // Helper function to find the title field
+    function getTitleField(fields: __esri.Field[]): string {
+        const titleField = fields.find(f => /name|الاسم|id/i.test(f.name.toLowerCase()));
+        return titleField?.name || "OBJECTID";
+    }
+    
+    // Helper function to create a popup template
+    function createPopupTemplate(titleField: string, fields: __esri.Field[]): __esri.PopupTemplate {
+        return {
+            title: `{${titleField}}`,
+            content: [{ type: "fields" } as __esri.FieldsContent],
+            fieldInfos: fields.map(field => ({
+                fieldName: field.name,
+                label: field.alias || field.name,
+                visible: true
+            })) 
+        };
+    }
+
     const showAttributeTable = useCallback((layer: __esri.Layer, setLayers: (layers: __esri.Layer[]) => void) => {
         setTargetLayerId(layer.id);
         setActiveBottomPane("FeatureTableComponent");
@@ -55,6 +93,7 @@ const useLayerActions = () => {
         showAttributeTable,
         handleOptionsClick,
         handleRemoveLayer,
+        toggleLayerPopup,
         toggleLayerVisibility,
     };
 };

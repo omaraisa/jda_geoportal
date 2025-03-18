@@ -28,7 +28,9 @@ export const realTimeLayerTypes = [
 export const routeLayerTypes = [
     "route"
 ];
-export const layerGroups = ["MyLayers", "Basemap", "AdministrativeBoundary",
+export const layerGroups = ["MyLayers", "Basemap", 
+    "Utilities",
+    "AdministrativeBoundary",
     "NationalAddress",
     "AdministrativeRegions",
     "Building",
@@ -44,6 +46,5 @@ export const layerGroups = ["MyLayers", "Basemap", "AdministrativeBoundary",
     "PopulationDistribution",
     "TheSaudiArabiaNationalSpatialReferenceSystem",
     "Transport",
-    "Utilities",
     "Water",
     "Projects"];

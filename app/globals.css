@@ -147,8 +147,9 @@ button, a, i, [role="button"], [onclick] {
 
 /* Button variants */
 .btn-primary {
-  background-color: var(--primary-dark-transparent);
+  background-color: var(--primary-light-transparent);
   color: var(--background);
+  border: .2em solid #ffffff;
 }
 
 .btn-secondary {
