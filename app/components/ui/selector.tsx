@@ -11,7 +11,7 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({ label,options, getSelecte
 
   return (
     <div className="flex flex-col w-full">
-      <label  className="font-semibold text-white"> {label}</label>
+      <label  className="font-semibold text-2c2c2c"> {label}</label>
       <div className="select">
         <select
           defaultValue=""

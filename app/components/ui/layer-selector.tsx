@@ -19,7 +19,7 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({ getSelectedValue }) => {
 
   return (
     <div className="flex flex-col w-full">
-      <label htmlFor="layerSelector" className="font-semibold text-white">
+      <label htmlFor="layerSelector" className="font-semibold text-2c2c2c">
         {t("widgets.query.selectLayer")}
       </label>
       <div className="select">

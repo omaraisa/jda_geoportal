@@ -2,10 +2,11 @@ import React, { useState, FormEvent } from "react";
 import { submitJob } from "@arcgis/core/rest/geoprocessor";
 import request from "@arcgis/core/request";
 import useStateStore from "@/stateStore";
+import { useTranslation } from "react-i18next";
 
 interface PrintFormData {
   title: string;
-  author: string;
+  Customfield: string;
   format: 'pdf' | 'png' | 'jpg';
   layout: string;
   includeLegend: boolean;
@@ -15,18 +16,20 @@ interface PrintFormData {
 
 const PrintComponent: React.FC = () => {
   const view = useStateStore((state) => state.targetView);
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<PrintFormData>({
     title: "My Map",
-    author: "Author Name",
+    Customfield: "Customfield Name",
     format: "pdf",
-    layout: "MAP_ONLY",
+    layout: "Official",
     includeLegend: true,
     includeScale: true,
     scalebarUnit: "metric",
   });
 
+  const JDALAYOUTS =  ["Official", "Presentation", "MAP_ONLY"]
   const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/CustomPrintService/GPServer/Custom%20Print";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -92,7 +95,7 @@ const PrintComponent: React.FC = () => {
 
       const layoutOptions = {
         titleText: formData.title,
-        authorText: formData.author,
+        CustomfieldText: formData.Customfield,
         scalebarUnit: formData.scalebarUnit,
         legendEnabled: formData.includeLegend,
       };
@@ -114,7 +117,7 @@ console.log(webMapJSON)
         Format: formData.format.toUpperCase(),
         Layout_Template: formData.layout,
         Title: formData.title,
-        Author: formData.author,
+        Customfield: formData.Customfield,
         Include_Legend: formData.includeLegend,
         Include_Scale: formData.includeScale,
         Scalebar_Units: formData.scalebarUnit,
@@ -146,7 +149,7 @@ console.log(webMapJSON)
     <div className="p-4 text-black w-full max-w-md">
 
       <form onSubmit={handlePrint}>
-        <FormField label="Title">
+        <FormField label={t("widgets.print.title")}>
           <input
             type="text"
             name="title"
@@ -156,17 +159,17 @@ console.log(webMapJSON)
           />
         </FormField>
 
-        <FormField label="Author">
+        <FormField label={t("widgets.print.Customfield")}>
           <input
             type="text"
-            name="author"
-            value={formData.author}
+            name="Customfield"
+            value={formData.Customfield}
             onChange={handleInputChange}
             className="w-full p-2 border rounded"
           />
         </FormField>
 
-        <FormField label="Format">
+        <FormField label={t("widgets.print.Format")}>
           <select
             name="format"
             value={formData.format}
@@ -179,28 +182,15 @@ console.log(webMapJSON)
           </select>
         </FormField>
 
-        <FormField label="Layout">
+        <FormField label={t("widgets.print.Layout")}>
           <select
             name="layout"
             value={formData.layout}
             onChange={handleInputChange}
             className="w-full p-2 border rounded"
           >
-            {["Layout_A4_Landscape_Final", "MAP_ONLY"].map((lay) => (
+            {JDALAYOUTS.map((lay) => (
               <option key={lay} value={lay}>{lay}</option>
-            ))}
-          </select>
-        </FormField>
-
-        <FormField label="Scalebar Unit">
-          <select
-            name="scalebarUnit"
-            value={formData.scalebarUnit}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-          >
-            {["metric", "imperial"].map((unit) => (
-              <option key={unit} value={unit}>{unit.toUpperCase()}</option>
             ))}
           </select>
         </FormField>
@@ -208,31 +198,39 @@ console.log(webMapJSON)
         <div className="flex items-center mb-2">
           <input
             type="checkbox"
-            name="includeLegend"
+            className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
+            id="legend_checkbox"
             checked={formData.includeLegend}
             onChange={handleCheckboxChange}
-            className="mr-2"
+            name="includeLegend"
           />
-          <label>Include Legend</label>
+          <label className="tick-label" htmlFor="legend_checkbox">
+            <div id="tick_mark"></div>
+          </label>
+          <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeLegend")}</span>
         </div>
 
-        <div className="flex items-center mb-4">
+        <div className="flex items-center mb-2">
           <input
             type="checkbox"
-            name="includeScale"
+            className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
+            id="scale_checkbox"
             checked={formData.includeScale}
             onChange={handleCheckboxChange}
-            className="mr-2"
+            name="includeScale"
           />
-          <label>Include Scale</label>
+          <label className="tick-label" htmlFor="scale_checkbox">
+            <div id="tick_mark"></div>
+          </label>
+          <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeScale")}</span>
         </div>
 
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-400 transition"
+          className="btn btn-primary flex-grow flex justify-stretch w-full"
         >
-          {isLoading ? "Printing..." : "Print Map"}
+          {isLoading ? t("widgets.print.printing") : t("widgets.print.print")}
         </button>
       </form>
       

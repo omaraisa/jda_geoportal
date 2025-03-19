@@ -58,7 +58,7 @@ const MainMap = () => {
                 coordinatesContainer.style.color = "rgb(85, 85, 85)";
                 coordinatesContainer.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
                 coordinatesContainer.style.fontSize = "0.75em";
-                coordinatesContainer.style.zIndex = "10";
+                coordinatesContainer.style.zIndex = "2";
                 coordinatesContainer.innerHTML = "Lat: 0, Lon: 0, UTM: 0, 0";
                 viewRef.current!.container.appendChild(coordinatesContainer);
 

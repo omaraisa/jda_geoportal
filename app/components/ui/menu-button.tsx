@@ -32,7 +32,7 @@ interface MenuButtonProps {
       >
         
         <CalciteIcon icon={iconMapping[option]} scale="l" />
-        <div className="absolute hidden group-hover:block w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-md z-10 mr-[3em] mb-[5em]">
+        <div className="absolute hidden group-hover:block w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-md mr-[3em] mb-[5em]">
         {t(`menu.${option}`)}
         </div>
       </div>

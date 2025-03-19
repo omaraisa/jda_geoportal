@@ -1,11 +1,11 @@
 //  Z-index Dictionary
 const zIndex = {
-    1: 'Default',
-    2: 'MainMenu',
-    3: 'MenuButton',
-    4: 'ZoomControls',
-    5: 'SubOptionsMenu',
-    10: 'coordinatesContainer',
-    9999: 'AppLoader',
+    50: ['AppLoader'],
+    10: [ 'Header'],
+    5: ['SubOptionsMenu','MessagesContainer'],
+    4: ['ZoomControls', 'Sidebar'],
+    3: ['MainMenuButtons'],
+    2: ['MainMenu','coordinatesContainer'],
+    1: ['Default'],
 };
 

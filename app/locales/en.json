@@ -96,6 +96,8 @@
       "selectValue": "Select Value",
       "search": "Search",
       "createNewLayer": "Create New Layer",
+      "byDrawing": "By drawing",
+      "byLayer": "By Layer",
       "clearSearch": "Clear Search"
     },
     "bookmarks": {
@@ -107,7 +109,17 @@
       "cancel": "Cancel"
     },
     "sketch": {
-      "clear": "مسح الرسم"
+      "clear": "Clear Sketch"
+    },
+    "print": {
+      "title": "Map Title",
+      "Customfield": "Custom field",
+      "Format": "Format",
+      "Layout": "Layout",
+      "IncludeLegend": "Include Legend",
+      "IncludeScale": "Include Scale",
+      "printing": "printing . . .",
+      "print": "print"
     },
     "measurements": {
       "distance": "Distance",
@@ -123,6 +135,7 @@
     "zoomToLayer": "Zoom to Layer",
     "moveLayerUp": "Move Layer Up",
     "moveLayerDown": "Move Layer Down",
+    "togglePopup" : "Toggle Popup",
     "removeLayer": "Remove Layer",
     "unknownAction": "Unknown action",
     "noLabelsSupport": "This layer does not support labels.",

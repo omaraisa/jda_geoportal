@@ -51,7 +51,7 @@ const useLayerActions = () => {
     }
     
     // Helper function to create a popup template
-    function createPopupTemplate(titleField: string, fields: __esri.Field[]): __esri.PopupTemplate {
+    function createPopupTemplate(titleField: string, fields: __esri.Field[]):any {
         return {
             title: `{${titleField}}`,
             content: [{ type: "fields" } as __esri.FieldsContent],

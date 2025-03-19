@@ -1,15 +1,14 @@
 .messagesContainer {
   position: absolute; /* Make it an overlay */
   bottom: 0; /* Align to the bottom of the viewport */
-  width: 50%; /* Set the width to 50% */
+  width: 60%; /* Set the width to 50% */
   max-height: 100%; /* Ensure it doesn't exceed the viewport height */
   display: flex;
   flex-wrap: wrap; /* Allow wrapping when there's no more vertical space */
-  justify-content: flex-end; /* Default alignment for LTR */
+  justify-content: flex-start; /* Default alignment for LTR */
   align-items: flex-end; /* Align items to the bottom */
-  padding: 1rem;
   gap: 1rem;
-  z-index: 3; /* Ensure it appears above all other content */
+  z-index: 5; /* Ensure it appears above all other content */
   pointer-events: none; /* Prevent blocking clicks on the map */
   overflow: hidden; /* Prevent overflow outside the container */
 }

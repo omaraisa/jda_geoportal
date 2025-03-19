@@ -90,7 +90,7 @@ export default function Sidebar() {
     >
       <div
         className="w-full rounded-t-2xl"
-        style={{ backgroundColor: "var(--primary-dark-transparent)" }}
+        style={{ backgroundColor: "var(--primary-transparent)" }}
       >
         <SidebarHeader />
       </div>
@@ -106,7 +106,7 @@ export default function Sidebar() {
 
       <div
         className="w-full h-[30px] rounded-b-2xl"
-        style={{ backgroundColor: "var(--primary-dark-transparent)" }}
+        style={{ backgroundColor: "var(--primary-transparent)" }}
       ></div>
     </div>
   );

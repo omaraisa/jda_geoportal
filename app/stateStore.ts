@@ -11,7 +11,7 @@ const useStateStore = create<State>((set, get) => ({
   layout: {
     mainMenuExpanded: false,
     sidebarOpen: true,
-    sidebarHeight: 80,
+    sidebarHeight: 70,
     bottomPaneOpen: false,
   },
   activeSideBar: "LayerListComponent",
@@ -216,7 +216,7 @@ const useStateStore = create<State>((set, get) => ({
     title,
     body,
     type,
-    duration = 10,
+    duration = 100,
   }: {
     title: string;
     body: string;

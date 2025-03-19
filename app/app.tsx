@@ -27,7 +27,7 @@ export default function App() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setAppReady(true);
-    }, 200); // 50 seconds delay
+    }, 50); // 50 seconds delay
     // }, 5000); // 50 seconds delay
 
     return () => clearTimeout(timer);
@@ -62,7 +62,7 @@ export default function App() {
           </div>
 
           <div
-            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-20 transition-all duration-1000 overflow-hidden left-5`}
+            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-4 transition-all duration-1000 overflow-hidden left-5`}
             style={{ height: `${layoutState.sidebarHeight}vh` }} // Add "vh" here
           >
             <Sidebar />

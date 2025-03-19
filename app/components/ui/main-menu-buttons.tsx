@@ -45,7 +45,7 @@ export const MainMenuButtons: React.FC<MainMenuButtonsProps> = ({ onMenuChange }
 
   return (
     <div
-      className={styles.buttons}
+      className={styles.mainMenuButtons}
       ref={buttonsContainerRef}
       // Rotate the container based on the active button
       style={{ transform: `rotate(${containerRotation}deg)` }}

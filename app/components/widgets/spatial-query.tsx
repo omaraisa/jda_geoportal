@@ -166,7 +166,7 @@ export default function SpatialQueryComponent() {
   return (
     <div className="flex flex-col space-y-4 p-4">
       <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="targetLayer" className="font-semibold text-white">
+        <label htmlFor="targetLayer" className="font-semibold text-foreground">
           {t("widgets.query.selectLayer")}
         </label>
 
@@ -213,16 +213,16 @@ export default function SpatialQueryComponent() {
               color: "var(--secondary-dark)",
             }}
           >
-            By Layer
+             {t("widgets.query.byLayer")}
           </p>
-          <p
+            <p
             className={`${styles.title} ${state.selectionMethodChecked ? styles.visible : styles.hidden}`}
             style={{
               color: "var(--secondary-dark)",
             }}
-          >
-            By Drawing
-          </p>
+            >
+            {t("widgets.query.byDrawing")}
+            </p>
         </label>
       </div>
       <div
@@ -237,7 +237,7 @@ export default function SpatialQueryComponent() {
           display: !state.selectionMethodChecked ? "flex" : "none",
         }}
       >
-        <label htmlFor="selectionLayer" className="font-semibold text-white">
+        <label htmlFor="selectionLayer" className="font-semibold text-foreground">
           {t("widgets.query.selectionLayer")}
         </label>
 

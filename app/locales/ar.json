@@ -93,6 +93,8 @@
       "selectValue": "اختر القيمة",
       "search": "بحث",
       "createNewLayer": "إنشاء طبقة جديدة",
+      "byDrawing": "عن طريق الرسم",
+      "byLayer": "باستعمال طبقة",
       "clearSearch": "مسح البحث"
     },
     "bookmarks": {
@@ -105,6 +107,16 @@
     },
     "sketch": {
       "clear": "مسح الرسم"
+    },
+    "print": {
+      "title": "عنوان الخريطة",
+      "Customfield": "حقل مخصص",
+      "Format": "التنسيق",
+      "Layout": "التخطيط",
+      "IncludeLegend": "تضمين مفتاح الخريطة",
+      "IncludeScale": "تضمين المقياس",
+      "printing": "جاري الطباعة . . .",
+      "print": "طباعة"
     },
     "measurements": {
       "distance": "المسافة",
@@ -120,6 +132,7 @@
     "zoomToLayer": "تكبير إلى الطبقة",
     "moveLayerUp": "تحريك الطبقة لأعلى",
     "moveLayerDown": "تحريك الطبقة لأسفل",
+    "togglePopup" : "تبديل النافذة المنبثقة",
     "removeLayer": "إزالة الطبقة",
     "unknownAction": "إجراء غير معروف",
     "noLabelsSupport": "هذه الطبقة لا تدعم التسميات.",

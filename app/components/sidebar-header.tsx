@@ -20,11 +20,11 @@ const SidebarHeader: React.FC = () => {
   const title = t(`sidebar.titles.${activeComponent}`, "");
 
   return (
-    <div className="relative flex items-center w-full py-2 px-4 text-white min-h-10">
+    <div className="relative flex items-center w-full py-2 px-4 text-foreground min-h-10">
       {/* Back Button */}
       {previousComponent && (
         <button
-          className="absolute left-4 text-white focus:outline-none transform transition-transform duration-500 ease-in-out hover:bg-white hover:text-primary rounded-full w-8 h-8 flex items-center justify-center"
+          className="absolute left-4 text-foreground focus:outline-none transform transition-transform duration-500 ease-in-out hover:bg-white hover:text-foreground rounded-full w-8 h-8 flex items-center justify-center"
           onClick={handleBack}
         >
           <CalciteIcon icon={"chevrons-left"} scale="m" />

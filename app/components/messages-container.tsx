@@ -24,7 +24,7 @@ export default function MessagesContainer() {
   return (
     <div
       className={styles.messagesContainer}
-      style={{ right: language === "en" ? 0 : "auto", left: language === "ar" ? 0 : "auto" }}
+      style={{ left: language === "en" ? "20%" : "auto", right: language === "ar" ? "20%" : "auto" }}
     >
       {Object.values(messages).map((message) => {
         const msg = message as Message; // Type assertion to Message

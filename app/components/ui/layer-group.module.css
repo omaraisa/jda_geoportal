@@ -1,8 +1,8 @@
 .container {
     width: 100%;
-    /* width: 250px; */
     overflow: hidden;
     border-radius: 15px;
+    box-shadow: 0 3px 6px rgba(66, 66, 66, 0.3);
 }
 
 
@@ -10,7 +10,6 @@
     background-color: var(--primary-dark-transparent);
     color: white;
     width: 100%;
-    /* width: 250px; */
     padding: 10px;
     text-align: center;
     cursor: pointer;
@@ -19,12 +18,12 @@
 }
 
 .header:hover {
-    background-color: var(--primary-light-transparent);
+    background-color: var(--primary-dark);
 }
 
 
 .content {
-    background-color: rgba(255, 255, 255, 0.747);
+    background-color: var(--primary);
     max-height: 0;
     overflow: hidden;
     transition: max-height 1s ease-out;
