@@ -158,6 +158,7 @@ export function createSeparateLayer(
         }),
         popupTemplate,
     });
+    (newSelectionLayer as any).groups = ["MyLayers"];
 
     if (view) {
         view.map.layers.add(newSelectionLayer);

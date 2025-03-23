@@ -25,11 +25,18 @@ const OptionsMenu: React.FC<OptionsProps> = ({ menuState, setMenuState}) => {
     }));
   };
 
+  const toggleOptionsMenu = () => {
+    setMenuState((prev: typeof menuState) => ({
+      ...prev,
+      isOptionsMenuExpanded: false
+    }));
+  };
+
   return (
     <div className={`${styles.options} ${menuState.isOptionsMenuExpanded ? styles.expanded : ""}`}>
       <OptionsMenuHeader selectedMenu={menuState.selectedMenu} hideMenu={() => setMenuState({ ...menuState, isOptionsMenuExpanded: false })} />
       {menuOptions[menuState.selectedMenu]?.map((option, index) => (
-      <MenuOption key={index} icon={option.icon} name={option.name} subMenuComponent={option.subMenuComponent} toggleSubOptionsMenu={() => toggleSubOptionsMenu(option.name)} />
+      <MenuOption key={index} icon={option.icon} name={option.name} subMenuComponent={option.subMenuComponent} toggleSubOptionsMenu={() => toggleSubOptionsMenu(option.name)}  toggleOptionsMenu ={()=> toggleOptionsMenu()} />
       ))}
       <SubOptionsMenu selectedOption={menuState.selectedSubMenu} isExpanded={menuState.isSubOptionsMenuExpanded} />
     </div>

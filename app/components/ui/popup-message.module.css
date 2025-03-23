@@ -1,56 +1,54 @@
 .messagesContainer {
-  position: absolute; /* Make it an overlay */
-  bottom: 0; /* Align to the bottom of the viewport */
-  width: 60%; /* Set the width to 50% */
-  max-height: 100%; /* Ensure it doesn't exceed the viewport height */
+  position: absolute;
+  bottom: 0;
+  width: 60%;
+  max-height: 100%;
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping when there's no more vertical space */
-  justify-content: flex-start; /* Default alignment for LTR */
-  align-items: flex-end; /* Align items to the bottom */
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-end;
   gap: 1rem;
-  z-index: 5; /* Ensure it appears above all other content */
-  pointer-events: none; /* Prevent blocking clicks on the map */
-  overflow: hidden; /* Prevent overflow outside the container */
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .message {
-  position: relative; /* Ensure the bar is positioned correctly */
-  overflow: hidden; /* Hide the overflow of the bar animation */
+  position: relative;
+  overflow: hidden;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
-  padding: 0; /* Remove padding to allow header to span full width */
+  padding: 0;
   border-radius: 8px;
-  width: 40%; /* Adjust width to fit multiple messages side by side */
-  max-width: 400px; /* Set a maximum width for each message */
-  min-width: 200px; /* Set a minimum width for readability */
-  margin: 0; /* Remove additional margins */
+  width: 40%;
+  max-width: 400px;
+  min-width: 200px;
+  margin: 0;
   animation: slideIn 0.3s ease-out;
-  background: #f5f5f5; /* Default background */
+  background: #f5f5f5;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 
 .messageBar {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 4px; /* Height of the bar */
+  height: 4px;
   animation: shrinkWidth linear forwards;
 }
 
-/* Inherit the border color from the parent message */
 .errorMessage .messageBar {
-  background-color: #e64555; /* Red for error */
+  background-color: #e64555;
 }
 
 .warningMessage .messageBar {
-  background-color: var(--secondary); /* Yellow for warning */
+  background-color: var(--secondary);
 }
 
 .infoMessage .messageBar {
-  background-color: #2f9d75; /* Green for info */
+  background-color: #2f9d75;
 }
 
 @keyframes shrinkWidth {
@@ -67,33 +65,31 @@
   justify-content: space-between;
   align-items: center;
   font-weight: bold;
-  padding: 1rem; /* Add padding to the header */
-  border-top-left-radius: 8px; /* Match the message border radius */
-  border-top-right-radius: 8px; /* Match the message border radius */
+  padding: 1rem;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
-/* Bright background colors for the header based on message type */
 .errorMessage .messageHeader {
-  background-color: #efacac; /* Bright red for error */
-  color: #962929; /* White text for better contrast */
+  background-color: #efacac;
+  color: #962929;
 }
 
 .warningMessage .messageHeader {
-  background-color: #efdaa9; /* Bright yellow for warning */
-  color: #976d0b; /* Dark text for better contrast */
+  background-color: #efdaa9;
+  color: #976d0b;
 }
 
 .infoMessage .messageHeader {
-  background-color: #87ceb4; /* Bright green for info */
-  color: #1d5641; /* White text for better contrast */
+  background-color: #87ceb4;
+  color: #1d5641;
 }
 
 .messageBody {
-  padding: 1rem; /* Add padding to the body */
-  margin-top: 0; /* Remove margin-top */
+  padding: 1rem;
+  margin-top: 0;
 }
 
-/* Category-specific styles */
 .errorMessage {
   background-color: #fff;
   color: #8f2d37;
@@ -109,7 +105,6 @@
   color: #127b54;
 }
 
-/* Animation */
 @keyframes slideIn {
   from {
     opacity: 0;

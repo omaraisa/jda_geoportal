@@ -10,30 +10,26 @@ import Loading from "./ui/loading";
 
 declare module "@arcgis/core/views/SceneView" {
   interface SceneView {
-    eventHandlers?: Record<string, __esri.Handle>; // Define the eventHandlers property
+    eventHandlers?: Record<string, __esri.Handle>;
   }
 }
 const MainScene: React.FC = () => {
-  const sceneRef = useRef<HTMLDivElement | null>(null); // Reference to the SceneView container
-  const viewRef = useRef<__esri.SceneView | null>(null); // Reference to the SceneView instance
-  const [loading, setLoading] = useState(true); // Loading state
+  const sceneRef = useRef<HTMLDivElement | null>(null);
+  const viewRef = useRef<__esri.SceneView | null>(null);
+  const [loading, setLoading] = useState(true);
   const eventHandlersRef = useRef<Record<string, __esri.Handle>>({});
 
-  // Extract state and actions from Zustand store
   const { sendMessage, center, zoom, scale, mapView, targetView, updateSceneView, updateTargetView, viewsSyncOn, addBasemapLayers } = useStateStore((state) => state);
   
   useEffect(() => {
-    // Set the ArcGIS API Key
     esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey as string;
     if (!viewRef.current) {
       try {
-        // Initialize the WebScene
         const scene = new WebScene({
           basemap: "arcgis-imagery",
           ground: "world-elevation",
         });
 
-        // Initialize the SceneView
         viewRef.current = new SceneView({
           container: sceneRef.current as HTMLDivElement,
           map: scene,
@@ -47,11 +43,10 @@ const MainScene: React.FC = () => {
           },
         });
 
-        // When the SceneView is ready, perform additional setup
         viewRef.current
           .when(() => {
             updateSceneView(viewRef.current);
-            setLoading(false); // Set loading to false when the scene view is ready
+            setLoading(false);
             if(viewRef.current) addBasemapLayers();
           })
           .catch((error: Error) => {
@@ -74,11 +69,10 @@ const MainScene: React.FC = () => {
       setLoading(false);
     }
 
-    // Cleanup function to destroy the SceneView
     return () => {
       if (viewRef.current) {
         // viewRef.current.destroy();
-        // updateSceneView(null); // Reset the view in the Zustand store
+        // updateSceneView(null);
       }
     };
   }, [sendMessage, center, zoom, scale, updateSceneView]);
@@ -92,12 +86,12 @@ const MainScene: React.FC = () => {
           mapView.scale = viewRef.current!.scale;
         });
       } else if (handleCenterChange) {
-        handleCenterChange.remove(); // Cleanup watcher if it exists
+        handleCenterChange.remove();
       }
 
       return () => {
         if (handleCenterChange) {
-          handleCenterChange.remove(); // Cleanup watcher
+          handleCenterChange.remove();
         }
       };
     }
@@ -114,20 +108,17 @@ const MainScene: React.FC = () => {
           }
         };
   
-        // Add the event handler
         const pointerDownHandler = viewRef.current.on(
           "pointer-down",
           handlePointerDown
         );
   
-        // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
   
-        // Cleanup listener
         return () => {
           if (pointerDownHandler) {
-            pointerDownHandler.remove(); // Properly remove the listener
-            delete existingHandlers["pointer-down"]; // Remove the handler reference
+            pointerDownHandler.remove();
+            delete existingHandlers["pointer-down"];
           }
         };
       }

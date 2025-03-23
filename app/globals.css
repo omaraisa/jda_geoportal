@@ -6,36 +6,31 @@
   --foreground: #424242;
   --background: #ffffff;
 
-  /* Primary Colors */
-  --primary: #ffffff; /* Default primary color */
-  --primary-transparent: #ffffffd2; /* Default primary color */
-  --primary-light: #d8d8d8; /* Lighter shade of primary */
-  --primary-light-transparent: #ffffffa4; /* Lighter shade of primary */
-  --primary-dark: #9c9c9c; /* Darker shade of primary */
-  --primary-dark-transparent: #9c9c9c9a; /* Darker shade of primary */
+  --primary: #ffffff;
+  --primary-transparent: #ffffffd2;
+  --primary-light: #d8d8d8;
+  --primary-light-transparent: #ffffffa4;
+  --primary-dark: #9c9c9c;
+  --primary-dark-transparent: #9c9c9c9a;
 
-  /* Secondary Colors */
-  --secondary: #7c7c7c; /* Default secondary color */
-  --secondary-transparent: #7c7c7c9a; /* Default secondary color */
-  --secondary-light: #949494; /* Lighter shade of secondary */
-  --secondary-light-transparent: #9494949a; /* Lighter shade of secondary */
-  --secondary-dark: #333333; /* Darker shade of secondary */
-  --secondary-dark-transparent: #3333339a; /* Darker shade of secondary */
+  --secondary: #7c7c7c;
+  --secondary-transparent: #7c7c7c9a;
+  --secondary-light: #949494;
+  --secondary-light-transparent: #9494949a;
+  --secondary-dark: #333333;
+  --secondary-dark-transparent: #3333339a;
 
-  /* Tertiary Colors */
-  --tertiary: #3BBFAD; /* Default tertiary color */
-  --tertiary-light: #51C6B7; /* Lighter shade of tertiary */
-  --tertiary-dark: #2D9C95; /* Darker shade of tertiary */
+  --tertiary: #3BBFAD;
+  --tertiary-light: #51C6B7;
+  --tertiary-dark: #2D9C95;
 
-  /* Danger Colors */
-  --danger: #dd8886; /* Default danger color */
-  --danger-light: #e6b1b0; /* Lighter shade of danger */
-  --danger-dark: #a55350; /* Darker shade of danger */
+  --danger: #dd8886;
+  --danger-light: #e6b1b0;
+  --danger-dark: #a55350;
 
-  /* Gray Colors */
-  --gray: #3d3d3d; /* Default gray color */
-  --gray-light: #747474; /* Lighter shade of gray */
-  --gray-dark: #1f1f1f; /* Darker shade of gray */
+  --gray: #3d3d3d;
+  --gray-light: #747474;
+  --gray-dark: #1f1f1f;
 
   --green:#31b36b;
 }
@@ -61,10 +56,10 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  overflow: hidden; /* Prevent scrolling */
-  height: 100%; /* Ensure full height usage */
-  margin: 0; /* Remove default margins */
-  padding: 0; /* Remove default paddings */
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   /* cursor: url('/cursor.png'), auto; */
 }
 
@@ -72,7 +67,6 @@ button, a, i, [role="button"], [onclick] {
   /* cursor: url('/cursor-link.png'), pointer; */
 }
 
-/* Language-specific styles */
 :lang(en) {
   font-family: var(--font-oxanium), Arial, Helvetica, sans-serif;
   direction: ltr;
@@ -85,7 +79,6 @@ button, a, i, [role="button"], [onclick] {
   text-align: right;
 }
 
-/* Common button styles */
 .btn {
   align-items: center;
   appearance: none;
@@ -116,7 +109,7 @@ button, a, i, [role="button"], [onclick] {
   left: 50%;
   width: 0;
   height: 0;
-  background: rgba(148, 162, 184, 0.3); /* Glow color */
+  background: rgba(148, 162, 184, 0.3);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: width 0.8s ease, height 0.8s ease, opacity 0.8s ease;
@@ -146,7 +139,6 @@ button, a, i, [role="button"], [onclick] {
   opacity: 0;
 }
 
-/* Button variants */
 .btn-primary {
   background-color: var(--primary-transparent);
   color: var(--foreground);
@@ -177,7 +169,6 @@ button, a, i, [role="button"], [onclick] {
   color: var(--foreground);
 }
 
-/* Close button styles */
 .close-btn {
   width: 2rem;
   height: 2rem;
@@ -226,7 +217,6 @@ button, a, i, [role="button"], [onclick] {
   opacity: 0;
 }
 
-/* Switch styles */
 .switch-input {
   height: 0;
   width: 0;
@@ -281,7 +271,6 @@ button, a, i, [role="button"], [onclick] {
   background: #b6b6b6;
 }
 
-/* Checkbox styles */
 .checkbox {
   display: none;
 }
@@ -385,7 +374,6 @@ button, a, i, [role="button"], [onclick] {
   opacity: 1;
 }
 
-/* Input and textarea styles */
 .textInput {
   position: relative;
   margin: auto;
@@ -454,7 +442,6 @@ button, a, i, [role="button"], [onclick] {
   min-height: 100px;
 }
 
-/* Select styles */
 .select {
   position: relative;
   width: 100%;
@@ -508,7 +495,6 @@ button, a, i, [role="button"], [onclick] {
   color: var(--primary);
 }
 
-/* Number input styles */
 input[type="number"] {
   width: 100%;
   padding: 0.5rem;
@@ -565,7 +551,6 @@ input[type="number"]::-moz-outer-spin-button {
   }
 }
 
-/* Floating Animation */
 @keyframes float {
   0%,
   100% {
@@ -576,7 +561,6 @@ input[type="number"]::-moz-outer-spin-button {
   }
 }
 
-/* Spin Animation */
 @keyframes spin-3d {
   0% {
     transform: rotateY(0deg);
@@ -586,7 +570,6 @@ input[type="number"]::-moz-outer-spin-button {
   }
 }
 
-/* Glow Effect Animation */
 @keyframes glow-effect {
   0% {
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.4), 0 0 20px rgba(0, 255, 255, 0.3),
@@ -598,7 +581,6 @@ input[type="number"]::-moz-outer-spin-button {
   }
 }
 
-/* Electric Shine Animation */
 @keyframes electricShine {
   0% {
     text-shadow: 0 0 2px #00ffff, 0 0 2px #00ffff, 0 0 2px #00ffff, 0 0 2px #00ffff,
@@ -626,7 +608,6 @@ input[type="number"]::-moz-outer-spin-button {
   animation: rotate-3d 5s linear infinite;
 }
 
-/* Pointer Triangle */
 #pointer::before {
   content: '';
   position: absolute;
@@ -641,8 +622,8 @@ input[type="number"]::-moz-outer-spin-button {
 
 
 .spin-slow {
-  animation: spin-slow 7s linear infinite; /* 3s duration for slow spin */
-  transform-origin: center; /* Ensure the element spins around its center */
+  animation: spin-slow 7s linear infinite;
+  transform-origin: center;
 }
 
 @keyframes spin-slow {

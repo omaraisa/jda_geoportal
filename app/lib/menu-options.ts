@@ -11,6 +11,7 @@ interface MenuOptions {
 const menuOptions: MenuOptions = {
   settings: [
     { name: "ViewSwitcher", icon: "system-management", subMenuComponent: "ViewSwitcher",  },
+    { name: "BasemapSwitcher", icon: "basemap", subMenuComponent: "BasemapSwitcher",  },
   ],
   tools: [
     { name: "MeasurementComponent", icon: "measure" },
@@ -18,7 +19,6 @@ const menuOptions: MenuOptions = {
     { name: "SketchComponent", icon: "pencil-mark" },
     { name: "LegendComponent", icon: "legend" },
     { name: "PrintComponent", icon: "print" },
-    { name: "BasemapGalleryComponent", icon: "basemap" },
     { name: "BookmarkComponent", icon: "bookmark" },
     { name: "CoordinateConversionComponent", icon: "coordinate-system" },
   ],

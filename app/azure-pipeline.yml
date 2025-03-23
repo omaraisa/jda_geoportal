@@ -1,0 +1,22 @@
+trigger:
+  - main
+
+pool:
+  name: 'Default'
+
+variables:
+  imageName: 'geoportal'
+  NEXT_PUBLIC_ArcGISAPIKey : 'AAPKc691d193fde14ea9bae49f48970f5fbcmPjkAffm__8tJdoM-iasTahd05z_ngTfiIdqY_FcU8Vp1t0my13dG7TlKBWfy5cx'
+
+    
+steps:
+  - script: |
+      mkdir -p ~/.docker
+      echo '{"registry-mirrors": ["https://hub-mirror.c.163.com"]}' > ~/.docker/config.json 
+      docker compose -f docker-compose.yml build \
+        --build-arg NEXT_PUBLIC_ArcGISAPIKey=$(NEXT_PUBLIC_ArcGISAPIKey)
+    displayName: 'Build Docker Image with Docker Mirror'
+
+  - script: |
+      docker compose -f docker-compose.yml up -d
+    displayName: 'Run Container'

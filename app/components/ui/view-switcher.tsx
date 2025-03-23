@@ -34,7 +34,7 @@ const ViewSwitcher: React.FC = () => {
         <button
           key={mode.value}
           onClick={() => handleClick(index)}
-          className={`w-full flex text-foreground items-center space-x-2 p-2 rounded transition ${
+          className={`w-full flex text-foreground items-center space-x-2 p-2 rtl:space-x-reverse  rounded transition ${
             activeIndex === index ? 'bg-primary-transparent' : 'bg-transparent'
           } hover:bg-white/50 text-left`}
         >

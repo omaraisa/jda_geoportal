@@ -6,8 +6,8 @@ const Bookmark: React.FC<BookmarkInterface> = ({ id, name, center, zoom, view, d
   const zoomToBookmark = () => {
     if (view) {
       view.goTo({
-        center: [center.x, center.y], // Pass center as [x, y]
-        zoom, // Pass zoom level
+        center: [center.x, center.y], 
+        zoom, 
       });
     }
   };
@@ -23,7 +23,7 @@ const Bookmark: React.FC<BookmarkInterface> = ({ id, name, center, zoom, view, d
       <button
         className="btn btn-danger rounded-md"
         onClick={(e) => {
-          e.stopPropagation(); // Prevent triggering zoom
+          e.stopPropagation();
           deleteBookmark(id);
         }}
       >

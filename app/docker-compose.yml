@@ -1,0 +1,18 @@
+services:
+  geoportal1:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3001
+
+  geoportal2:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      - PORT=3002

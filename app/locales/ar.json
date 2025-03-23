@@ -27,6 +27,7 @@
     "CoordinateConversionComponent": "تحويل الإحداثيات",
     "LayerListComponent": "قائمة الطبقات",
     "ViewSwitcher": "تبديل العرض",
+    "BasemapSwitcher": "خريطة الأساس",
     "layers": "الطبقات",
     "tools": "الأدوات",
     "settings": "الإعدادات",
@@ -113,10 +114,19 @@
       "Customfield": "حقل مخصص",
       "Format": "التنسيق",
       "Layout": "التخطيط",
+      "Resolution": "دقة الخريطة",
+      "Default": "افتراضي",
+      "High": "عالية",
       "IncludeLegend": "تضمين مفتاح الخريطة",
       "IncludeScale": "تضمين المقياس",
       "printing": "جاري الطباعة . . .",
       "print": "طباعة"
+    },
+    "basemap": {
+      "Topo": "تضاريس",
+      "Satellite": "صور",
+      "Street": "شارع",
+      "DarkGray": "رمادي غامق"
     },
     "measurements": {
       "distance": "المسافة",

@@ -73,12 +73,11 @@
   height: 800px;
   z-index: 1;
   border: .2em solid #fff ;
+  border-top-left-radius: 2em;
+  border-top-right-radius: 2em;
   border-bottom-left-radius: 7em;
   border-bottom-right-radius: 7em;
   padding-bottom: 14em;
-  /* Added thick border at the top */
-
-  /* Hide Initially */
   max-height: 0;
   pointer-events: none;
   opacity: 0;
@@ -98,10 +97,12 @@
   pointer-events: none;
   opacity: 0;
   transition: max-height 0.6s ease-in-out, opacity 0.6s ease-in-out;
+  border-top-left-radius: 2em;
+  border-top-right-radius: 2em;
 }
 
 .expanded {
-  max-height: 80vh; /* Adjust height as needed */
+  max-height: 80vh;
   opacity: 1;
   pointer-events: auto;
 }
@@ -116,6 +117,8 @@
   color: #2e2e2e;
   background: #ffffff;
   cursor: pointer;
+  border-top-left-radius: 2em;
+  border-top-right-radius: 2em;
 }
 
 .option {

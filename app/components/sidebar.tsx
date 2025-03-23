@@ -5,10 +5,6 @@ import useStateStore from "@/stateStore";
 import SidebarHeader from "./sidebar-header";
 import dynamic from "next/dynamic";
 
-const BasemapGalleryComponent = dynamic(
-  () => import("@/components/widgets/basemap-gallery"),
-  { ssr: false }
-);
 const EditorComponent = dynamic(() => import("@/components/widgets/editor"), {
   ssr: false,
 });
@@ -54,7 +50,6 @@ const AddLayer = dynamic(() => import("@/components/widgets/add-layer"), {
 const components = {
   Loading,
   DefaultComponent,
-  BasemapGalleryComponent,
   EditorComponent,
   PrintComponent,
   LayerListComponent,

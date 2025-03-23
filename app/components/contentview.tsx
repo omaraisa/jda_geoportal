@@ -5,25 +5,20 @@ import useStateStore from "@/stateStore";
 import Loading from "./ui/loading";
 import MessageContainer from "./messages-container";
 
-// Dynamically import components
 const MainMap = dynamic(() => import("./mapview"), { ssr: false });
 const MainScene = dynamic(() => import("./sceneview"), { ssr: false });
 
 const ContentView: React.FC = () => {
-  // Extract necessary state and actions from the store
   const viewMode = useStateStore((state) => state.viewMode);
-
-  // State to manage split sizes
   const [splitSizes, setSplitSizes] = useState<number[]>([50, 50]);
 
-  // Effect to adjust split sizes based on viewMode
   useEffect(() => {
     if (viewMode === "2D") {
-      setSplitSizes([100, 0]); // Full width for MainMap, hide MainScene
+      setSplitSizes([100, 0]);
     } else if (viewMode === "3D") {
-      setSplitSizes([0, 100]); // Full width for MainScene, hide MainMap
+      setSplitSizes([0, 100]);
     } else if (viewMode === "Dual") {
-      setSplitSizes([50, 50]); // Equal split for both
+      setSplitSizes([50, 50]);
     }
   }, [viewMode]);
 
@@ -33,31 +28,29 @@ const ContentView: React.FC = () => {
       
       <React.Suspense fallback={<Loading />}>
         <Split
-          sizes={splitSizes} // Dynamic sizes based on viewMode
-          minSize={[0, 0]} // Minimum size for each pane
-          gutterSize={viewMode === "Dual" ? 6 : 0} // Hide gutter when not in Dual mode
-          direction="horizontal" // Horizontal split
+          sizes={splitSizes}
+          minSize={[0, 0]}
+          gutterSize={viewMode === "Dual" ? 6 : 0}
+          direction="horizontal"
           style={{ display: "flex", width: "100%", height: "100%" }}
         >
-          {/* First Pane - MainMap */}
           <div
             style={{
               width: "100%",
               height: "100%",
               position: "relative",
-              display: splitSizes[0] > 0 ? "block" : "none", // Hide if width is 0
+              display: splitSizes[0] > 0 ? "block" : "none",
             }}
           >
             <MainMap />
           </div>
 
-          {/* Second Pane - MainScene */}
           <div
             style={{
               width: "100%",
               height: "100%",
               position: "relative",
-              display: splitSizes[1] > 0 ? "block" : "none", // Hide if width is 0
+              display: splitSizes[1] > 0 ? "block" : "none",
             }}
           >
             <MainScene />

@@ -27,8 +27,8 @@ export default function App() {
   React.useEffect(() => {
     const timer = setTimeout(() => {
       setAppReady(true);
-    }, 50); // 50 seconds delay
-    // }, 5000); // 50 seconds delay
+    }, 50); 
+    // }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -39,7 +39,6 @@ export default function App() {
 
   return (
     <div className="absolute w-screen h-screen flex flex-col overflow-hidden">
-      {/* App Loader - Covers the entire screen */}
       {!appReady && (
         <div className="absolute inset-0 z-50 bg-[#182726]  text-white flex justify-center items-center">
           <AppLoader />
@@ -56,8 +55,8 @@ export default function App() {
           </div>
 
           <div
-            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-4 transition-all duration-1000 overflow-hidden left-5`}
-            style={{ height: `${layoutState.sidebarHeight}vh` }} // Add "vh" here
+            className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[250px] bg-transparent z-4 transition-all duration-1000 overflow-hidden left-5`}
+            style={{ height: `${layoutState.sidebarHeight}vh` }} 
           >
             <Sidebar />
           </div>

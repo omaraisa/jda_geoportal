@@ -16,17 +16,16 @@ const AppLoader: React.FC = () => {
   useEffect(() => {
     let index = 0;
     const interval = setInterval(() => {
-      index = (index + 1) % messages.length; // Cycle through messages
+      index = (index + 1) % messages.length; 
       setCurrentMessage(messages[index]);
     }, 1500);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className={styles.loaderWrapper}>
         <div className="relative h-20 w-20">
-        {/* First Image */}
         <Image
           src= "/logo.png"
           alt= "loading"
@@ -35,7 +34,6 @@ const AppLoader: React.FC = () => {
           className="absolute top-0 left-0"
         />
 
-        {/* Second Image */}
         <Image
           src="/logo-outer.png"
           alt= "loading"

@@ -5,12 +5,17 @@ import SubOptionsMenuHeader from "./sub-options-menu-header";
 import dynamic from "next/dynamic";
 import Loading from "./loading";
 
+const BasemapSwitcher = dynamic(
+    () => import("@/components/ui/basemap-switcher"),
+    { ssr: false }
+);
 const ViewSwitcher = dynamic(
     () => import("@/components/ui/view-switcher"),
     { ssr: false }
 );
 
 const components = {
+    BasemapSwitcher,
     ViewSwitcher
 };
 

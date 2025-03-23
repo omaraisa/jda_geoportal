@@ -16,12 +16,10 @@ const SidebarHeader: React.FC = () => {
     }
   };
 
-  // Dynamically fetch the title for the active component
   const title = t(`sidebar.titles.${activeComponent}`, "");
 
   return (
     <div className="relative flex items-center w-full py-2 px-4 text-foreground min-h-10">
-      {/* Back Button */}
       {previousComponent && (
         <button
           className="absolute left-4 text-foreground focus:outline-none transform transition-transform duration-500 ease-in-out hover:bg-white hover:text-foreground rounded-full w-8 h-8 flex items-center justify-center"
@@ -31,13 +29,11 @@ const SidebarHeader: React.FC = () => {
         </button>
       )}
 
-      {/* Title */}
       <h2 className="mx-auto text-base font-semibold text-center">{title}</h2>
 
-      {/* Close Button */}
       <button
         className="close-btn flex items-center justify-center"
-        onClick={() => toggleSidebar(false)} // Close the sidebar
+        onClick={() => toggleSidebar(false)}
       >
        <CalciteIcon icon={"x"} scale="m" />
       </button>

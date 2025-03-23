@@ -10,9 +10,10 @@ interface OptionProps {
     name: string;
     subMenuComponent: string | undefined;
     toggleSubOptionsMenu: () => void;
+    toggleOptionsMenu: () => void;
 }
 
-const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggleSubOptionsMenu }) => {
+const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggleSubOptionsMenu, toggleOptionsMenu }) => {
     const { t } = useTranslation();
     const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
     const toggleSidebar = useStateStore((state) => state.toggleSidebar);
@@ -24,6 +25,7 @@ const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggl
         if (subMenuComponent) {
             toggleSubOptionsMenu();
         } else {
+            toggleOptionsMenu();
             if (sidebarOpen) {
                 if (activeSideBar !== name) {
                     toggleSidebar(false);

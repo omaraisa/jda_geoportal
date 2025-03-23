@@ -24,9 +24,9 @@ const useStateStore = create<State>((set, get) => ({
   sceneView: null,
   widgets: {},
   targetLayerId: null,
-  center: [39.19797, 21.51581], // Default center (Jeddah, Saudi Arabia)
-  zoom: 12, // Default zoom level for 2D
-  scale: 500000, // Default scale for 3D
+  center: [39.19797, 21.51581],
+  zoom: 12,
+  scale: 500000,
   viewsSyncOn: false,
   previousSideBars: {
     DefaultComponent: null,
@@ -40,9 +40,9 @@ const useStateStore = create<State>((set, get) => ({
 
   setLanguage: (lang: string) => {
     set({ language: lang });
-    document.documentElement.lang = lang; // Update <html> lang attribute
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"; // Set direction
-    localStorage.setItem("appLanguage", lang); // Save language to localStorage
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    localStorage.setItem("appLanguage", lang);
   },
 
   setMainMenuExpansion: (isExpanded: boolean) => {

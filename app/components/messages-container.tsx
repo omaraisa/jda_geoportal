@@ -8,15 +8,14 @@ export default function MessagesContainer() {
   const { language, messages, removeMessage } = useStateStore();
 
   useEffect(() => {
-    // Remove expired messages after their animation ends
     const interval = setInterval(() => {
       Object.values(messages).forEach((message) => {
-        const msg = message as Message; // Type assertion to Message
+        const msg = message as Message; 
         if (msg.expired) {
           removeMessage(Number(msg.id));
         }
       });
-    }, 1000); // Check every second
+    }, 1000); 
 
     return () => clearInterval(interval);
   }, [messages, removeMessage]);
@@ -27,7 +26,7 @@ export default function MessagesContainer() {
       style={{ left: language === "en" ? "20%" : "auto", right: language === "ar" ? "20%" : "auto" }}
     >
       {Object.values(messages).map((message) => {
-        const msg = message as Message; // Type assertion to Message
+        const msg = message as Message; 
         return !msg.expired ? <PopupMessage key={msg.id} message={msg} /> : null;
       })}
     </div>

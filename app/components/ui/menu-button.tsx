@@ -12,7 +12,6 @@ interface MenuButtonProps {
     containerRotation: number;
   }
   
-  // Map menu names to corresponding icons
   const iconMapping: Record<string, string> = {
     analysis: "analysis",
     settings: "gear",

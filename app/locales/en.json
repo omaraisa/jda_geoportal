@@ -28,8 +28,7 @@
     "CoordinateConversionComponent": "Coordinate Conversion",
     "LayerListComponent": "Layer List",
     "ViewSwitcher": "Switch View",
-
-    
+    "BasemapSwitcher": "Switch Basemap",
     "layers": "Layers",
     "tools": "Tools",
     "settings": "Settings",
@@ -118,8 +117,17 @@
       "Layout": "Layout",
       "IncludeLegend": "Include Legend",
       "IncludeScale": "Include Scale",
+      "Resolution": "Map Resolution",
+      "Default": "Default",
+      "High": "High",
       "printing": "printing . . .",
       "print": "print"
+    },
+    "basemap": {
+      "Topo": "Topographic",
+      "Satellite": "Imagery",
+      "Street": "Street",
+      "DarkGray": "Dark Gray"
     },
     "measurements": {
       "distance": "Distance",

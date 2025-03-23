@@ -3,7 +3,6 @@ import styles from "./bottom-menu-tray.module.css";
 import useStateStore from "@/stateStore";
 
 const BottomMenuTray: React.FC = () => {
-  // Type inferred correctly if Zustand store is typed properly
   const mainMenuExpanded = useStateStore((state) => state.layout.mainMenuExpanded);
 
   return (

@@ -14,7 +14,7 @@ const LanguageSwitcher: React.FC = () => {
   };
 
   useEffect(() => {
-    i18n.changeLanguage(language); // Update i18next language whenever language state changes
+    i18n.changeLanguage(language);
   }, [language, i18n]);
 
   return (

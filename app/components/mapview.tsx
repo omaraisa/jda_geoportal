@@ -12,11 +12,10 @@ interface CustomMapView extends MapView {
 }
 
 const MainMap = () => {
-  const mapRef = useRef(null); // Reference to the MapView container
-  const viewRef = useRef<CustomMapView | null>(null); // Reference to the MapView instance
+  const mapRef = useRef(null);
+  const viewRef = useRef<CustomMapView | null>(null);
   const mapInitializedRef = useRef(false);
 
-  // Extract state and actions from Zustand store
   const sendMessage = useStateStore((state) => state.sendMessage);
   const center = useStateStore((state) => state.center);
   const zoom = useStateStore((state) => state.zoom);
@@ -29,7 +28,6 @@ const MainMap = () => {
   const addBasemapLayers = useStateStore((state) => state.addBasemapLayers);
 
   useEffect(() => {
-    // Authenticate first, then initialize the map
     if (!mapInitializedRef.current) {
       mapInitializedRef.current = true;
       authenticateArcGIS()
@@ -42,7 +40,7 @@ const MainMap = () => {
               map: map,
               center,
               zoom,
-              rotation: 270, 
+              rotation: 270,
               ui: {
                 components: [],
               },
@@ -63,26 +61,21 @@ const MainMap = () => {
                 viewRef.current!.container.appendChild(coordinatesContainer);
 
                 const pointerMoveHandler = viewRef.current!.on("pointer-move", (event: any) => {
-                  // Get the screen point (x, y) of the mouse pointer
                   const screenPoint = {
                     x: event.x,
                     y: event.y,
                   };
 
-                  // Convert the screen point to a map point (longitude, latitude)
                   const mapPoint = viewRef.current!.toMap(screenPoint);
 
-                  // Convert the map point to geographic coordinates (longitude, latitude)
                   const lon = mapPoint.longitude.toFixed(6);
                   const lat = mapPoint.latitude.toFixed(6);
 
                   const utmPoint = wgs84ToUtmZone37N(lat, lon);
 
-                  // Get the UTM coordinates
-                  const utmPointX = utmPoint.x.toFixed(1); // UTM Easting
-                  const utmPointY = utmPoint.y.toFixed(1); // UTM Northing
+                  const utmPointX = utmPoint.x.toFixed(1);
+                  const utmPointY = utmPoint.y.toFixed(1);
 
-                  // Update the coordinates display
                   coordinatesContainer.innerHTML = `Lat: ${lat}, Lon: ${lon}     |     UTM Z37 N: ${utmPointX}, ${utmPointY}`;
                 });
 
@@ -127,12 +120,12 @@ const MainMap = () => {
           sceneView.scale = viewRef.current!.scale;
         });
       } else if (handleCenterChange) {
-        handleCenterChange.remove(); // Cleanup watcher if it exists
+        handleCenterChange.remove();
       }
 
       return () => {
         if (handleCenterChange) {
-          handleCenterChange.remove(); // Cleanup watcher
+          handleCenterChange.remove();
         }
       };
     }
@@ -140,7 +133,6 @@ const MainMap = () => {
 
   useEffect(() => {
     if (viewRef.current) {
-      // Initialize eventHandlers if it doesn't exist
       if (!viewRef.current.eventHandlers) {
         viewRef.current.eventHandlers = {};
       }
@@ -154,20 +146,17 @@ const MainMap = () => {
           }
         };
 
-        // Add the event handler
         const pointerDownHandler = viewRef.current.on(
           "pointer-down",
           handlePointerDown
         );
 
-        // Track the handler for cleanup
         existingHandlers["pointer-down"] = pointerDownHandler;
 
-        // Cleanup listener
         return () => {
           if (pointerDownHandler) {
-            pointerDownHandler.remove(); // Properly remove the listener
-            delete existingHandlers["pointer-down"]; // Remove the handler reference
+            pointerDownHandler.remove();
+            delete existingHandlers["pointer-down"];
           }
         };
       }

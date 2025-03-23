@@ -149,95 +149,106 @@ console.log(webMapJSON)
     <div className="p-4 text-black w-full max-w-md">
 
       <form onSubmit={handlePrint}>
-        <FormField label={t("widgets.print.title")}>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-          />
-        </FormField>
+      <FormField label={t("widgets.print.title")}>
+        <input
+        type="text"
+        name="title"
+        value={formData.title}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded"
+        />
+      </FormField>
 
-        <FormField label={t("widgets.print.Customfield")}>
-          <input
-            type="text"
-            name="Customfield"
-            value={formData.Customfield}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-          />
-        </FormField>
+      <FormField label={t("widgets.print.Customfield")}>
+        <input
+        type="text"
+        name="Customfield"
+        value={formData.Customfield}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded"
+        />
+      </FormField>
 
-        <FormField label={t("widgets.print.Format")}>
-          <select
-            name="format"
-            value={formData.format}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-          >
-            {["pdf", "png", "jpg"].map((fmt) => (
-              <option key={fmt} value={fmt}>{fmt.toUpperCase()}</option>
-            ))}
-          </select>
-        </FormField>
-
-        <FormField label={t("widgets.print.Layout")}>
-          <select
-            name="layout"
-            value={formData.layout}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-          >
-            {JDALAYOUTS.map((lay) => (
-              <option key={lay} value={lay}>{lay}</option>
-            ))}
-          </select>
-        </FormField>
-
-        <div className="flex items-center mb-2">
-          <input
-            type="checkbox"
-            className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
-            id="legend_checkbox"
-            checked={formData.includeLegend}
-            onChange={handleCheckboxChange}
-            name="includeLegend"
-          />
-          <label className="tick-label" htmlFor="legend_checkbox">
-            <div id="tick_mark"></div>
-          </label>
-          <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeLegend")}</span>
-        </div>
-
-        <div className="flex items-center mb-2">
-          <input
-            type="checkbox"
-            className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
-            id="scale_checkbox"
-            checked={formData.includeScale}
-            onChange={handleCheckboxChange}
-            name="includeScale"
-          />
-          <label className="tick-label" htmlFor="scale_checkbox">
-            <div id="tick_mark"></div>
-          </label>
-          <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeScale")}</span>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="btn btn-primary flex-grow flex justify-stretch w-full"
+      <FormField label={t("widgets.print.Format")}>
+        <select
+        name="format"
+        value={formData.format}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded"
         >
-          {isLoading ? t("widgets.print.printing") : t("widgets.print.print")}
-        </button>
+        {["pdf", "png", "jpg"].map((fmt) => (
+          <option key={fmt} value={fmt}>{fmt.toUpperCase()}</option>
+        ))}
+        </select>
+      </FormField>
+
+      <FormField label={t("widgets.print.Layout")}>
+        <select
+        name="layout"
+        value={formData.layout}
+        onChange={handleInputChange}
+        className="w-full p-2 border rounded"
+        >
+        {JDALAYOUTS.map((lay) => (
+          <option key={lay} value={lay}>{lay}</option>
+        ))}
+        </select>
+      </FormField>
+
+      <FormField label={t("widgets.print.Resolution")}>
+        <select
+        name="resolution"
+        defaultValue={300}
+        className="w-full p-2 border rounded"
+        >
+        <option value={300}>{t("widgets.print.Default")}</option>
+        <option value={600}>{t("widgets.print.High")}</option>
+        </select>
+      </FormField>
+
+      <div className="flex items-center mb-2">
+        <input
+        type="checkbox"
+        className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
+        id="legend_checkbox"
+        checked={formData.includeLegend}
+        onChange={handleCheckboxChange}
+        name="includeLegend"
+        />
+        <label className="tick-label" htmlFor="legend_checkbox">
+        <div id="tick_mark"></div>
+        </label>
+        <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeLegend")}</span>
+      </div>
+
+      <div className="flex items-center mb-2">
+        <input
+        type="checkbox"
+        className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
+        id="scale_checkbox"
+        checked={formData.includeScale}
+        onChange={handleCheckboxChange}
+        name="includeScale"
+        />
+        <label className="tick-label" htmlFor="scale_checkbox">
+        <div id="tick_mark"></div>
+        </label>
+        <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeScale")}</span>
+      </div>
+
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="btn btn-primary flex-grow flex justify-stretch w-full"
+      >
+        {isLoading ? t("widgets.print.printing") : t("widgets.print.print")}
+      </button>
       </form>
       
       {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
+      <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        {error}
+      </div>
       )}
 
     </div>
