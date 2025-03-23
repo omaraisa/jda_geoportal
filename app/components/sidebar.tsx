@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import Loading from "./ui/loading";
 import DefaultComponent from "./widgets/default-component";
-// import HTML_ELEMENTS_TEMPLATES from "../modules/HTML_ELEMENTS_TEMPLATES";
 import useStateStore from "@/stateStore";
 import SidebarHeader from "./sidebar-header";
 import dynamic from "next/dynamic";

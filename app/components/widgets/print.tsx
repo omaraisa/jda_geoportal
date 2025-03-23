@@ -23,13 +23,13 @@ const PrintComponent: React.FC = () => {
     title: "My Map",
     Customfield: "Customfield Name",
     format: "pdf",
-    layout: "Official",
+    layout: "Standard",
     includeLegend: true,
     includeScale: true,
     scalebarUnit: "metric",
   });
 
-  const JDALAYOUTS =  ["Official", "Presentation", "MAP_ONLY"]
+  const JDALAYOUTS =  ["Standard", "Presentation", "MAP_ONLY"]
   const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/CustomPrintService/GPServer/Custom%20Print";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

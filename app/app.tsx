@@ -48,15 +48,9 @@ export default function App() {
 
       <Header />
       <div
-        className="relative w-full h-full border-1 border-transparent"
-        style={{
-          background:
-            "linear-gradient(to right,  #18def8 ,  #44747a,  #18def8)",
-          backgroundSize: "200% 50%",
-          animation: "shine 3s linear infinite",
-        }}
+        className="relative w-full h-full "
       >
-        <div className="absolute inset-y-1 left-0 right-0 bg-[#182726] flex flex-col">
+        <div className="absolute inset-y-0 left-0 right-0 bg-[#182726] flex flex-col">
           <div className="flex-1 relative">
             <ContentView />
           </div>

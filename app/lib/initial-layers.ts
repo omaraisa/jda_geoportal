@@ -24,7 +24,7 @@ export const baseMapLayerConfigurations: InitialLayersConfiguration[] = [
     sourceType: "url",
     url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Parcel/FeatureServer",
     portalItemId: null,
-    groups: ["Utilities", "Administrative Boundry", "Basemap"],
+    groups: ["MyLayers"],
     visible: false,
     labelsEnabled: true,
     renderer: {
@@ -206,46 +206,46 @@ export const baseMapLayerConfigurations: InitialLayersConfiguration[] = [
 ];
 
 export const sceneBasemapConfigurations: InitialLayersConfiguration[] = [
-  // {
-  //   id: "scene-buildings",
-  //   title: "Buildings",
-  //   type: "FeatureLayer",
-  //   sourceType: "url",
-  //   url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Buildings/FeatureServer",
-  //   portalItemId: null,
-  //   groups: ["Utilities"],
-  //   visible: false,
-  //   labelsEnabled: true,
-  //   labelingInfo: null,
-  //   opacity: 1,
-  //   minScale: 0,
-  //   maxScale: 18,
-  //   renderer: {
-  //     type: "simple",
-  //     symbol: {
-  //       type: "polygon-3d",
-  //       symbolLayers: [
-  //         {
-  //           type: "extrude",
-  //           material: { color: [200, 200, 200, 0.8] },
-  //           edges: {
-  //             type: "solid",
-  //             color: [50, 50, 50, 0.5],
-  //           },
-  //         },
-  //       ],
-  //     },
-  //     label: "Buildings",
-  //     visualVariables: [
-  //       {
-  //         type: "size",
-  //         field: "height",
-  //         valueUnit: "meters",
-  //         valueExpression: "$feature.height",
-  //       },
-  //     ],
-  //   },
-  // },
+  {
+    id: "scene-buildings",
+    title: "Buildings",
+    type: "FeatureLayer",
+    sourceType: "url",
+    url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Buildings/FeatureServer",
+    portalItemId: null,
+    groups: ["Utilities"],
+    visible: false,
+    labelsEnabled: true,
+    labelingInfo: null,
+    opacity: 1,
+    minScale: 0,
+    maxScale: 18,
+    renderer: {
+      type: "simple",
+      symbol: {
+        type: "polygon-3d",
+        symbolLayers: [
+          {
+            type: "extrude",
+            material: { color: [200, 200, 200, 0.8] },
+            edges: {
+              type: "solid",
+              color: [50, 50, 50, 0.5],
+            },
+          },
+        ],
+      },
+      label: "Buildings",
+      visualVariables: [
+        {
+          type: "size",
+          field: "height",
+          valueUnit: "meters",
+          valueExpression: "$feature.height",
+        },
+      ],
+    },
+  },
   // {
   //   id: "scene-parcel",
   //   title: "Parcel",

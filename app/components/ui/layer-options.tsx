@@ -36,6 +36,17 @@ export default function LayerOptions({ layer, setLayers }: { layer: __esri.Layer
               {t("layerList.showAttributeTable")}
             </div>
           </div>
+          <div className="relative group">
+            <CalciteIcon
+              icon={"popupEnabled" in layer && layer.popupEnabled ? "popup" : "pop-up-blank"}
+              scale="s"
+              className="cursor-pointer"
+              onClick={() => toggleLayerPopup(layer, setLayers)}
+            />
+            <div className="absolute top-full mt-1 hidden w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-md group-hover:block">
+              {t("layerList.togglePopup")}
+            </div>
+          </div>
         </>
       )}
       <div className="relative group">
@@ -47,17 +58,6 @@ export default function LayerOptions({ layer, setLayers }: { layer: __esri.Layer
         />
         <div className="absolute top-full mt-1 hidden w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-md group-hover:block">
           {t("layerList.zoomToLayer")}
-        </div>
-      </div>
-      <div className="relative group">
-        <CalciteIcon
-          icon={"popupEnabled" in layer && layer.popupEnabled ? "popup" : "pop-up-blank"}
-          scale="s"
-          className="cursor-pointer"
-          onClick={() => toggleLayerPopup(layer, setLayers)}
-        />
-        <div className="absolute top-full mt-1 hidden w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-md group-hover:block">
-          {t("layerList.togglePopup")}
         </div>
       </div>
       <div className="relative group">

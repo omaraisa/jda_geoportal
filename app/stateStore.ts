@@ -10,11 +10,11 @@ const useStateStore = create<State>((set, get) => ({
   language: typeof localStorage !== "undefined" ? localStorage.getItem("appLanguage") || "en" : "en",
   layout: {
     mainMenuExpanded: false,
-    sidebarOpen: true,
-    sidebarHeight: 70,
+    sidebarOpen: false,
+    sidebarHeight: 0,
     bottomPaneOpen: false,
   },
-  activeSideBar: "LayerListComponent",
+  activeSideBar: "",
   appReady: false,
   previousSideBar: null,
   activeBottomPane: "DefaultComponent",
@@ -59,7 +59,7 @@ const useStateStore = create<State>((set, get) => ({
       layout: {
         ...state.layout,
         sidebarOpen: isOpen,
-        sidebarHeight: isOpen ? 80 : 0,
+        sidebarHeight: isOpen ? 70 : 0,
       },
     }));
   },
