@@ -109,7 +109,7 @@ export const baseMapLayerConfigurations: InitialLayersConfiguration[] = [
   },
   {
     id: "Basemap",
-    title: "Basemap",
+    title: "JDA Basemap",
     type: "VectorTileLayer",
     sourceType: "url",
     url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/BasemapClient/VectorTileServer",

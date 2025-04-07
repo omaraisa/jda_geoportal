@@ -105,7 +105,7 @@ const useStateStore = create<State>((set, get) => ({
     labelingInfo,
     visualVariables,
   }) => {
-
+    console.log("layer url", url);
     let layer;
 
     const layerConfig = {

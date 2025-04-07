@@ -13,25 +13,14 @@ import useAuthCheck from "@/lib/hooks/use-auth-check";
 import '@esri/calcite-components/dist/components/calcite-icon';
 
 export default function App() {
-  // useAuthCheck()
- 
+  useAuthCheck()
+
   const {
     layout: layoutState,
     setLanguage,
     appReady,
-    setAppReady,
     language,
   } = useStateStore((state) => state);
-
-  // Simulate app loading | Must be removed in production
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setAppReady(true);
-    }, 50); 
-    // }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   React.useEffect(() => {
     setLanguage(language);
