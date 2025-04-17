@@ -32,7 +32,9 @@ export const initializeArcGIS = ()=> {
         tokenServiceUrl: config.tokenServiceUrl,
     });
 
-    IdentityManager.registerServers([serverInfo]);
+    if (IdentityManager && typeof IdentityManager.registerServers === 'function') {
+        IdentityManager.registerServers([serverInfo]);
+    }
 }
 
 
@@ -85,3 +87,30 @@ export const authenticateArcGIS = () => {
         return false;
     }
 };
+
+
+export const fetchArcGISUserInfo = async () => {
+    if (typeof document === 'undefined') return null;
+  
+    const token = getCookie('arcgis_token');
+    if (!token) return null;
+  
+    try {
+      const response = await fetch(
+        `${config.portalUrl}/sharing/rest/community/self?f=json&token=${token}`
+      );
+      if (!response.ok) throw new Error('Failed to fetch user info');
+  
+      const userInfo = await response.json();
+      return {
+        fullName: userInfo.fullName,
+        username: userInfo.username,
+        role: userInfo.role,
+        groups: userInfo.groups || [],
+      };
+    } catch (error) {
+      console.error('Failed to fetch ArcGIS user info:', error);
+      return null;
+    }
+  };
+  

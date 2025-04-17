@@ -20,6 +20,7 @@ const PrintComponent: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<string | null>(null);
   const [resolution, setResolution] = useState(300);
+  const userInfo = useStateStore((state) => state.userInfo)
   const [formData, setFormData] = useState<PrintFormData>({
     title: "My Map",
     format: "pdf",
@@ -197,13 +198,10 @@ const PrintComponent: React.FC = () => {
         : undefined,
           customTextElements: [
         { CustomTitle: formData.title }, //
-        { CustomAuthor: "Omar Adam" },
+        { CustomAuthor: userInfo?.username || "" }, //
           ],
         },
       };
-      console.log("Web Map JSON:", JSON.stringify(webMapJSON));
-      console.log("Map Scale:", view.scale);
-      console.log("Map Center:", view.center);
       const params = {
         Web_Map_as_JSON: JSON.stringify(webMapJSON),
         Format: formData.format.toUpperCase(),

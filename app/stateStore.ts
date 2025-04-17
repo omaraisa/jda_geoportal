@@ -3,7 +3,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
-import { State, Bookmark } from "@/interface";
+import { State, Bookmark, ArcGISUserInfo } from "@/interface";
 import * as InitialLayersConfiguration from "@/lib/initial-layers";
 
 const useStateStore = create<State>((set, get) => ({
@@ -132,7 +132,6 @@ const useStateStore = create<State>((set, get) => ({
       const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
       const token = cookies["arcgis_token"];
 
-      // const token = "3HQlPhxRoQA0RmOTX_OLjBdAsCwEicnaQ7OzBbseZFPPWIgTCaI3HBYsJjspbQFtqFMYhkWBdIF3SUzc3yPXAr4dAnwGq-p5XAhrmkOVGRdUG1rNMDeQLcgaGCLrmZid6lwnDZ6auC1OgyRTSbjsC-ku4ezC2EIbKYNT2x7T-Ms."
       const response = await fetch(`${url}?f=json&token=${token}`);
       const data = await response.json();
       if (data.error) {
@@ -335,6 +334,26 @@ const useStateStore = create<State>((set, get) => ({
     );
     set({ bookmarks: savedBookmarks });
   },
+ 
+  userInfo: {
+    fullName: "",
+    username: "",
+    role: "",
+    groups: [],
+  },
+  
+  setUserInfo: (userInfo: ArcGISUserInfo) => {
+    console.log("User Info:", userInfo);
+    set({
+      userInfo: {
+        fullName: userInfo.fullName,
+        username: userInfo.username,
+        role: userInfo.role,
+        groups: userInfo.groups || [],
+      },
+    });
+  },
+
 }));
 
 export default useStateStore;

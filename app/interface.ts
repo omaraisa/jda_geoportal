@@ -72,6 +72,7 @@ export interface State {
   previousSideBars: Record<string, string | null>;
   messages: Record<number, Message>;
   bookmarks: Bookmark[];
+  userInfo: ArcGISUserInfo | null;
   setAppReady: (isReady: boolean) => void;
   setLanguage: (lang: string) => void;
   setMainMenuExpansion: (isExpanded: boolean) => void;
@@ -96,6 +97,7 @@ export interface State {
   addBookmark: (name: string, view: __esri.MapView | __esri.SceneView) => void;
   deleteBookmark: (id: number) => void;
   loadBookmarks: () => void;
+  setUserInfo: (userInfo: ArcGISUserInfo) => void;
 }
 
 export interface AttributeQueryState {
@@ -110,3 +112,47 @@ export interface AttributeQueryState {
   queryResult?: any[];
   selectedField: string;
 }
+
+export interface ArcGISUserInfo {
+  fullName: string;
+  username: string;
+  role: string;
+  groups: {
+    id: string;
+    title: string;
+    isInvitationOnly: boolean;
+    owner: string;
+    description: null | string;
+    snippet: null | string;
+    tags: string[];
+    typeKeywords: string[];
+    phone: null | string;
+    sortField: string;
+    sortOrder: string;
+    isViewOnly: boolean;
+    featuredItemsId: null | string;
+    thumbnail: null | string;
+    created: number;
+    modified: number;
+    access: string;
+    capabilities: string[];
+    isFav: boolean;
+    isReadOnly: boolean;
+    protected: boolean;
+    autoJoin: boolean;
+    notificationsEnabled: boolean;
+    provider: null | string;
+    providerGroupName: null | string;
+    leavingDisallowed: boolean;
+    hiddenMembers: boolean;
+    membershipAccess: string;
+    displaySettings: {
+      itemTypes: string;
+    };
+    properties: null | string;
+    userMembership: {
+      username: string;
+      memberType: string;
+    };
+  }[];
+};
