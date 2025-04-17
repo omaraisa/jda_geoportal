@@ -10,11 +10,11 @@ const useStateStore = create<State>((set, get) => ({
   language: typeof localStorage !== "undefined" ? localStorage.getItem("appLanguage") || "en" : "en",
   layout: {
     mainMenuExpanded: false,
-    sidebarOpen: false,
-    sidebarHeight: 0,
+    sidebarOpen: true,
+    sidebarHeight: 70,
     bottomPaneOpen: false,
   },
-  activeSideBar: "",
+  activeSideBar: "LayerListComponent",
   appReady: false,
   previousSideBar: null,
   activeBottomPane: "DefaultComponent",
@@ -25,7 +25,7 @@ const useStateStore = create<State>((set, get) => ({
   widgets: {},
   targetLayerId: null,
   center: [39.19797, 21.51581],
-  zoom: 12,
+  zoom: 10,
   scale: 500000,
   viewsSyncOn: false,
   previousSideBars: {
@@ -83,13 +83,13 @@ const useStateStore = create<State>((set, get) => ({
 
   setActiveBottomPane: (component: string) => {
     set({ activeBottomPane: component });
-  },
+    },
 
-  updateTargetView: (targetView) => set({ targetView }),
-  updateMapView: (mapView) => set({ mapView }),
-  updateSceneView: (sceneView) => set({ sceneView }),
+    updateTargetView: (targetView) => set({ targetView }),
+    updateMapView: (mapView) => set({ mapView }),
+    updateSceneView: (sceneView) => set({ sceneView }),
 
-  createLayer: ({
+    createLayer: async ({
     id,
     sourceType,
     type,
@@ -104,10 +104,7 @@ const useStateStore = create<State>((set, get) => ({
     renderer,
     labelingInfo,
     visualVariables,
-  }) => {
-    console.log("layer url", url);
-    let layer;
-
+    }) => {
     const layerConfig = {
       id,
       title,
@@ -123,31 +120,79 @@ const useStateStore = create<State>((set, get) => ({
 
     const layerTypes = {
       FeatureLayer,
-      MapImageLayer,
       TileLayer,
       VectorTileLayer,
+      MapImageLayer
     };
 
-    const layerConfigWithSource = {
-      url,
-      portalItem: portalItemId ? { id: portalItemId } : undefined,
+    let layersToAdd: any[] = [];
+    if (type === "MapImageLayer" && url) {
+      try {
+      // Add token to the request for testing
+      const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
+      const token = cookies["arcgis_token"];
+
+      // const token = "3HQlPhxRoQA0RmOTX_OLjBdAsCwEicnaQ7OzBbseZFPPWIgTCaI3HBYsJjspbQFtqFMYhkWBdIF3SUzc3yPXAr4dAnwGq-p5XAhrmkOVGRdUG1rNMDeQLcgaGCLrmZid6lwnDZ6auC1OgyRTSbjsC-ku4ezC2EIbKYNT2x7T-Ms."
+      const response = await fetch(`${url}?f=json&token=${token}`);
+      const data = await response.json();
+      if (data.error) {
+      } else if (Array.isArray(data.layers)) {
+      layersToAdd = data.layers.map((sublayer: any) => {
+      const newLayer = new MapImageLayer({
+        ...layerConfig,
+        id: `${id}_${sublayer.id}`,
+        title: sublayer.name,
+        url,
+        sublayers: [
+        {
+        id: sublayer.id,
+        visible: true,
+        },
+        ],
+      });
+      return newLayer;
+      });
+      // Reverse the array to make layer 0 appear on top
+      layersToAdd.reverse();
+      }
+      } catch (error) {
+      console.error("Failed to fetch sublayers:", error);
+      }
+      if (layersToAdd.length === 0) {
+      // console.log("No sublayers found, creating MapImageLayer directly");
+      layersToAdd = [
+      new MapImageLayer({
       ...layerConfig,
-    };
-
-    if (sourceType === "url" || sourceType === "portal") {
+      url,
+      }),
+      ];
+      }
+    } else {
       const LayerClass = layerTypes[type];
       if (LayerClass) {
-      layer = new LayerClass(layerConfigWithSource);
+      const layerConfigWithSource = {
+        url,
+        portalItem: portalItemId ? { id: portalItemId } : undefined,
+        ...layerConfig,
+      };
+      const layer = new LayerClass(layerConfigWithSource);
       if (type === "FeatureLayer" && sourceType === "url") {
         (layer as FeatureLayer).elevationInfo = { mode: "on-the-ground" };
       }
+      (layer as any).groups = [...(layerConfig.groups || [])];
+      layersToAdd = [layer];
       }
     }
 
-    return layer || null;
-  },
-    
-  addBasemapLayers: () => {
+    const targetView = get().targetView;
+    if (targetView && targetView.map && layersToAdd.length) {
+      layersToAdd.forEach((layer) => {
+      targetView.map.add(layer);
+      });
+    }
+    },
+
+    addBasemapLayers: () => {
     const { targetView } = get()
     if (!targetView) return;
 
@@ -157,11 +202,8 @@ const useStateStore = create<State>((set, get) => ({
           : InitialLayersConfiguration.sceneBasemapConfigurations;
 
     selectedConfigs.forEach((layerConfig) => {
-      const layer = get().createLayer(layerConfig);
-      if (layer) {
-        (layer as any).groups = [...(layerConfig.groups || [])];
-        targetView.map.add(layer);
-      }
+     get().createLayer(layerConfig);
+      
       })
   },
 

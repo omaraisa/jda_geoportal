@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import useStateStore from "@/stateStore";
-import {isArcgisTokenValid ,authenticateArcGIS} from '@/lib/authenticateArcGIS'
+import {initializeArcGIS, isArcgisTokenValid ,authenticateArcGIS} from '@/lib/authenticateArcGIS'
 import { redirect } from 'next/navigation';
 
 
-const useAuthCheck = (interval = 1800000) => {
+const useAuthCheck = (interval = 1200000) => {
   const { sendMessage } = useStateStore((state) => state);
 
   useEffect(() => {
+    initializeArcGIS();
     const checkAuth = async () => {
       const isValid = await isArcgisTokenValid();
       
@@ -33,7 +34,7 @@ const useAuthCheck = (interval = 1800000) => {
     const timer = setInterval(checkAuth, interval);
 
     return () => clearInterval(timer);
-  }, [interval, sendMessage]);
+  }, [interval]);
 
 };
 

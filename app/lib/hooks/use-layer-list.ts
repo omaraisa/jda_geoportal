@@ -46,7 +46,7 @@ const useLayerActions = () => {
     
     // Helper function to find the title field
     function getTitleField(fields: __esri.Field[]): string {
-        const titleField = fields.find(f => /name|الاسم|id/i.test(f.name.toLowerCase()));
+        const titleField = fields.find(f => f?.name && /name|الاسم|id/i.test(f.name.toLowerCase()));
         return titleField?.name || "OBJECTID";
     }
     

@@ -121,7 +121,13 @@
       "Default": "Default",
       "High": "High",
       "printing": "printing . . .",
-      "print": "print"
+      "print": "print",
+      "processing": "Processing...",
+      "preparing": "Preparing...",
+      "submitting": "Submitting...",
+      "polling": "Polling...",
+      "fetching": "Fetching...",
+      "complete": "Complete"
     },
     "basemap": {
       "Topo": "Topographic",
@@ -168,6 +174,7 @@
       "TheSaudiArabiaNationalSpatialReferenceSystem": "The Saudi Arabia National Spatial Reference System",
       "Transport": "Transport",
       "Utilities": "Utilities",
+      "Atkins": "Atkins Layers",
       "Water": "Water",
       "Projects": "Projects"
     }

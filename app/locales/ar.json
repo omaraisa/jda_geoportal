@@ -112,15 +112,21 @@
     "print": {
       "title": "عنوان الخريطة",
       "Customfield": "حقل مخصص",
-      "Format": "التنسيق",
-      "Layout": "التخطيط",
+      "Format": "صيغة",
+      "Layout": "تخطيط",
+      "IncludeLegend": "تضمين مفتاح الخريطة",
+      "IncludeScale": "تضمين مقياس الرسم",
       "Resolution": "دقة الخريطة",
       "Default": "افتراضي",
-      "High": "عالية",
-      "IncludeLegend": "تضمين مفتاح الخريطة",
-      "IncludeScale": "تضمين المقياس",
-      "printing": "جاري الطباعة . . .",
-      "print": "طباعة"
+      "High": "عالي",
+      "printing": "جارٍ الطباعة...",
+      "print": "طباعة",
+      "processing": "معالجة...",
+      "preparing": "تحضير...",
+      "submitting": "إرسال...",
+      "polling": "استقصاء...",
+      "fetching": "جلب...",
+      "complete": "اكتملت العملية"
     },
     "basemap": {
       "Topo": "تضاريس",
@@ -167,6 +173,7 @@
       "TheSaudiArabiaNationalSpatialReferenceSystem": "نظام الإسناد المكاني الوطني السعودي",
       "Transport": "النقل",
       "Utilities": "المرافق",
+      "Atkins": "طبقات أتكنز",
       "Water": "المياه",
       "Projects": "المشاريع"
     }
