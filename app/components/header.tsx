@@ -1,4 +1,5 @@
 import LanguageSwitcher from "./ui/lang-switcher";
+import LogoutButton from "./ui/logout-button";
 import useStateStore from "@/stateStore"; 
 
 const Header: React.FC = () => {
@@ -13,6 +14,7 @@ const Header: React.FC = () => {
         }`}
       >
         <LanguageSwitcher />
+        <LogoutButton />
       </div>
     </div>
   );

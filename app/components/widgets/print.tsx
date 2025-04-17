@@ -198,7 +198,7 @@ const PrintComponent: React.FC = () => {
         : undefined,
           customTextElements: [
         { CustomTitle: formData.title }, //
-        { CustomAuthor: userInfo?.username || "" }, //
+        { CustomAuthor: userInfo?.fullName || "" }, //
           ],
         },
       };
