@@ -22,20 +22,30 @@ export default function LayerGroup({group}: {group: string}) {
     setIsExpanded(!isExpanded);
   }
 
+  function toTranslationKey(group: string) {
+    return group
+      .replace(/\s+/g, '') // Remove spaces
+      .replace(/[^\w]/g, '') // Remove special characters
+      .trim();
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header} onClick={toggleContent}>
-        {t(`layerList.groupTitles.${group}`)}
+         {t(`layerList.groupTitles.${toTranslationKey(group)}`, group)}
       </div>
       <div className={`${styles.content} ${isExpanded ? styles.contentExpanded : ''}`} id="content">
-        {view?.map.layers.toArray().filter((layer) => (layer as any).groups?.includes(group)).map((layer) => (
-          <LayerItem
-            key={layer.id}
-            layer={layer}
-            activeLayerId={activeLayerId}
-            setactiveLayerId={setactiveLayerId}
-            setLayers={setLayers}
-          />
+        {view?.map.layers
+          .toArray()
+          .filter((layer) => (layer as any).group === group)
+          .map((layer) => (
+            <LayerItem
+              key={layer.id}
+              layer={layer}
+              activeLayerId={activeLayerId}
+              setactiveLayerId={setactiveLayerId}
+              setLayers={setLayers}
+            />
         ))}
       </div>
     </div>

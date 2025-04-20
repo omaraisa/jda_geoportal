@@ -5,6 +5,7 @@ import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import { State, Bookmark, ArcGISUserInfo } from "@/interface";
 import * as InitialLayersConfiguration from "@/lib/initial-layers";
+import MapView from "@arcgis/core/views/MapView";
 
 const useStateStore = create<State>((set, get) => ({
   language: typeof localStorage !== "undefined" ? localStorage.getItem("appLanguage") || "en" : "en",
@@ -83,13 +84,13 @@ const useStateStore = create<State>((set, get) => ({
 
   setActiveBottomPane: (component: string) => {
     set({ activeBottomPane: component });
-    },
+  },
 
-    updateTargetView: (targetView) => set({ targetView }),
-    updateMapView: (mapView) => set({ mapView }),
-    updateSceneView: (sceneView) => set({ sceneView }),
+  updateTargetView: (targetView) => set({ targetView }),
+  updateMapView: (mapView) => set({ mapView }),
+  updateSceneView: (sceneView) => set({ sceneView }),
 
-    createLayer: async ({
+  createLayer: async ({
     id,
     sourceType,
     type,
@@ -104,7 +105,7 @@ const useStateStore = create<State>((set, get) => ({
     renderer,
     labelingInfo,
     visualVariables,
-    }) => {
+  }) => {
     const layerConfig = {
       id,
       title,
@@ -128,82 +129,113 @@ const useStateStore = create<State>((set, get) => ({
     let layersToAdd: any[] = [];
     if (type === "MapImageLayer" && url) {
       try {
-      // Add token to the request for testing
-      const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
-      const token = cookies["arcgis_token"];
+        const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
+        const token = cookies["arcgis_token"];
 
-      const response = await fetch(`${url}?f=json&token=${token}`);
-      const data = await response.json();
-      if (data.error) {
-      } else if (Array.isArray(data.layers)) {
-      layersToAdd = data.layers.map((sublayer: any) => {
-      const newLayer = new MapImageLayer({
-        ...layerConfig,
-        id: `${id}_${sublayer.id}`,
-        title: sublayer.name,
-        url,
-        sublayers: [
-        {
-        id: sublayer.id,
-        visible: true,
-        },
-        ],
-      });
-      return newLayer;
-      });
-      // Reverse the array to make layer 0 appear on top
-      layersToAdd.reverse();
-      }
+        const response = await fetch(`${url}?f=json&token=${token}`);
+        const data = await response.json();
+        if (data.error) {
+        } else if (Array.isArray(data.layers)) {
+          layersToAdd = data.layers.map((sublayer: any) => {
+            const newLayer = new MapImageLayer({
+              ...layerConfig,
+              id: `${id}_${sublayer.id}`,
+              title: sublayer.name,
+              url,
+              sublayers: [
+                {
+                  id: sublayer.id,
+                  visible: true,
+                },
+              ],
+            });
+            return newLayer;
+          });
+          layersToAdd.reverse();
+        }
       } catch (error) {
-      console.error("Failed to fetch sublayers:", error);
+        console.error("Failed to fetch sublayers:", error);
       }
       if (layersToAdd.length === 0) {
-      // console.log("No sublayers found, creating MapImageLayer directly");
-      layersToAdd = [
-      new MapImageLayer({
-      ...layerConfig,
-      url,
-      }),
-      ];
+        layersToAdd = [
+          new MapImageLayer({
+            ...layerConfig,
+            url,
+          }),
+        ];
+      }
+    } else if (type === "FeatureLayer" && url) {
+      const LayerClass = layerTypes[type];
+      if (LayerClass) {
+        const layerConfigWithSource = {
+          url,
+          portalItem: portalItemId ? { id: portalItemId } : undefined,
+          ...layerConfig,
+        };
+        const layer = new LayerClass(layerConfigWithSource);
+        (layer as FeatureLayer).elevationInfo = { mode: "on-the-ground" };
+        (layer as any).groups = [...(layerConfig.groups || [])];
+        layersToAdd = [layer];
+      }
+    } else if (type === "TileLayer" && url) {
+      const LayerClass = layerTypes[type];
+      if (LayerClass) {
+        const layerConfigWithSource = {
+          url,
+          portalItem: portalItemId ? { id: portalItemId } : undefined,
+          ...layerConfig,
+        };
+        const layer = new LayerClass(layerConfigWithSource);
+        (layer as any).groups = [...(layerConfig.groups || [])];
+        layersToAdd = [layer];
+      }
+    } else if (type === "VectorTileLayer" && (url || portalItemId)) {
+      const LayerClass = layerTypes[type];
+      if (LayerClass) {
+        const layerConfigWithSource = {
+          ...(url ? { url } : {}),
+          ...(portalItemId ? { portalItem: { id: portalItemId } } : {}),
+          ...layerConfig,
+        };
+        const layer = new LayerClass(layerConfigWithSource);
+        (layer as any).groups = [...(layerConfig.groups || [])];
+        layersToAdd = [layer];
       }
     } else {
       const LayerClass = layerTypes[type];
       if (LayerClass) {
-      const layerConfigWithSource = {
-        url,
-        portalItem: portalItemId ? { id: portalItemId } : undefined,
-        ...layerConfig,
-      };
-      const layer = new LayerClass(layerConfigWithSource);
-      if (type === "FeatureLayer" && sourceType === "url") {
-        (layer as FeatureLayer).elevationInfo = { mode: "on-the-ground" };
-      }
-      (layer as any).groups = [...(layerConfig.groups || [])];
-      layersToAdd = [layer];
+        const layerConfigWithSource = {
+          url,
+          portalItem: portalItemId ? { id: portalItemId } : undefined,
+          ...layerConfig,
+        };
+        const layer = new LayerClass(layerConfigWithSource);
+        (layer as any).groups = [...(layerConfig.groups || [])];
+        layersToAdd = [layer];
       }
     }
 
     const targetView = get().targetView;
     if (targetView && targetView.map && layersToAdd.length) {
       layersToAdd.forEach((layer) => {
-      targetView.map.add(layer);
+        console.log("Adding layer:", layer.title, layer.type);
+        targetView.map.add(layer);
       });
     }
-    },
+  },
 
-    addBasemapLayers: () => {
+  addBasemapLayers: () => {debugger
     const { targetView } = get()
     if (!targetView) return;
 
-      const selectedConfigs =
-        targetView.type === "2d"
-          ? InitialLayersConfiguration.baseMapLayerConfigurations
-          : InitialLayersConfiguration.sceneBasemapConfigurations;
+    const selectedConfigs =
+      targetView.type === "2d"
+        ? InitialLayersConfiguration.baseMapLayerConfigurations
+        : InitialLayersConfiguration.sceneBasemapConfigurations;
 
     selectedConfigs.forEach((layerConfig) => {
-     get().createLayer(layerConfig);
-      
-      })
+      get().createLayer(layerConfig);
+    })
   },
 
   setTargetLayerId: (id: string) => {
@@ -343,16 +375,69 @@ const useStateStore = create<State>((set, get) => ({
   },
   
   setUserInfo: (userInfo: ArcGISUserInfo) => {
-    console.log("User Info:", userInfo);
     set({
       userInfo: {
-        fullName: userInfo.fullName,
-        username: userInfo.username,
-        role: userInfo.role,
-        groups: userInfo.groups || [],
+      fullName: userInfo.fullName,
+      username: userInfo.username,
+      role: userInfo.role,
+      groups: userInfo.groups || [],
       },
     });
-  },
+    },
+
+    loadUserGroupLayers: async () => {
+    const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
+    const token = cookies["arcgis_token"];
+    const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
+    const { userInfo, targetView } = get();
+    if (!userInfo || !userInfo.groups || !targetView || !targetView.map) return;
+
+    const allGroupLayers: any[] = [];
+    for (const group of userInfo.groups) {
+      try {
+      const groupContentRes = await fetch(
+        `${portalUrl}/sharing/rest/content/groups/${group.id}?f=json&token=${token}`
+      );
+      const groupContent = await groupContentRes.json();
+      if (!groupContent.items) continue;
+      // Attach group name to each item for later use
+      groupContent.items.forEach((item: any) => {
+        item._groupName = group.title;
+      });
+      allGroupLayers.push(...groupContent.items);
+      } catch (e) {
+      console.error("Failed to fetch group content for group:", group.id, e);
+      }
+    }
+
+    allGroupLayers.forEach((item) => {
+       let layer: any = null;
+      
+       if (item.url) {
+        item.url = item.url.replace(/^http:/, "https:");
+       }
+      
+       if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
+        layer = new FeatureLayer({ url: item.url, visible: false });
+       } else if (item.type.includes("Map Service")) {
+        layer = new MapImageLayer({ url: item.url, visible: false });
+       } else if (item.type.includes("Tile")) {
+        layer = new TileLayer({ url: item.url, visible: false });
+       } else if (item.type.includes("Vector")) {
+        layer = new VectorTileLayer({ url: item.url, visible: false });
+       }
+      
+       if (layer && item._groupName) {
+        (layer as any).group = item._groupName;
+       }
+      
+       if (layer) {
+        targetView.map.add(layer);
+       }
+      });
+    },
+
+
 
 }));
 

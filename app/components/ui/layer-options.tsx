@@ -82,6 +82,12 @@ export default function LayerOptions({ layer, setLayers }: { layer: __esri.Layer
           {t("layerList.moveLayerDown")}
         </div>
       </div>
+      <div className="relative group">
+      <CalciteIcon icon="trash" scale="s" className="cursor-pointer" onClick={() => handleRemoveLayer(layer, setLayers)} />
+        <div className="absolute top-full mt-1 hidden w-max px-2 py-1 bg-gray-800 text-white text-xs rounded-md shadow-md group-hover:block">
+          {t("layerList.removeLayer")}
+        </div>
+      </div>
     </div>
   );
 }

@@ -19,13 +19,13 @@ export default function LayerItem({ layer, activeLayerId, setactiveLayerId, setL
       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--secondary-transparent)")}
     >
       <div className="flex items-center justify-between mx-2">
-        <span>{layer.title}</span>
-        <div className="flex items-center gap-2">
-          <CalciteIcon icon={layer.visible ? "view-visible" : "view-hide"} scale="s" className="cursor-pointer" onClick={() => toggleLayerVisibility(layer,setLayers)} />
-          <CalciteIcon icon="handle-vertical" scale="s" className="cursor-pointer" onClick={() => handleOptionsClick(layer.id, activeLayerId, setactiveLayerId, setLayers)} />
-          <CalciteIcon icon="trash" scale="s" className="cursor-pointer" onClick={() => handleRemoveLayer(layer, setLayers)} />
-        </div>
-      </div>
+  <span className="truncate mr-2 max-w-[70%]" title={layer.title}>{layer.title}</span>
+  <div className="flex items-center gap-2 flex-shrink-0">
+    <CalciteIcon icon={layer.visible ? "view-visible" : "view-hide"} scale="s" className="cursor-pointer" onClick={() => toggleLayerVisibility(layer,setLayers)} />
+    <CalciteIcon icon="handle-vertical" scale="s" className="cursor-pointer" onClick={() => handleOptionsClick(layer.id, activeLayerId, setactiveLayerId, setLayers)} />
+  </div>
+</div>
+
       {activeLayerId === layer.id && (
         <LayerOptions
           layer={layer}

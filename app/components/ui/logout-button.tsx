@@ -3,17 +3,9 @@ import { redirect } from "next/navigation";
 import { CalciteIcon } from '@esri/calcite-components-react';
 
 const LogoutButton: React.FC = () => {
-//   const clearUser = useStateStore((state) => state.clearUser); // optional if you store user info
-
   const logout = () => {
-    // Remove ArcGIS cookies
     document.cookie = "arcgis_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "arcgis_token_expiry=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    
-    // Optional: clear any state
-    // clearUser?.();
-
-    // Redirect to login
     redirect(process.env.NEXT_PUBLIC_LOGIN_URL || '/');
   };
 
