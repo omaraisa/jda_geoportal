@@ -1,0 +1,124 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--background, #18181b);
+    border-radius: 1.25rem;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10);
+  }
+  
+  .formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  
+  .label {
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    border-radius: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    padding: 5px 1rem;
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+    color: #fff;
+    font-size: 1rem;
+  }
+  
+  .select {
+    width: 100%;
+    position: relative;
+  }
+  
+  select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 50px;
+    border: 1px solid #27272a;
+    background: #23232b;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s;
+    appearance: none;
+    cursor: pointer;
+  }
+  
+  select:focus {
+    border-color: #6366f1;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 50px;
+    border: 1px solid #27272a;
+    background: #23232b;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s;
+  }
+  
+  .input:focus {
+    border-color: #6366f1;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  
+  .btn:active {
+    transform: scale(0.98);
+  }
+  
+  .title {
+    align-items: center;
+    text-align: center;
+    font-size: 1rem;
+    color: #fff;
+    transition: all 0.4s ease;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+  }
+  
+  .circle {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    transition: all 0.4s ease;
+    position: absolute;
+    background: #6366f1;
+    opacity: 0.15;
+    left: 5px;
+    top: 5px;
+  }
+  
+  .visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+  

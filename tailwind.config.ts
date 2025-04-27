@@ -28,9 +28,9 @@ export default {
           darkTransparent: "var(--secondary-dark-transparent)",
         },
         tertiary: {
-          DEFAULT: "#3BBFAD",
-          light: "#51C6B7",
-          dark: "#2D9C95",
+          DEFAULT: "var(--tertiary)",
+          light: "var(--tertiary-light)",
+          dark: "var(--tertiary-dark)",
         },
         danger: {
           DEFAULT: "#ed544f",

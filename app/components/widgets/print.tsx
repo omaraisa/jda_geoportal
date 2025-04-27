@@ -114,64 +114,126 @@ const PrintComponent: React.FC = () => {
     setProgress(t("widgets.print.preparing"));
 
     try {
+      // Retrieve the basemap layer (if needed for further processing)
       const basemapLayer = view.map.basemap.baseLayers.at(0);
 
-      const operationalLayers = view.map.layers.map((layer: any) => {
-        if (!layer.url || !layer.visible) {
-          console.warn(`Layer ${layer.title} is not printable or has no URL.`);
-          return null;
-        }
+      // Gather all layers from the map
+      const allLayers = view.map.layers.toArray();
 
-        let layerType = "";
+      // Group MapImageLayers (MapServices) by their base URL
+      const mapServiceGroups = new Map<string, any>();
 
-        if (layer.type === "feature") {
-          layerType = "FeatureLayer";
-        } else if (layer.type === "map-image") {
-          layerType = "ArcGISMapServiceLayer";
-        } else if (layer.type === "tile") {
-          layerType = "ArcGISTiledMapServiceLayer";
-        } else if (layer.type === "vector-tile") {
-          layerType = "VectorTileLayer";
-        } else if (layer.type === "csv") {
-          layerType = "CSV";
-        } else if (layer.type === "kml") {
-          layerType = "KML";
-        } else if (layer.type === "imagery") {
-          layerType = "ArcGISImageServiceLayer";
-        } else {
-          console.warn(`Unsupported layer type: ${layer.type} for ${layer.title}`);
-          return null;
-        }
+      allLayers.forEach(layer => {
+      if (!layer.visible) return;
 
-        return {
-          id: layer.id,
+      if (layer.type === "map-image" && "url" in layer && layer.url) {
+        const baseUrl = (layer as any).url.split('?')[0];
+
+        if (!mapServiceGroups.has(baseUrl)) {
+        mapServiceGroups.set(baseUrl, {
+          id: layer.id.split('_')[0] || layer.id,
           title: layer.title,
           opacity: layer.opacity,
-          visible: layer.visible,
-          url: layer.url,
-          layerType,
-        };
-      }).toArray().filter(Boolean);
+          visible: true,
+          url: baseUrl,
+          layerType: "MapImageLayer",
+          visibleLayers: []
+        });
+        }
 
+        if ((layer as any).sublayers && (layer as any).sublayers.length > 0) {
+        (layer as any).sublayers.forEach((sublayer: { id: number; visible: boolean }) => {
+          if (sublayer.visible) {
+          const group = mapServiceGroups.get(baseUrl);
+          if (!group.visibleLayers.includes(sublayer.id)) {
+            group.visibleLayers.push(sublayer.id);
+          }
+          }
+        });
+        }
 
+        return;
+      }
+      });
+
+      // Process other supported layer types
+      const otherLayers = allLayers.map(layer => {
+      if (
+        layer.type === "map-image" &&
+        "url" in layer &&
+        layer.url &&
+        mapServiceGroups.has((layer as any).url.split('?')[0])
+      ) {
+        return null;
+      }
+
+      if (!('url' in layer) || !layer.url || !layer.visible) {
+        return null;
+      }
+
+      let layerType = "";
+      switch (layer.type) {
+        case "feature":
+        layerType = "FeatureLayer";
+        break;
+        case "map-image":
+        layerType = "ArcGISMapServiceLayer";
+        break;
+        case "tile":
+        layerType = "ArcGISTiledMapServiceLayer";
+        break;
+        case "vector-tile":
+        layerType = "VectorTileLayer";
+        break;
+        case "csv":
+        layerType = "CSV";
+        break;
+        case "kml":
+        layerType = "KML";
+        break;
+        case "imagery":
+        layerType = "ArcGISImageServiceLayer";
+        break;
+        default:
+        console.warn(`Unsupported layer type: ${layer.type} for ${layer.title}`);
+        return null;
+      }
+
+      return {
+        id: layer.id,
+        title: layer.title,
+        opacity: layer.opacity,
+        visible: layer.visible,
+        url: layer.url,
+        layerType,
+      };
+      }).filter(Boolean);
+
+      // Combine MapService groups and other layers into operationalLayers
+      const operationalLayers = [
+      ...Array.from(mapServiceGroups.values()),
+      ...otherLayers
+      ];
+
+      // console.log("Operational Layers:", operationalLayers);
 
       const baseMap = view.map.basemap.toJSON();
-
       const extent = view.extent.toJSON();
 
+      // Construct the web map JSON for the print service
       const webMapJSON = {
-        mapOptions: {
-          extent,
-          ...(view.type === "2d" ? { rotation: -view.rotation } : {}),
-        },
-        operationalLayers: operationalLayers.map((layer: any) => ({
-          id: layer.id,
-          title: layer.title,
-          opacity: layer.opacity,
-          visible: layer.visible,
-          url: layer.url,
-          // Map custom types to Esri types for compatibility
-          layerType:
+      mapOptions: {
+        extent,
+        ...(view.type === "2d" ? { rotation: -view.rotation } : {}),
+      },
+      operationalLayers: operationalLayers.map((layer: any) => ({
+        id: layer.id,
+        title: layer.title,
+        opacity: layer.opacity,
+        visible: layer.visible,
+        url: layer.url,
+        ...(layer.visibleLayers ? { visibleLayers: layer.visibleLayers } : {}),
+        layerType:
         layer.layerType === "ArcGISMapServiceLayer" ||
         layer.layerType === "MapImageLayer"
           ? "MapImageLayer"
@@ -182,32 +244,35 @@ const PrintComponent: React.FC = () => {
           : layer.layerType === "FeatureLayer"
           ? "FeatureLayer"
           : layer.layerType,
-        })),
-        baseMap,
-        exportOptions: {
-          dpi: resolution,
-          outputSize: [view.width, view.height],
-        },
-        layoutOptions: {
-          legendOptions: formData.includeLegend
+      })),
+      baseMap,
+      exportOptions: {
+        dpi: resolution,
+        outputSize: [view.width, view.height],
+      },
+      layoutOptions: {
+        legendOptions: formData.includeLegend
         ? {
-            operationalLayers: operationalLayers.map((layer: any) => ({
-          id: layer.id,
-            })),
+          operationalLayers: operationalLayers.map((layer: any) => ({
+            id: layer.id,
+          })),
           }
         : undefined,
-          customTextElements: [
-        { CustomTitle: formData.title }, //
-        { CustomAuthor: userInfo?.fullName || "" }, //
-          ],
-        },
+        customTextElements: [
+        { CustomTitle: formData.title },
+        { CustomAuthor: userInfo?.fullName || "" },
+        ],
+      },
       };
+
+      // console.log("webMapJSON:", JSON.stringify(webMapJSON));
+
       const params = {
-        Web_Map_as_JSON: JSON.stringify(webMapJSON),
-        Format: formData.format.toUpperCase(),
-        Layout_Template: formData.layout,
-        Title: formData.title,
-        Extent: JSON.stringify(extent)
+      Web_Map_as_JSON: JSON.stringify(webMapJSON),
+      Format: formData.format.toUpperCase(),
+      Layout_Template: formData.layout,
+      Title: formData.title,
+      Extent: JSON.stringify(extent)
       };
 
       setProgress(t("widgets.print.submitting"));
@@ -329,7 +394,7 @@ const PrintComponent: React.FC = () => {
 
       {error && (
         <div className="mb-4 p-3 mt-2 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
+          {t("widgets.print.nonSupportedLayerError")}
         </div>
       )}
 

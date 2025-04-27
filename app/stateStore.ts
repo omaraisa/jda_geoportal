@@ -224,7 +224,7 @@ const useStateStore = create<State>((set, get) => ({
     }
   },
 
-  addBasemapLayers: () => {debugger
+  addBasemapLayers: () => {
     const { targetView } = get()
     if (!targetView) return;
 
@@ -420,7 +420,49 @@ const useStateStore = create<State>((set, get) => ({
        if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
         layer = new FeatureLayer({ url: item.url, visible: false });
        } else if (item.type.includes("Map Service")) {
-        layer = new MapImageLayer({ url: item.url, visible: false });
+        // Use the same sublayer technique for Map Service
+        (async () => {
+          try {
+            const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
+            const token = cookies["arcgis_token"];
+            const response = await fetch(`${item.url}?f=json&token=${token}`);
+            const data = await response.json();
+            if (data.error) {
+              layer = new MapImageLayer({ url: item.url, visible: false });
+            } else if (Array.isArray(data.layers)) {
+              // Add each sublayer as a separate MapImageLayer
+              data.layers.reverse().forEach((sublayer: any) => {
+                const subLayerInstance = new MapImageLayer({
+                  id: `${item.id}_${sublayer.id}`,
+                  title: sublayer.name,
+                  url: item.url,
+                  visible: false,
+                  sublayers: [
+                    {
+                      id: sublayer.id,
+                      visible: true,
+                    },
+                  ],
+                });
+                if (item._groupName) {
+                  (subLayerInstance as any).group = item._groupName;
+                }
+                targetView.map.add(subLayerInstance);
+              });
+              layer = null; // Already added sublayers
+            }
+          } catch (error) {
+            console.error("Failed to fetch sublayers:", error);
+            layer = new MapImageLayer({ url: item.url, visible: false });
+          }
+          if (layer && item._groupName) {
+            (layer as any).group = item._groupName;
+          }
+          if (layer) {
+            targetView.map.add(layer);
+          }
+        })();
+        return;
        } else if (item.type.includes("Tile")) {
         layer = new TileLayer({ url: item.url, visible: false });
        } else if (item.type.includes("Vector")) {
@@ -436,8 +478,6 @@ const useStateStore = create<State>((set, get) => ({
        }
       });
     },
-
-
 
 }));
 

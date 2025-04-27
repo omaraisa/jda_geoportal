@@ -47,7 +47,7 @@ const MainScene: React.FC = () => {
           .when(() => {
             updateSceneView(viewRef.current);
             setLoading(false);
-            if(viewRef.current) addBasemapLayers();
+            // if(viewRef.current) addBasemapLayers();
           })
           .catch((error: Error) => {
             sendMessage({

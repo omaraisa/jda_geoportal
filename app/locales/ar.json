@@ -53,7 +53,8 @@
     "suitabilityAnalysis": "تحليل الملاءمة",
     "attributeQuery": "استعلام وصفي",
     "spatialQuery": "استعلام مكاني",
-    "AddLayer": "إضافة طبقة"
+    "AddLayer": "إضافة طبقة",
+    "UploadLayer": "رفع طبقة"
   },
   "sidebar": {
     "titles": {
@@ -126,7 +127,43 @@
       "submitting": "إرسال...",
       "polling": "استقصاء...",
       "fetching": "جلب...",
-      "complete": "اكتملت العملية"
+      "complete": "اكتملت العملية",
+      "nonSupportedLayerError": "بعض الطبقات غير مدعومة للطباعة."
+    },
+    "addLayer": {
+      "titlePlaceholder": "اسم الطبقة",
+      "enterTitle": "أدخل اسم الطبقة",
+      "optional": "اختياري",
+      "selectType": "اختر نوع الطبقة",
+      "enterUrl": "أدخل عنوان URL للطبقة",
+      "urlPlaceholder": "أدخل رابط الطبقة هنا",
+      "add": "إضافة طبقة",
+      "success": "تمت إضافة الطبقة",
+      "layerAdded": "تمت إضافة الطبقة بنجاح.",
+      "exportDataManager": "مدير تصدير البيانات",
+      "exportDataManagerInfo": "مدير تصدير البيانات هو أداة مخصصة لإدارة عمليات تصدير البيانات.",
+      "csv": "طبقة CSV",
+      "geojson": "طبقة GeoJSON",
+      "kml": "طبقة KML",
+      "mapService": "خدمة الخرائط",
+      "shapefile": "Shapefile",
+      "shapefileUrlNotSupported": "إضافة Shapefile من عنوان URL غير مدعومة. يرجى رفع ملف محلي.",
+      "excel": "طبقة Excel",
+      "excelNotSupported": "طبقات Excel غير مدعومة.",
+      "cad": "طبقة CAD",
+      "cadNotSupported": "طبقات CAD غير مدعومة."
+    },
+    "uploadLayer": {
+      "titlePlaceholder": "اسم الطبقة",
+      "enterTitle": "أدخل اسم الطبقة",
+      "optional": "اختياري",
+      "selectFile": "اختر ملف",
+      "filePlaceholder": "اختر ملفًا",
+      "dropHere": "أسقط الملف هنا",
+      "upload": "رفع الطبقة",
+      "uploading": "جارٍ الرفع...",
+      "success": "تم الرفع بنجاح",
+      "layerUploaded": " تم إضافتها بنجاح"
     },
     "basemap": {
       "Topo": "تضاريس",
@@ -229,6 +266,26 @@
       "searchError": {
         "title": "خطأ في الاستعلام",
         "body": "حدث خطأ أثناء البحث. يرجى المحاولة مرة أخرى."
+      },
+      "addLayerError": {
+        "title": "خطأ في إضافة طبقة",
+        "body": "حدث خطأ أثناء محاولة إضافة الطبقة"
+      },
+      "completeAddLayerRequirements": {
+        "title": "خطأ في إضافة طبقة",
+        "body": "يرجى استكمال متطلبات إضافة الطبقة"
+      },
+      "invalidLayerTypeOrUrl": {
+        "title": "خطأ في إضافة طبقة",
+        "body": "نوع طبقة أو عنوان URL غير صالح"
+      },
+      "unknownLayerType": {
+        "title": "خطأ في إضافة طبقة",
+        "body": "نوع طبقة غير معروف"
+      },
+      "uploadLayerError": {
+        "title": "خطأ في رفع الطبقة",
+        "body": "يرجى استكمال متطلبات رفع الطبقة."
       }
     },
     "warning": {

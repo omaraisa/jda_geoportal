@@ -54,7 +54,8 @@
       "suitabilityAnalysis": "Suitability Analysis",
       "attributeQuery": "Attribute Query",
       "spatialQuery": "Spatial Query",
-      "AddLayer": "Add Layer"
+      "AddLayer": "Add Layer",
+      "UploadLayer": "Upload Layer"
   },
   "sidebar": {
     "titles": {
@@ -127,7 +128,43 @@
       "submitting": "Submitting...",
       "polling": "Polling...",
       "fetching": "Fetching...",
-      "complete": "Complete"
+      "complete": "Complete",
+      "nonSupportedLayerError": "Some layers are not supported for printing."
+    },
+    "addLayer": {
+      "titlePlaceholder": "Layer Name",
+      "enterTitle": "Enter Layer Name",
+      "optional": "Optional",
+      "selectType": "Select Layer Type",
+      "enterUrl": "Enter Layer URL",
+      "urlPlaceholder": "Paste layer URL here",
+      "add": "Add Layer",
+      "success": "Layer Added",
+      "layerAdded": "The layer has been added successfully.",
+      "exportDataManager": "Export Data Manager",
+      "exportDataManagerInfo": "Export Data Manager is a custom tool for managing data exports.",
+      "csv": "CSV Layer",
+      "geojson": "GeoJSON Layer",
+      "kml": "KML Layer",
+      "mapService": "Map Service",
+      "shapefile": "Shapefile",
+      "shapefileUrlNotSupported": "Adding Shapefile from URL is not supported. Please upload a local file.",
+      "excel": "Excel Layer",
+      "excelNotSupported": "Excel layers are not supported.",
+      "cad": "CAD Layer",
+      "cadNotSupported": "CAD layers are not supported."
+    },
+    "uploadLayer": {
+      "titlePlaceholder": "Layer Name",
+      "enterTitle": "Enter Layer Name",
+      "optional": "Optional",
+      "selectFile": "Select File",
+      "filePlaceholder": "Choose a file",
+      "dropHere": "Drop the file here",
+      "upload": "Upload Layer",
+      "uploading": "Uploading...",
+      "success": "Upload Successful",
+      "layerUploaded": " layer has been uploaded successfully."
     },
     "basemap": {
       "Topo": "Topographic",
@@ -230,6 +267,26 @@
       "searchError": {
         "title": "Query Error",
         "body": "An error occurred while searching. Please try again."
+      },
+      "addLayerError": {
+        "title": "Layer Addition Error",
+        "body": "An error occurred while trying to add the layer"
+      },
+      "completeAddLayerRequirements": {
+        "title": "Layer Addition Error",
+        "body": "Please complete the layer addition requirements"
+      },
+      "invalidLayerTypeOrUrl": {
+        "title": "Layer Addition Error",
+        "body": "Invalid layer type or URL"
+      },
+      "unknownLayerType": {
+        "title": "Layer Addition Error",
+        "body": "Unknown layer type"
+      },
+      "uploadLayerError": {
+        "title": "Layer Upload Error",
+        "body": "Please complete the upload layer requirements."
       }
     },
     "warning": {

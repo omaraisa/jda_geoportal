@@ -45,6 +45,9 @@ const NetworkAnalysis = dynamic(() => import("@/components/widgets/network-analy
 const AddLayer = dynamic(() => import("@/components/widgets/add-layer"), {
   ssr: false,
 });
+const UploadLayer = dynamic(() => import("@/components/widgets/upload-layer"), {
+  ssr: false,
+});
 
 
 const components = {
@@ -61,7 +64,8 @@ const components = {
   MeasurementComponent,
   SketchComponent,
   NetworkAnalysis,
-  AddLayer
+  AddLayer,
+  UploadLayer
 };
 
 export default function Sidebar() {
