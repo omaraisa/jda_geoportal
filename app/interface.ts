@@ -97,6 +97,7 @@ export interface State {
   addBookmark: (name: string, view: __esri.MapView | __esri.SceneView) => void;
   deleteBookmark: (id: number) => void;
   loadBookmarks: () => void;
+  loadUserGroupLayers: () => void;
   setUserInfo: (userInfo: ArcGISUserInfo) => void;
 }
 
