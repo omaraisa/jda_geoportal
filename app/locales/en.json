@@ -55,7 +55,8 @@
       "attributeQuery": "Attribute Query",
       "spatialQuery": "Spatial Query",
       "AddLayer": "Add Layer",
-      "UploadLayer": "Upload Layer"
+      "UploadLayer": "Upload Layer",
+      "ExportLayer": "Export Layer"
   },
   "sidebar": {
     "titles": {
@@ -178,6 +179,18 @@
       "distanceMeasurement": "Distance Measurement",
       "areaMeasurement": "Area Measurement",
       "clear": "Clear"
+    },
+    "exportLayer": {
+      "selectLayer": "Select Layer",
+      "selectLayerPlaceholder": "Choose a layer to export",
+      "selectFormat": "Select Export Format",
+      "csv": "CSV",
+      "shapefile": "Zipped Shapefile",
+      "kml": "KML",
+      "export": "Export",
+      "exporting": "Exporting...",
+      "success": "Export Successful",
+      "exportComplete": "The data has been exported successfully."
     }
   },
   "layerList": {

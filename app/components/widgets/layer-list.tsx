@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import useStateStore from "@/stateStore";
 import LayerGroup from "../ui/layer-group";
-import Layerlist from "@arcgis/core/widgets/LayerList";
 
 export default function LayerListComponent() {
   const view = useStateStore((state) => state.targetView);
@@ -10,12 +9,6 @@ export default function LayerListComponent() {
 
   useEffect(() => {
     if (!layerListRef.current || !view) return;
-    // new Layerlist({
-    //   view: view,
-    //   container: layerListRef.current,
-    // });
-
-    if (!view) return;
 
     const updateGroups = () => {
       const groups = Array.from(
@@ -31,11 +24,10 @@ export default function LayerListComponent() {
 
     updateGroups(); 
 
-    // Watch for layer changes
     const handleChange = view.map.layers.on("change", updateGroups);
 
     return () => {
-      handleChange.remove(); // cleanup listener
+      handleChange.remove(); 
     };
   }, [view]);
   return (

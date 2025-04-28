@@ -54,7 +54,8 @@
     "attributeQuery": "استعلام وصفي",
     "spatialQuery": "استعلام مكاني",
     "AddLayer": "إضافة طبقة",
-    "UploadLayer": "رفع طبقة"
+    "UploadLayer": "رفع طبقة",
+    "ExportLayer": "تصدير طبقة"
   },
   "sidebar": {
     "titles": {
@@ -177,6 +178,18 @@
       "distanceMeasurement": "قياس المسافة",
       "areaMeasurement": "قياس المساحة",
       "clear": "مسح"
+    },
+    "exportLayer": {
+      "selectLayer": "اختر الطبقة",
+      "selectLayerPlaceholder": "اختر طبقة للتصدير",
+      "selectFormat": "اختر صيغة التصدير",
+      "csv": "CSV",
+      "shapefile": "Shapefile مضغوط",
+      "kml": "KML",
+      "export": "تصدير",
+      "exporting": "جارٍ التصدير...",
+      "success": "تم التصدير بنجاح",
+      "exportComplete": "تم تصدير البيانات بنجاح."
     }
   },
   "layerList": {
