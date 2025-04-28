@@ -9,7 +9,7 @@ import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import styles from "./spatial-query.module.css";
 import { addQueryResult, clearSelection, runQuery } from "@/lib/utils/query";
-import {featureBasedLayerTypes} from "@/lib/globalConstants";
+import {featureBasedLayerTypes} from "@/lib/globalConstant";
 
 export default function SpatialQueryComponent() {
   const { t } = useTranslation();
@@ -34,6 +34,7 @@ export default function SpatialQueryComponent() {
 
 
   useEffect(() => {
+    console.log("featureBasedLayerTypes",featureBasedLayerTypes)
     if (view && !sketchInitialized.current) {
       sketchInitialized.current = true;
 
