@@ -1,18 +1,24 @@
 services:
   geoportal1:
     build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - "3001:3000"
+      context: ./geoportal
     environment:
-      - PORT=3001
+      - PORT=3000
+    expose:
+      - "3000"
+    networks:
+      - gis_net
 
   geoportal2:
     build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - "3002:3000"
+      context: ./geoportal
     environment:
-      - PORT=3002
+      - PORT=3000
+    expose:
+      - "3000"
+    networks:
+      - gis_net
+
+networks:
+  gis_net:
+    external: true

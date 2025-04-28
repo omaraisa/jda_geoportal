@@ -1,0 +1,16 @@
+node_modules
+.git
+.gitignore
+docker-compose.yml
+azure-pipeline.yml
+*.md
+*.log
+*.env
+tmp/
+dist/
+build/
+coverage/
+.vscode/
+.next/
+.idea/
+tests/
