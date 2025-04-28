@@ -1,4 +1,4 @@
-import { featureBasedLayerTypes } from "@/lib/globalConstant";
+import { featureBasedLayerTypes } from "@/lib/globalConstants";
 import useLayerActions from "@/lib/hooks/use-layer-list";
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";

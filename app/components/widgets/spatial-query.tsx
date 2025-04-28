@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Sketch from "@arcgis/core/widgets/Sketch";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
@@ -9,7 +8,7 @@ import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import styles from "./spatial-query.module.css";
 import { addQueryResult, clearSelection, runQuery } from "@/lib/utils/query";
-import {featureBasedLayerTypes} from "@/lib/globalConstant";
+import {featureBasedLayerTypes} from "@/lib/globalConstants";
 
 export default function SpatialQueryComponent() {
   const { t } = useTranslation();
@@ -34,7 +33,6 @@ export default function SpatialQueryComponent() {
 
 
   useEffect(() => {
-    console.log("featureBasedLayerTypes",featureBasedLayerTypes)
     if (view && !sketchInitialized.current) {
       sketchInitialized.current = true;
 

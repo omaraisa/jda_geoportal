@@ -141,8 +141,6 @@
       "add": "إضافة طبقة",
       "success": "تمت إضافة الطبقة",
       "layerAdded": "تمت إضافة الطبقة بنجاح.",
-      "exportDataManager": "مدير تصدير البيانات",
-      "exportDataManagerInfo": "مدير تصدير البيانات هو أداة مخصصة لإدارة عمليات تصدير البيانات.",
       "csv": "طبقة CSV",
       "geojson": "طبقة GeoJSON",
       "kml": "طبقة KML",

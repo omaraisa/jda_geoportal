@@ -142,8 +142,6 @@
       "add": "Add Layer",
       "success": "Layer Added",
       "layerAdded": "The layer has been added successfully.",
-      "exportDataManager": "Export Data Manager",
-      "exportDataManagerInfo": "Export Data Manager is a custom tool for managing data exports.",
       "csv": "CSV Layer",
       "geojson": "GeoJSON Layer",
       "kml": "KML Layer",
