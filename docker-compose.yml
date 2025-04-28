@@ -6,6 +6,8 @@ services:
       - PORT=3000
     expose:
       - "4001"
+    ports:
+      - "4001:3000"    
     networks:
       - gis_net
 
@@ -16,6 +18,8 @@ services:
       - PORT=3000
     expose:
       - "4002"
+    ports:
+      - "4002:3000"  
     networks:
       - gis_net
 
