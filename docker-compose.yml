@@ -1,7 +1,7 @@
 services:
   geoportal1:
     build:
-      context: ./jda_geoportal
+      context: .
     environment:
       - PORT=3000
     expose:
@@ -11,7 +11,7 @@ services:
 
   geoportal2:
     build:
-      context: ./jda_geoportal
+      context: .
     environment:
       - PORT=3000
     expose:
