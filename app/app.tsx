@@ -13,7 +13,7 @@ import useAuthCheck from "@/lib/hooks/use-auth-check";
 import '@esri/calcite-components/dist/components/calcite-icon';
 
 export default function App() {
-  // useAuthCheck()
+  useAuthCheck()
 
   const {
     layout: layoutState,
