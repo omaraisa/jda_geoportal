@@ -21,21 +21,43 @@ const config = {
     tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
 };
 
-export const initializeArcGIS = ()=> {
+export const initializeArcGIS = () => {
     if (typeof window === 'undefined') {
+        return;
+    }
+    if (!esriConfig || !config.apiKey) {
+        console.warn('esriConfig or apiKey not available');
         return;
     }
     esriConfig.apiKey = config.apiKey;
 
-    const serverInfo = new ServerInfo({
-        server: config.portalUrl,
-        tokenServiceUrl: config.tokenServiceUrl,
-    });
-
-    if (IdentityManager && typeof IdentityManager.registerServers === 'function') {
-        IdentityManager.registerServers([serverInfo]);
+    if (!ServerInfo) {
+        console.warn('ServerInfo is not loaded');
+        return;
     }
-}
+
+    let serverInfo;
+    try {
+        serverInfo = new ServerInfo({
+            server: config.portalUrl,
+            tokenServiceUrl: config.tokenServiceUrl,
+        });
+    } catch (err) {
+        console.error('Failed to create ServerInfo:', err);
+        return;
+    }
+
+    if (!IdentityManager || typeof IdentityManager.registerServers !== 'function') {
+        console.warn('IdentityManager or registerServers not available');
+        return;
+    }
+
+    try {
+        IdentityManager.registerServers([serverInfo]);
+    } catch (err) {
+        console.error('Failed to register servers:', err);
+    }
+};
 
 
 function getCookie(name: string): string | undefined {

@@ -32,6 +32,7 @@ const useAuthCheck = (interval = 1200000) => {debugger
         const userInfo = await fetchArcGISUserInfo();
         if (userInfo) {
           setUserInfo(userInfo); 
+          console.log("User info fetched successfully:", userInfo);
         }
       }
     };
