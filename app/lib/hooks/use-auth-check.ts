@@ -4,7 +4,7 @@ import {initializeArcGIS, isArcgisTokenValid ,authenticateArcGIS, fetchArcGISUse
 import { redirect } from 'next/navigation';
 
 
-const useAuthCheck = (interval = 1200000) => {
+const useAuthCheck = (interval = 1200000) => {debugger
   const { sendMessage, setUserInfo } = useStateStore((state) => state);
 
   useEffect(() => {
