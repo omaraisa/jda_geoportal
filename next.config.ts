@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
     reactStrictMode: true,
-    
+    basePath: '/geoportal',
+    assetPrefix: '/geoportal/',
     // experimental: {
     //     esmExternals: true,
     //   },
