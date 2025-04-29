@@ -60,11 +60,9 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  /* cursor: url('/cursor.png'), auto; */
 }
 
 button, a, i, [role="button"], [onclick] {
-  /* cursor: url('/cursor-link.png'), pointer; */
 }
 
 :lang(en) {

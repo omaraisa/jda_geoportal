@@ -10,10 +10,10 @@ interface BasemapProps {
 }
 
 const basemaps: BasemapProps[] = [
-    { label: "Topo", value: "topo-vector", src: "/topographic-basemap.jpg" },
-    { label: "Satellite", value: "satellite", src: "/satellite-basemap.jpg" },
-    { label: "Street", value: "streets", src: "/streets-basemap.jpg" },
-    { label: "DarkGray", value: "dark-gray-vector", src: "/darkgray-basemap.jpg" }
+    { label: "Topo", value: "topo-vector", src: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/topographic-basemap.jpg` },
+    { label: "Satellite", value: "satellite", src: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/satellite-basemap.jpg` },
+    { label: "Street", value: "streets", src: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/streets-basemap.jpg` },
+    { label: "DarkGray", value: "dark-gray-vector", src: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/darkgray-basemap.jpg` }
 ];
 
 const BasemapSwitcher: React.FC = () => {
