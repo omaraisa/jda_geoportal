@@ -21,43 +21,21 @@ const config = {
     tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
 };
 
-export const initializeArcGIS = () => {
+export const initializeArcGIS = ()=> {
     if (typeof window === 'undefined') {
-        return;
-    }
-    if (!esriConfig || !config.apiKey) {
-        console.warn('esriConfig or apiKey not available');
         return;
     }
     esriConfig.apiKey = config.apiKey;
 
-    if (!ServerInfo) {
-        console.warn('ServerInfo is not loaded');
-        return;
-    }
+    const serverInfo = new ServerInfo({
+        server: config.portalUrl,
+        tokenServiceUrl: config.tokenServiceUrl,
+    });
 
-    let serverInfo;
-    try {
-        serverInfo = new ServerInfo({
-            server: config.portalUrl,
-            tokenServiceUrl: config.tokenServiceUrl,
-        });
-    } catch (err) {
-        console.error('Failed to create ServerInfo:', err);
-        return;
-    }
-
-    if (!IdentityManager || typeof IdentityManager.registerServers !== 'function') {
-        console.warn('IdentityManager or registerServers not available');
-        return;
-    }
-
-    try {
+    if (IdentityManager && typeof IdentityManager.registerServers === 'function') {
         IdentityManager.registerServers([serverInfo]);
-    } catch (err) {
-        console.error('Failed to register servers:', err);
     }
-};
+}
 
 
 function getCookie(name: string): string | undefined {
@@ -86,43 +64,23 @@ export const isArcgisTokenValid = (): boolean => {
 
 export const authenticateArcGIS = () => {
     try {
-        console.log('Starting ArcGIS authentication...');
         if (typeof document === 'undefined') {
-            console.log('Not running in a browser environment.');
             return false;
         }
         const hour = 60 * 60 * 1000;
         const token = getCookie('arcgis_token');
-        console.log('Retrieved token:', token);
         const expires = getCookie('arcgis_token_expiry');
-        console.log('Retrieved expiry:', expires);
         const expiryTime = expires ? parseInt(expires) : Date.now() + 2 * hour;
-        console.log('Calculated expiryTime:', expiryTime);
 
         if (!token) {
-            console.log('No token found.');
             return false;
         }
 
-        // Check if IdentityManager is loaded
-        if (!IdentityManager) {
-            console.log('IdentityManager is not available.');
-            return false;
-        }
-
-        // Check if registerToken function exists
-        if (typeof IdentityManager.registerToken !== 'function') {
-            console.log('IdentityManager.registerToken is not a function.');
-            return false;
-        }
-
-        console.log('Registering token with IdentityManager...');
         IdentityManager.registerToken({
             server: config.portalUrl,
             token: token,
             expires: expiryTime,
         });
-        console.log('Token registered successfully.');
         return true;
     } catch (error) {
         console.error('ArcGIS Authentication failed:', error);
@@ -135,31 +93,16 @@ export const fetchArcGISUserInfo = async () => {
     if (typeof document === 'undefined') return null;
   
     const token = getCookie('arcgis_token');
-    console.log('Fetched token:', token);
     if (!token) return null;
   
     try {
+        console.log(`💠💠💠${config.portalUrl}/sharing/rest/community/self?f=json&token=${token}`)
       const response = await fetch(
-        `${config.portalUrl}/sharing/rest/community/self`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: new URLSearchParams({
-            f: 'json',
-            token: token,
-          }),
-        }
+        `${config.portalUrl}/sharing/rest/community/self?f=json&token=${token}`
       );
-      console.log('Response status:', response.status);
       if (!response.ok) throw new Error('Failed to fetch user info');
   
       const userInfo = await response.json();
-      console.log('User info:', userInfo);
-      if (userInfo.error) {
-        throw new Error(userInfo.error.message || 'ArcGIS error');
-      }
       return {
         fullName: userInfo.fullName,
         username: userInfo.username,
