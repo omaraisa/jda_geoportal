@@ -76,12 +76,17 @@ export const authenticateArcGIS = () => {
             return false;
         }
 
-        IdentityManager.registerToken({
-            server: config.portalUrl,
-            token: token,
-            expires: expiryTime,
-        });
-        return true;
+        if (IdentityManager && typeof IdentityManager.registerToken === 'function') {
+            IdentityManager.registerToken({
+                server: config.portalUrl,
+                token: token,
+                expires: expiryTime,
+            });
+            return true;
+        } else {
+            console.warn('IdentityManager or registerToken is not available.');
+            return false;
+        }
     } catch (error) {
         console.error('ArcGIS Authentication failed:', error);
         return false;

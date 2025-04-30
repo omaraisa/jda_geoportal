@@ -10,7 +10,6 @@ variables:
   NEXT_PUBLIC_PORTAL_URL : 'https://gis.jda.gov.sa/portal'
   NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL : 'https://gis.jda.gov.sa/portal/sharing/rest/generateToken'
   NEXT_PUBLIC_LOGIN_URL : 'http://192.168.1.60/login'
-  NEXT_PUBLIC_BASE_PATH : '/geoportal'
       
 steps:
   - script: |
