@@ -394,15 +394,18 @@ const useStateStore = create<State>((set, get) => ({
 
     const allGroupLayers: any[] = [];
     for (const group of userInfo.groups) {
+      if (!group.title.startsWith("gportal_")) {
+      continue;
+      }
       try {
       const groupContentRes = await fetch(
-        `${portalUrl}/sharing/rest/content/groups/${group.id}?f=json&token=${token}`
+      `${portalUrl}/sharing/rest/content/groups/${group.id}?f=json&token=${token}`
       );
       const groupContent = await groupContentRes.json();
       if (!groupContent.items) continue;
       // Attach group name to each item for later use
       groupContent.items.forEach((item: any) => {
-        item._groupName = group.title;
+      item._groupName = group.title.replace("gportal_", "");
       });
       allGroupLayers.push(...groupContent.items);
       } catch (e) {

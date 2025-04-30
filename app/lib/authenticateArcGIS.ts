@@ -28,7 +28,7 @@ async function loadArcGISModules(): Promise<void> {
         return;
     }
 
-    console.log('Loading ArcGIS modules...');
+    // console.log('Loading ArcGIS modules...');
     try {
         // Use Promise.all to load modules concurrently
         const [configMod, idManMod, serverInfoMod] = await Promise.all([
@@ -43,7 +43,7 @@ async function loadArcGISModules(): Promise<void> {
         ServerInfo = serverInfoMod.default;
 
         modulesLoaded = true; // Mark modules as successfully loaded
-        console.log('ArcGIS modules loaded successfully.');
+        // console.log('ArcGIS modules loaded successfully.');
 
     } catch (error) {
         console.error('Failed to load essential ArcGIS modules:', error);
@@ -67,11 +67,11 @@ export const initializeArcGIS = async (): Promise<void> => {
 
     // If initialization is already in progress or completed, return the existing promise
     if (initializationPromise) {
-        console.log('ArcGIS initialization already in progress or completed. Awaiting...');
+        // console.log('ArcGIS initialization already in progress or completed. Awaiting...');
         return initializationPromise;
     }
 
-    console.log('Starting ArcGIS initialization...');
+    // console.log('Starting ArcGIS initialization...');
 
     // Create the promise to handle the initialization flow
     initializationPromise = (async () => {
@@ -88,7 +88,7 @@ export const initializeArcGIS = async (): Promise<void> => {
             // Step 3: Configure the API Key
             if (config.apiKey !== 'API_KEY_NOT_SET') {
                  esriConfig.apiKey = config.apiKey;
-                 console.log('ArcGIS API Key configured.');
+                 // console.log('ArcGIS API Key configured.');
             } else {
                  console.warn('ArcGIS API Key is not set. Using default or potentially falling back to other auth methods.');
             }
@@ -101,7 +101,7 @@ export const initializeArcGIS = async (): Promise<void> => {
                  // Depending on your app's needs, you might want to throw an error here
                  // if portal access is strictly required.
             } else {
-                console.log(`Creating ServerInfo for Portal: ${config.portalUrl}`);
+                // console.log(`Creating ServerInfo for Portal: ${config.portalUrl}`);
                 const serverInfo = new ServerInfo({
                     server: config.portalUrl,
                     tokenServiceUrl: config.tokenServiceUrl,
@@ -111,7 +111,7 @@ export const initializeArcGIS = async (): Promise<void> => {
                 // Defensive check for the function's existence
                 if (typeof IdentityManager.registerServers === 'function') {
                     IdentityManager.registerServers([serverInfo]);
-                    console.log('Server registered with IdentityManager.');
+                    // console.log('Server registered with IdentityManager.');
                 } else {
                     // This shouldn't happen if the module loaded correctly, but good to check
                     console.error('IdentityManager.registerServers function is unexpectedly missing!');
@@ -119,7 +119,7 @@ export const initializeArcGIS = async (): Promise<void> => {
                 }
             }
 
-            console.log('ArcGIS initialized successfully.');
+            // console.log('ArcGIS initialized successfully.');
 
         } catch (error) {
             console.error('ArcGIS initialization failed:', error);
@@ -160,7 +160,7 @@ export const isArcgisTokenValid = (): boolean => {
     const expires = getCookie('arcgis_token_expiry'); // Expects Unix timestamp (milliseconds)
 
     if (!token || !expires) {
-        // console.log('Token or expiry cookie missing.'); // Optional debug log
+        // // console.log('Token or expiry cookie missing.'); // Optional debug log
         return false;
     }
 
@@ -175,7 +175,7 @@ export const isArcgisTokenValid = (): boolean => {
 
     // Check if the token expires within the next 3 minutes
     const isValid = Date.now() < expiryTime - 3 * minute;
-    // console.log(`Token validity check: Now=${Date.now()}, Expires=${expiryTime}, Valid=${isValid}`); // Optional debug log
+    // // console.log(`Token validity check: Now=${Date.now()}, Expires=${expiryTime}, Valid=${isValid}`); // Optional debug log
     return isValid;
 };
 
@@ -206,7 +206,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
         const expiresCookie = getCookie('arcgis_token_expiry');
 
         if (!token) {
-            console.log('No ArcGIS token found in cookies for authentication.');
+            // console.log('No ArcGIS token found in cookies for authentication.');
             return false; // No token to register
         }
 
@@ -237,7 +237,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
                 token: token,
                 expires: expiryTime, // Use the determined expiry time
             });
-            console.log('ArcGIS token registered with IdentityManager.');
+            // console.log('ArcGIS token registered with IdentityManager.');
             return true;
         } else {
             console.error('IdentityManager.registerToken function is unexpectedly missing!');
@@ -258,7 +258,7 @@ export const fetchArcGISUserInfo = async () => {
 
     const token = getCookie('arcgis_token');
     if (!token) {
-        console.log('No ArcGIS token found for fetching user info.');
+        // console.log('No ArcGIS token found for fetching user info.');
         return null;
     }
 
@@ -271,7 +271,7 @@ export const fetchArcGISUserInfo = async () => {
     const userInfoUrl = `${config.portalUrl}/sharing/rest/community/self?f=json&token=${token}`;
 
     try {
-        console.log('Fetching ArcGIS user info from:', userInfoUrl); // Avoid logging token
+        // console.log('Fetching ArcGIS user info from:', userInfoUrl); // Avoid logging token
         const response = await fetch(userInfoUrl);
 
         if (!response.ok) {
@@ -304,7 +304,7 @@ export const fetchArcGISUserInfo = async () => {
              // Depending on requirements, might want to return null or throw an error
         }
 
-        console.log('Successfully fetched user info for:', userInfo.username);
+        // console.log('Successfully fetched user info for:', userInfo.username);
         return {
             fullName: userInfo.fullName || '', // Provide defaults for potentially missing fields
             username: userInfo.username,
