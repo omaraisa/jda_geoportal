@@ -27,7 +27,7 @@ const useAuthCheck = (interval = 1200000) => {
         return;
       }
 
-      const isAuthenticated = authenticateArcGIS();
+      const isAuthenticated = await authenticateArcGIS();
       if (isAuthenticated) {
         const userInfo = await fetchArcGISUserInfo();
         if (userInfo) {
