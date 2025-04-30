@@ -86,23 +86,43 @@ export const isArcgisTokenValid = (): boolean => {
 
 export const authenticateArcGIS = () => {
     try {
+        console.log('Starting ArcGIS authentication...');
         if (typeof document === 'undefined') {
+            console.log('Not running in a browser environment.');
             return false;
         }
         const hour = 60 * 60 * 1000;
         const token = getCookie('arcgis_token');
+        console.log('Retrieved token:', token);
         const expires = getCookie('arcgis_token_expiry');
+        console.log('Retrieved expiry:', expires);
         const expiryTime = expires ? parseInt(expires) : Date.now() + 2 * hour;
+        console.log('Calculated expiryTime:', expiryTime);
 
         if (!token) {
+            console.log('No token found.');
             return false;
         }
 
+        // Check if IdentityManager is loaded
+        if (!IdentityManager) {
+            console.log('IdentityManager is not available.');
+            return false;
+        }
+
+        // Check if registerToken function exists
+        if (typeof IdentityManager.registerToken !== 'function') {
+            console.log('IdentityManager.registerToken is not a function.');
+            return false;
+        }
+
+        console.log('Registering token with IdentityManager...');
         IdentityManager.registerToken({
             server: config.portalUrl,
             token: token,
             expires: expiryTime,
         });
+        console.log('Token registered successfully.');
         return true;
     } catch (error) {
         console.error('ArcGIS Authentication failed:', error);
@@ -115,15 +135,31 @@ export const fetchArcGISUserInfo = async () => {
     if (typeof document === 'undefined') return null;
   
     const token = getCookie('arcgis_token');
+    console.log('Fetched token:', token);
     if (!token) return null;
   
     try {
       const response = await fetch(
-        `${config.portalUrl}/sharing/rest/community/self?f=json&token=${token}`
+        `${config.portalUrl}/sharing/rest/community/self`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            f: 'json',
+            token: token,
+          }),
+        }
       );
+      console.log('Response status:', response.status);
       if (!response.ok) throw new Error('Failed to fetch user info');
   
       const userInfo = await response.json();
+      console.log('User info:', userInfo);
+      if (userInfo.error) {
+        throw new Error(userInfo.error.message || 'ArcGIS error');
+      }
       return {
         fullName: userInfo.fullName,
         username: userInfo.username,
