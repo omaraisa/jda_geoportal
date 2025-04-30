@@ -96,7 +96,6 @@ export const fetchArcGISUserInfo = async () => {
     if (!token) return null;
   
     try {
-        console.log(`💠💠💠${config.portalUrl}/sharing/rest/community/self?f=json&token=${token}`)
       const response = await fetch(
         `${config.portalUrl}/sharing/rest/community/self?f=json&token=${token}`
       );

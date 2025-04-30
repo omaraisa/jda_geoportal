@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from "next/image";
 import styles from './app-loader.module.css';
 
 const AppLoader: React.FC = () => {
@@ -25,22 +26,22 @@ const AppLoader: React.FC = () => {
   return (
     <div className={styles.loaderWrapper}>
         <div className="relative h-20 w-20">
-          <img
-            src="/logo.png"
-            alt="loading"
-            width={100}
-            height={100}
-            className="absolute top-0 left-0"
-          />
+        <Image
+          src= "/logo.png"
+          alt= "loading"
+          width={100}
+          height={100}
+          className="absolute top-0 left-0"
+        />
 
-          <img
-            src="/logo-outer.png"
-            alt="loading"
-            width={100}
-            height={100}
-            className="absolute top-0 left-0 spin-slow"
-          />
-        </div>
+        <Image
+          src="/logo-outer.png"
+          alt= "loading"
+          width={100}
+          height={100}
+          className="absolute top-0 left-0 spin-slow"
+        />
+      </div>
       <p className={styles.loaderText}>{currentMessage}</p>
     </div>
   );
