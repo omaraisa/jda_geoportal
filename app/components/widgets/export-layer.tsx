@@ -19,7 +19,6 @@ export default function ExportLayer() {
   const handleSelectedLayer = (layerId: string) => {
     const layer = view?.map?.layers?.toArray().find((l: any) => l.id === layerId);
     setSelectedLayer(layer);
-    console.log("Selected layer:", view?.map.layers.toArray());
   };
 
   const handleExport = async () => {
@@ -110,6 +109,7 @@ export default function ExportLayer() {
         <option value="csv">{t("widgets.exportLayer.csv")}</option>
         <option value="shapefile">{t("widgets.exportLayer.shapefile")}</option>
         <option value="kml">{t("widgets.exportLayer.kml")}</option>
+        <option value="geojson">{t("widgets.exportLayer.geojson")}</option>
       </select>
 
       <button

@@ -9,11 +9,11 @@ import "./i18n";
 import AppLoader from "./components/ui/app-loader";
 import BottomPane from "./components/bottom-pane";
 import MainMenu from "./components/ui/main-menu";
-import useAuthCheck from "@/lib/hooks/use-auth-check";
+import useAuthentication from "@/lib/hooks/use-authentication";
 import '@esri/calcite-components/dist/components/calcite-icon';
 
 export default function App() {
-  useAuthCheck()
+  useAuthentication()
 
   const {
     layout: layoutState,

@@ -311,6 +311,7 @@ export const fetchArcGISUserInfo = async () => {
             email: userInfo.email || '',     // Add email if needed/available
             role: userInfo.role || 'unknown', // e.g., 'org_admin', 'org_publisher', 'org_user'
             groups: userInfo.groups || [],    // Array of group objects user belongs to
+            userType: 'viewer',
             // Add other fields as needed: e.g., thumbnail: userInfo.thumbnail
         };
     } catch (error) {

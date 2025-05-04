@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import useStateStore from "@/stateStore";
-import {initializeArcGIS, isArcgisTokenValid ,authenticateArcGIS, fetchArcGISUserInfo } from '@/lib/authenticateArcGIS'
+import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, fetchArcGISUserInfo } from '@/lib/authenticateArcGIS'
 import { redirect } from 'next/navigation';
+import setAuthorizationLevel from "@/lib/authorizeArcGIS";
 
-
-const useAuthCheck = (interval = 1200000) => {
+const useAuthentication = (interval = 1200000) => {
   const { sendMessage, setUserInfo } = useStateStore((state) => state);
 
   useEffect(() => {
@@ -31,7 +31,13 @@ const useAuthCheck = (interval = 1200000) => {
       if (isAuthenticated) {
         const userInfo = await fetchArcGISUserInfo();
         if (userInfo) {
-          setUserInfo(userInfo); 
+          const userType = await setAuthorizationLevel(userInfo);
+
+          if (userInfo && userType) {
+            userInfo.userType = userType;
+            setUserInfo(userInfo);
+
+          }
         }
       }
     };
@@ -43,4 +49,4 @@ const useAuthCheck = (interval = 1200000) => {
   }, [interval]);
 };
 
-export default useAuthCheck;
+export default useAuthentication;

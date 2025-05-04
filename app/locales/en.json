@@ -183,6 +183,7 @@
       "selectLayerPlaceholder": "Choose a layer to export",
       "selectFormat": "Select Export Format",
       "csv": "CSV",
+      "geojson": "GeoJSON",
       "shapefile": "Zipped Shapefile",
       "kml": "KML",
       "export": "Export",

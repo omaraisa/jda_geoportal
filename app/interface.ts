@@ -115,9 +115,10 @@ export interface AttributeQueryState {
 }
 
 export interface ArcGISUserInfo {
-  fullName: string;
-  username: string;
-  role: string;
+  fullName: string | null;
+  username: string | null;
+  role: string | null;
+  userType: string | null;
   groups: {
     id: string;
     title: string;
@@ -149,11 +150,11 @@ export interface ArcGISUserInfo {
     membershipAccess: string;
     displaySettings: {
       itemTypes: string;
-    };
-    properties: null | string;
+    } | null;
+    properties: null | string | null;
     userMembership: {
-      username: string;
-      memberType: string;
-    };
-  }[];
+      username: string | null;
+      memberType: string | null;
+    } | null;
+  }[] | null;
 };

@@ -34,7 +34,7 @@ const useStateStore = create<State>((set, get) => ({
   },
   messages: {},
   bookmarks: [],
-
+  
   setAppReady: (isReady: boolean) => {
     set({ appReady: isReady });
   },
@@ -365,22 +365,24 @@ const useStateStore = create<State>((set, get) => ({
       localStorage.getItem("localBookmarks") || "[]"
     );
     set({ bookmarks: savedBookmarks });
-  },
- 
-  userInfo: {
+    },
+   
+    userInfo: {
     fullName: "",
     username: "",
+    userType: "",
     role: "",
     groups: [],
-  },
-  
-  setUserInfo: (userInfo: ArcGISUserInfo) => {
+    },
+    
+    setUserInfo: (userInfo: ArcGISUserInfo) => {
     set({
       userInfo: {
-      fullName: userInfo.fullName,
-      username: userInfo.username,
-      role: userInfo.role,
-      groups: userInfo.groups || [],
+      fullName: userInfo.fullName || get().userInfo?.fullName || "",
+      username: userInfo.username || get().userInfo?.username || "",
+      role: userInfo.role || get().userInfo?.role || "",
+      userType: userInfo.userType || get().userInfo?.userType || "",
+      groups: userInfo.groups || get().userInfo?.groups || null,
       },
     });
     },
