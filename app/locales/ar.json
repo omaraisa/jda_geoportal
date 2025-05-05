@@ -178,6 +178,8 @@
       "clear": "مسح"
     },
     "exportLayer": {
+      "enterTitle": "اسم الطبقة",
+      "titlePlaceholder": "ادخل اسم الطبقة",
       "selectLayer": "اختر الطبقة",
       "selectLayerPlaceholder": "اختر طبقة للتصدير",
       "selectFormat": "اختر صيغة التصدير",
@@ -188,7 +190,8 @@
       "export": "تصدير",
       "exporting": "جارٍ التصدير...",
       "success": "تم التصدير بنجاح",
-      "exportComplete": "تم تصدير البيانات بنجاح."
+      "exportComplete": "تم تصدير البيانات بنجاح.",
+      "stop": "إيقاف"
     }
   },
   "layerList": {

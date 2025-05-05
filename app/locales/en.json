@@ -179,7 +179,10 @@
       "clear": "Clear"
     },
     "exportLayer": {
+      "enterTitle": "Layer Name",
+      "titlePlaceholder": "Enter Layer Name",
       "selectLayer": "Select Layer",
+      "optional": "Optional",
       "selectLayerPlaceholder": "Choose a layer to export",
       "selectFormat": "Select Export Format",
       "csv": "CSV",
@@ -189,7 +192,8 @@
       "export": "Export",
       "exporting": "Exporting...",
       "success": "Export Successful",
-      "exportComplete": "The data has been exported successfully."
+      "exportComplete": "The data has been exported successfully.",
+      "stop": "Stop Export"
     }
   },
   "layerList": {
