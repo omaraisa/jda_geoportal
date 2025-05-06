@@ -181,6 +181,7 @@
       "enterTitle": "اسم الطبقة",
       "titlePlaceholder": "ادخل اسم الطبقة",
       "selectLayer": "اختر الطبقة",
+      "optional": "اختياري",
       "selectLayerPlaceholder": "اختر طبقة للتصدير",
       "selectFormat": "اختر صيغة التصدير",
       "csv": "CSV",
@@ -191,7 +192,16 @@
       "exporting": "جارٍ التصدير...",
       "success": "تم التصدير بنجاح",
       "exportComplete": "تم تصدير البيانات بنجاح.",
-      "stop": "إيقاف"
+      "stop": "إيقاف",
+      "status": {
+        "submitting": "إرسال البيانات...",
+        "polling": "استقصاء الخادم...",
+        "fetching": "جلب البيانات...",
+        "failed": "فشلت عملية التصدير",
+        "stopped": "تم إيقاف عملية التصدير",
+        "waiting": "في انتظار المعالجة...",
+        "success": "تمت عملية التصدير بنجاح"
+      }
     }
   },
   "layerList": {

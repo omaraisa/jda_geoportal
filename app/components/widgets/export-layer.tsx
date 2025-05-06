@@ -18,6 +18,8 @@ export default function ExportLayer() {
   const [isExporting, setIsExporting] = useState(false);
   const [stopRequested, setStopRequested] = useState(false);
   const stopRequestedRef = useRef(false);
+  const [status, setStatus] = useState<string>("");
+  const [statusType, setStatusType] = useState<"info" | "success" | "error" | "warning" | "">("");
 
   useEffect(() => {
     stopRequestedRef.current = stopRequested;
@@ -44,6 +46,8 @@ export default function ExportLayer() {
     setIsExporting(true);
     setStopRequested(false);
     stopRequestedRef.current = false;
+    setStatusType("info");
+    setStatus(t("widgets.exportLayer.status.submitting") || "Submitting export job...");
     try {
       let layerInput = "";
       let inputType = "geojson";
@@ -154,18 +158,24 @@ export default function ExportLayer() {
       if (outputType === "csv") outputType = "csv";
       if (outputType === "kml") outputType = "kml";
 
-      // Use outputName or fallback to a default
-      const outputNameParam =
-        outputName?.trim() ||
-        (selectedLayer.title || selectedLayer.name || "ExportedLayer");
+        // Use outputName or fallback to a default
+        let outputNameParam =
+          outputName?.trim()
+            ? outputName.trim()
+            : (selectedLayer.title || selectedLayer.name || "ExportedLayer");
 
-      const params: Record<string, any> = {
-        layer_input: layerInput,
-        input_type: inputType,
-        output_type: outputType,
-        output_name: outputNameParam,
-        f: "json",
-      };
+        // Replace spaces with underscores in the output name
+        outputNameParam = outputNameParam.replace(/[^a-zA-Z0-9_]/g, "_");
+        outputNameParam = outputNameParam.replace(/\s+/g, "_");
+
+
+        const params: Record<string, any> = {
+          layer_input: layerInput,
+          input_type: inputType,
+          output_type: outputType,
+          output_name: outputNameParam,
+          f: "json",
+        };
 
       console.log("Submitting export job with params:", params);
 
@@ -193,10 +203,15 @@ export default function ExportLayer() {
           errorMsg += " " + data.error.details.join(" ");
         }
         errorMsg += " " + JSON.stringify(data);
+        // Only log details, do not show in status
+        console.error(errorMsg);
+        setStatusType("error");
+        setStatus(t("widgets.exportLayer.status.failed") || "Export failed.");
         throw new Error(errorMsg);
       }
 
-      // Enhanced pollJobStatus: throw on failure and return job status
+      setStatusType("info");
+      setStatus(t("widgets.exportLayer.status.polling") || "Waiting for export job...");
       const jobStatus = await pollJobStatus(data.jobId);
 
       if (jobStatus.jobStatus === "esriJobFailed") {
@@ -208,9 +223,15 @@ export default function ExportLayer() {
             .join(" ");
           if (errorMsgs) errorMsg += " " + errorMsgs;
         }
+        // Only log details, do not show in status
+        console.error(errorMsg);
+        setStatusType("error");
+        setStatus(t("widgets.exportLayer.status.failed") || "Export failed.");
         throw new Error(errorMsg);
       }
 
+      setStatusType("info");
+      setStatus(t("widgets.exportLayer.status.fetching") || "Fetching export result...");
       // Inside handleExport, after pollJobStatus:
       let resultUrl = `${EXPORT_GP_URL}/jobs/${data.jobId}/results/output_file?f=json${token ? `&token=${token}` : ""}`;
       console.log("Fetching export result from:", resultUrl);
@@ -227,6 +248,8 @@ export default function ExportLayer() {
       while (resultData.value == null && tries < 50) {
         // Use ref to check latest value
         if (stopRequestedRef.current) {
+          setStatusType("warning");
+          setStatus(t("widgets.exportLayer.status.stopped") || "Export stopped by user.");
           sendMessage({
             type: "warning",
             title: t("widgets.exportLayer.stopped") || "Export stopped",
@@ -237,11 +260,18 @@ export default function ExportLayer() {
         }
         // If error is present and job failed, break and show error
         if (resultData.error) {
+          setStatusType("error");
+          setStatus(t("widgets.exportLayer.status.failed") || "Export failed.");
           console.error("Export job failed:", resultData.error);
           throw new Error(
-        `Export failed. ${resultData.error.message || ""} ${resultData.error.details?.join(" ") || ""}`
+            `Export failed. ${resultData.error.message || ""} ${resultData.error.details?.join(" ") || ""}`
           );
         }
+        setStatusType("info");
+        setStatus(
+          (t("widgets.exportLayer.status.waiting") || "Waiting for export file...") +
+            ` (${tries + 1}/50)`
+        );
         console.log(`Result not ready, retrying in 1.5 seconds... (try ${tries + 1})`);
         await new Promise(res => setTimeout(res, 1500));
         resultResponse = await fetch(resultUrl);
@@ -255,6 +285,8 @@ export default function ExportLayer() {
       }
 
       if (resultData.value?.url) {
+        setStatusType("success");
+        setStatus(t("widgets.exportLayer.status.success") || "Export complete.");
         window.open(resultData.value.url, "_blank");
         sendMessage({
           type: "info",
@@ -263,9 +295,13 @@ export default function ExportLayer() {
           duration: 6,
         });
       } else {
+        setStatusType("error");
+        setStatus(t("widgets.exportLayer.status.failed") || "Export failed. No output URL found.");
         throw new Error("Export failed. No output URL found.");
       }
     } catch (error) {
+      setStatusType("error");
+      setStatus(t("widgets.exportLayer.status.failed") || "Export failed.");
       console.error("Export error:", error);
       sendMessage({
         type: "error",
@@ -370,16 +406,29 @@ export default function ExportLayer() {
             ? t("widgets.exportLayer.exporting")
             : t("widgets.exportLayer.export")}
         </button>
-        {isExporting && (
+        {/* {isExporting && (
           <button
             className="btn btn-danger w-full"
             onClick={() => setStopRequested(true)}
             type="button"
-          >
+          ></button>
             {t("widgets.exportLayer.stop") || "Stop"}
           </button>
-        )}
+        )} */}
       </div>
+            {status && (
+        <div className={`mb-4 p-3 mt-2 ${
+            statusType === "success"
+              ? "bg-[rgba(122,181,122,0.3)] border-green-400 text-[rgb(67, 90, 67)]"
+              : statusType === "error"  
+              ? "bg-red-100 border-red-400 text-red-700"
+              : statusType === "warning"
+              ? "bg-yellow-100 border-yellow-400 text-yellow-700"
+              : "bg-blue-100 border-blue-400 text-blue-700"
+          } border rounded`}>
+          {status}
+        </div>
+      )}
     </div>
   );
 }

@@ -193,7 +193,16 @@
       "exporting": "Exporting...",
       "success": "Export Successful",
       "exportComplete": "The data has been exported successfully.",
-      "stop": "Stop Export"
+      "stop": "Stop Export",
+      "status": {
+        "submitting": "Submitting data...",
+        "polling": "Polling server...",
+        "fetching": "Fetching data...",
+        "failed": "Export process Failed",
+        "stopped": "Export process Stopped",
+        "waiting": "Waiting for process...",
+        "success": "Layer exported successfully"
+      }
     }
   },
   "layerList": {
