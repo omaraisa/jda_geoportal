@@ -31,8 +31,6 @@ export default function ExportLayer() {
   };
 
   const handleExport = async () => {
-    console.log(view?.map.layers.toArray());
-
     if (!selectedLayer) {
       sendMessage({
         type: "error",
@@ -59,14 +57,12 @@ export default function ExportLayer() {
           `${selectedLayer.url.replace(/\/+$/, "")}/${selectedLayer.layerId}/query` +
           `?where=1%3D1&outFields=*&f=geojson`;
         inputType = "geojson";
-        console.log("Exporting FeatureLayer with query URL:", layerInput);
       }
       // Handle GeoJSONLayer (esri GeoJSONLayer)
       else if (selectedLayer.type === "geojson") {
         // Use the direct URL of the GeoJSONLayer as the input
         layerInput = selectedLayer.url;
         inputType = "geojson";
-        console.log("Exporting GeoJSONLayer with URL:", layerInput);
       }
       // Handle CSVLayer (esri CSVLayer)
       else if (selectedLayer.type === "csv") {
@@ -82,47 +78,33 @@ export default function ExportLayer() {
           const geojson = featureSetToGeoJSON(featureSet);
           layerInput = JSON.stringify(geojson);
           inputType = "geojson";
-          console.log("Exporting CSVLayer as GeoJSON string (from queried features)");
         } else {
           // fallback: direct URL
           layerInput = selectedLayer.url;
           inputType = "geojson";
-          console.log("Exporting CSVLayer (direct CSV) with URL:", layerInput);
         }
       }
       // Handle MapImageLayer (Image Layer)
       else if (selectedLayer.type === "map-image") {
-        console.log("Selected MapImageLayer:", selectedLayer);
-
-        // Check if .layerId is defined and not -1 (some ArcGIS layers set layerId to -1 if not used)
-        console.log("Selected MapImageLayer layerId:", selectedLayer.layerId);
-
         // Case 1: Whole map service layer (has .layers property)
         if (Array.isArray(selectedLayer.layers) && selectedLayer.layers.length > 0) {
-          console.log("MapImageLayer .layers property:", selectedLayer.layers);
           const sublayerIds = selectedLayer.layers.map((l: any) => l.id);
-          console.log("MapImageLayer sublayerIds:", sublayerIds);
           const subId = sublayerIds[0];
-          console.log("Using sublayer id for export:", subId);
           layerInput =
             `${selectedLayer.url.replace(/\/+$/, "")}/${subId}/query` +
             `?where=1%3D1&outFields=*&f=geojson`;
           inputType = "geojson";
-          console.log("Exporting MapImageLayer (whole service) with sublayer query URL:", layerInput);
         }
         // Case 2: Only a sublayer (has .sublayers property with one item)
         else if (
           Array.isArray(selectedLayer.sublayers.toArray()) &&
           selectedLayer.sublayers.toArray()[0].id !== undefined
         ) {
-          console.log("MapImageLayer .sublayers property:", selectedLayer.sublayers);
           const subId = selectedLayer.sublayers.toArray()[0].id;
-          console.log("Using sublayer id for export:", subId);
           layerInput =
             `${selectedLayer.url.replace(/\/+$/, "")}/${subId}/query` +
             `?where=1%3D1&outFields=*&f=geojson`;
           inputType = "geojson";
-          console.log("Exporting MapImageLayer (single sublayer) with query URL:", layerInput);
         }
         // Fallback: If .layerId exists, use it as sublayer
         else if (
@@ -131,15 +113,12 @@ export default function ExportLayer() {
           Number.isInteger(Number(selectedLayer.layerId)) &&
           Number(selectedLayer.layerId) >= 0
         ) {
-          console.log("Detected valid .layerId on MapImageLayer:", selectedLayer.layerId);
           layerInput =
             `${selectedLayer.url.replace(/\/+$/, "")}/${selectedLayer.layerId}/query` +
             `?where=1%3D1&outFields=*&f=geojson`;
           inputType = "geojson";
-          console.log("Exporting MapImageLayer fallback using detected layerId:", layerInput);
         } else {
           // Final fallback: use the base URL as is
-          console.log("MapImageLayer fallback, using URL as is:", selectedLayer.url);
           layerInput = selectedLayer.url;
         }
       }
@@ -149,7 +128,6 @@ export default function ExportLayer() {
         if (selectedLayer.url && selectedLayer.url.toLowerCase().endsWith(".kml")) {
           inputType = "kml";
         }
-        console.log("Exporting non-FeatureLayer, using URL as is:", layerInput);
       }
 
       // Align outputType with GPService
@@ -158,26 +136,29 @@ export default function ExportLayer() {
       if (outputType === "csv") outputType = "csv";
       if (outputType === "kml") outputType = "kml";
 
-        // Use outputName or fallback to a default
-        let outputNameParam =
-          outputName?.trim()
-            ? outputName.trim()
-            : (selectedLayer.title || selectedLayer.name || "ExportedLayer");
+      // Use outputName or fallback to a default
+      let outputNameParam =
+        outputName?.trim()
+          ? outputName.trim()
+          : (selectedLayer.title || selectedLayer.name || "ExportedLayer");
 
-        // Replace spaces with underscores in the output name
-        outputNameParam = outputNameParam.replace(/[^a-zA-Z0-9_]/g, "_");
-        outputNameParam = outputNameParam.replace(/\s+/g, "_");
+      // Replace only non-ESRI supported characters (keep Unicode letters, numbers, and underscores)
+      // ESRI feature class names: must start with a letter, only letters, numbers, and underscores, no spaces, max 160 chars
+      // We'll replace anything except Unicode letters, numbers, and underscores with "_"
+      outputNameParam = outputNameParam.replace(/[^\p{L}\p{N}_]/gu, "_");
+      // Remove leading non-letter characters (ESRI requires starting with a letter)
+      outputNameParam = outputNameParam.replace(/^[^A-Za-z\u0600-\u06FF]+/u, "");
+      // Truncate to 160 chars
+      outputNameParam = outputNameParam.slice(0, 160);
 
+      const params: Record<string, any> = {
+        layer_input: layerInput,
+        input_type: inputType,
+        output_type: outputType,
+        output_name: outputNameParam,
+        f: "json",
+      };
 
-        const params: Record<string, any> = {
-          layer_input: layerInput,
-          input_type: inputType,
-          output_type: outputType,
-          output_name: outputNameParam,
-          f: "json",
-        };
-
-      console.log("Submitting export job with params:", params);
 
       // Get token from cookies
       const cookies = Object.fromEntries(document.cookie.split("; ").map(c => c.split("=")));
@@ -194,7 +175,6 @@ export default function ExportLayer() {
       });
 
       const data = await response.json();
-      console.log("Export job submission response:", data);
       if (!data.jobId) {
         // Show error details from the response if available
         let errorMsg = "Failed to submit export job.";
@@ -234,14 +214,12 @@ export default function ExportLayer() {
       setStatus(t("widgets.exportLayer.status.fetching") || "Fetching export result...");
       // Inside handleExport, after pollJobStatus:
       let resultUrl = `${EXPORT_GP_URL}/jobs/${data.jobId}/results/output_file?f=json${token ? `&token=${token}` : ""}`;
-      console.log("Fetching export result from:", resultUrl);
       let resultResponse = await fetch(resultUrl);
       if (!resultResponse.ok) {
         console.error("Error fetching export result:", resultResponse.status, resultResponse.statusText);
         throw new Error(`HTTP error! status: ${resultResponse.status}`);
       }
       let resultData = await resultResponse.json();
-      console.log("Export result data:", resultData);
 
       // If value is null, wait and retry a few times (the file may not be ready yet)
       let tries = 0;
@@ -272,7 +250,6 @@ export default function ExportLayer() {
           (t("widgets.exportLayer.status.waiting") || "Waiting for export file...") +
             ` (${tries + 1}/50)`
         );
-        console.log(`Result not ready, retrying in 1.5 seconds... (try ${tries + 1})`);
         await new Promise(res => setTimeout(res, 1500));
         resultResponse = await fetch(resultUrl);
          if (!resultResponse.ok) {
@@ -280,7 +257,6 @@ export default function ExportLayer() {
           throw new Error(`HTTP error! status: ${resultResponse.status}`);
         }
         resultData = await resultResponse.json();
-        console.log(`Retry export result data [${tries + 1}]:`, resultData);
         tries++;
       }
 

@@ -425,7 +425,7 @@ const useStateStore = create<State>((set, get) => ({
        if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
         layer = new FeatureLayer({ url: item.url, visible: false });
        } else if (item.type.includes("Map Service")) {
-        // Use the same sublayer technique for Map Service
+        // Fetch sublayers and add each as a FeatureLayer
         (async () => {
           try {
             const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
@@ -433,21 +433,17 @@ const useStateStore = create<State>((set, get) => ({
             const response = await fetch(`${item.url}?f=json&token=${token}`);
             const data = await response.json();
             if (data.error) {
+              // fallback: add as MapImageLayer if metadata fetch fails
               layer = new MapImageLayer({ url: item.url, visible: false });
             } else if (Array.isArray(data.layers)) {
-              // Add each sublayer as a separate MapImageLayer
+              // Add each sublayer as a separate FeatureLayer
               data.layers.reverse().forEach((sublayer: any) => {
-                const subLayerInstance = new MapImageLayer({
+                const subLayerInstance = new FeatureLayer({
+                  url: `${item.url.replace(/\/+$/, "")}/${sublayer.id}`,
                   id: `${item.id}_${sublayer.id}`,
                   title: sublayer.name,
-                  url: item.url,
+                  outFields: ["*"],
                   visible: false,
-                  sublayers: [
-                    {
-                      id: sublayer.id,
-                      visible: true,
-                    },
-                  ],
                 });
                 if (item._groupName) {
                   (subLayerInstance as any).group = item._groupName;
@@ -455,8 +451,12 @@ const useStateStore = create<State>((set, get) => ({
                 targetView.map.add(subLayerInstance);
               });
               layer = null; // Already added sublayers
+            } else {
+              // fallback: add as MapImageLayer if no sublayers
+              layer = new MapImageLayer({ url: item.url, visible: false });
             }
           } catch (error) {
+            // fallback: add as MapImageLayer on error
             console.error("Failed to fetch sublayers:", error);
             layer = new MapImageLayer({ url: item.url, visible: false });
           }
