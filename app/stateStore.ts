@@ -370,8 +370,8 @@ const useStateStore = create<State>((set, get) => ({
     userInfo: {
     fullName: "",
     username: "",
-    userType: "",
     role: "",
+    org_role: "",
     groups: [],
     },
     
@@ -380,9 +380,9 @@ const useStateStore = create<State>((set, get) => ({
       userInfo: {
       fullName: userInfo.fullName || get().userInfo?.fullName || "",
       username: userInfo.username || get().userInfo?.username || "",
+      org_role: userInfo.role || get().userInfo?.org_role || "",
+      groups:   userInfo.groups || get().userInfo?.groups || null,
       role: userInfo.role || get().userInfo?.role || "",
-      userType: userInfo.userType || get().userInfo?.userType || "",
-      groups: userInfo.groups || get().userInfo?.groups || null,
       },
     });
     },
@@ -483,6 +483,18 @@ const useStateStore = create<State>((set, get) => ({
        }
       });
     },
+
+  sessionModalOpen: false,
+  setSessionModalOpen: (open: boolean) => {
+    set({ sessionModalOpen: open });
+  },
+  handleSessionExtend: async () => {
+    set({ sessionModalOpen: false });
+    const now = Date.now();
+    const expiry = now + 60 * 60 * 1000;
+    document.cookie = `arcgis_token_expiry=${expiry}; path=/`;
+
+  }
 
 }));
 

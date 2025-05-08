@@ -1,3 +1,6 @@
+import { hasPermission } from "./hasPermission";
+import useStateStore from "@/stateStore"; // or your user role source
+
 interface MenuOption {
   name: string;
   icon: string;
@@ -36,5 +39,13 @@ const menuOptions: MenuOptions = {
     { name: "ExportLayer", icon: "export" },
   ],
 };
+
+export function getMenuOptionsForRole(userRole: string, menuOptions: MenuOptions): MenuOptions {
+  const filtered: MenuOptions = {};
+  for (const [section, options] of Object.entries(menuOptions)) {
+    filtered[section] = options.filter(opt => hasPermission(userRole, opt.name));
+  }
+  return filtered;
+}
 
 export default menuOptions;

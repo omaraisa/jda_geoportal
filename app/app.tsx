@@ -11,6 +11,7 @@ import BottomPane from "./components/bottom-pane";
 import MainMenu from "./components/ui/main-menu";
 import useAuthentication from "@/lib/hooks/use-authentication";
 import '@esri/calcite-components/dist/components/calcite-icon';
+import SessionEndModal from "./components/session-end-modal";
 
 export default function App() {
   useAuthentication()
@@ -28,8 +29,11 @@ export default function App() {
 
   return (
     <div className="absolute w-screen h-screen flex flex-col overflow-hidden">
+      {/* Session Modal */}
+      <SessionEndModal />
+
       {!appReady && (
-        <div className="absolute inset-0 z-50 bg-[#182726]  text-white flex justify-center items-center">
+        <div className="absolute inset-0 z-20 bg-[#182726]  text-white flex justify-center items-center">
           <AppLoader />
         </div>
       )}

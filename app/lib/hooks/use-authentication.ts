@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import useStateStore from "@/stateStore";
 import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, fetchArcGISUserInfo } from '@/lib/authenticateArcGIS'
-import { redirect } from 'next/navigation';
 import setAuthorizationLevel from "@/lib/authorizeArcGIS";
 
-const useAuthentication = (interval = 1200000) => {
-  const { sendMessage, setUserInfo } = useStateStore((state) => state);
+const useAuthentication = (interval = 2000) => {
+  const { setUserInfo, setSessionModalOpen } = useStateStore((state) => state);
 
   useEffect(() => {
     initializeArcGIS();
@@ -14,16 +13,8 @@ const useAuthentication = (interval = 1200000) => {
       const isValid = await isArcgisTokenValid();
 
       if (!isValid) {
-        sendMessage({
-          title: "Session Expired",
-          body: "You will be redirected to the login page",
-          type: "warning",
-          duration: 20,
-        });
-
-        setTimeout(() => {
-          redirect(process.env.NEXT_PUBLIC_LOGIN_URL || '/');
-        }, 21000);
+        // Show session modal instead of redirecting immediately
+        setSessionModalOpen(true);
         return;
       }
 
@@ -31,10 +22,10 @@ const useAuthentication = (interval = 1200000) => {
       if (isAuthenticated) {
         const userInfo = await fetchArcGISUserInfo();
         if (userInfo) {
-          const userType = await setAuthorizationLevel(userInfo);
+          const role = await setAuthorizationLevel(userInfo);
 
-          if (userInfo && userType) {
-            userInfo.userType = userType;
+          if (userInfo && role) {
+            userInfo.role = role;
             setUserInfo(userInfo);
 
           }

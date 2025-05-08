@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./main-menu.module.css";
 import menuOptions from "@/lib/menu-options";
 import MenuOption from "./menu-option";
 import OptionsMenuHeader from "./options-menu-header";
 import SubOptionsMenu from "./sub-options-menu";
+import { hasPermission } from "@/lib/hasPermission";
+import useStateStore from "@/stateStore";
 
 interface OptionsProps {
   menuState: {
@@ -16,6 +18,8 @@ interface OptionsProps {
 }
 
 const OptionsMenu: React.FC<OptionsProps> = ({ menuState, setMenuState}) => {
+  // Get user role from state
+  const userRole = useStateStore(state => state.userInfo?.role || "viewer...");
 
   const toggleSubOptionsMenu = (optionName: string) => {
     setMenuState((prev: typeof menuState) => ({
@@ -35,8 +39,20 @@ const OptionsMenu: React.FC<OptionsProps> = ({ menuState, setMenuState}) => {
   return (
     <div className={`${styles.options} ${menuState.isOptionsMenuExpanded ? styles.expanded : ""}`}>
       <OptionsMenuHeader selectedMenu={menuState.selectedMenu} hideMenu={() => setMenuState({ ...menuState, isOptionsMenuExpanded: false })} />
-      {menuOptions[menuState.selectedMenu]?.map((option, index) => (
-      <MenuOption key={index} icon={option.icon} name={option.name} subMenuComponent={option.subMenuComponent} toggleSubOptionsMenu={() => toggleSubOptionsMenu(option.name)}  toggleOptionsMenu ={()=> toggleOptionsMenu()} />
+      {menuOptions[menuState.selectedMenu]
+      ?.filter(option => {
+        const hasPerm = hasPermission(userRole, option.name);
+        return hasPerm;
+      })
+      .map((option, index) => (
+        <MenuOption
+        key={index}
+        icon={option.icon}
+        name={option.name}
+        subMenuComponent={option.subMenuComponent}
+        toggleSubOptionsMenu={() => toggleSubOptionsMenu(option.name)}
+        toggleOptionsMenu={() => toggleOptionsMenu()}
+        />
       ))}
       <SubOptionsMenu selectedOption={menuState.selectedSubMenu} isExpanded={menuState.isSubOptionsMenuExpanded} />
     </div>

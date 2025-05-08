@@ -25,7 +25,7 @@ export const routeLayerTypes = [
     "route"
 ];
 export const layerGroups = ["MyLayers", "Basemap", 
-    "Atkins",
+    "AtkinsLayers",
     "Building",
     "LandParcels",
     "LandUse",
@@ -47,8 +47,11 @@ export const layerGroups = ["MyLayers", "Basemap",
     "NationalAddress",
 ];
 
-export const portal_usertype_groups : { [key: string]: string } = {
-    "gportal_viewer": "viewer",
+export const portal_role_groups : { [key: string]: string } = {
     "gportal_editor": "editor",
     "gportal_admin": "admin"
 };
+
+// Centralized authorization roles and permissions
+export const userRoles = ["viewer", "editor", "admin"] as const;
+

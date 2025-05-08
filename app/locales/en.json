@@ -236,7 +236,7 @@
       "TheSaudiArabiaNationalSpatialReferenceSystem": "The Saudi Arabia National Spatial Reference System",
       "Transport": "Transport",
       "Utilities": "Utilities",
-      "Atkins": "Atkins Layers",
+      "AtkinsLayers": "Atkins Layers",
       "Water": "Water",
       "Projects": "Projects"
     }
@@ -320,5 +320,10 @@
         "body": "Something is not right❗. Please try again."
       }
     }
+  },
+  "sessionModal" : {
+    "sessionExpiringMsg": "Your session is about to expire. Do you want to extend it?",
+    "Extend": "Extend",
+    "Exit": "Exit"
   }
 }

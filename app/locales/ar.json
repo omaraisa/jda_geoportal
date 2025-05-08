@@ -235,7 +235,7 @@
       "TheSaudiArabiaNationalSpatialReferenceSystem": "نظام الإسناد المكاني الوطني السعودي",
       "Transport": "النقل",
       "Utilities": "المرافق",
-      "Atkins": "طبقات أتكنز",
+      "AtkinsLayers": "طبقات أتكنز",
       "Water": "المياه",
       "Projects": "المشاريع"
     }
@@ -319,5 +319,10 @@
         "body": "هناك شيء غير صحيح ❗. يرجى المحاولة مرة أخرى."
       }
     }
+  },
+  "sessionModal" : {
+    "sessionExpiringMsg":"الجلسة الخاصة بك على وشك الانتهاء. هل ترغب في تمديدها؟",
+    "Extend": "تمديد",
+    "Exit": "إنهاء"
   }
 }

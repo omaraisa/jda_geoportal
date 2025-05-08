@@ -178,7 +178,7 @@ export const baseMapLayerConfigurations: InitialLayersConfiguration[] = [
     sourceType: "url",
     url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/Atkins_Basemap_WTL1/MapServer",
     portalItemId: null,
-    groups: ["Atkins"],
+    groups: ["AtkinsLayers"],
     visible: false,
     labelsEnabled: false,
     labelingInfo: null,

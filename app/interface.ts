@@ -117,8 +117,8 @@ export interface AttributeQueryState {
 export interface ArcGISUserInfo {
   fullName: string | null;
   username: string | null;
+  org_role: string | null;
   role: string | null;
-  userType: string | null;
   groups: {
     id: string;
     title: string;

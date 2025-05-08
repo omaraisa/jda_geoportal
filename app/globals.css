@@ -26,7 +26,7 @@
 
   --danger: #dd8886;
   --danger-light: #e6b1b0;
-  --danger-dark: #a55350;
+  --danger-dark: #bf4541;
 
   --gray: #3d3d3d;
   --gray-light: #747474;
@@ -163,8 +163,8 @@ button, a, i, [role="button"], [onclick] {
 }
 
 .btn-danger {
-  background-color: var(--danger);
-  color: var(--foreground);
+  background-color: var(--danger-dark);
+  color: var(--background);
 }
 
 .close-btn {

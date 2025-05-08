@@ -1,6 +1,7 @@
 //  Z-index Dictionary
 const zIndex = {
-    50: ['AppLoader'],
+    30: ['SessionEndModal'],
+    20: ['AppLoader'],
     10: [ 'Header'],
     5: ['SubOptionsMenu','MessagesContainer'],
     4: ['ZoomControls', 'Sidebar'],
