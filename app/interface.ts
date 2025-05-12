@@ -36,7 +36,7 @@ export interface InitialLayersConfiguration {
   sourceType: string;
   url?: string;
   portalItemId?: string | null;
-  groups?: string[];
+  group?: string;
   visible?: boolean;
   labelsEnabled?: boolean;
   labelingInfo?: any;

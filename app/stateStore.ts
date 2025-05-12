@@ -96,7 +96,7 @@ const useStateStore = create<State>((set, get) => ({
     type,
     url,
     title,
-    groups,
+    group,
     visible,
     opacity,
     minScale,
@@ -113,7 +113,7 @@ const useStateStore = create<State>((set, get) => ({
       opacity,
       minScale,
       maxScale,
-      groups,
+      group,
       ...(labelingInfo && { labelingInfo }),
       ...(renderer && { renderer }),
       visualVariables: visualVariables || [],
@@ -129,54 +129,117 @@ const useStateStore = create<State>((set, get) => ({
     let layersToAdd: any[] = [];
     if (type === "MapImageLayer" && url) {
       try {
-        const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
-        const token = cookies["arcgis_token"];
+        const token = process.env.NEXT_PUBLIC_ArcGISAPIKey;
 
         const response = await fetch(`${url}?f=json&token=${token}`);
         const data = await response.json();
         if (data.error) {
+          // fallback: add as MapImageLayer if metadata fetch fails
+          layersToAdd = [
+        new MapImageLayer({
+          ...layerConfig,
+          url,
+        }),
+          ];
         } else if (Array.isArray(data.layers)) {
-          layersToAdd = data.layers.map((sublayer: any) => {
-            const newLayer = new MapImageLayer({
-              ...layerConfig,
-              id: `${id}_${sublayer.id}`,
-              title: sublayer.name,
-              url,
-              sublayers: [
-                {
-                  id: sublayer.id,
-                  visible: true,
-                },
-              ],
-            });
-            return newLayer;
+          // Add each sublayer as a separate FeatureLayer
+          layersToAdd = data.layers.reverse().map((sublayer: any) => {
+        const subLayerInstance = new FeatureLayer({
+          url: `${url.replace(/\/+$/, "")}/${sublayer.id}`,
+          id: `${id}_${sublayer.id}`,
+          title: sublayer.name,
+          outFields: ["*"],
+          visible: false,
+          ...layerConfig,
+        });
+        (subLayerInstance as any).group = layerConfig.group ? layerConfig.group.join(', ') : '';
+        return subLayerInstance;
           });
-          layersToAdd.reverse();
+        } else {
+          // fallback: add as MapImageLayer if no sublayers
+          layersToAdd = [
+        new MapImageLayer({
+          ...layerConfig,
+          url,
+        }),
+          ];
         }
       } catch (error) {
+        // fallback: add as MapImageLayer on error
         console.error("Failed to fetch sublayers:", error);
-      }
-      if (layersToAdd.length === 0) {
         layersToAdd = [
           new MapImageLayer({
-            ...layerConfig,
-            url,
+        ...layerConfig,
+        url,
           }),
         ];
       }
     } else if (type === "FeatureLayer" && url) {
-      const LayerClass = layerTypes[type];
-      if (LayerClass) {
-        const layerConfigWithSource = {
+      try {
+        const token = process.env.NEXT_PUBLIC_ArcGISAPIKey;
+        const serviceUrl = url.replace(/\/+$/, ""); // Normalize URL, remove trailing slash
+        const metadataUrl = `${serviceUrl}?f=json${token ? `&token=${token}` : ''}`;
+        const response = await fetch(metadataUrl);
+        const data = await response.json();
+
+        // Check if sublayers exist and should be added individually
+        if (!data.error && Array.isArray(data.layers) && data.layers.length > 0) {
+          // This is a FeatureServer with multiple layers, add them individually
+          // Reversing to match behavior in other parts of the code (e.g., MapImageLayer sublayer handling)
+          layersToAdd = data.layers.reverse().map((sublayer: any) => {
+          const subLayerSpecificConfig = {
+            // Base properties from original layerConfig
+            visible: layerConfig.visible,
+            opacity: layerConfig.opacity,
+            minScale: layerConfig.minScale,
+            maxScale: layerConfig.maxScale,
+            ...(layerConfig.labelingInfo && { labelingInfo: layerConfig.labelingInfo }),
+            ...(layerConfig.renderer && { renderer: layerConfig.renderer }),
+            visualVariables: layerConfig.visualVariables || [],
+            // Sublayer specific properties
+            url: `${serviceUrl}/${sublayer.id}`,
+            id: `${layerConfig.id}_${sublayer.id}`, // Use original id from createLayer params as prefix
+            title: sublayer.name, // Use sublayer's name for title
+            outFields: ["*"], // Default, consider making configurable if needed
+            // portalItemId is not passed to sublayers of a URL-based service
+          };
+          const featureLayer = new FeatureLayer(subLayerSpecificConfig);
+          featureLayer.elevationInfo = { mode: "on-the-ground" };
+          // Apply group property, converting array from layerConfig.group to string
+          (featureLayer as any).group = layerConfig.group ? layerConfig.group : '';
+          return featureLayer;
+          });
+        } else {
+          // Not a FeatureServer with multiple layers, or error fetching metadata, or no sublayers.
+          // Add as a single FeatureLayer (could be FeatureServer/0 or a direct feature layer URL).
+          const LayerClass = layerTypes[type]; // Should be FeatureLayer constructor here
+          if (LayerClass) {
+          const singleLayer = new LayerClass({
+            url, // Original URL
+            portalItem: portalItemId ? { id: portalItemId } : undefined,
+            ...layerConfig, // Original id, title, and other configs from createLayer params
+          }) as FeatureLayer;
+          singleLayer.elevationInfo = { mode: "on-the-ground" };
+          (singleLayer as any).group = layerConfig.group ? layerConfig.group.join(', ') : '';
+          layersToAdd = [singleLayer];
+          }
+        }
+        } catch (error) {
+        console.error(`Failed to process FeatureLayer URL ${url}:`, error);
+        // Fallback: create as a single FeatureLayer on any error during fetch/processing
+        const LayerClass = layerTypes[type]; // Should be FeatureLayer constructor here
+        if (LayerClass) {
+          const fallbackLayer = new LayerClass({
           url,
           portalItem: portalItemId ? { id: portalItemId } : undefined,
-          ...layerConfig,
-        };
-        const layer = new LayerClass(layerConfigWithSource);
-        (layer as FeatureLayer).elevationInfo = { mode: "on-the-ground" };
-        (layer as any).groups = [...(layerConfig.groups || [])];
-        layersToAdd = [layer];
-      }
+          ...layerConfig, // Original id, title, and other configs
+          }) as FeatureLayer;
+          fallbackLayer.elevationInfo = { mode: "on-the-ground" };
+          (fallbackLayer as any).group = layerConfig.group ? layerConfig.group.join(', ') : '';
+          layersToAdd = [fallbackLayer];
+        }
+        }
+      
     } else if (type === "TileLayer" && url) {
       const LayerClass = layerTypes[type];
       if (LayerClass) {

@@ -24,7 +24,7 @@ const MainMap = () => {
   const updateTargetView = useStateStore((state) => state.updateTargetView);
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
   const setAppReady = useStateStore((state) => state.setAppReady);
-  const loadUserGroupLayers = useStateStore((state) => state.loadUserGroupLayers);
+  const addBasemapLayers = useStateStore((state) => state.addBasemapLayers);
   useCoordinatesDisplay(viewRef.current) 
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const MainMap = () => {
               ?.when(() => {
                 updateMapView(viewRef.current!);
                 updateTargetView(viewRef.current!);
-                loadUserGroupLayers();
+                addBasemapLayers();
                 setAppReady(true);
               })
               .catch((error: any) => {

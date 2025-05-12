@@ -26,7 +26,7 @@ const menuOptions: MenuOptions = {
   ],
   analysis: [
     { name: "NetworkAnalysis", icon: "utility-network" },
-    { name: "DirectionsComponent", icon: "tour" }, // <-- Add this line
+    // { name: "DirectionsComponent", icon: "tour" }, // <-- Add this line
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },
@@ -35,9 +35,9 @@ const menuOptions: MenuOptions = {
   layers: [
     { name: "LayerListComponent", icon: "list" },
     { name: "LegendComponent", icon: "legend" },
-    { name: "AddLayer", icon: "add-layer" },
-    { name: "UploadLayer", icon: "upload" },
-    { name: "ExportLayer", icon: "export" },
+    // { name: "AddLayer", icon: "add-layer" },
+    // { name: "UploadLayer", icon: "upload" },
+    // { name: "ExportLayer", icon: "export" },
   ],
 };
 

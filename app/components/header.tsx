@@ -14,7 +14,7 @@ const Header: React.FC = () => {
         }`}
       >
         <LanguageSwitcher />
-        <LogoutButton />
+        {/* <LogoutButton /> */}
       </div>
     </div>
   );
