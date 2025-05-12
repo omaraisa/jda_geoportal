@@ -26,6 +26,7 @@ const menuOptions: MenuOptions = {
   ],
   analysis: [
     { name: "NetworkAnalysis", icon: "utility-network" },
+    { name: "DirectionsComponent", icon: "tour" }, // <-- Add this line
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },

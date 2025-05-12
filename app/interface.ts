@@ -99,6 +99,13 @@ export interface State {
   loadBookmarks: () => void;
   loadUserGroupLayers: () => void;
   setUserInfo: (userInfo: ArcGISUserInfo) => void;
+
+  // Session modal state and handlers
+  sessionModalOpen: boolean;
+  setSessionModalOpen: (open: boolean) => void;
+  handleSessionExtend: () => void;
+  // Optionally, if you want to expose handleSessionExit:
+  // handleSessionExit: () => void;
 }
 
 export interface AttributeQueryState {

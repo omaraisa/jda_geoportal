@@ -48,6 +48,7 @@
       "statisticalAnalysis": "Statistical Analysis",
       "terrainAnalysis": "Terrain Analysis",
       "NetworkAnalysis": "Network Analysis",
+      "DirectionsComponent": "Directions",
       "visibilityAnalysis": "Visibility Analysis",
       "heatmapAnalysis": "Heatmap Analysis",
       "clusterAnalysis": "Cluster Analysis",
@@ -203,6 +204,17 @@
         "waiting": "Waiting for process...",
         "success": "Layer exported successfully"
       }
+    },
+    "networkAnalysis": {
+      "title": "Route Analysis",
+      "addStop": "Add Stop",
+      "clearStops": "Clear",
+      "clickMapToAddStops": "Click on the map to add stops.",
+      "simulateMapClick": "Simulate Map Click",
+      "stops": "Stops",
+      "noStops": "No stops added.",
+      "stop": "Stop {{number}}",
+      "findRoute": "Find Route"
     }
   },
   "layerList": {

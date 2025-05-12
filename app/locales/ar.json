@@ -47,6 +47,7 @@
     "statisticalAnalysis": "التحليل الإحصائي",
     "terrainAnalysis": "تحليل التضاريس",
     "NetworkAnalysis": "التحليل الشبكي",
+    "DirectionsComponent": "الاتجاهات",
     "visibilityAnalysis": "تحليل الرؤية",
     "heatmapAnalysis": "تحليل خريطة الحرارة",
     "clusterAnalysis": "تحليل التجمعات",
@@ -202,6 +203,17 @@
         "waiting": "في انتظار المعالجة...",
         "success": "تمت عملية التصدير بنجاح"
       }
+    },
+    "networkAnalysis": {
+      "title": "تحليل المسار",
+      "addStop": "إضافة نقطة توقف",
+      "clearStops": "مسح",
+      "clickMapToAddStops": "انقر على الخريطة لإضافة نقاط التوقف.",
+      "simulateMapClick": "محاكاة النقر على الخريطة",
+      "stops": "نقاط التوقف",
+      "noStops": "لم تتم إضافة نقاط توقف.",
+      "stop": "نقطة {{number}}",
+      "findRoute": "ابحث عن المسار"
     }
   },
   "layerList": {

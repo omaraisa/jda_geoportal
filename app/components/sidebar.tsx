@@ -42,6 +42,9 @@ const SketchComponent = dynamic(() => import("@/components/widgets/sketch"), {
 const NetworkAnalysis = dynamic(() => import("@/components/widgets/network-analysis"), {
   ssr: false,
 });
+const DirectionsComponent = dynamic(() => import("@/components/widgets/directions"), {
+  ssr: false,
+});
 const AddLayer = dynamic(() => import("@/components/widgets/add-layer"), {
   ssr: false,
 });
@@ -67,6 +70,7 @@ const components = {
   MeasurementComponent,
   SketchComponent,
   NetworkAnalysis,
+  DirectionsComponent,
   AddLayer,
   UploadLayer,
   ExportLayer,
