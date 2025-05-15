@@ -422,9 +422,64 @@ const useStateStore = create<State>((set, get) => ({
         item.url = item.url.replace(/^http:/, "https:");
        }
       
-       if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
-        layer = new FeatureLayer({ url: item.url, visible: false });
-       } else if (item.type.includes("Map Service")) {
+      if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
+       // Try to fetch sublayers and add each as a FeatureLayer
+       (async () => {
+         try {
+          const cookies = Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')));
+          const token = cookies["arcgis_token"];
+           const serviceUrl = item.url.replace(/\/+$/, "");
+           const metadataUrl = `${serviceUrl}?f=json${token ? `&token=${token}` : ''}`;
+           const response = await fetch(metadataUrl);
+           const data = await response.json();
+
+           if (!data.error && Array.isArray(data.layers) && data.layers.length > 0) {
+        // Add each sublayer as a separate FeatureLayer
+        data.layers.reverse().forEach((sublayer: any) => {
+          const subLayerInstance = new FeatureLayer({
+            url: `${serviceUrl}/${sublayer.id}`,
+            id: `${item.id}_${sublayer.id}`,
+            title: sublayer.name,
+            outFields: ["*"],
+            visible: false,
+          });
+          if (item._groupName) {
+            (subLayerInstance as any).group = item._groupName;
+          }
+          targetView.map.add(subLayerInstance);
+        });
+           } else {
+        // Not a FeatureServer with multiple layers, or error fetching metadata, or no sublayers.
+        const featureLayer = new FeatureLayer({
+          url: item.url,
+          id: item.id,
+          title: item.title,
+          outFields: ["*"],
+          visible: false,
+        });
+        if (item._groupName) {
+          (featureLayer as any).group = item._groupName;
+        }
+        targetView.map.add(featureLayer);
+           }
+         } catch (error) {
+           // Fallback: create as a single FeatureLayer on any error during fetch/processing
+           console.error(`Failed to process FeatureLayer URL ${item.url}:`, error);
+           const featureLayer = new FeatureLayer({
+        url: item.url,
+        id: item.id,
+        title: item.title,
+        outFields: ["*"],
+        visible: false,
+           });
+           if (item._groupName) {
+        (featureLayer as any).group = item._groupName;
+           }
+           targetView.map.add(featureLayer);
+         }
+       })();
+       return;
+      } else if (item.type.includes("Map Service")) {
         // Fetch sublayers and add each as a FeatureLayer
         (async () => {
           try {

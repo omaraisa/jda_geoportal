@@ -127,7 +127,7 @@ export default function MeasurementComponent() {
       {/* Distance Measurement Widget */}
       {showDistance && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-white font-semibold">{t('widgets.measurements.distanceMeasurement')}</h3>
+          <h3 className="text-foreground font-semibold">{t('widgets.measurements.distanceMeasurement')}</h3>
           <div
             ref={distanceMeasurementRef}
             className="flex-1"
@@ -139,7 +139,7 @@ export default function MeasurementComponent() {
       {/* Area Measurement Widget */}
       {showArea && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-white font-semibold">{t('widgets.measurements.areaMeasurement')}</h3>
+          <h3 className="text-foreground font-semibold">{t('widgets.measurements.areaMeasurement')}</h3>
           <div
             ref={areaMeasurementRef}
             className="flex-1"
