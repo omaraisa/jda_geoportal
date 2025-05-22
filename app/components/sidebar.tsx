@@ -39,7 +39,7 @@ const MeasurementComponent = dynamic(() => import("@/components/widgets/measurem
 const SketchComponent = dynamic(() => import("@/components/widgets/sketch"), {
   ssr: false,
 });
-const NetworkAnalysis = dynamic(() => import("@/components/widgets/network-analysis"), {
+const ClosestFacility = dynamic(() => import("@/components/widgets/closest-facility"), {
   ssr: false,
 });
 const DirectionsComponent = dynamic(() => import("@/components/widgets/directions"), {
@@ -69,7 +69,7 @@ const components = {
   CoordinateConversionComponent,
   MeasurementComponent,
   SketchComponent,
-  NetworkAnalysis,
+  ClosestFacility,
   DirectionsComponent,
   AddLayer,
   UploadLayer,

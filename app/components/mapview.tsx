@@ -11,6 +11,9 @@ interface CustomMapView extends MapView {
 }
 
 const MainMap = () => {
+  // solveClosestFacility()
+
+
   const mapRef = useRef(null);
   const viewRef = useRef<CustomMapView | null>(null);
   const mapInitializedRef = useRef(false);
@@ -126,3 +129,62 @@ const MainMap = () => {
 };
 
 export default MainMap;
+
+function solveClosestFacility() {
+  const token = "TU_C3t7ur96bsZCfKR0XPRUxzMvoUpcLwyrJrnZ3DgNJv0i-aSSeiRAYhZHgnOCAhF3kcnLFIGOIklG3cV3edC3SWmTeosWSVJHYWX5Jbqsa7VDDBsCp9ECUDMuh8qupiXnMtM-IDuwruWC4RF8eOgjuVsGmHfPsrceuScPT3Io."; // Replace with your actual token
+
+  const url = "https://gis.jda.gov.sa/agserver/rest/services/JeddahNetwork/NAServer/Closest%20Facility/solveClosestFacility";
+
+  // Coordinates in WGS84 (will still try to send them as 4326, assuming the server supports it)
+  const incident = {
+    geometry: { x: 39.1263, y: 21.6578, spatialReference: { wkid: 4326 } },
+    attributes: { Name: "Incident 1", ID: 1 }
+  };
+
+  const facility = {
+    geometry: { x: 39.163857, y: 21.6064, spatialReference: { wkid: 4326 } },
+    attributes: { Name: "Facility 1", ID: 1 }
+  };
+
+  // Construct POST body
+  const params = new URLSearchParams({
+    f: "json",
+    token,
+    incidents: JSON.stringify({
+      features: [incident],
+      geometryType: "esriGeometryPoint",
+      spatialReference: { wkid: 4326 }
+    }),
+    facilities: JSON.stringify({
+      features: [facility],
+      geometryType: "esriGeometryPoint",
+      spatialReference: { wkid: 4326 }
+    }),
+    travelDirection: "toFacility", // or "fromFacility"
+    defaultCutoff: "10000", // max distance in meters (arbitrary large value)
+    returnCFRoutes: "true",
+    returnDirections: "false",
+    outSR: "4326"
+  });
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: params.toString()
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Closest Facility Result:", data);
+      if (data.routes && data.routes.features.length) {
+        console.log("Found Route:", data.routes.features[0].attributes);
+      } else {
+        console.warn("No route found or response did not include routes.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+
+}

@@ -47,7 +47,7 @@
       "proximityAnalysis": "Proximity Analysis",
       "statisticalAnalysis": "Statistical Analysis",
       "terrainAnalysis": "Terrain Analysis",
-      "NetworkAnalysis": "Network Analysis",
+      "ClosestFacility": "Nearest Landmark",
       "DirectionsComponent": "Directions",
       "visibilityAnalysis": "Visibility Analysis",
       "heatmapAnalysis": "Heatmap Analysis",
@@ -205,16 +205,25 @@
         "success": "Layer exported successfully"
       }
     },
-    "networkAnalysis": {
-      "title": "Route Analysis",
-      "addStop": "Add Stop",
-      "clearStops": "Clear",
-      "clickMapToAddStops": "Click on the map to add stops.",
-      "simulateMapClick": "Simulate Map Click",
-      "stops": "Stops",
-      "noStops": "No stops added.",
-      "stop": "Stop {{number}}",
-      "findRoute": "Find Route"
+    "closestFacility": {
+      "title": "Closest Facility Analysis",
+      "addIncident": "Add Location",
+      "changeIncident": "Change Location",
+      "addFacility": "Add Facility",
+      "clearFacilities": "Clear Facilities",
+      "incidentLocation": "Location:",
+      "facilities": "Facilities:",
+      "targetLayer": "Target Layer",
+      "selectLayer": "Select a layer",
+      "numFacilities": "Number of Facilities",
+      "run": "Run",
+      "status": {
+        "running": "Running analysis...",
+        "success": "Analysis complete.",
+        "noRoutes": "No routes found. Please check your incident and facilities.",
+        "error": "Analysis failed."
+      },
+      "clickMapToAddIncident": "Click on the map to add location."
     }
   },
   "layerList": {

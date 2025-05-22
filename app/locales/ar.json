@@ -46,7 +46,7 @@
     "proximityAnalysis": "تحليل التقارب",
     "statisticalAnalysis": "التحليل الإحصائي",
     "terrainAnalysis": "تحليل التضاريس",
-    "NetworkAnalysis": "التحليل الشبكي",
+    "ClosestFacility": "أقرب معلم",
     "DirectionsComponent": "الاتجاهات",
     "visibilityAnalysis": "تحليل الرؤية",
     "heatmapAnalysis": "تحليل خريطة الحرارة",
@@ -204,16 +204,25 @@
         "success": "تمت عملية التصدير بنجاح"
       }
     },
-    "networkAnalysis": {
-      "title": "تحليل المسار",
-      "addStop": "إضافة نقطة توقف",
-      "clearStops": "مسح",
-      "clickMapToAddStops": "انقر على الخريطة لإضافة نقاط التوقف.",
-      "simulateMapClick": "محاكاة النقر على الخريطة",
-      "stops": "نقاط التوقف",
-      "noStops": "لم تتم إضافة نقاط توقف.",
-      "stop": "نقطة {{number}}",
-      "findRoute": "ابحث عن المسار"
+    "closestFacility": {
+      "title": "تحليل أقرب منشأة",
+      "addIncident": "إضافة موقع",
+      "changeIncident": "تغيير الموقع",
+      "addFacility": "إضافة منشأة",
+      "clearFacilities": "مسح المنشآت",
+      "incidentLocation": "الموقع:",
+      "facilities": "المنشآت:",
+      "targetLayer": "طبقة الهدف",
+      "selectLayer": "اختر طبقة",
+      "numFacilities": "عدد المنشآت",
+      "run": "تشغيل",
+      "status": {
+        "running": "جاري التحليل...",
+        "success": "اكتمل التحليل.",
+        "noRoutes": "لم يتم العثور على مسارات. يرجى التحقق من موقع الموقع والمنشآت.",
+        "error": "فشل التحليل."
+      },
+    "clickMapToAddIncident": "انقر على الخريطة لإضافة الموقع."
     }
   },
   "layerList": {

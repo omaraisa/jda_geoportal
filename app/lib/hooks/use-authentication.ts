@@ -3,7 +3,7 @@ import useStateStore from "@/stateStore";
 import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, fetchArcGISUserInfo } from '@/lib/authenticateArcGIS'
 import setAuthorizationLevel from "@/lib/authorizeArcGIS";
 
-const useAuthentication = (interval = 2000) => {
+const useAuthentication = (interval = 120000) => {
   const { setUserInfo, setSessionModalOpen } = useStateStore((state) => state);
 
   useEffect(() => {

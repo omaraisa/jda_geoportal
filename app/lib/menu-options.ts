@@ -25,8 +25,8 @@ const menuOptions: MenuOptions = {
     { name: "CoordinateConversionComponent", icon: "coordinate-system" },
   ],
   analysis: [
-    { name: "NetworkAnalysis", icon: "utility-network" },
-    { name: "DirectionsComponent", icon: "tour" }, // <-- Add this line
+    { name: "DirectionsComponent", icon: "tour" }, 
+    { name: "ClosestFacility", icon: "utility-network" },
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },

@@ -3,6 +3,8 @@ import Directions from "@arcgis/core/widgets/Directions";
 import RouteLayer from "@arcgis/core/layers/RouteLayer";
 import useStateStore from "@/stateStore";
 
+const ROUTE_SERVICE_URL = "https://gis.jda.gov.sa/agserver/rest/services/JeddahNetwork/NAServer/Route";
+
 export default function DirectionsComponent() {
   const directionsRef = useRef<HTMLDivElement>(null);
   const directionsWidget = useRef<Directions | null>(null);
@@ -14,37 +16,31 @@ export default function DirectionsComponent() {
   useEffect(() => {
     if (!view || !directionsRef.current) return;
 
-    // Ensure a single RouteLayer exists
-    if (!routeLayerRef.current || !view.map.layers.includes(routeLayerRef.current)) {
-      // Remove any previous RouteLayer
-      view.map.layers.forEach((layer: any) => {
-        if (layer.type === "route") {
-          view.map.remove(layer);
-        }
+    if (!routeLayerRef.current) {
+      routeLayerRef.current = new RouteLayer({
+        url: ROUTE_SERVICE_URL
       });
-      // Add new RouteLayer
-      routeLayerRef.current = new RouteLayer();
       view.map.add(routeLayerRef.current);
     }
 
-    // Initialize or update the Directions widget
-    if (
-      directionsWidget.current &&
-      directionsWidget.current.container instanceof HTMLElement &&
-      directionsRef.current.contains(directionsWidget.current.container)
-    ) {
-      directionsWidget.current.view = view;
-      directionsWidget.current.layer = routeLayerRef.current || undefined;
-    } else {
+    if (!directionsWidget.current) {
       directionsWidget.current = new Directions({
-        view: view,
-        layer: routeLayerRef.current || undefined,
+        view,
+        layer: routeLayerRef.current,
         container: directionsRef.current,
+        visibleElements: {
+          saveButton: false,
+          saveAsButton: false,
+        },
       });
       addWidget("directionsWidget", directionsWidget.current);
+    } else {
+      directionsWidget.current.view = view;
+      if (directionsWidget.current.layer !== routeLayerRef.current) {
+        directionsWidget.current.layer = routeLayerRef.current;
+      }
     }
 
-    // No destroy/cleanup to preserve widget state, just like Legend
   }, [view]);
 
   return (
