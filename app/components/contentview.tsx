@@ -10,6 +10,8 @@ const MainScene = dynamic(() => import("./sceneview"), { ssr: false });
 
 const ContentView: React.FC = () => {
   const viewMode = useStateStore((state) => state.viewMode);
+  const updateStats = useStateStore((state) => state.updateStats);
+  
   const [splitSizes, setSplitSizes] = useState<number[]>([50, 50]);
 
   useEffect(() => {
@@ -17,9 +19,11 @@ const ContentView: React.FC = () => {
       setSplitSizes([100, 0]);
     } else if (viewMode === "3D") {
       setSplitSizes([0, 100]);
+    updateStats("view_3d_enabled");
     } else if (viewMode === "Dual") {
       setSplitSizes([50, 50]);
-    }
+    updateStats("view_dual_enabled");
+  }
   }, [viewMode]);
 
   return (

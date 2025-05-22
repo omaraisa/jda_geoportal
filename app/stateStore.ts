@@ -5,7 +5,7 @@ import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import { State, Bookmark, ArcGISUserInfo } from "@/interface";
 import * as InitialLayersConfiguration from "@/lib/initial-layers";
-import MapView from "@arcgis/core/views/MapView";
+import { incrementStatisticsFeature } from "@/lib/database";
 
 const useStateStore = create<State>((set, get) => ({
   language: typeof localStorage !== "undefined" ? localStorage.getItem("appLanguage") || "en" : "en",
@@ -549,6 +549,12 @@ const useStateStore = create<State>((set, get) => ({
     const expiry = now + 60 * 60 * 1000;
     document.cookie = `arcgis_token_expiry=${expiry}; path=/`;
 
+  },
+
+  updateStats: (featurename: string) => {
+    incrementStatisticsFeature(featurename).then((response) => {
+      // console.log(response.message);
+    })
   }
 
 }));

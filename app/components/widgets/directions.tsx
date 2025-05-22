@@ -12,6 +12,7 @@ export default function DirectionsComponent() {
 
   const view = useStateStore((state) => state.targetView);
   const addWidget = useStateStore((state) => state.addWidget);
+  const updateStats = useStateStore((state) => state.updateStats);
 
   useEffect(() => {
     if (!view || !directionsRef.current) return;
@@ -40,7 +41,7 @@ export default function DirectionsComponent() {
         directionsWidget.current.layer = routeLayerRef.current;
       }
     }
-
+    updateStats("directions_performed");
   }, [view]);
 
   return (

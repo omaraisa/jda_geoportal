@@ -11,23 +11,25 @@ export default function LayerListComponent() {
     if (!layerListRef.current || !view) return;
 
     const updateGroups = () => {
+      const layersArr = view.map.layers.toArray();
       const groups = Array.from(
         new Set(
-          view.map.layers
-            .toArray()
+          layersArr
             .map((layer: any) => layer.group)
-            .filter(Boolean) 
+            .filter(Boolean)
         )
       );
-      setUniqueGroups(groups);
+      const hasUngrouped = layersArr.some((layer: any) => !layer.group);
+      const allGroups = hasUngrouped ? ["MyLayers", ...groups] : groups;
+      setUniqueGroups(allGroups);
     };
 
-    updateGroups(); 
+    updateGroups();
 
     const handleChange = view.map.layers.on("change", updateGroups);
 
     return () => {
-      handleChange.remove(); 
+      handleChange.remove();
     };
   }, [view]);
   return (

@@ -11,7 +11,7 @@ export default function ExportLayer() {
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView);
   const sendMessage = useStateStore((state) => state.sendMessage);
-
+  const updateStats = useStateStore((state) => state.updateStats);
   const [selectedLayer, setSelectedLayer] = useState<any>(null);
   const [exportFormat, setExportFormat] = useState<string>("csv");
   const [outputName, setOutputName] = useState<string>("");
@@ -328,6 +328,7 @@ export default function ExportLayer() {
         properties: f.attributes
       });
     }
+    updateStats("layer_exported");
     return geojson;
   }
 

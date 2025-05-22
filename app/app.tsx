@@ -21,10 +21,12 @@ export default function App() {
     setLanguage,
     appReady,
     language,
+    updateStats,
   } = useStateStore((state) => state);
 
   React.useEffect(() => {
     setLanguage(language);
+    updateStats("page_visit")
   }, [appReady]);
 
   return (

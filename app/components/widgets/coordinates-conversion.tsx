@@ -5,15 +5,14 @@ import useStateStore from "@/stateStore";
 export default function CoordinateConversionComponent() {
   const coordinateConversionRef = useRef(null);
   const coordinateConversionWidget = useRef<CoordinateConversion | null>(null);
-
   const view = useStateStore((state) => state.targetView);
+  const updateStats = useStateStore((state) => state.updateStats);
 
   useEffect(() => {
     if (!view) return;
     
-    // Initialize or update the CoordinateConversion widget
     if (coordinateConversionWidget.current) {
-      coordinateConversionWidget.current.view = view; // Update the view of the existing widget
+      coordinateConversionWidget.current.view = view;
     } else {
       coordinateConversionWidget.current = new CoordinateConversion({
         view: view,
@@ -21,6 +20,7 @@ export default function CoordinateConversionComponent() {
       });
     }
 
+    updateStats("coordinates_converted");
     return () => {
       if (coordinateConversionWidget.current) {
         // Widget destruction is disabled to preserve state. Uncomment to enable cleanup:
@@ -28,6 +28,7 @@ export default function CoordinateConversionComponent() {
         // coordinateConversionWidget.current = null;
       }
     };
+
   }, [view]); 
 
   return (

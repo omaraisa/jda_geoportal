@@ -15,6 +15,7 @@ export default function SpatialQueryComponent() {
   const view = useStateStore((state) => state.targetView);
   const sendMessage = useStateStore((state) => state.sendMessage);
   const widgets = useStateStore((state) => state.widgets);
+  const updateStats = useStateStore((state) => state.updateStats);
   const targetLayerRef = useRef<HTMLSelectElement>(null);
   const selectionLayerRef = useRef<HTMLSelectElement>(null);
   const sketchContainerRef = useRef<HTMLDivElement>(null);
@@ -129,6 +130,7 @@ export default function SpatialQueryComponent() {
         duration: 10,
       });
     }
+    updateStats("spatial_query_performed");
   }
 
   async function handleQuery(targetLayer: __esri.FeatureLayer, query: __esri.QueryProperties) {

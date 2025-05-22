@@ -21,6 +21,7 @@ const PrintComponent: React.FC = () => {
   const [progress, setProgress] = useState<string | null>(null);
   const [resolution, setResolution] = useState(300);
   const userInfo = useStateStore((state) => state.userInfo)
+  const updateStats = useStateStore((state) => state.updateStats);
   const [formData, setFormData] = useState<PrintFormData>({
     title: "My Map",
     format: "pdf",
@@ -30,7 +31,7 @@ const PrintComponent: React.FC = () => {
     scalebarUnit: "metric",
   });
 
-  const JDALAYOUTS = ["Standard", "Presentation","MAP_ONLY"]
+  const JDALAYOUTS = ["Standard", "Presentation", "MAP_ONLY"]
   const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/Printer/GPServer/Export%20Web%20Map";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -60,17 +61,6 @@ const PrintComponent: React.FC = () => {
         });
 
         const jobStatus = response.data.jobStatus;
-        // const messages = response.data.messages;
-
-        // if (messages && messages.length > 0) {
-        //   messages.forEach((message: any) => {
-        //     // console.log(`Job Message: ${message.type} - ${message.description}`);
-        //     setProgress(`${message.type}: ${message.description}`);
-        //   });
-        // }
-
-        // console.log(`Job Status: ${jobStatus}`);
-        // setProgress(`Job Status: ${jobStatus}`);
 
         if (jobStatus === "esriJobSucceeded") {
           // console.log("Job succeeded!");
@@ -124,95 +114,95 @@ const PrintComponent: React.FC = () => {
       const mapServiceGroups = new Map<string, any>();
 
       allLayers.forEach(layer => {
-      if (!layer.visible) return;
+        if (!layer.visible) return;
 
-      if (layer.type === "map-image" && "url" in layer && layer.url) {
-        const baseUrl = (layer as any).url.split('?')[0];
+        if (layer.type === "map-image" && "url" in layer && layer.url) {
+          const baseUrl = (layer as any).url.split('?')[0];
 
-        if (!mapServiceGroups.has(baseUrl)) {
-        mapServiceGroups.set(baseUrl, {
-          id: layer.id.split('_')[0] || layer.id,
-          title: layer.title,
-          opacity: layer.opacity,
-          visible: true,
-          url: baseUrl,
-          layerType: "MapImageLayer",
-          visibleLayers: []
-        });
-        }
-
-        if ((layer as any).sublayers && (layer as any).sublayers.length > 0) {
-        (layer as any).sublayers.forEach((sublayer: { id: number; visible: boolean }) => {
-          if (sublayer.visible) {
-          const group = mapServiceGroups.get(baseUrl);
-          if (!group.visibleLayers.includes(sublayer.id)) {
-            group.visibleLayers.push(sublayer.id);
+          if (!mapServiceGroups.has(baseUrl)) {
+            mapServiceGroups.set(baseUrl, {
+              id: layer.id.split('_')[0] || layer.id,
+              title: layer.title,
+              opacity: layer.opacity,
+              visible: true,
+              url: baseUrl,
+              layerType: "MapImageLayer",
+              visibleLayers: []
+            });
           }
-          }
-        });
-        }
 
-        return;
-      }
+          if ((layer as any).sublayers && (layer as any).sublayers.length > 0) {
+            (layer as any).sublayers.forEach((sublayer: { id: number; visible: boolean }) => {
+              if (sublayer.visible) {
+                const group = mapServiceGroups.get(baseUrl);
+                if (!group.visibleLayers.includes(sublayer.id)) {
+                  group.visibleLayers.push(sublayer.id);
+                }
+              }
+            });
+          }
+
+          return;
+        }
       });
 
       // Process other supported layer types
       const otherLayers = allLayers.map(layer => {
-      if (
-        layer.type === "map-image" &&
-        "url" in layer &&
-        layer.url &&
-        mapServiceGroups.has((layer as any).url.split('?')[0])
-      ) {
-        return null;
-      }
+        if (
+          layer.type === "map-image" &&
+          "url" in layer &&
+          layer.url &&
+          mapServiceGroups.has((layer as any).url.split('?')[0])
+        ) {
+          return null;
+        }
 
-      if (!('url' in layer) || !layer.url || !layer.visible) {
-        return null;
-      }
+        if (!('url' in layer) || !layer.url || !layer.visible) {
+          return null;
+        }
 
-      let layerType = "";
-      switch (layer.type) {
-        case "feature":
-        layerType = "FeatureLayer";
-        break;
-        case "map-image":
-        layerType = "ArcGISMapServiceLayer";
-        break;
-        case "tile":
-        layerType = "ArcGISTiledMapServiceLayer";
-        break;
-        case "vector-tile":
-        layerType = "VectorTileLayer";
-        break;
-        case "csv":
-        layerType = "CSV";
-        break;
-        case "kml":
-        layerType = "KML";
-        break;
-        case "imagery":
-        layerType = "ArcGISImageServiceLayer";
-        break;
-        default:
-        console.warn(`Unsupported layer type: ${layer.type} for ${layer.title}`);
-        return null;
-      }
+        let layerType = "";
+        switch (layer.type) {
+          case "feature":
+            layerType = "FeatureLayer";
+            break;
+          case "map-image":
+            layerType = "ArcGISMapServiceLayer";
+            break;
+          case "tile":
+            layerType = "ArcGISTiledMapServiceLayer";
+            break;
+          case "vector-tile":
+            layerType = "VectorTileLayer";
+            break;
+          case "csv":
+            layerType = "CSV";
+            break;
+          case "kml":
+            layerType = "KML";
+            break;
+          case "imagery":
+            layerType = "ArcGISImageServiceLayer";
+            break;
+          default:
+            console.warn(`Unsupported layer type: ${layer.type} for ${layer.title}`);
+            return null;
+        }
 
-      return {
-        id: layer.id,
-        title: layer.title,
-        opacity: layer.opacity,
-        visible: layer.visible,
-        url: layer.url,
-        layerType,
-      };
+        return {
+          id: layer.id,
+          title: layer.title,
+          opacity: layer.opacity,
+          visible: layer.visible,
+          url: layer.url,
+          layerType,
+        };
       }).filter(Boolean);
 
       // Combine MapService groups and other layers into operationalLayers
       const operationalLayers = [
-      ...Array.from(mapServiceGroups.values()),
-      ...otherLayers
+        ...Array.from(mapServiceGroups.values()),
+        ...otherLayers
       ];
 
       // console.log("Operational Layers:", operationalLayers);
@@ -222,57 +212,57 @@ const PrintComponent: React.FC = () => {
 
       // Construct the web map JSON for the print service
       const webMapJSON = {
-      mapOptions: {
-        extent,
-        ...(view.type === "2d" ? { rotation: -view.rotation } : {}),
-      },
-      operationalLayers: operationalLayers.map((layer: any) => ({
-        id: layer.id,
-        title: layer.title,
-        opacity: layer.opacity,
-        visible: layer.visible,
-        url: layer.url,
-        ...(layer.visibleLayers ? { visibleLayers: layer.visibleLayers } : {}),
-        layerType:
-        layer.layerType === "ArcGISMapServiceLayer" ||
-        layer.layerType === "MapImageLayer"
-          ? "MapImageLayer"
-          : layer.layerType === "ArcGISTiledMapServiceLayer"
-          ? "ArcGISTiledMapServiceLayer"
-          : layer.layerType === "VectorTileLayer"
-          ? "VectorTileLayer"
-          : layer.layerType === "FeatureLayer"
-          ? "FeatureLayer"
-          : layer.layerType,
-      })),
-      baseMap,
-      exportOptions: {
-        dpi: resolution,
-        outputSize: [view.width, view.height],
-      },
-      layoutOptions: {
-        legendOptions: formData.includeLegend
-        ? {
-          operationalLayers: operationalLayers.map((layer: any) => ({
-            id: layer.id,
-          })),
-          }
-        : undefined,
-        customTextElements: [
-        { CustomTitle: formData.title },
-        { CustomAuthor: userInfo?.fullName || "" },
-        ],
-      },
+        mapOptions: {
+          extent,
+          ...(view.type === "2d" ? { rotation: -view.rotation } : {}),
+        },
+        operationalLayers: operationalLayers.map((layer: any) => ({
+          id: layer.id,
+          title: layer.title,
+          opacity: layer.opacity,
+          visible: layer.visible,
+          url: layer.url,
+          ...(layer.visibleLayers ? { visibleLayers: layer.visibleLayers } : {}),
+          layerType:
+            layer.layerType === "ArcGISMapServiceLayer" ||
+              layer.layerType === "MapImageLayer"
+              ? "MapImageLayer"
+              : layer.layerType === "ArcGISTiledMapServiceLayer"
+                ? "ArcGISTiledMapServiceLayer"
+                : layer.layerType === "VectorTileLayer"
+                  ? "VectorTileLayer"
+                  : layer.layerType === "FeatureLayer"
+                    ? "FeatureLayer"
+                    : layer.layerType,
+        })),
+        baseMap,
+        exportOptions: {
+          dpi: resolution,
+          outputSize: [view.width, view.height],
+        },
+        layoutOptions: {
+          legendOptions: formData.includeLegend
+            ? {
+              operationalLayers: operationalLayers.map((layer: any) => ({
+                id: layer.id,
+              })),
+            }
+            : undefined,
+          customTextElements: [
+            { CustomTitle: formData.title },
+            { CustomAuthor: userInfo?.fullName || "" },
+          ],
+        },
       };
 
       // console.log("webMapJSON:", JSON.stringify(webMapJSON));
 
       const params = {
-      Web_Map_as_JSON: JSON.stringify(webMapJSON),
-      Format: formData.format.toUpperCase(),
-      Layout_Template: formData.layout,
-      Title: formData.title,
-      Extent: JSON.stringify(extent)
+        Web_Map_as_JSON: JSON.stringify(webMapJSON),
+        Format: formData.format.toUpperCase(),
+        Layout_Template: formData.layout,
+        Title: formData.title,
+        Extent: JSON.stringify(extent)
       };
 
       setProgress(t("widgets.print.submitting"));
@@ -292,6 +282,7 @@ const PrintComponent: React.FC = () => {
 
       window.open(outputUrl, "_blank");
       setProgress(t("widgets.print.complete"));
+      updateStats("print_initiated");
     } catch (err) {
       console.error("Print error:", err);
       setError(err instanceof Error ? err.message : "Failed to print map");

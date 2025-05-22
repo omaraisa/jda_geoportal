@@ -1,4 +1,3 @@
-import LayerOptions from './layer-options';
 import { useEffect, useState } from 'react';
 import styles from './layer-group.module.css';
 import LayerItem from "../ui/layer-item";
@@ -37,7 +36,11 @@ export default function LayerGroup({group}: {group: string}) {
       <div className={`${styles.content} ${isExpanded ? styles.contentExpanded : ''}`} id="content">
         {view?.map.layers
           .toArray()
-          .filter((layer) => (layer as any).group === group)
+          .filter((layer) =>
+            group === "MyLayers"
+              ? !(layer as any).group // Only layers without a group
+              : (layer as any).group === group
+          )
           .map((layer) => (
             <LayerItem
               key={layer.id}

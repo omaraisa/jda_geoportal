@@ -8,7 +8,7 @@ export default function BookmarkComponent() {
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView); // Get the current view (2D or 3D) from Zustand
   const bookmarkName = useRef<HTMLInputElement>(null);
-  const { bookmarks, addBookmark, deleteBookmark, loadBookmarks } =
+  const { bookmarks, addBookmark, deleteBookmark, loadBookmarks, updateStats } =
     useStateStore();
   const [formVisible, setFormVisibility] = useState(false);
 
@@ -21,7 +21,8 @@ export default function BookmarkComponent() {
       const name = bookmarkName.current.value;
       addBookmark(name, view);
       setFormVisibility(false);
-    }
+    updateStats("bookmark_added");
+  }
   };
 
   const initAddBookmarkForm = () => {

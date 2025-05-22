@@ -69,14 +69,14 @@ async function fetchJobResult(jobId: string) {
     const resultUrl = `https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/Data%20Conversion%20Tool/jobs/${jobId}/results/Output?f=json`;
     const res = await fetch(resultUrl);
     const data = await res.json();
-    
+
     if (!data.value?.fileNames || !Array.isArray(data.value.fileNames)) {
         throw new Error("Output does not contain fileNames");
     }
 
     // Construct URLs for each output file
     const urls = data.value.fileNames.map(
-        (fileName: string) => 
+        (fileName: string) =>
             `https://gis.jda.gov.sa/agserver/rest/directories/arcgisjobs/dataconversiontool_gpserver/${jobId}/scratch/${fileName}`
     );
 
@@ -96,7 +96,7 @@ export default function UploadLayer() {
     const [file, setFile] = useState<File | null>(null);
     const [title, setTitle] = useState<string>("");
     const [loading, setLoading] = useState(false);
-
+    const updateStats = useStateStore((state) => state.updateStats);
     const onDrop = useCallback((acceptedFiles: File[]) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
             setFile(acceptedFiles[0]);
@@ -148,20 +148,20 @@ export default function UploadLayer() {
             });
             return;
         }
-        
+
         setLoading(true);
         try {
             // 1. Submit job
             const submitRes = await submitJob(file);
             if (!submitRes.jobId) throw new Error(submitRes.messages?.[0]?.description || "Failed to submit job");
-    
+
             // 2. Poll for job status
             await pollJobStatus(submitRes.jobId);
-    
+
             // 3. Get output results
             const outputRes = await fetchJobResult(submitRes.jobId);
             const { urls, fileType, fileNames, subLayers } = outputRes;
-    
+
             // 4. Add layer(s) to map
             if (view && view.map && typeof view.map.add === "function") {
                 let layersToZoom: __esri.Layer[] = [];
@@ -176,7 +176,7 @@ export default function UploadLayer() {
                             url: outputUrl,
                             title: layerTitle,
                         });
-                    } 
+                    }
                     else if (fileType === "kml" || outputUrl.endsWith(".kml") || outputUrl.endsWith(".kmz")) {
                         layer = new KMLLayer({
                             url: outputUrl,
@@ -251,9 +251,10 @@ export default function UploadLayer() {
             });
         } finally {
             setLoading(false);
+            updateStats("layer_uploaded");
         }
     };
-    
+
     return (
         <div className="flex flex-col space-y-4 p-4">
             <div className="flex flex-col space-y-2 w-full">
@@ -282,11 +283,10 @@ export default function UploadLayer() {
                 </span>
                 <div
                     {...getRootProps()}
-                    className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all transform duration-200 ease-in-out ${
-                        isDragActive
+                    className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer transition-all transform duration-200 ease-in-out ${isDragActive
                             ? "border-tertiary-light bg-tertiary-light/10 scale-105 shadow-md"
                             : "border-muted"
-                    }`}
+                        }`}
                 >
                     <input {...getInputProps()} />
                     {file ? (

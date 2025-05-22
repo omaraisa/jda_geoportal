@@ -15,6 +15,7 @@ export default function AddLayer() {
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView);
   const sendMessage = useStateStore((state) => state.sendMessage);
+  const updateStats = useStateStore((state) => state.updateStats);
 
   const [layerType, setLayerType] = useState<string>("");
   const [url, setUrl] = useState<string>("");
@@ -30,13 +31,13 @@ export default function AddLayer() {
       });
       return;
     }
-  
+
     try {
       let layer: __esri.Layer | null = null;
-  
+
       const layerProps: any = { url, group: "My Layers" };
       if (title) layerProps.title = title;
-  
+
       switch (layerType) {
         case "csv": {
           const module = await import("@arcgis/core/layers/CSVLayer");
@@ -54,63 +55,63 @@ export default function AddLayer() {
           break;
         }
         case "map-service": {
-  // Remove trailing slash if present
-  const cleanUrl = url.replace(/\/+$/, "");
-  // Try to fetch the service metadata
-  const serviceUrl = cleanUrl;
-  let serviceInfo: any;
-  try {
-    const resp = await fetch(`${serviceUrl}?f=json`);
-    serviceInfo = await resp.json();
-  } catch (err) {
-    sendMessage({
-      type: "error",
-      title: t("systemMessages.error.addLayerError.title"),
-      body: t("systemMessages.error.invalidLayerTypeOrUrl.body"),
-      duration: 10,
-    });
-    return;
-  }
+          // Remove trailing slash if present
+          const cleanUrl = url.replace(/\/+$/, "");
+          // Try to fetch the service metadata
+          const serviceUrl = cleanUrl;
+          let serviceInfo: any;
+          try {
+            const resp = await fetch(`${serviceUrl}?f=json`);
+            serviceInfo = await resp.json();
+          } catch (err) {
+            sendMessage({
+              type: "error",
+              title: t("systemMessages.error.addLayerError.title"),
+              body: t("systemMessages.error.invalidLayerTypeOrUrl.body"),
+              duration: 10,
+            });
+            return;
+          }
 
-  if (serviceInfo.type === "Feature Layer" || /FeatureServer/i.test(serviceUrl)) {
-    // If it's a Feature Layer or FeatureServer endpoint
-    const module = await import("@arcgis/core/layers/FeatureLayer");
-    layer = new module.default({ ...layerProps, url: serviceUrl });
-  } else if (serviceInfo.type === "Map Service" || /MapServer/i.test(serviceUrl)) {
-    // If it's a Map Service, add as MapImageLayer
-    const module = await import("@arcgis/core/layers/MapImageLayer");
-    layer = new module.default({ ...layerProps, url: serviceUrl });
-  } else if (serviceInfo.serviceDataType === "esriImageServiceDataType" || /ImageServer/i.test(serviceUrl)) {
-    // If it's an Image Service
-    const module = await import("@arcgis/core/layers/ImageryLayer");
-    layer = new module.default({ ...layerProps, url: serviceUrl });
-  } else if (serviceInfo.layers && Array.isArray(serviceInfo.layers) && /FeatureServer/i.test(serviceUrl)) {
-    // If it's a FeatureServer with multiple layers, add all as FeatureLayers
-    const module = await import("@arcgis/core/layers/FeatureLayer");
-    // Add all sublayers
-    for (const sub of serviceInfo.layers) {
-      const subLayer = new module.default({
-        ...layerProps,
-        url: `${serviceUrl}/${sub.id}`,
-        title: sub.name,
-      });
-      if (view) {
-        view.map.add(subLayer);
-      }
-    }
-    // Don't add a single layer in this case
-    layer = null;
-  } else {
-    sendMessage({
-      type: "error",
-      title: t("systemMessages.error.addLayerError.title"),
-      body: t("systemMessages.error.unknownLayerType.body"),
-      duration: 8,
-    });
-    return;
-  }
-  break;
-}
+          if (serviceInfo.type === "Feature Layer" || /FeatureServer/i.test(serviceUrl)) {
+            // If it's a Feature Layer or FeatureServer endpoint
+            const module = await import("@arcgis/core/layers/FeatureLayer");
+            layer = new module.default({ ...layerProps, url: serviceUrl });
+          } else if (serviceInfo.type === "Map Service" || /MapServer/i.test(serviceUrl)) {
+            // If it's a Map Service, add as MapImageLayer
+            const module = await import("@arcgis/core/layers/MapImageLayer");
+            layer = new module.default({ ...layerProps, url: serviceUrl });
+          } else if (serviceInfo.serviceDataType === "esriImageServiceDataType" || /ImageServer/i.test(serviceUrl)) {
+            // If it's an Image Service
+            const module = await import("@arcgis/core/layers/ImageryLayer");
+            layer = new module.default({ ...layerProps, url: serviceUrl });
+          } else if (serviceInfo.layers && Array.isArray(serviceInfo.layers) && /FeatureServer/i.test(serviceUrl)) {
+            // If it's a FeatureServer with multiple layers, add all as FeatureLayers
+            const module = await import("@arcgis/core/layers/FeatureLayer");
+            // Add all sublayers
+            for (const sub of serviceInfo.layers) {
+              const subLayer = new module.default({
+                ...layerProps,
+                url: `${serviceUrl}/${sub.id}`,
+                title: sub.name,
+              });
+              if (view) {
+                view.map.add(subLayer);
+              }
+            }
+            // Don't add a single layer in this case
+            layer = null;
+          } else {
+            sendMessage({
+              type: "error",
+              title: t("systemMessages.error.addLayerError.title"),
+              body: t("systemMessages.error.unknownLayerType.body"),
+              duration: 8,
+            });
+            return;
+          }
+          break;
+        }
 
         default:
           sendMessage({
@@ -121,10 +122,10 @@ export default function AddLayer() {
           });
           return;
       }
-  
+
       if (layer && view) {
         view.map.add(layer);
-  
+
         // Wait for the layer to load, then zoom to it appropriately
         layer.when(async () => {
           if (layer.fullExtent) {
@@ -138,6 +139,7 @@ export default function AddLayer() {
           });
           setUrl("");
           setTitle("");
+          updateStats("layer_added");
         }).catch((err: any) => {
           // Remove the layer if it failed to load
           view.map.remove(layer);
@@ -160,8 +162,8 @@ export default function AddLayer() {
       // console.error("Add Layer Error:", error);
     }
   };
-  
-  
+
+
 
   return (
     <div className="flex flex-col space-y-4 p-4">

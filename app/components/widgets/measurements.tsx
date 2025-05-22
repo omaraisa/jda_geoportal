@@ -14,6 +14,7 @@ export default function MeasurementComponent() {
   const [activeTool, setActiveTool] = useState<string | null>(null); // Track which tool is active (distance/area)
 
   const view = useStateStore((state) => state.targetView);
+  const updateStats = useStateStore((state) => state.updateStats);
 
   // Initialize or destroy Distance Measurement widget
   useEffect(() => {
@@ -74,10 +75,12 @@ export default function MeasurementComponent() {
     if (tool === "distance") {
       setShowDistance(true);
       setShowArea(false);
+    updateStats("distance_measured");
     } else if (tool === "area") {
       setShowArea(true);
       setShowDistance(false);
-    }
+    updateStats("area_measured");
+  }
 
     // Update active tool state
     setActiveTool(tool);

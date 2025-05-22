@@ -32,6 +32,7 @@ export default function AttributeQueryComponent() {
   const view = useStateStore((state) => state.targetView);
   const sendMessage = useStateStore((state) => state.sendMessage);
   const widgets = useStateStore((state) => state.widgets);
+  const updateStats = useStateStore((state) => state.updateStats);
 
   const handleSelectedLayer = (layerId: string) => {
     const selectedLayer = view?.map.layers.toArray().find((layer) => layer.id === layerId) as FeatureLayer;
@@ -189,6 +190,7 @@ export default function AttributeQueryComponent() {
       body: `${t("systemMessages.info.queryCompleted.body")} ${state.targetLayer!.title}`,
       duration: 10,
     });
+    updateStats("attribute_query_performed");
   };
 
   const clearSearch = () => {

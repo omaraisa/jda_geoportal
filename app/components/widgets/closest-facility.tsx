@@ -17,6 +17,7 @@ const ROUTE_LAYER_ID = "Closest_Facility_Route"
 const ClosestFacility: React.FC = () => {
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView);
+  const updateStats = useStateStore((state) => state.updateStats);
   const [incident, setIncident] = useState<{ x: number; y: number } | null>(null);
   const [addingIncident, setAddingIncident] = useState(false);
   const [numFacilities, setNumFacilities] = useState<number>(1);
@@ -414,6 +415,8 @@ const ClosestFacility: React.FC = () => {
       setStatus(err.message || "Analysis failed.");
       routeGraphicsLayerRef.current?.removeAll();
     }
+
+    updateStats("closest_facility_performed");
   };
 
   useEffect(() => {
