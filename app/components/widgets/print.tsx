@@ -282,7 +282,7 @@ const PrintComponent: React.FC = () => {
 
       window.open(outputUrl, "_blank");
       setProgress(t("widgets.print.complete"));
-      updateStats("print_initiated");
+      updateStats("Print Map");
     } catch (err) {
       console.error("Print error:", err);
       setError(err instanceof Error ? err.message : "Failed to print map");

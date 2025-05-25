@@ -416,7 +416,7 @@ const ClosestFacility: React.FC = () => {
       routeGraphicsLayerRef.current?.removeAll();
     }
 
-    updateStats("closest_facility_performed");
+    updateStats("Closest Facility");
   };
 
   useEffect(() => {

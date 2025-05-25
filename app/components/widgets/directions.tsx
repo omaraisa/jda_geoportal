@@ -41,7 +41,7 @@ export default function DirectionsComponent() {
         directionsWidget.current.layer = routeLayerRef.current;
       }
     }
-    updateStats("directions_performed");
+    updateStats("Directions");
   }, [view]);
 
   return (

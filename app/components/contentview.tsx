@@ -19,10 +19,10 @@ const ContentView: React.FC = () => {
       setSplitSizes([100, 0]);
     } else if (viewMode === "3D") {
       setSplitSizes([0, 100]);
-    updateStats("view_3d_enabled");
+    updateStats("3D View");
     } else if (viewMode === "Dual") {
       setSplitSizes([50, 50]);
-    updateStats("view_dual_enabled");
+    updateStats("Dual View");
   }
   }, [viewMode]);
 

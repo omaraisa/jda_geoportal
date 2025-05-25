@@ -75,11 +75,11 @@ export default function MeasurementComponent() {
     if (tool === "distance") {
       setShowDistance(true);
       setShowArea(false);
-    updateStats("distance_measured");
+    updateStats("Distance Measurement");
     } else if (tool === "area") {
       setShowArea(true);
       setShowDistance(false);
-    updateStats("area_measured");
+    updateStats("Area Measurement");
   }
 
     // Update active tool state

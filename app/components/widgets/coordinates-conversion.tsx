@@ -20,7 +20,7 @@ export default function CoordinateConversionComponent() {
       });
     }
 
-    updateStats("coordinates_converted");
+    updateStats("Coordinates Converter");
     return () => {
       if (coordinateConversionWidget.current) {
         // Widget destruction is disabled to preserve state. Uncomment to enable cleanup:

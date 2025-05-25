@@ -9,29 +9,7 @@ import { Client } from "pg";
  * @param featureName The name of the feature to increment.
  */
 export async function incrementStatisticsFeature(featureName: string, username: string) {
-    
-    const allowedFeatures = [
-        "page_visit",
-        "layer_added",
-        "layer_uploaded",
-        "layer_exported",
-        "attribute_query_performed",
-        "spatial_query_performed",
-        "distance_measured",
-        "area_measured",
-        "bookmark_added",
-        "coordinates_converted",
-        "print_initiated",
-        "view_3d_enabled",
-        "view_dual_enabled",
-        "directions_performed",
-        "closest_facility_performed",
-    ];
-
-    if (!allowedFeatures.includes(featureName)) {
-        return { success: false, message: "Invalid feature name." };
-    }
-
+  
     try {
         const client = new Client({
             user: process.env.NEXT_PUBLIC_DB_USER,
@@ -43,27 +21,27 @@ export async function incrementStatisticsFeature(featureName: string, username: 
 
         await client.connect();
 
-        // 1. Update aggregated statistics in gportal_statistics
-        const updateResult = await client.query(
-            `UPDATE gportal_statistics SET count = COALESCE(count,0) + 1 WHERE feature_name = $1`,
-            [featureName]
+        // Store all features in daily statistics table
+        await client.query(
+            `INSERT INTO gportal_daily_statistics (feature_name, timestamp, username) 
+             VALUES ($1, CURRENT_TIMESTAMP, $2)`,
+            [featureName, username || 'anonymous']
         );
-
-        if (updateResult.rowCount === 0) {
-            // No row exists, insert a new one with count = 1
-            await client.query(
-                `INSERT INTO gportal_statistics (feature_name, count) VALUES ($1, 1)`,
+        
+        // Only update aggregate counts for non-page_visit features
+        if (featureName !== 'page_visit') {
+            const updateResult = await client.query(
+                `UPDATE gportal_statistics SET count = COALESCE(count,0) + 1 WHERE feature_name = $1`,
                 [featureName]
             );
-        }
 
-        // 2. Insert into daily statistics only for page visits
-        if (featureName === 'page_visit') {
-            await client.query(
-                `INSERT INTO gportal_daily_statistics (feature_name, timestamp, username) 
-                 VALUES ($1, CURRENT_TIMESTAMP, $2)`,
-                [featureName, username || 'anonymous']
-            );
+            if (updateResult.rowCount === 0) {
+                // No row exists, insert a new one with count = 1
+                await client.query(
+                    `INSERT INTO gportal_statistics (feature_name, count) VALUES ($1, 1)`,
+                    [featureName]
+                );
+            }
         }
 
         await client.end();

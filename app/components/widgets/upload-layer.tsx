@@ -251,7 +251,7 @@ export default function UploadLayer() {
             });
         } finally {
             setLoading(false);
-            updateStats("layer_uploaded");
+            updateStats("Upload Layer");
         }
     };
 

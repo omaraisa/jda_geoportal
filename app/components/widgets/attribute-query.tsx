@@ -190,7 +190,7 @@ export default function AttributeQueryComponent() {
       body: `${t("systemMessages.info.queryCompleted.body")} ${state.targetLayer!.title}`,
       duration: 10,
     });
-    updateStats("attribute_query_performed");
+    updateStats("Attribute Query");
   };
 
   const clearSearch = () => {

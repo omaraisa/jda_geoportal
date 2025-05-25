@@ -130,7 +130,7 @@ export default function SpatialQueryComponent() {
         duration: 10,
       });
     }
-    updateStats("spatial_query_performed");
+    updateStats("Spatial Query");
   }
 
   async function handleQuery(targetLayer: __esri.FeatureLayer, query: __esri.QueryProperties) {

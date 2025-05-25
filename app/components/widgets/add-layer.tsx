@@ -139,7 +139,7 @@ export default function AddLayer() {
           });
           setUrl("");
           setTitle("");
-          updateStats("layer_added");
+          updateStats("Add Online Layer");
         }).catch((err: any) => {
           // Remove the layer if it failed to load
           view.map.remove(layer);

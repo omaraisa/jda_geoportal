@@ -328,7 +328,7 @@ export default function ExportLayer() {
         properties: f.attributes
       });
     }
-    updateStats("layer_exported");
+    updateStats("Export Layer");
     return geojson;
   }
 

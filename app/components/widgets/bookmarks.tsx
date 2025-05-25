@@ -21,7 +21,7 @@ export default function BookmarkComponent() {
       const name = bookmarkName.current.value;
       addBookmark(name, view);
       setFormVisibility(false);
-    updateStats("bookmark_added");
+    updateStats("Bookmarks");
   }
   };
 
