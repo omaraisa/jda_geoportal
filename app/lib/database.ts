@@ -3,8 +3,9 @@
 import { Client } from "pg";
 
 /**
- * Increments the count for the specified feature in the gportal_statistics table.
- * If there is no row for the feature, it will insert a new row with count = 1.
+ * Increments the count for the specified feature in both statistics tables:
+ * - gportal_statistics (aggregated total counts)
+ * - gportal_daily_statistics (individual timestamped entries)
  * @param featureName The name of the feature to increment.
  */
 export async function incrementStatisticsFeature(featureName: string) {
@@ -42,7 +43,7 @@ export async function incrementStatisticsFeature(featureName: string) {
 
         await client.connect();
 
-        // Try to update the row for this feature, or insert if none exists
+        // 1. Update aggregated statistics in gportal_statistics
         const updateResult = await client.query(
             `UPDATE gportal_statistics SET count = COALESCE(count,0) + 1 WHERE feature_name = $1`,
             [featureName]
@@ -56,33 +57,17 @@ export async function incrementStatisticsFeature(featureName: string) {
             );
         }
 
+        // 2. Insert into daily statistics with timestamp
+        await client.query(
+            `INSERT INTO gportal_daily_statistics (feature_name, timestamp) 
+             VALUES ($1, CURRENT_TIMESTAMP)`,
+            [featureName]
+        );
+
         await client.end();
         return { success: true, message: `Incremented ${featureName}` };
     } catch (error) {
         console.error("Increment failed:", error);
         return { success: false, message: "Increment failed", error: error };
-    }
-}
-
-// --- TEMPORARY: List all rows in gportal_statistics ---
-export async function listAllStatisticsRows() {
-    try {
-        const client = new Client({
-            user: process.env.NEXT_PUBLIC_DB_USER,
-            host: process.env.NEXT_PUBLIC_DB_HOST,
-            database: process.env.NEXT_PUBLIC_DB_NAME,
-            password: process.env.NEXT_PUBLIC_DB_PASSWORD,
-            port: parseInt(process.env.PG_PORT || '5432'),
-        });
-
-        await client.connect();
-
-        const result = await client.query(`SELECT * FROM gportal_statistics ORDER BY id`);
-        await client.end();
-
-        return { success: true, rows: result.rows };
-    } catch (error) {
-        console.error("List failed:", error);
-        return { success: false, message: "List failed", error: error };
     }
 }
