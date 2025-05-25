@@ -552,7 +552,7 @@ const useStateStore = create<State>((set, get) => ({
   },
 
   updateStats: (featurename: string) => {
-    incrementStatisticsFeature(featurename).then((response) => {
+    incrementStatisticsFeature(featurename, get().userInfo?.fullName || "").then((response) => {
       // console.log(response.message);
     })
   }

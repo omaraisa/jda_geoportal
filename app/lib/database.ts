@@ -8,8 +8,8 @@ import { Client } from "pg";
  * - gportal_daily_statistics (individual timestamped entries)
  * @param featureName The name of the feature to increment.
  */
-export async function incrementStatisticsFeature(featureName: string) {
-    // List of allowed feature names to prevent SQL injection
+export async function incrementStatisticsFeature(featureName: string, username: string) {
+    
     const allowedFeatures = [
         "page_visit",
         "layer_added",
@@ -57,12 +57,14 @@ export async function incrementStatisticsFeature(featureName: string) {
             );
         }
 
-        // 2. Insert into daily statistics with timestamp
-        await client.query(
-            `INSERT INTO gportal_daily_statistics (feature_name, timestamp) 
-             VALUES ($1, CURRENT_TIMESTAMP)`,
-            [featureName]
-        );
+        // 2. Insert into daily statistics only for page visits
+        if (featureName === 'page_visit') {
+            await client.query(
+                `INSERT INTO gportal_daily_statistics (feature_name, timestamp, username) 
+                 VALUES ($1, CURRENT_TIMESTAMP, $2)`,
+                [featureName, username || 'anonymous']
+            );
+        }
 
         await client.end();
         return { success: true, message: `Incremented ${featureName}` };
