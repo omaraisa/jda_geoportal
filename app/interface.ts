@@ -73,6 +73,9 @@ export interface State {
   messages: Record<number, Message>;
   bookmarks: Bookmark[];
   userInfo: ArcGISUserInfo | null;
+  accessToken: string | null;
+  isAuthenticated: boolean;
+  gisToken: string | null;
   setAppReady: (isReady: boolean) => void;
   setLanguage: (lang: string) => void;
   setMainMenuExpansion: (isExpanded: boolean) => void;
@@ -103,6 +106,8 @@ export interface State {
   setSessionModalOpen: (open: boolean) => void;
   handleSessionExtend: () => void;
   updateStats: (featurename: string) => void;
+  clearAuth: () => void;
+  setGisToken: (token: string) => void;
 }
 
 export interface AttributeQueryState {
@@ -121,44 +126,9 @@ export interface AttributeQueryState {
 export interface ArcGISUserInfo {
   fullName: string | null;
   username: string | null;
-  org_role: string | null;
   role: string | null;
-  groups: {
-    id: string;
-    title: string;
-    isInvitationOnly: boolean;
-    owner: string;
-    description: null | string;
-    snippet: null | string;
-    tags: string[];
-    typeKeywords: string[];
-    phone: null | string;
-    sortField: string;
-    sortOrder: string;
-    isViewOnly: boolean;
-    featuredItemsId: null | string;
-    thumbnail: null | string;
-    created: number;
-    modified: number;
-    access: string;
-    capabilities: string[];
-    isFav: boolean;
-    isReadOnly: boolean;
-    protected: boolean;
-    autoJoin: boolean;
-    notificationsEnabled: boolean;
-    provider: null | string;
-    providerGroupName: null | string;
-    leavingDisallowed: boolean;
-    hiddenMembers: boolean;
-    membershipAccess: string;
-    displaySettings: {
-      itemTypes: string;
-    } | null;
-    properties: null | string | null;
-    userMembership: {
-      username: string | null;
-      memberType: string | null;
-    } | null;
-  }[] | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  userId?: string | null;
+  groups: string[] | null;
 };
