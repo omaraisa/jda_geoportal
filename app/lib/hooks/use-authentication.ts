@@ -22,7 +22,7 @@ const useAuthentication = (interval = 120000) => {
           setSessionModalOpen(true);
         }
         // Redirect to login page
-        const loginUrl = process.env.NEXT_PUBLIC_LOGIN_URL || '/';
+        const loginUrl = process.env.NEXT_PUBLIC_AUTH_URL || '/';
         window.location.href = `${loginUrl}?redirect=${encodeURIComponent(window.location.href)}`;
         return false;
       }

@@ -27,7 +27,7 @@ const SessionEndModal = () => {
   }
 
   const handleSessionExit: HandleSessionExit = () => {
-    redirect(process.env.NEXT_PUBLIC_LOGIN_URL || '/');
+    redirect(process.env.NEXT_PUBLIC_AUTH_URL || '/');
   };
 
   return (

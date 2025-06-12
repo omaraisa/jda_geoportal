@@ -9,7 +9,17 @@ variables:
   NEXT_PUBLIC_ArcGISAPIKey : 'AAPKc691d193fde14ea9bae49f48970f5fbcmPjkAffm__8tJdoM-iasTahd05z_ngTfiIdqY_FcU8Vp1t0my13dG7TlKBWfy5cx'
   NEXT_PUBLIC_PORTAL_URL : 'https://gis.jda.gov.sa/portal'
   NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL : 'https://gis.jda.gov.sa/portal/sharing/rest/generateToken'
-  NEXT_PUBLIC_LOGIN_URL : 'http://192.168.1.60/login'
+  NEXT_PUBLIC_PORTAL_USERNAME : 'omaradmin'
+  NEXT_PUBLIC_PORTAL_PASSWORD : '1qa2ws@WS!QA'
+  TOKEN_SECRET : 'X8$@29!mPZ%l*Dq9eS&vY^0b7A#C*Q(!@<vj823klmng91TR$#@*#klsj9823#@#@#<MzxT(#$AMSDF*!@NVa(@23nbma'
+  NEXT_PUBLIC_AUTH_URL: 'http://sdf.jda.gov.sa:3101/auth'
+  NEXT_PUBLIC_AUTH_REFRESH_URL: 'http://sdf.jda.gov.sa:3101/auth/api/refresh-token'
+  NEXT_PUBLIC_AUTH_LOGOUT_URL: 'http://sdf.jda.gov.sa:3101/auth/api/logout'
+  NEXT_PUBLIC_DB_USER: 'omer'
+  NEXT_PUBLIC_DB_HOST: '192.168.1.20'
+  NEXT_PUBLIC_DB_NAME: 'webdata'
+  NEXT_PUBLIC_DB_PASSWORD: 'Om@123'
+  PG_PORT: '5432'
       
 steps:
   - script: |
@@ -19,7 +29,17 @@ steps:
          --build-arg NEXT_PUBLIC_ArcGISAPIKey=$(NEXT_PUBLIC_ArcGISAPIKey) \
           --build-arg NEXT_PUBLIC_PORTAL_URL=$(NEXT_PUBLIC_PORTAL_URL) \
           --build-arg NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL=$(NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL) \
-          --build-arg NEXT_PUBLIC_LOGIN_URL=$(NEXT_PUBLIC_LOGIN_URL)
+          --build-arg NEXT_PUBLIC_AUTH_URL=$(NEXT_PUBLIC_AUTH_URL) \
+          --build-arg NEXT_PUBLIC_AUTH_REFRESH_URL=$(NEXT_PUBLIC_AUTH_REFRESH_URL) \
+          --build-arg NEXT_PUBLIC_AUTH_LOGOUT_URL=$(NEXT_PUBLIC_AUTH_LOGOUT_URL) \
+          --build-arg NEXT_PUBLIC_DB_USER=$(NEXT_PUBLIC_DB_USER) \
+          --build-arg NEXT_PUBLIC_DB_HOST=$(NEXT_PUBLIC_DB_HOST) \
+          --build-arg NEXT_PUBLIC_DB_NAME=$(NEXT_PUBLIC_DB_NAME) \
+          --build-arg NEXT_PUBLIC_DB_PASSWORD=$(NEXT_PUBLIC_DB_PASSWORD) \
+          --build-arg PG_PORT=$(PG_PORT) \
+          --build-arg NEXT_PUBLIC_PORTAL_USERNAME=$(NEXT_PUBLIC_PORTAL_USERNAME) \
+          --build-arg NEXT_PUBLIC_PORTAL_PASSWORD=$(NEXT_PUBLIC_PORTAL_PASSWORD) \
+          --build-arg TOKEN_SECRET=$(TOKEN_SECRET)
     displayName: 'Build Docker Image with Docker Mirror'
 
   - script: |
