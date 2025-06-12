@@ -25,21 +25,27 @@ steps:
   - script: |
       mkdir -p ~/.docker
       echo '{"registry-mirrors": ["https://hub-mirror.c.163.com"]}' > ~/.docker/config.json 
-      docker compose -f docker-compose.yml build \
-         --build-arg NEXT_PUBLIC_ArcGISAPIKey=$(NEXT_PUBLIC_ArcGISAPIKey) \
-          --build-arg NEXT_PUBLIC_PORTAL_URL=$(NEXT_PUBLIC_PORTAL_URL) \
-          --build-arg NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL=$(NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL) \
-          --build-arg NEXT_PUBLIC_AUTH_URL=$(NEXT_PUBLIC_AUTH_URL) \
-          --build-arg NEXT_PUBLIC_AUTH_REFRESH_URL=$(NEXT_PUBLIC_AUTH_REFRESH_URL) \
-          --build-arg NEXT_PUBLIC_AUTH_LOGOUT_URL=$(NEXT_PUBLIC_AUTH_LOGOUT_URL) \
-          --build-arg NEXT_PUBLIC_DB_USER=$(NEXT_PUBLIC_DB_USER) \
-          --build-arg NEXT_PUBLIC_DB_HOST=$(NEXT_PUBLIC_DB_HOST) \
-          --build-arg NEXT_PUBLIC_DB_NAME=$(NEXT_PUBLIC_DB_NAME) \
-          --build-arg NEXT_PUBLIC_DB_PASSWORD=$(NEXT_PUBLIC_DB_PASSWORD) \
-          --build-arg PG_PORT=$(PG_PORT) \
-          --build-arg NEXT_PUBLIC_PORTAL_USERNAME=$(NEXT_PUBLIC_PORTAL_USERNAME) \
-          --build-arg NEXT_PUBLIC_PORTAL_PASSWORD=$(NEXT_PUBLIC_PORTAL_PASSWORD) \
-          --build-arg TOKEN_SECRET=$(TOKEN_SECRET)
+      
+      # Create a .env file for docker-compose to use
+      cat > .env << EOF
+      NEXT_PUBLIC_ArcGISAPIKey=${NEXT_PUBLIC_ArcGISAPIKey}
+      NEXT_PUBLIC_PORTAL_URL=${NEXT_PUBLIC_PORTAL_URL}
+      NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL=${NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL}
+      NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
+      NEXT_PUBLIC_AUTH_REFRESH_URL=${NEXT_PUBLIC_AUTH_REFRESH_URL}
+      NEXT_PUBLIC_AUTH_LOGOUT_URL=${NEXT_PUBLIC_AUTH_LOGOUT_URL}
+      NEXT_PUBLIC_DB_USER=${NEXT_PUBLIC_DB_USER}
+      NEXT_PUBLIC_DB_HOST=${NEXT_PUBLIC_DB_HOST}
+      NEXT_PUBLIC_DB_NAME=${NEXT_PUBLIC_DB_NAME}
+      NEXT_PUBLIC_DB_PASSWORD=${NEXT_PUBLIC_DB_PASSWORD}
+      PG_PORT=${PG_PORT}
+      NEXT_PUBLIC_PORTAL_USERNAME=${NEXT_PUBLIC_PORTAL_USERNAME}
+      NEXT_PUBLIC_PORTAL_PASSWORD=${NEXT_PUBLIC_PORTAL_PASSWORD}
+      TOKEN_SECRET=${TOKEN_SECRET}
+      EOF
+      
+      # Use the .env file with docker-compose
+      docker compose -f docker-compose.yml build
     displayName: 'Build Docker Image with Docker Mirror'
 
   - script: |

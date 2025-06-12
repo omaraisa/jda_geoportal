@@ -2,6 +2,21 @@ services:
   geoportal1:
     build:
       context: .
+      args:
+        - NEXT_PUBLIC_ArcGISAPIKey
+        - NEXT_PUBLIC_PORTAL_URL
+        - NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL
+        - NEXT_PUBLIC_AUTH_URL
+        - NEXT_PUBLIC_AUTH_REFRESH_URL
+        - NEXT_PUBLIC_AUTH_LOGOUT_URL
+        - NEXT_PUBLIC_DB_USER
+        - NEXT_PUBLIC_DB_HOST
+        - NEXT_PUBLIC_DB_NAME
+        - NEXT_PUBLIC_DB_PASSWORD
+        - PG_PORT
+        - NEXT_PUBLIC_PORTAL_USERNAME
+        - NEXT_PUBLIC_PORTAL_PASSWORD
+        - TOKEN_SECRET
     environment:
       - PORT=3000
     expose:
@@ -14,6 +29,21 @@ services:
   geoportal2:
     build:
       context: .
+      args:
+        - NEXT_PUBLIC_ArcGISAPIKey
+        - NEXT_PUBLIC_PORTAL_URL
+        - NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL
+        - NEXT_PUBLIC_AUTH_URL
+        - NEXT_PUBLIC_AUTH_REFRESH_URL
+        - NEXT_PUBLIC_AUTH_LOGOUT_URL
+        - NEXT_PUBLIC_DB_USER
+        - NEXT_PUBLIC_DB_HOST
+        - NEXT_PUBLIC_DB_NAME
+        - NEXT_PUBLIC_DB_PASSWORD
+        - PG_PORT
+        - NEXT_PUBLIC_PORTAL_USERNAME
+        - NEXT_PUBLIC_PORTAL_PASSWORD
+        - TOKEN_SECRET
     environment:
       - PORT=3000
     expose:
