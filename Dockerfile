@@ -23,7 +23,8 @@ WORKDIR /jda_geoportal
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --production
+# RUN npm install --production
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
@@ -45,10 +46,11 @@ ENV NEXT_PUBLIC_PORTAL_PASSWORD=$NEXT_PUBLIC_PORTAL_PASSWORD
 ENV TOKEN_SECRET=$TOKEN_SECRET
 
 # Build the Next.js application
-RUN npm run build
+# RUN npm run build
 
 # Expose the port the app runs on
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+CMD ["npm", "run", "dev"]

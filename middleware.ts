@@ -4,6 +4,7 @@ import { verifyAccessToken, verifyRefreshToken } from '@/lib/token';
 
 const protectedPaths = [
     '/',
+    '/api',
 ];
 
 const AUTH_BASE_URL = process.env.NEXT_PUBLIC_AUTH_URL || '/';
