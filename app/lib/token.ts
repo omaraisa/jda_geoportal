@@ -12,6 +12,9 @@ export interface TokenPayload {
     exp: number;
 }
 
+export interface RefreshTokenPayload extends TokenPayload {
+    tokenVersion: number;
+}
 /**
  * Verifies the access token JWT
  */
@@ -35,6 +38,30 @@ export async function verifyAccessToken(token: string): Promise<TokenPayload | n
         return payload as unknown as TokenPayload;
     } catch (error) {
         console.warn("Token verification failed:", error);
+        return null;
+    }
+}
+
+export async function verifyRefreshToken(token: string): Promise<RefreshTokenPayload | null> {
+    try {
+        const secret = process.env.TOKEN_SECRET;
+        if (!secret) {
+            console.error("TOKEN_SECRET is not defined in environment variables");
+            return null;
+        }
+        
+        // Create a TextEncoder
+        const encoder = new TextEncoder();
+        
+        // Convert the secret to Uint8Array
+        const secretKey = encoder.encode(secret);
+        
+        // Verify the token
+        const { payload } = await jose.jwtVerify(token, secretKey);
+        
+        return payload as unknown as RefreshTokenPayload;
+    } catch (error) {
+        console.error("Refresh token verification failed:", error);
         return null;
     }
 }
