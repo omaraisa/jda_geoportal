@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        - NEXT_PUBLIC_ArcGISAPIKey
+        - NEXT_PUBLIC_ARCGIS_API_KEY
         - NEXT_PUBLIC_PORTAL_URL
         - NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL
         - NEXT_PUBLIC_AUTH_URL
@@ -31,7 +31,7 @@ services:
     build:
       context: .
       args:
-        - NEXT_PUBLIC_ArcGISAPIKey
+        - NEXT_PUBLIC_ARCGIS_API_KEY
         - NEXT_PUBLIC_PORTAL_URL
         - NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL
         - NEXT_PUBLIC_AUTH_URL

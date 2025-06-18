@@ -6,7 +6,7 @@ pool:
 
 variables:
   imageName: 'geoportal'
-  NEXT_PUBLIC_ArcGISAPIKey : 'AAPKc691d193fde14ea9bae49f48970f5fbcmPjkAffm__8tJdoM-iasTahd05z_ngTfiIdqY_FcU8Vp1t0my13dG7TlKBWfy5cx'
+  NEXT_PUBLIC_ARCGIS_API_KEY : 'AAPKc691d193fde14ea9bae49f48970f5fbcmPjkAffm__8tJdoM-iasTahd05z_ngTfiIdqY_FcU8Vp1t0my13dG7TlKBWfy5cx'
   NEXT_PUBLIC_PORTAL_URL : 'https://gis.jda.gov.sa/portal'
   NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL : 'https://gis.jda.gov.sa/portal/sharing/rest/generateToken'
   NEXT_PUBLIC_PORTAL_USERNAME : 'omaradmin'
@@ -29,7 +29,7 @@ steps:
       
       # Create a .env file for docker-compose to use
       cat > .env << EOF
-      NEXT_PUBLIC_ArcGISAPIKey=${NEXT_PUBLIC_ArcGISAPIKey}
+      NEXT_PUBLIC_ARCGIS_API_KEY=${NEXT_PUBLIC_ARCGIS_API_KEY}
       NEXT_PUBLIC_PORTAL_URL=${NEXT_PUBLIC_PORTAL_URL}
       NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL=${NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL}
       NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
