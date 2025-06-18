@@ -26,18 +26,18 @@ export async function verifyAccessToken(token: string): Promise<TokenPayload | n
             return null;
         }
         
-        // Create a TextEncoder
-        const encoder = new TextEncoder();
+        // Debug logging - remove in production
+        console.log("Secret length:", secret);
+        console.log("Token length:", token);
         
-        // Convert the secret to Uint8Array
+        const encoder = new TextEncoder();
         const secretKey = encoder.encode(secret);
         
-        // Verify the token
         const { payload } = await jose.jwtVerify(token, secretKey);
-        
         return payload as unknown as TokenPayload;
     } catch (error) {
-        console.warn("Token verification failed:", error);
+        console.error("Token verification failed:", error);
+        console.error("Token:", token.substring(0, 50) + "...");
         return null;
     }
 }
