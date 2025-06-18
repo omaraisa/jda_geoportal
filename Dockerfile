@@ -24,8 +24,8 @@ WORKDIR /jda_geoportal
 COPY package*.json ./
 
 # Install dependencies
-# RUN npm install --production
-RUN npm install
+RUN npm install --production
+# RUN npm install
 
 # Copy the rest of the application code
 COPY . .
@@ -54,5 +54,5 @@ ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 EXPOSE 3000
 
 # Start the application
-# CMD ["npm", "start"]
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
+# CMD ["npm", "run", "dev"]

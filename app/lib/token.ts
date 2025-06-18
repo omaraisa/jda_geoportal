@@ -26,10 +26,6 @@ export async function verifyAccessToken(token: string): Promise<TokenPayload | n
             return null;
         }
         
-        // Debug logging - remove in production
-        console.log("Secret length:", secret);
-        console.log("Token length:", token);
-        
         const encoder = new TextEncoder();
         const secretKey = encoder.encode(secret);
         
