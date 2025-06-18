@@ -24,6 +24,8 @@ const config = {
     password: process.env.NEXT_PUBLIC_PORTAL_PASSWORD ?? '',
 };
 
+console.log('🔑 Config initialized with API Key:', config.apiKey);
+
 // Function to get current token, generate if needed
 export const getArcGISToken = async (): Promise<string | null> => {
     // Check if we have a valid token in memory
@@ -120,10 +122,13 @@ export const initializeArcGIS = async (): Promise<void> => {
                 throw new Error('ArcGIS modules are not available for initialization.');
             }
 
+            console.log('🔑 Checking API Key before setting:', config.apiKey);
             if (config.apiKey !== 'API_KEY_NOT_SET') {
-                 esriConfig.apiKey = config.apiKey;
+                console.log('🔑 Setting esriConfig.apiKey to:', config.apiKey);
+                esriConfig.apiKey = config.apiKey;
+                console.log('🔑 esriConfig.apiKey after setting:', esriConfig.apiKey);
             } else {
-                 console.warn('ArcGIS API Key is not set. Using default or potentially falling back to other auth methods.');
+                console.warn('🔑 ArcGIS API Key is not set. Using default or potentially falling back to other auth methods.');
             }
 
             if (config.portalUrl === 'PORTAL_URL_NOT_SET' || config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {

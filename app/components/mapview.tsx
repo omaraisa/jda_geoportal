@@ -5,7 +5,6 @@ import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import useStateStore from "@/stateStore";
 import useCoordinatesDisplay from "@/lib/hooks/use-coordinates-display";
-import esriConfig from "@arcgis/core/config";
 
 interface CustomMapView extends MapView {
   eventHandlers?: { [key: string]: __esri.WatchHandle };
@@ -29,8 +28,6 @@ const MainMap = () => {
   useCoordinatesDisplay(viewRef.current) 
 
   useEffect(() => {
-    console.log("Mapview > esriConfig.apiKey: ", esriConfig.apiKey)
-    
     if (!mapInitializedRef.current) {
       mapInitializedRef.current = true;
           try {
