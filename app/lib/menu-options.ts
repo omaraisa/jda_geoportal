@@ -25,8 +25,8 @@ const menuOptions: MenuOptions = {
     { name: "CoordinateConversionComponent", icon: "coordinate-system" },
   ],
   analysis: [
-    { name: "DirectionsComponent", icon: "tour" }, 
-    { name: "ClosestFacility", icon: "utility-network" },
+    // { name: "DirectionsComponent", icon: "tour" }, 
+    // { name: "ClosestFacility", icon: "utility-network" },
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },
@@ -37,7 +37,7 @@ const menuOptions: MenuOptions = {
     { name: "LegendComponent", icon: "legend" },
     { name: "AddLayer", icon: "add-layer" },
     { name: "UploadLayer", icon: "upload" },
-    { name: "ExportLayer", icon: "export" },
+    // { name: "ExportLayer", icon: "export" },
   ],
 };
 

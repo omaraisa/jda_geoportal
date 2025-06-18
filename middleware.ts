@@ -9,18 +9,10 @@ const protectedPaths = [
 
 const AUTH_BASE_URL = process.env.NEXT_PUBLIC_AUTH_URL || '/';
 const REFRESH_PATH = process.env.NEXT_PUBLIC_AUTH_REFRESH_URL || '/';  
-const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://sdf.jda.gov.sa';
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
-    
-    // Debug logging for environment variables
-    console.log('Environment check:', {
-        AUTH_BASE_URL,
-        REFRESH_PATH,
-        APP_BASE_URL,
-        TOKEN_SECRET_LENGTH: process.env.TOKEN_SECRET?.length || 0
-    });
     
     try {
         if (protectedPaths.some(p => path === p || path.startsWith(p))) {
