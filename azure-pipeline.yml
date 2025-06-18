@@ -11,7 +11,7 @@ variables:
   NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL : 'https://gis.jda.gov.sa/portal/sharing/rest/generateToken'
   NEXT_PUBLIC_PORTAL_USERNAME : 'omaradmin'
   NEXT_PUBLIC_PORTAL_PASSWORD : '1qa2ws@WS!QA'
-  TOKEN_SECRET : 'X8$@29!mPZ%l*Dq9eS&vY^0b7A#C*Q(!@<vj823klmng91TR$#@*#klsj9823#@#@#<MzxT(#$AMSDF*!@NVa(@23nbma'
+  TOKEN_SECRET : '123'
   NEXT_PUBLIC_AUTH_URL: 'https://sdf.jda.gov.sa/auth'
   NEXT_PUBLIC_AUTH_REFRESH_URL: 'https://sdf.jda.gov.sa/auth/api/refresh-token'
   NEXT_PUBLIC_AUTH_LOGOUT_URL: 'https://sdf.jda.gov.sa/auth/api/logout'
