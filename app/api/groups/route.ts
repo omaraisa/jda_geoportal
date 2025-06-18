@@ -23,7 +23,7 @@ async function getToken(): Promise<string | null> {
       username,
       password,
       client: 'referer',
-      referer: 'localhost:3000',
+      referer: process.env.NEXT_PUBLIC_APP_URL || window.location.origin,
       f: 'json',
     });
 

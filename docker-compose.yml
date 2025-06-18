@@ -17,6 +17,7 @@ services:
         - NEXT_PUBLIC_PORTAL_USERNAME
         - NEXT_PUBLIC_PORTAL_PASSWORD
         - TOKEN_SECRET
+        - NEXT_PUBLIC_APP_URL
     environment:
       - PORT=3000
     expose:
@@ -44,6 +45,7 @@ services:
         - NEXT_PUBLIC_PORTAL_USERNAME
         - NEXT_PUBLIC_PORTAL_PASSWORD
         - TOKEN_SECRET
+        - NEXT_PUBLIC_APP_URL
     environment:
       - PORT=3000
     expose:

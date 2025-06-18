@@ -20,6 +20,7 @@ variables:
   NEXT_PUBLIC_DB_NAME: 'webdata'
   NEXT_PUBLIC_DB_PASSWORD: 'Om@123'
   PG_PORT: '5432'
+  NEXT_PUBLIC_APP_URL : "https://sdf.jda.gov.sa"
       
 steps:
   - script: |
@@ -42,6 +43,7 @@ steps:
       NEXT_PUBLIC_PORTAL_USERNAME=${NEXT_PUBLIC_PORTAL_USERNAME}
       NEXT_PUBLIC_PORTAL_PASSWORD=${NEXT_PUBLIC_PORTAL_PASSWORD}
       TOKEN_SECRET=${TOKEN_SECRET}
+      NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
       EOF
       
       # Use the .env file with docker-compose
