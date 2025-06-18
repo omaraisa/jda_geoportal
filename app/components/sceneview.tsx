@@ -3,7 +3,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
-import esriConfig from "@arcgis/core/config";
 import useStateStore from "@/stateStore";
 import Loading from "./ui/loading";
 // import { sceneBasemapConfigurations } from "@/lib/initial-layers";
@@ -22,7 +21,6 @@ const MainScene: React.FC = () => {
   const { sendMessage, center, zoom, scale, mapView, targetView, updateSceneView, updateTargetView, viewsSyncOn, addBasemapLayers } = useStateStore((state) => state);
   
   useEffect(() => {
-    esriConfig.apiKey = process.env.NEXT_PUBLIC_ArcGISAPIKey as string;
     if (!viewRef.current) {
       try {
         const scene = new WebScene({
