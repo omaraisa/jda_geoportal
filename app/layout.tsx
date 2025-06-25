@@ -32,8 +32,8 @@ const droidArabicKufi = localFont({
 });
 
 export const metadata = {
-  title: "JDA Geoportal",
-  description: "JDA Geoportal is a web-based GIS application",
+  title: "SDF | Spatial Data Front",
+  description: "SDF | Spatial Data Front is a modern web application for exploring, analyzing, and visualizing geospatial data.",
 };
 
 interface RootLayoutProps {

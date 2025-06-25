@@ -1,7 +1,7 @@
 {
   "header": {
     "logoAlt": "JDA Logo",
-    "title": "JDA Geoportal",
+    "title": "SDF | Spatial Data Front",
     "nav": {
       "selectFeatures": "Select Features",
       "basemaps": "Basemaps",
@@ -170,7 +170,8 @@
       "Topo": "Topographic",
       "Satellite": "Imagery",
       "Street": "Street",
-      "DarkGray": "Dark Gray"
+      "DarkGray": "Dark Gray",
+      "Atkins": "Atkins Basemap"
     },
     "measurements": {
       "distance": "Distance",

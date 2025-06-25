@@ -68,6 +68,7 @@ export interface State {
   center: [number, number];
   zoom: number;
   scale: number;
+  extent: __esri.Extent | null;
   viewsSyncOn: boolean;
   previousSideBars: Record<string, string | null>;
   messages: Record<number, Message>;
@@ -76,6 +77,7 @@ export interface State {
   accessToken: string | null;
   isAuthenticated: boolean;
   gisToken: string | null;
+  customBasemap: __esri.Basemap | null;
   setAppReady: (isReady: boolean) => void;
   setLanguage: (lang: string) => void;
   setMainMenuExpansion: (isExpanded: boolean) => void;
@@ -108,6 +110,8 @@ export interface State {
   updateStats: (featurename: string) => void;
   clearAuth: () => void;
   setGisToken: (token: string) => void;
+  setCustomBasemap: (basemap: __esri.Basemap) => void;
+  updateExtent: (extent: __esri.Extent | null) => void;
 }
 
 export interface AttributeQueryState {

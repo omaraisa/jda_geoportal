@@ -1,7 +1,7 @@
 {
   "header": {
     "logoAlt": "شعار JDA",
-    "title": "بوابة جدة الجيومكانية",
+    "title": "صدف | واجهة البيانات الجيومكانية",
     "nav": {
       "selectFeatures": "اختيار المعالم",
       "basemaps": "خرائط الأساس",
@@ -169,7 +169,8 @@
       "Topo": "تضاريس",
       "Satellite": "صور",
       "Street": "شارع",
-      "DarkGray": "رمادي غامق"
+      "DarkGray": "رمادي غامق",
+      "Atkins": "خريطة أتكنز"
     },
     "measurements": {
       "distance": "المسافة",

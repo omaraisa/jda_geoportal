@@ -12,6 +12,7 @@ variables:
   NEXT_PUBLIC_PORTAL_USERNAME : 'gisguest'
   NEXT_PUBLIC_PORTAL_PASSWORD : 'Gisguest@2030'
   TOKEN_SECRET : 'mySecureTokenSecret2030!@#$%^&*()_+=-[]{}|;:,.<>?'
+  NEXT_PUBLIC_ADMIN_URL: 'https://sdf.jda.gov.sa/admin'
   NEXT_PUBLIC_AUTH_URL: 'https://sdf.jda.gov.sa/auth'
   NEXT_PUBLIC_AUTH_REFRESH_URL: 'https://sdf.jda.gov.sa/auth/api/refresh-token'
   NEXT_PUBLIC_AUTH_LOGOUT_URL: 'https://sdf.jda.gov.sa/auth/api/logout'
@@ -21,6 +22,8 @@ variables:
   NEXT_PUBLIC_DB_PASSWORD: 'Om@123'
   PG_PORT: '5432'
   NEXT_PUBLIC_APP_URL : "https://sdf.jda.gov.sa"
+  NEXT_PUBLIC_MAPSERVICES_URL: 'https://sdf.jda.gov.sa/admin/api/v1/mapservices'
+  NEXT_PUBLIC_PORTAL_GROUP_NAME: 'gportal_api_services'
       
 steps:
   - script: |
@@ -32,6 +35,7 @@ steps:
       NEXT_PUBLIC_ARCGIS_API_KEY=${NEXT_PUBLIC_ARCGIS_API_KEY}
       NEXT_PUBLIC_PORTAL_URL=${NEXT_PUBLIC_PORTAL_URL}
       NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL=${NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL}
+      NEXT_PUBLIC_ADMIN_URL=${NEXT_PUBLIC_ADMIN_URL}
       NEXT_PUBLIC_AUTH_URL=${NEXT_PUBLIC_AUTH_URL}
       NEXT_PUBLIC_AUTH_REFRESH_URL=${NEXT_PUBLIC_AUTH_REFRESH_URL}
       NEXT_PUBLIC_AUTH_LOGOUT_URL=${NEXT_PUBLIC_AUTH_LOGOUT_URL}
@@ -44,6 +48,8 @@ steps:
       NEXT_PUBLIC_PORTAL_PASSWORD=${NEXT_PUBLIC_PORTAL_PASSWORD}
       TOKEN_SECRET=${TOKEN_SECRET}
       NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+      NEXT_PUBLIC_MAPSERVICES_URL=${NEXT_PUBLIC_MAPSERVICES_URL}
+      NEXT_PUBLIC_PORTAL_GROUP_NAME=${NEXT_PUBLIC_PORTAL_GROUP_NAME}
       EOF
       
       # Use the .env file with docker-compose

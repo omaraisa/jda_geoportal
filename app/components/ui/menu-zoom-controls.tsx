@@ -5,16 +5,28 @@ import useStateStore from "@/stateStore";
 
 
 const ZoomControls: React.FC = () => {
-    const view = useStateStore((state) => state.targetView);
-  
-    return (
-      <>
-        <div className={`${styles.fixedButton} ${styles.zoomIn}`} onClick={() => view?.goTo({ zoom: view.zoom + 1 })}></div>
-        <div className={`${styles.fixedButton} ${styles.home}`} onClick={() => view?.goTo({ center: [39.19797, 21.51581], zoom: 12 })}></div>
-        <div className={`${styles.fixedButton} ${styles.zoomOut}`} onClick={() => view?.goTo({ zoom: view.zoom - 1 })}></div>
-      </>
-    );
-  };
+  const {mapView,extent} = useStateStore((state) => state);
+
+  return (
+    <>
+      <div 
+        className={`${styles.fixedButton} ${styles.zoomIn}`} 
+        onClick={() => mapView?.goTo({ scale: mapView.scale / 2 })}
+      ></div>
+      <div 
+        className={`${styles.fixedButton} ${styles.home}`} 
+        onClick={() => mapView?.goTo({ 
+          extent, 
+        })}
+      ></div>
+      <div 
+        className={`${styles.fixedButton} ${styles.zoomOut}`} 
+        onClick={() => mapView?.goTo({ scale: mapView.scale * 2 })}
+      ></div>
+    </>
+  );
+};
+
 
 
 export default ZoomControls;

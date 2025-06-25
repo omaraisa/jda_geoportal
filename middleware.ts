@@ -13,18 +13,18 @@ const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://sdf.jda.gov.sa'
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
-    
+
     try {
         if (protectedPaths.some(p => path === p || path.startsWith(p))) {
             const accessToken = request.cookies.get('access_token')?.value;
             const refreshToken = request.cookies.get('refresh_token')?.value;
-            
+
             if (accessToken) {
                 const payload = await verifyAccessToken(accessToken);
                 if (payload) {
                     const requestHeaders = new Headers(request.headers);
                     requestHeaders.set('x-user-role', payload.role);
-                    
+
                     return NextResponse.next({
                         request: {
                             headers: requestHeaders,
@@ -32,28 +32,37 @@ export async function middleware(request: NextRequest) {
                     });
                 }
             }
-            
+
             if (refreshToken) {
-                const refreshPayload = await verifyRefreshToken(refreshToken);
-                
-                if (refreshPayload) {
-                    // Use APP_BASE_URL to construct the callback URL
-                    const callbackUrl = encodeURIComponent(`${APP_BASE_URL}${path}`);
-                    const refreshUrl = new URL(REFRESH_PATH, AUTH_BASE_URL);
-                    refreshUrl.searchParams.set('callback', callbackUrl);
-                    
-                    return NextResponse.redirect(refreshUrl);
+                // Only allow refresh via POST
+                if (request.method === 'POST') {
+                    const refreshPayload = await verifyRefreshToken(refreshToken);
+
+                    if (refreshPayload) {
+                        // Use APP_BASE_URL to construct the callback URL
+                        const callbackUrl = encodeURIComponent(`${APP_BASE_URL}${path}`);
+                        const refreshUrl = new URL(REFRESH_PATH, AUTH_BASE_URL);
+                        refreshUrl.searchParams.set('callback', callbackUrl);
+
+                        return NextResponse.redirect(refreshUrl);
+                    } else {
+                        // Failed to refresh, redirect to AUTH_BASE_URL
+                        return NextResponse.redirect(new URL(AUTH_BASE_URL));
+                    }
+                } else {
+                    // If not POST, redirect to AUTH_BASE_URL
+                    return NextResponse.redirect(new URL(AUTH_BASE_URL));
                 }
             }
-            
+
             // Use APP_BASE_URL to construct the callback URL
             const callbackUrl = encodeURIComponent(`${APP_BASE_URL}${path}`);
             const loginUrl = new URL(AUTH_BASE_URL);
             loginUrl.searchParams.set('callback', callbackUrl);
-            
+
             return NextResponse.redirect(loginUrl);
         }
-        
+
         return NextResponse.next();
     } catch (error) {
         console.error('Middleware error:', error);

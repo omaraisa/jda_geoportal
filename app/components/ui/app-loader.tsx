@@ -27,7 +27,7 @@ const AppLoader: React.FC = () => {
     <div className={styles.loaderWrapper}>
         <div className="relative h-20 w-20">
         <Image
-          src= "/logo.png"
+            src="/tree-white.png"
           alt= "loading"
           width={100}
           height={100}
@@ -35,7 +35,7 @@ const AppLoader: React.FC = () => {
         />
 
         <Image
-          src="/logo-outer.png"
+            src="/jda-w-logo-outer.png"
           alt= "loading"
           width={100}
           height={100}

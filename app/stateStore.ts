@@ -26,9 +26,10 @@ const useStateStore = create<State>((set, get) => ({
   sceneView: null,
   widgets: {},
   targetLayerId: null,
-  center: [39.19797, 21.51581],
-  zoom: 10,
-  scale: 500000,
+  center: [39.19, 21.60],
+  extent: null,
+  zoom: 18,
+  scale: 280000,
   viewsSyncOn: false,
   previousSideBars: {
     DefaultComponent: null,
@@ -37,9 +38,11 @@ const useStateStore = create<State>((set, get) => ({
   bookmarks: [],
 
   setAppReady: (isReady: boolean) => {
-    set({ appReady: isReady });
+    setTimeout(() => set({ appReady: isReady }), 3000);
   },
-
+  updateExtent: (extent: __esri.Extent | null) => {
+    set({ extent });
+  },
   setLanguage: (lang: string) => {
     set({ language: lang });
     document.documentElement.lang = lang;
@@ -365,288 +368,278 @@ const useStateStore = create<State>((set, get) => ({
       localStorage.getItem("localBookmarks") || "[]"
     );
     set({ bookmarks: savedBookmarks });
-    },
-   
-    accessToken: null,
-    isAuthenticated: false,
-    
-    initializeAuth: () => {
-      const accessToken = getCookie('access_token');
-      const isAuthenticated = getCookie('is_authenticated') === 'true';
-      
-      if (accessToken && isAuthenticated) {
-        set({ 
-          accessToken,
-          isAuthenticated 
-        });
-      }
-    },
-    
-    checkAuthStatus: () => {
-      const { accessToken } = get();
-      
-      if (!accessToken) {
-        return false;
-      }
-      
-      // Since we're not decoding tokens anymore, we'll rely on the browser's cookie expiration
-      // or the authentication check in the useAuthentication hook
-      return true;
-    },
-    
-    clearAuth: () => {
-      set({ 
-        accessToken: null,
-        isAuthenticated: false,
-        userInfo: {
-          fullName: "",
-          username: "",
-          role: "",
-          groups: [],
-        }
-      });
-    },
-    
-    userInfo: {
-      fullName: "",
-      username: "",
-      role: "",
-      groups: [],
-      arcgisCredentials: null,
-    },
-    
-    gisToken: null,
-    
-    setGisToken: (token: string | null) => {
-      set({ gisToken: token });
-    },
-    
-    setUserInfo: (userInfo: ArcGISUserInfo) => {
-      set({
-        userInfo: {
-          fullName: userInfo.fullName || "",
-          username: userInfo.username || "",
-          role: userInfo.role || "",
-          firstName: userInfo.firstName || null,
-          lastName: userInfo.lastName || null,
-          userId: userInfo.userId || null,
-          groups: Array.isArray(userInfo.groups) ? userInfo.groups : [],
-        },
-      });
-    },
+  },
 
-    loadUserGroupLayers: async () => {
-      const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
-      const { userInfo, targetView } = get();
-      
-      // Get token from authenticateArcGIS module (this will now validate expiry)
-      const { getArcGISToken, clearArcGISToken } = await import('./lib/authenticateArcGIS');
-      let gisToken = await getArcGISToken();
-      
-      if (!gisToken) {
-        console.error("❌ No valid ArcGIS token available from authenticateArcGIS");
-        return;
+  accessToken: null,
+  isAuthenticated: false,
+
+  initializeAuth: () => {
+    const accessToken = getCookie('access_token');
+    const isAuthenticated = getCookie('is_authenticated') === 'true';
+
+    if (accessToken && isAuthenticated) {
+      set({
+        accessToken,
+        isAuthenticated
+      });
+    }
+  },
+
+  checkAuthStatus: () => {
+    const { accessToken } = get();
+
+    if (!accessToken) {
+      return false;
+    }
+
+    // Since we're not decoding tokens anymore, we'll rely on the browser's cookie expiration
+    // or the authentication check in the useAuthentication hook
+    return true;
+  },
+
+  clearAuth: () => {
+    set({
+      accessToken: null,
+      isAuthenticated: false,
+      userInfo: {
+        fullName: "",
+        username: "",
+        role: "",
+        groups: [],
       }
-      
-      // Update state with the token
-      set({ gisToken });
-      
-      // Test the token immediately before using it
-      try {
-        const testUrl = `${portalUrl}/sharing/rest/portals/self?f=json&token=${gisToken}`;
-        
-        const testResponse = await fetch(testUrl);
-        const testData = await testResponse.json();
-        
-        if (testData.error) {
-          console.error('❌ Token test failed, token is invalid:', testData.error);
-          console.log('🔄 Attempting to generate a new token...');
-          
-          // Clear the invalid token
-          clearArcGISToken();
-          set({ gisToken: null });
-          
-          // Clear invalid cookies
-          document.cookie = 'arcgis_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-          document.cookie = 'arcgis_token_expiry=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-          
-          // Try to get a new token
-          gisToken = await getArcGISToken();
-          
-          if (!gisToken) {
-            console.error("❌ Failed to generate new token after validation failure");
-            return;
-          }
-          
-          set({ gisToken });
-          
-          // Test the new token
-          const newTestResponse = await fetch(`${portalUrl}/sharing/rest/portals/self?f=json&token=${gisToken}`);
-          const newTestData = await newTestResponse.json();
-          
-          if (newTestData.error) {
-            console.error('❌ New token also failed validation:', newTestData.error);
-            return;
-          }
-        } else {
-        }
-      } catch (testError) {
-        console.error('❌ Token test error:', testError);
-        console.log('🔄 Attempting to generate a new token due to test error...');
-        
-        // Clear the problematic token and try again
+    });
+  },
+
+  userInfo: {
+    fullName: "",
+    username: "",
+    role: "",
+    groups: [],
+    arcgisCredentials: null,
+  },
+
+  gisToken: null,
+  customBasemap: null,
+
+  setGisToken: (token: string | null) => {
+    set({ gisToken: token });
+  },
+
+  setCustomBasemap: (basemap: __esri.Basemap) => {
+    set({ customBasemap: basemap });
+  },
+
+  setUserInfo: (userInfo: ArcGISUserInfo) => {
+    set({
+      userInfo: {
+        fullName: userInfo.fullName || "",
+        username: userInfo.username || "",
+        role: userInfo.role || "",
+        firstName: userInfo.firstName || null,
+        lastName: userInfo.lastName || null,
+        userId: userInfo.userId || null,
+        groups: Array.isArray(userInfo.groups) ? userInfo.groups : [],
+      },
+    });
+  },
+
+  loadUserGroupLayers: async () => {
+    const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
+    const { userInfo, targetView } = get();
+
+    // Get token from authenticateArcGIS module (this will now validate expiry)
+    const { getArcGISToken, clearArcGISToken } = await import('./lib/authenticateArcGIS');
+    let gisToken = await getArcGISToken();
+
+    if (!gisToken) {
+      console.error("❌ No valid ArcGIS token available from authenticateArcGIS");
+      return;
+    }
+
+    // Update state with the token
+    set({ gisToken });
+
+    // Test the token immediately before using it
+    try {
+      const testUrl = `${portalUrl}/sharing/rest/portals/self?f=json&token=${gisToken}`;
+
+      const testResponse = await fetch(testUrl);
+      const testData = await testResponse.json();
+
+      if (testData.error) {
+        console.error('❌ Token test failed, token is invalid:', testData.error);
+        console.log('🔄 Attempting to generate a new token...');
+
+        // Clear the invalid token
         clearArcGISToken();
         set({ gisToken: null });
-        
+
+        // Clear invalid cookies
+        document.cookie = 'arcgis_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = 'arcgis_token_expiry=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
+        // Try to get a new token
         gisToken = await getArcGISToken();
+
         if (!gisToken) {
-          console.error("❌ Failed to generate new token after test error");
+          console.error("❌ Failed to generate new token after validation failure");
           return;
         }
-        
+
         set({ gisToken });
+
+        // Test the new token
+        const newTestResponse = await fetch(`${portalUrl}/sharing/rest/portals/self?f=json&token=${gisToken}`);
+        const newTestData = await newTestResponse.json();
+
+        if (newTestData.error) {
+          console.error('❌ New token also failed validation:', newTestData.error);
+          return;
+        }
+      } else {
       }
-      
-      // Fetch all groups and create a mapping of group names to IDs
-      const groupNameToIdMap: { [key: string]: string } = {};
+    } catch (testError) {
+      console.error('❌ Token test error:', testError);
+      console.log('🔄 Attempting to generate a new token due to test error...');
+
+      // Clear the problematic token and try again
+      clearArcGISToken();
+      set({ gisToken: null });
+
+      gisToken = await getArcGISToken();
+      if (!gisToken) {
+        console.error("❌ Failed to generate new token after test error");
+        return;
+      }
+
+      set({ gisToken });
+    }
+
+    // Fetch all groups and create a mapping of group names to IDs
+    const groupNameToIdMap: { [key: string]: string } = {};
+    try {
+      const groupsUrl = `${portalUrl}/sharing/rest/community/groups?f=json&q=gportal_&token=${gisToken}&num=100`;
+
+      const allGroupsRes = await fetch(groupsUrl);
+
+      const allGroupsData = await allGroupsRes.json();
+
+      if (allGroupsData.error) {
+        console.error("❌ Portal groups API error:", allGroupsData.error);
+        return;
+      }
+
+      if (allGroupsData.results) {
+
+        // Create mapping of group titles to IDs
+        allGroupsData.results.forEach((group: any) => {
+          if (group.title.startsWith("gportal_")) {
+            groupNameToIdMap[group.title] = group.id;
+            // Mapped group title to ID
+          }
+        });
+
+        // Created mapping for portal groups
+      } else {
+        console.error("⚠️ No groups data returned from portal");
+        return;
+      }
+    } catch (error) {
+      console.error("❌ Failed to fetch portal groups:", error);
+      return;
+    }
+
+    if (!userInfo || !userInfo.groups || !targetView || !targetView.map) {
+      console.error("❌ Missing required data for loading layers");
+      return;
+    }
+
+    // Processing user groups
+    const allGroupLayers: any[] = [];
+
+    for (const groupName of userInfo.groups) {
+      // Skip if group doesn't start with gportal_
+      if (!groupName.startsWith("gportal_")) {
+        continue;
+      }
+
+      // Get the group ID from our mapping
+      const groupId = groupNameToIdMap[groupName];
+      if (!groupId) {
+        console.error(`No group ID found for: ${groupName}`);
+        continue;
+      }
+
+      // Fetching content for group
+
       try {
-        const groupsUrl = `${portalUrl}/sharing/rest/community/groups?f=json&q=gportal_&token=${gisToken}&num=100`;
-        
-        const allGroupsRes = await fetch(groupsUrl);
-        
-        const allGroupsData = await allGroupsRes.json();
-        
-        if (allGroupsData.error) {
-          console.error("❌ Portal groups API error:", allGroupsData.error);
-          return;
-        }
-        
-        if (allGroupsData.results) {
-          
-          // Create mapping of group titles to IDs
-          allGroupsData.results.forEach((group: any) => {
-            if (group.title.startsWith("gportal_")) {
-              groupNameToIdMap[group.title] = group.id;
-              // Mapped group title to ID
-            }
-          });
-          
-          // Created mapping for portal groups
-        } else {
-          console.error("⚠️ No groups data returned from portal");
-          return;
-        }
-      } catch (error) {
-        console.error("❌ Failed to fetch portal groups:", error);
-        return;
-      }
-      
-      if (!userInfo || !userInfo.groups || !targetView || !targetView.map) {
-        console.error("❌ Missing required data for loading layers");
-        return;
-      }
+        // Use the correct API endpoint to get group content
+        const groupContentUrl = `${portalUrl}/sharing/rest/content/groups/${groupId}/items?f=json&token=${gisToken}`;
 
-      // Processing user groups
-      const allGroupLayers: any[] = [];
-      
-      for (const groupName of userInfo.groups) {
-        // Skip if group doesn't start with gportal_
-        if (!groupName.startsWith("gportal_")) {
+        const groupContentRes = await fetch(groupContentUrl);
+
+        if (!groupContentRes.ok) {
+          console.error(`Failed to fetch group content for ${groupName}: ${groupContentRes.status}`);
           continue;
         }
-        
-        // Get the group ID from our mapping
-        const groupId = groupNameToIdMap[groupName];
-        if (!groupId) {
-          console.error(`No group ID found for: ${groupName}`);
+
+        const groupContent = await groupContentRes.json();
+
+        if (groupContent.error) {
+          console.error(`❌ Group ${groupName} API error:`, groupContent.error);
           continue;
         }
-        
-        // Fetching content for group
-        
-        try {
-          // Use the correct API endpoint to get group content
-          const groupContentUrl = `${portalUrl}/sharing/rest/content/groups/${groupId}/items?f=json&token=${gisToken}`;
-          
-          const groupContentRes = await fetch(groupContentUrl);
-          
-          if (!groupContentRes.ok) {
-            console.error(`Failed to fetch group content for ${groupName}: ${groupContentRes.status}`);
-            continue;
-          }
-          
-          const groupContent = await groupContentRes.json();
-          
-          if (groupContent.error) {
-            console.error(`❌ Group ${groupName} API error:`, groupContent.error);
-            continue;
-          }
-          
-          if (!groupContent.items || groupContent.items.length === 0) {
-            continue;
-          }
-          
-          // Attach group name to each item for later use (remove gportal_ prefix)
-          groupContent.items.forEach((item: any) => {
-            item._groupName = groupName.replace("gportal_", "");
-          });
-          
-          allGroupLayers.push(...groupContent.items);
-        } catch (e) {
-          console.error("❌ Failed to fetch group content for group:", groupName, e);
+
+        if (!groupContent.items || groupContent.items.length === 0) {
+          continue;
         }
+
+        // Attach group name to each item for later use (remove gportal_ prefix)
+        groupContent.items.forEach((item: any) => {
+          item._groupName = groupName.replace("gportal_", "");
+        });
+
+        allGroupLayers.push(...groupContent.items);
+      } catch (e) {
+        console.error("❌ Failed to fetch group content for group:", groupName, e);
+      }
+    }
+
+    allGroupLayers.forEach((item) => {
+
+      let layer: any = null;
+
+      if (item.url) {
+        item.url = item.url.replace(/^http:/, "https:");
       }
 
-      allGroupLayers.forEach((item) => {
-        
-        let layer: any = null;
-        
-        if (item.url) {
-          item.url = item.url.replace(/^http:/, "https:");
-        }
-        
-        if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
-          // Try to fetch sublayers and add each as a FeatureLayer
-          (async () => {
-            try {
-              const serviceUrl = item.url.replace(/\/+$/, "");
-              const metadataUrl = `${serviceUrl}?f=json${gisToken ? `&token=${gisToken}` : ''}`;
-              
-              const response = await fetch(metadataUrl);
-              const data = await response.json();
+      if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
+        // Try to fetch sublayers and add each as a FeatureLayer
+        (async () => {
+          try {
+            const serviceUrl = item.url.replace(/\/+$/, "");
+            const metadataUrl = `${serviceUrl}?f=json${gisToken ? `&token=${gisToken}` : ''}`;
 
-              if (!data.error && Array.isArray(data.layers) && data.layers.length > 0) {
-                // Add each sublayer as a separate FeatureLayer
-                data.layers.reverse().forEach((sublayer: any) => {
-                  const subLayerInstance = new FeatureLayer({
-                    url: `${serviceUrl}/${sublayer.id}`,
-                    id: `${item.id}_${sublayer.id}`,
-                    title: sublayer.name,
-                    outFields: ["*"],
-                    visible: false,
-                  });
-                  if (item._groupName) {
-                    (subLayerInstance as any).group = item._groupName;
-                  }
-                  targetView.map.add(subLayerInstance);
-                });
-              } else {
-                // Not a FeatureServer with multiple layers, or error fetching metadata, or no sublayers.
-                const featureLayer = new FeatureLayer({
-                  url: item.url,
-                  id: item.id,
-                  title: item.title,
+            const response = await fetch(metadataUrl);
+            const data = await response.json();
+
+            if (!data.error && Array.isArray(data.layers) && data.layers.length > 0) {
+              // Add each sublayer as a separate FeatureLayer
+              data.layers.reverse().forEach((sublayer: any) => {
+                const subLayerInstance = new FeatureLayer({
+                  url: `${serviceUrl}/${sublayer.id}`,
+                  id: `${item.id}_${sublayer.id}`,
+                  title: sublayer.name,
                   outFields: ["*"],
                   visible: false,
                 });
                 if (item._groupName) {
-                  (featureLayer as any).group = item._groupName;
+                  (subLayerInstance as any).group = item._groupName;
                 }
-                targetView.map.add(featureLayer);
-              }
-            } catch (error) {
-              console.error(`❌ Failed to process FeatureLayer URL ${item.url}:`, error);
-              // Fallback: create as a single FeatureLayer on any error during fetch/processing
+                targetView.map.add(subLayerInstance);
+              });
+            } else {
+              // Not a FeatureServer with multiple layers, or error fetching metadata, or no sublayers.
               const featureLayer = new FeatureLayer({
                 url: item.url,
                 id: item.id,
@@ -659,68 +652,83 @@ const useStateStore = create<State>((set, get) => ({
               }
               targetView.map.add(featureLayer);
             }
-          })();
-          return;
-        } else if (item.type.includes("Map Service")) {
-          // Fetch sublayers and add each as a FeatureLayer
-          (async () => {
-            try {
-              const response = await fetch(`${item.url}?f=json&token=${gisToken}`);
-              const data = await response.json();
-              
-              if (data.error) {
-                // fallback: add as MapImageLayer if metadata fetch fails
-                layer = new MapImageLayer({ url: item.url, visible: false });
-              } else if (Array.isArray(data.layers)) {
-                // Add each sublayer as a separate FeatureLayer
-                data.layers.reverse().forEach((sublayer: any) => {
-                  const subLayerInstance = new FeatureLayer({
-                    url: `${item.url.replace(/\/+$/, "")}/${sublayer.id}`,
-                    id: `${item.id}_${sublayer.id}`,
-                    title: sublayer.name,
-                    outFields: ["*"],
-                    visible: false,
-                  });
-                  if (item._groupName) {
-                    (subLayerInstance as any).group = item._groupName;
-                  }
-                  targetView.map.add(subLayerInstance);
+          } catch (error) {
+            console.error(`❌ Failed to process FeatureLayer URL ${item.url}:`, error);
+            // Fallback: create as a single FeatureLayer on any error during fetch/processing
+            const featureLayer = new FeatureLayer({
+              url: item.url,
+              id: item.id,
+              title: item.title,
+              outFields: ["*"],
+              visible: false,
+            });
+            if (item._groupName) {
+              (featureLayer as any).group = item._groupName;
+            }
+            targetView.map.add(featureLayer);
+          }
+        })();
+        return;
+      } else if (item.type.includes("Map Service")) {
+        // Fetch sublayers and add each as a FeatureLayer
+        (async () => {
+          try {
+            const response = await fetch(`${item.url}?f=json&token=${gisToken}`);
+            const data = await response.json();
+
+            if (data.error) {
+              // fallback: add as MapImageLayer if metadata fetch fails
+              layer = new MapImageLayer({ url: item.url, visible: false });
+            } else if (Array.isArray(data.layers)) {
+              // Add each sublayer as a separate FeatureLayer
+              data.layers.reverse().forEach((sublayer: any) => {
+                const subLayerInstance = new FeatureLayer({
+                  url: `${item.url.replace(/\/+$/, "")}/${sublayer.id}`,
+                  id: `${item.id}_${sublayer.id}`,
+                  title: sublayer.name,
+                  outFields: ["*"],
+                  visible: false,
                 });
-                layer = null; // Already added sublayers
-              } else {
-                // fallback: add as MapImageLayer if no sublayers
-                layer = new MapImageLayer({ url: item.url, visible: false });
-              }
-            } catch (error) {
-              console.error("❌ Failed to fetch Map Service sublayers:", error);
-              // fallback: add as MapImageLayer on error
+                if (item._groupName) {
+                  (subLayerInstance as any).group = item._groupName;
+                }
+                targetView.map.add(subLayerInstance);
+              });
+              layer = null; // Already added sublayers
+            } else {
+              // fallback: add as MapImageLayer if no sublayers
               layer = new MapImageLayer({ url: item.url, visible: false });
             }
-            
-            if (layer && item._groupName) {
-              (layer as any).group = item._groupName;
-            }
-            if (layer) {
-              targetView.map.add(layer);
-            }
-          })();
-          return;
-        } else if (item.type.includes("Tile")) {
-          layer = new TileLayer({ url: item.url, visible: false });
-        } else if (item.type.includes("Vector")) {
-          layer = new VectorTileLayer({ url: item.url, visible: false });
-        }
-        
-        if (layer && item._groupName) {
-          (layer as any).group = item._groupName;
-        }
-        
-        if (layer) {
-          targetView.map.add(layer);
-        } else {
-        }
-      });
-    },
+          } catch (error) {
+            console.error("❌ Failed to fetch Map Service sublayers:", error);
+            // fallback: add as MapImageLayer on error
+            layer = new MapImageLayer({ url: item.url, visible: false });
+          }
+
+          if (layer && item._groupName) {
+            (layer as any).group = item._groupName;
+          }
+          if (layer) {
+            targetView.map.add(layer);
+          }
+        })();
+        return;
+      } else if (item.type.includes("Tile")) {
+        layer = new TileLayer({ url: item.url, visible: false });
+      } else if (item.type.includes("Vector")) {
+        layer = new VectorTileLayer({ url: item.url, visible: false });
+      }
+
+      if (layer && item._groupName) {
+        (layer as any).group = item._groupName;
+      }
+
+      if (layer) {
+        targetView.map.add(layer);
+      } else {
+      }
+    });
+  },
 
   sessionModalOpen: false,
   setSessionModalOpen: (open: boolean) => {
@@ -743,7 +751,6 @@ const useStateStore = create<State>((set, get) => ({
       console.error('Failed to extend session:', error);
     }
   },
-
   updateStats: (featurename: string) => {
     incrementStatisticsFeature(featurename, get().userInfo?.fullName || "").then((response) => {
       // console.log(response.message);
