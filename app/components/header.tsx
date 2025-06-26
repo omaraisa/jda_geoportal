@@ -111,9 +111,9 @@ const Header: React.FC = () => {
           }}
         >
           {language === "ar" ? (
-            <Image src="/logo-ar.png" alt="Logo AR" width={200} height={40} />
+            <Image src="/logo-ar.png" alt="Logo AR" width={180} height={40} />
           ) : (
-            <Image src="/logo-en.png" alt="Logo EN" width={200} height={40} />
+            <Image src="/logo-en.png" alt="Logo EN" width={180} height={40} />
           )}
         </div>
 

@@ -22,7 +22,7 @@ const MainMap = () => {
   const updateExtent = useStateStore((state) => state.updateExtent);
   const targetView = useStateStore((state) => state.targetView);
   const sceneView = useStateStore((state) => state.sceneView);
-  const updateMapView = useStateStore((state) => state.updateMapView);  const updateTargetView = useStateStore((state) => state.updateTargetView);
+  const updateMapView = useStateStore((state) => state.updateMapView); const updateTargetView = useStateStore((state) => state.updateTargetView);
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
   const setAppReady = useStateStore((state) => state.setAppReady);
   const loadUserGroupLayers = useStateStore((state) => state.loadUserGroupLayers);
@@ -34,8 +34,10 @@ const MainMap = () => {
       mapInitializedRef.current = true;
       try {
         const customBasemapLayer = new MapImageLayer({
-          url: "https://gis.jda.gov.sa/agserver/rest/services/SDF_Atkins_Basemap/MapServer"
-        });        const customBasemap = new Basemap({
+          url: "https://gis.jda.gov.sa/agserver/rest/services/SDF_Basemap/MapServer"
+        });
+        
+        const customBasemap = new Basemap({
           baseLayers: [customBasemapLayer],
           title: "Atkins Basemap",
           id: "atkins-basemap"
@@ -48,6 +50,8 @@ const MainMap = () => {
         const jdaExtentLayer = new MapImageLayer({
           url: "https://gis.jda.gov.sa/agserver/rest/services/JDA_Extent/MapServer"
         });
+        (jdaExtentLayer as any).group = "HiddenLayers"; // Set group to "HiddenLayers" for JDA Extent Layer 
+
 
         const map = new Map({
           basemap: customBasemap,
@@ -63,8 +67,8 @@ const MainMap = () => {
           },
           rotation: 277,
           constraints: {
-            minScale: 300000, 
-            maxScale: 8000    
+            minScale: 320000,
+            maxScale: 8000
           },
           ui: {
             components: [],

@@ -17,6 +17,7 @@ export default function LayerListComponent() {
           layersArr
             .map((layer: any) => layer.group)
             .filter(Boolean)
+            .filter((group: string) => group !== "HiddenLayers")
         )
       );
       const hasUngrouped = layersArr.some((layer: any) => !layer.group);
@@ -32,6 +33,7 @@ export default function LayerListComponent() {
       handleChange.remove();
     };
   }, [view]);
+  
   return (
     <div className="h-full w-full">
       <div ref={layerListRef}></div>

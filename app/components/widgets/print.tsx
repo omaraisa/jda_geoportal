@@ -216,25 +216,27 @@ const PrintComponent: React.FC = () => {
           extent,
           ...(view.type === "2d" ? { rotation: -view.rotation } : {}),
         },
-        operationalLayers: operationalLayers.map((layer: any) => ({
-          id: layer.id,
-          title: layer.title,
-          opacity: layer.opacity,
-          visible: layer.visible,
-          url: layer.url,
-          ...(layer.visibleLayers ? { visibleLayers: layer.visibleLayers } : {}),
-          layerType:
-            layer.layerType === "ArcGISMapServiceLayer" ||
-              layer.layerType === "MapImageLayer"
-              ? "MapImageLayer"
-              : layer.layerType === "ArcGISTiledMapServiceLayer"
-                ? "ArcGISTiledMapServiceLayer"
-                : layer.layerType === "VectorTileLayer"
-                  ? "VectorTileLayer"
-                  : layer.layerType === "FeatureLayer"
-                    ? "FeatureLayer"
-                    : layer.layerType,
-        })),
+        operationalLayers: operationalLayers
+          .filter((layer: any) => layer.title !== "Extent")
+          .map((layer: any) => ({
+        id: layer.id,
+        title: layer.title,
+        opacity: layer.opacity,
+        visible: layer.visible,
+        url: layer.url,
+        ...(layer.visibleLayers ? { visibleLayers: layer.visibleLayers } : {}),
+        layerType:
+          layer.layerType === "ArcGISMapServiceLayer" ||
+            layer.layerType === "MapImageLayer"
+            ? "MapImageLayer"
+            : layer.layerType === "ArcGISTiledMapServiceLayer"
+          ? "ArcGISTiledMapServiceLayer"
+          : layer.layerType === "VectorTileLayer"
+            ? "VectorTileLayer"
+            : layer.layerType === "FeatureLayer"
+              ? "FeatureLayer"
+              : layer.layerType,
+          })),
         baseMap,
         exportOptions: {
           dpi: resolution,
@@ -242,20 +244,21 @@ const PrintComponent: React.FC = () => {
         },
         layoutOptions: {
           legendOptions: formData.includeLegend
-            ? {
-              operationalLayers: operationalLayers.map((layer: any) => ({
-                id: layer.id,
-              })),
-            }
-            : undefined,
+        ? {
+          operationalLayers: operationalLayers
+            .filter((layer: any) => layer.title !== "Extent")
+            .map((layer: any) => ({
+          id: layer.id,
+            })),
+        }
+        : undefined,
           customTextElements: [
-            { CustomTitle: formData.title },
-            { CustomAuthor: userInfo?.fullName || "" },
+        { CustomTitle: formData.title },
+        { CustomAuthor: userInfo?.fullName || "" },
           ],
         },
       };
 
-      // console.log("webMapJSON:", JSON.stringify(webMapJSON));
 
       const params = {
         Web_Map_as_JSON: JSON.stringify(webMapJSON),
