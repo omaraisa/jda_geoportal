@@ -124,10 +124,10 @@ async function getServices(): Promise<{ [key: string]: string }> {
 }
 
 // Handle all HTTP methods
-async function handleRequest(request: NextRequest, contextPromise: Promise<{ params: { path: string[] } }>) {
+async function handleRequest(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   try {
-    const { params } = await contextPromise;
-    const pathSegments = (await params).path;
+    const params = await context.params;
+    const pathSegments = params.path;
     
     if (!pathSegments || pathSegments.length === 0) {
       // Redirect to discover page if no service name is provided
