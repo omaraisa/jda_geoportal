@@ -54,7 +54,8 @@ const MainMap = () => {
 
 
         const map = new Map({
-          basemap: customBasemap,
+          // basemap: customBasemap,
+          basemap: "satellite",
           layers: [jdaExtentLayer],
         });
 
@@ -66,10 +67,10 @@ const MainMap = () => {
             color: [255, 255, 255, 1] // white background
           },
           rotation: 277,
-          constraints: {
-            minScale: 320000,
-            maxScale: 8000
-          },
+          // constraints: {
+          //   minScale: 320000,
+          //   maxScale: 8000
+          // },
           ui: {
             components: [],
           },
