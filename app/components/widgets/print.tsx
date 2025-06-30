@@ -11,6 +11,7 @@ interface PrintFormData {
   includeLegend: boolean;
   includeScale: boolean;
   scalebarUnit: 'metric' | 'imperial';
+  classification: 'Restricted' | 'Confidential' | 'Internal' | 'Public';
 }
 
 const PrintComponent: React.FC = () => {
@@ -29,10 +30,12 @@ const PrintComponent: React.FC = () => {
     includeLegend: true,
     includeScale: true,
     scalebarUnit: "metric",
+    classification: "Restricted",
   });
 
-  const JDALAYOUTS = ["Standard", "Presentation", "MAP_ONLY"]
-  const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/Printer/GPServer/Export%20Web%20Map";
+  const JDALAYOUTS = ["Standard", "Presentation"]
+  const CLASSIFICATION_KEYS = ["Restricted", "Confidential", "Internal", "Public"];
+  const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -217,7 +220,7 @@ const PrintComponent: React.FC = () => {
           ...(view.type === "2d" ? { rotation: -view.rotation } : {}),
         },
         operationalLayers: operationalLayers
-          .filter((layer: any) => layer.title !== "Extent")
+          .filter((layer: any) => layer.title !== "JDA Extent")
           .map((layer: any) => ({
         id: layer.id,
         title: layer.title,
@@ -227,15 +230,15 @@ const PrintComponent: React.FC = () => {
         ...(layer.visibleLayers ? { visibleLayers: layer.visibleLayers } : {}),
         layerType:
           layer.layerType === "ArcGISMapServiceLayer" ||
-            layer.layerType === "MapImageLayer"
-            ? "MapImageLayer"
-            : layer.layerType === "ArcGISTiledMapServiceLayer"
+        layer.layerType === "MapImageLayer"
+        ? "MapImageLayer"
+        : layer.layerType === "ArcGISTiledMapServiceLayer"
           ? "ArcGISTiledMapServiceLayer"
           : layer.layerType === "VectorTileLayer"
-            ? "VectorTileLayer"
-            : layer.layerType === "FeatureLayer"
-              ? "FeatureLayer"
-              : layer.layerType,
+        ? "VectorTileLayer"
+        : layer.layerType === "FeatureLayer"
+          ? "FeatureLayer"
+          : layer.layerType,
           })),
         baseMap,
         exportOptions: {
@@ -246,15 +249,18 @@ const PrintComponent: React.FC = () => {
           legendOptions: formData.includeLegend
         ? {
           operationalLayers: operationalLayers
-            .filter((layer: any) => layer.title !== "Extent")
-            .map((layer: any) => ({
+        .filter((layer: any) => layer.title !== "JDA Extent")
+        .map((layer: any) => ({
           id: layer.id,
-            })),
+        })),
         }
         : undefined,
           customTextElements: [
-        { CustomTitle: formData.title },
-        { CustomAuthor: userInfo?.fullName || "" },
+        { Title: formData.title },
+        { Classification: formData.classification },
+        ...Array.from({ length: 18 }, (_, i) => ({
+          [`Author_${i + 1}`]: userInfo?.fullName || ""
+        })),
           ],
         },
       };
@@ -331,6 +337,21 @@ const PrintComponent: React.FC = () => {
           >
             {JDALAYOUTS.map((lay) => (
               <option key={lay} value={lay}>{lay}</option>
+            ))}
+          </select>
+        </FormField>
+
+        <FormField label={t("widgets.print.Classification")}>
+          <select
+            name="classification"
+            value={formData.classification}
+            onChange={handleInputChange}
+            className="w-full p-2 border rounded"
+          >
+            {CLASSIFICATION_KEYS.map((key) => (
+              <option key={key} value={key}>
+                {t(`widgets.print.classificationLevels.${key}`)}
+              </option>
             ))}
           </select>
         </FormField>

@@ -44,8 +44,8 @@ const BasemapSwitcher: React.FC = () => {
                         // Apply constraints for Atkins basemap
                         targetView.constraints = {
                             ...targetView.constraints,
-                            minScale: 300000,
-                            maxScale: 8000
+                            minScale: 350000,
+                            maxScale: 5000
                         };
                     } else {
                         // Remove constraints for other basemaps

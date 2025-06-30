@@ -88,6 +88,7 @@ const MainMap = () => {
             updateMapView(viewRef.current!);
             updateTargetView(viewRef.current!);
             loadUserGroupLayers();
+            console.log('Map layers:', viewRef.current!.map.layers.toArray());
             setAppReady(true);
           })
           .catch((error: unknown) => {

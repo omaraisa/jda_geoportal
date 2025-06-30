@@ -117,6 +117,13 @@
       "Customfield": "حقل مخصص",
       "Format": "صيغة",
       "Layout": "تخطيط",
+      "Classification": "تصنيف",
+      "classificationLevels": {
+        "Restricted": "سري للغاية",
+        "Confidential": "سري",
+        "Internal": "مقيد",
+        "Public": "عام"
+      },
       "IncludeLegend": "تضمين مفتاح الخريطة",
       "IncludeScale": "تضمين مقياس الرسم",
       "Resolution": "دقة الخريطة",

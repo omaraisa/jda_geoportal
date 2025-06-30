@@ -118,6 +118,13 @@
       "Customfield": "Custom field",
       "Format": "Format",
       "Layout": "Layout",
+      "Classification": "Classification",
+      "classificationLevels": {
+        "Restricted": "Restricted",
+        "Confidential": "Confidential",
+        "Internal": "Internal",
+        "Public": "Public"
+      },
       "IncludeLegend": "Include Legend",
       "IncludeScale": "Include Scale",
       "Resolution": "Map Resolution",
