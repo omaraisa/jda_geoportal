@@ -27,17 +27,35 @@ const useLayerActions = () => {
 
     const toggleLayerPopup = useCallback((layer: __esri.Layer, setLayers: (layers: __esri.Layer[]) => void) => {
         const featureLayer = layer as __esri.FeatureLayer;
-    
+
         // Check if the feature layer already has a popup template
         if (!featureLayer.popupTemplate) {
             // Create a default popup template
             const titleField = getTitleField(featureLayer.fields);
-            featureLayer.popupTemplate = createPopupTemplate(titleField, featureLayer.fields);
+            const popupTemplate = createPopupTemplate(titleField, featureLayer.fields);
+
+            // Try to check for attachments using the layer's capabilities
+            let hasAttachments = false;
+            if (featureLayer.capabilities.operations.supportsQueryAttachments) {
+                hasAttachments = true;
+            } else if (
+                featureLayer.capabilities.attachment.supportsName
+            ) {
+                hasAttachments = true;
+            }
+
+            if (hasAttachments) {
+                popupTemplate.content.push({
+                    type: "attachments"
+                } as __esri.AttachmentsContent);
+            }
+
+            featureLayer.popupTemplate = popupTemplate;
         } else {
             // Toggle the popup visibility if the template already exists
             featureLayer.popupEnabled = !featureLayer.popupEnabled;
         }
-    
+
         // Update the layers in the view
         if (view) {
             setLayers(view.map.layers.toArray());

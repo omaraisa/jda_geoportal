@@ -11,7 +11,7 @@ interface PrintFormData {
   includeLegend: boolean;
   includeScale: boolean;
   scalebarUnit: 'metric' | 'imperial';
-  classification: 'Restricted' | 'Confidential' | 'Internal' | 'Public';
+  classification: 'Restricted' | 'Confidential' | 'Internal';
 }
 
 const PrintComponent: React.FC = () => {
@@ -33,8 +33,8 @@ const PrintComponent: React.FC = () => {
     classification: "Restricted",
   });
 
-  const JDALAYOUTS = ["Standard", "Presentation"]
-  const CLASSIFICATION_KEYS = ["Restricted", "Confidential", "Internal", "Public"];
+  const JDALAYOUTS = ["Standard", "Presentation"] // Only show these two to the user
+  const CLASSIFICATION_KEYS = ["Restricted", "Confidential", "Internal"];
   const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -66,21 +66,17 @@ const PrintComponent: React.FC = () => {
         const jobStatus = response.data.jobStatus;
 
         if (jobStatus === "esriJobSucceeded") {
-          // console.log("Job succeeded!");
           return;
         } else if (jobStatus === "esriJobFailed") {
-          console.error("Print job failed:", response.data.messages);
           setError(`Print job failed: ${response.data.messages ? response.data.messages.map((m: any) => m.description).join(', ') : 'Unknown error'}`);
           throw new Error(`Print job failed: ${response.data.messages ? response.data.messages.map((m: any) => m.description).join(', ') : 'Unknown error'}`);
         } else if (jobStatus === "esriJobCancelled") {
           setError("Print job was cancelled.");
           throw new Error("Print job was cancelled.");
         } else if (jobStatus === "esriJobWaiting" || jobStatus === "esriJobExecuting") {
-          // console.log(`Job is ${jobStatus}...`);
           setProgress(t("widgets.print.processing"));
         }
       } catch (error: any) {
-        console.error("Error polling job status:", error);
         setError(`Error polling job status: ${error.message}`);
         throw error;
       }
@@ -107,108 +103,132 @@ const PrintComponent: React.FC = () => {
     setProgress(t("widgets.print.preparing"));
 
     try {
-      // Retrieve the basemap layer (if needed for further processing)
-      const basemapLayer = view.map.basemap.baseLayers.at(0);
-
-      // Gather all layers from the map
       const allLayers = view.map.layers.toArray();
 
-      // Group MapImageLayers (MapServices) by their base URL
+      // Group layers by their base MapService URL
       const mapServiceGroups = new Map<string, any>();
+      const standaloneFeatureLayers: any[] = [];
 
       allLayers.forEach(layer => {
         if (!layer.visible) return;
 
-        if (layer.type === "map-image" && "url" in layer && layer.url) {
+        // Check if this is a sublayer from a MapService
+        if (layer.type === "feature" && "url" in layer && layer.url) {
+          const layerUrl = (layer as any).url;
+          const layerId = layer.id;
+          
+          // First try the URL pattern (for properly formatted URLs)
+          const sublayerMatch = layerUrl.match(/(.+\/MapServer)\/(\d+)$/);
+          
+          // If URL doesn't have sublayer ID, check if layer ID contains sublayer info
+          // Pattern: "serviceId_sublayerId" (e.g., "201ad290ac2d419da2090b057214d94e_3")
+          const layerIdMatch = layerId.match(/^(.+)_(\d+)$/);
+          
+          if (sublayerMatch) {
+            // URL-based sublayer detection
+            const baseServiceUrl = sublayerMatch[1];
+            const sublayerId = parseInt(sublayerMatch[2]);
+            
+            // Process as MapService sublayer
+            processMapServiceSublayer(baseServiceUrl, sublayerId, layer, mapServiceGroups);
+            
+          } else if (layerIdMatch && layerUrl.endsWith('/MapServer')) {
+            // ID-based sublayer detection
+            const baseServiceUrl = layerUrl;
+            const sublayerId = parseInt(layerIdMatch[2]);
+            
+            // Process as MapService sublayer
+            processMapServiceSublayer(baseServiceUrl, sublayerId, layer, mapServiceGroups);
+            
+          } else {
+            // This is a standalone FeatureLayer
+            standaloneFeatureLayers.push({
+              id: layer.id,
+              title: layer.title,
+              opacity: layer.opacity,
+              visible: layer.visible,
+              url: layer.url,
+              layerType: "FeatureLayer",
+              definitionExpression: (layer as any).definitionExpression || null
+            });
+          }
+        } else if (layer.type === "map-image" && "url" in layer && layer.url) {
+          // Handle existing MapImageLayers
           const baseUrl = (layer as any).url.split('?')[0];
-
+          
           if (!mapServiceGroups.has(baseUrl)) {
             mapServiceGroups.set(baseUrl, {
-              id: layer.id.split('_')[0] || layer.id,
+              id: layer.id,
               title: layer.title,
               opacity: layer.opacity,
               visible: true,
               url: baseUrl,
-              layerType: "MapImageLayer",
-              visibleLayers: []
-            });
-          }
-
-          if ((layer as any).sublayers && (layer as any).sublayers.length > 0) {
-            (layer as any).sublayers.forEach((sublayer: { id: number; visible: boolean }) => {
-              if (sublayer.visible) {
-                const group = mapServiceGroups.get(baseUrl);
-                if (!group.visibleLayers.includes(sublayer.id)) {
-                  group.visibleLayers.push(sublayer.id);
-                }
+              layerType: "ArcGISMapServiceLayer",
+              visibleLayers: [],
+              layerDefinition: {
+                dynamicLayers: []
               }
             });
           }
 
-          return;
+          const group = mapServiceGroups.get(baseUrl);
+          
+          // Add visible sublayers
+          if ((layer as any).sublayers && (layer as any).sublayers.length > 0) {
+            (layer as any).sublayers.forEach((sublayer: { id: number; visible: boolean }) => {
+              if (sublayer.visible && !group.visibleLayers.includes(sublayer.id)) {
+                group.visibleLayers.push(sublayer.id);
+                group.layerDefinition.dynamicLayers.push({
+                  id: sublayer.id,
+                  source: {
+                    type: "mapLayer",
+                    mapLayerId: sublayer.id
+                  }
+                });
+              }
+            });
+          }
+        } else {
+          // Handle other layer types (Tile, VectorTile, etc.)
+          if (!('url' in layer) || !layer.url) return;
+
+          let layerType = "";
+          switch (layer.type) {
+            case "tile":
+              layerType = "ArcGISTiledMapServiceLayer";
+              break;
+            case "vector-tile":
+              layerType = "VectorTileLayer";
+              break;
+            case "imagery":
+              layerType = "ArcGISImageServiceLayer";
+              break;
+            case "csv":
+              layerType = "CSV";
+              break;
+            case "kml":
+              layerType = "KML";
+              break;
+            default:
+              return;
+          }
+
+          standaloneFeatureLayers.push({
+            id: layer.id,
+            title: layer.title,
+            opacity: layer.opacity,
+            visible: layer.visible,
+            url: layer.url,
+            layerType,
+          });
         }
       });
 
-      // Process other supported layer types
-      const otherLayers = allLayers.map(layer => {
-        if (
-          layer.type === "map-image" &&
-          "url" in layer &&
-          layer.url &&
-          mapServiceGroups.has((layer as any).url.split('?')[0])
-        ) {
-          return null;
-        }
-
-        if (!('url' in layer) || !layer.url || !layer.visible) {
-          return null;
-        }
-
-        let layerType = "";
-        switch (layer.type) {
-          case "feature":
-            layerType = "FeatureLayer";
-            break;
-          case "map-image":
-            layerType = "ArcGISMapServiceLayer";
-            break;
-          case "tile":
-            layerType = "ArcGISTiledMapServiceLayer";
-            break;
-          case "vector-tile":
-            layerType = "VectorTileLayer";
-            break;
-          case "csv":
-            layerType = "CSV";
-            break;
-          case "kml":
-            layerType = "KML";
-            break;
-          case "imagery":
-            layerType = "ArcGISImageServiceLayer";
-            break;
-          default:
-            console.warn(`Unsupported layer type: ${layer.type} for ${layer.title}`);
-            return null;
-        }
-
-        return {
-          id: layer.id,
-          title: layer.title,
-          opacity: layer.opacity,
-          visible: layer.visible,
-          url: layer.url,
-          layerType,
-        };
-      }).filter(Boolean);
-
-      // Combine MapService groups and other layers into operationalLayers
+      // Combine all layers
       const operationalLayers = [
         ...Array.from(mapServiceGroups.values()),
-        ...otherLayers
+        ...standaloneFeatureLayers
       ];
-
-      // console.log("Operational Layers:", operationalLayers);
 
       const baseMap = view.map.basemap.toJSON();
       const extent = view.extent.toJSON();
@@ -221,62 +241,70 @@ const PrintComponent: React.FC = () => {
         },
         operationalLayers: operationalLayers
           .filter((layer: any) => layer.title !== "JDA Extent")
-          .map((layer: any) => ({
-        id: layer.id,
-        title: layer.title,
-        opacity: layer.opacity,
-        visible: layer.visible,
-        url: layer.url,
-        ...(layer.visibleLayers ? { visibleLayers: layer.visibleLayers } : {}),
-        layerType:
-          layer.layerType === "ArcGISMapServiceLayer" ||
-        layer.layerType === "MapImageLayer"
-        ? "MapImageLayer"
-        : layer.layerType === "ArcGISTiledMapServiceLayer"
-          ? "ArcGISTiledMapServiceLayer"
-          : layer.layerType === "VectorTileLayer"
-        ? "VectorTileLayer"
-        : layer.layerType === "FeatureLayer"
-          ? "FeatureLayer"
-          : layer.layerType,
-          })),
+          .map((layer: any) => {
+            const mappedLayer: any = {
+              id: layer.id,
+              title: layer.title,
+              opacity: layer.opacity,
+              visible: layer.visible,
+              url: layer.url,
+              layerType: layer.layerType
+            };
+
+            // Add visibleLayers for MapServices
+            if (layer.visibleLayers && Array.isArray(layer.visibleLayers)) {
+              mappedLayer.visibleLayers = layer.visibleLayers;
+            }
+
+            // Add dynamic layer definitions for better control
+            if (layer.layerDefinition && layer.layerDefinition.dynamicLayers) {
+              mappedLayer.layerDefinition = layer.layerDefinition;
+            }
+
+            // Add definition expression for FeatureLayers
+            if (layer.definitionExpression) {
+              mappedLayer.definitionExpression = layer.definitionExpression;
+            }
+
+            return mappedLayer;
+          }),
         baseMap,
         exportOptions: {
           dpi: resolution,
           outputSize: [view.width, view.height],
         },
         layoutOptions: {
-          legendOptions: formData.includeLegend
-        ? {
-          operationalLayers: operationalLayers
-        .filter((layer: any) => layer.title !== "JDA Extent")
-        .map((layer: any) => ({
-          id: layer.id,
-        })),
-        }
-        : undefined,
+          legendOptions: formData.includeLegend ? {
+            operationalLayers: operationalLayers
+              .filter((layer: any) => layer.title !== "JDA Extent")
+              .map((layer: any) => ({ id: layer.id })),
+          } : undefined,
           customTextElements: [
-        { Title: formData.title },
-        { Classification: formData.classification },
-        ...Array.from({ length: 18 }, (_, i) => ({
-          [`Author_${i + 1}`]: userInfo?.fullName || ""
-        })),
+            { Title: formData.title },
+            { Classification: formData.classification },
+            ...Array.from({ length: 18 }, (_, i) => ({
+              [`Author_${i + 1}`]: userInfo?.fullName || ""
+            })),
           ],
         },
       };
 
+      // Determine the actual layout to use based on legend setting
+      const actualLayout = formData.includeLegend 
+        ? formData.layout 
+        : `${formData.layout}_NoLegend`;
 
       const params = {
         Web_Map_as_JSON: JSON.stringify(webMapJSON),
         Format: formData.format.toUpperCase(),
-        Layout_Template: formData.layout,
+        Layout_Template: actualLayout,
         Title: formData.title,
         Extent: JSON.stringify(extent)
       };
 
       setProgress(t("widgets.print.submitting"));
       const jobInfo = await submitJob(GP_URL, params);
-      // console.log("Job submitted with ID:", jobInfo.jobId);
+      
       if (!jobInfo.jobId) {
         throw new Error("Failed to submit job");
       }
@@ -293,11 +321,46 @@ const PrintComponent: React.FC = () => {
       setProgress(t("widgets.print.complete"));
       updateStats("Print Map");
     } catch (err) {
-      console.error("Print error:", err);
       setError(err instanceof Error ? err.message : "Failed to print map");
     } finally {
       setIsLoading(false);
       setProgress(null);
+    }
+  };
+
+  // Add this helper function before the handlePrint function:
+  const processMapServiceSublayer = (baseServiceUrl: string, sublayerId: number, layer: any, mapServiceGroups: Map<string, any>) => {
+    if (!mapServiceGroups.has(baseServiceUrl)) {
+      // Create a new MapService group
+      mapServiceGroups.set(baseServiceUrl, {
+        id: `mapservice_${Date.now()}`, // Use timestamp to ensure uniqueness
+        title: baseServiceUrl.split('/').slice(-2, -1)[0] || 'MapService', // Extract service name
+        opacity: layer.opacity,
+        visible: true,
+        url: baseServiceUrl,
+        layerType: "ArcGISMapServiceLayer",
+        visibleLayers: [],
+        layerDefinition: {
+          dynamicLayers: []
+        }
+      });
+    }
+
+    const group = mapServiceGroups.get(baseServiceUrl);
+    
+    // Add sublayer to visibleLayers if not already present
+    if (!group.visibleLayers.includes(sublayerId)) {
+      group.visibleLayers.push(sublayerId);
+      
+      // Add dynamic layer definition
+      group.layerDefinition.dynamicLayers.push({
+        id: sublayerId,
+        source: {
+          type: "mapLayer",
+          mapLayerId: sublayerId
+        },
+        definitionExpression: layer.definitionExpression || null
+      });
     }
   };
 
