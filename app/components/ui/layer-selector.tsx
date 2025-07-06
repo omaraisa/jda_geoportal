@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
-import { featureBasedLayerTypes } from "@/lib/globalConstants";
+import { featureBasedLayerTypes } from "@/lib/global-constants";
 
 interface LayerSelectorProps {
   getSelectedValue: (layerId: string) => void;

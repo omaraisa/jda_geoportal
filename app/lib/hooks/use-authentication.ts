@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import useStateStore from "@/stateStore";
-import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, refreshArcGISTokenIfNeeded } from '@/lib/authenticateArcGIS';
+import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, refreshArcGISTokenIfNeeded } from '@/lib/authenticate-arcgis';
 import { getCookie } from '@/lib/token';
-import { getCurrentConfig, logCurrentConfig } from '@/lib/auth-config';
+import { getCurrentConfig } from '@/lib/auth-config';
 
 const useAuthentication = (customInterval?: number) => {
   const config = getCurrentConfig();
@@ -112,9 +112,6 @@ const useAuthentication = (customInterval?: number) => {
     };
 
     const initAuth = async () => {
-      // Log current configuration for debugging
-      logCurrentConfig();
-      
       await checkAuth();
       
       // Set up periodic check with the specified interval

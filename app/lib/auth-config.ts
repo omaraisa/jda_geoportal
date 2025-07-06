@@ -56,14 +56,3 @@ export const formatTime = (seconds: number) => {
   }
   return `${minutes} minute${minutes !== 1 ? 's' : ''} ${remainingSeconds} second${remainingSeconds !== 1 ? 's' : ''}`;
 };
-
-// Debug helper to log current configuration
-export const logCurrentConfig = () => {
-  const config = getCurrentConfig();
-  console.log(`=== Authentication Configuration (${CURRENT_ENV}) ===`);
-  console.log(`Token Duration: ${config.TOKEN_DURATION_MINUTES} minutes`);
-  console.log(`Check Interval: ${formatTime(config.CHECK_INTERVAL / 1000)}`);
-  console.log(`Session Modal Buffer: ${formatTime(config.SESSION_MODAL_BUFFER)}`);
-  console.log(`Session Modal Timeout: ${formatTime(config.SESSION_MODAL_TIMEOUT / 1000)}`);
-  console.log('================================================');
-};

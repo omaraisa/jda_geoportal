@@ -75,7 +75,7 @@ const SessionEndModal = () => {
         
         // Also refresh ArcGIS token if needed
         try {
-          const { authenticateArcGIS } = await import('../lib/authenticateArcGIS');
+          const { authenticateArcGIS } = await import('../lib/authenticate-arcgis');
           await authenticateArcGIS();
         } catch (arcgisError) {
           console.error('Failed to refresh ArcGIS token:', arcgisError);

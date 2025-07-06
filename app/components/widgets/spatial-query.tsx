@@ -8,7 +8,7 @@ import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import styles from "./spatial-query.module.css";
 import { addQueryResult, clearSelection, runQuery } from "@/lib/utils/query";
-import {featureBasedLayerTypes} from "@/lib/globalConstants";
+import {featureBasedLayerTypes} from "@/lib/global-constants";
 
 export default function SpatialQueryComponent() {
   const { t } = useTranslation();

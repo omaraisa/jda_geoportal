@@ -419,14 +419,9 @@ const useStateStore = create<State>((set, get) => ({
   },
 
   gisToken: null,
-  customBasemap: null,
 
   setGisToken: (token: string | null) => {
     set({ gisToken: token });
-  },
-
-  setCustomBasemap: (basemap: __esri.Basemap) => {
-    set({ customBasemap: basemap });
   },
 
   setUserInfo: (userInfo: ArcGISUserInfo) => {
@@ -448,7 +443,7 @@ const useStateStore = create<State>((set, get) => ({
     const { userInfo, targetView } = get();
 
     // Get token from authenticateArcGIS module (this will now validate expiry)
-    const { getArcGISToken, clearArcGISToken } = await import('./lib/authenticateArcGIS');
+    const { getArcGISToken, clearArcGISToken } = await import('./lib/authenticate-arcgis');
     let gisToken = await getArcGISToken();
 
     if (!gisToken) {
@@ -739,7 +734,7 @@ const useStateStore = create<State>((set, get) => ({
     // Actually refresh the token when extending the session
     try {
       // Import authenticateArcGIS dynamically to avoid circular dependencies
-      const { authenticateArcGIS } = await import('./lib/authenticateArcGIS');
+      const { authenticateArcGIS } = await import('./lib/authenticate-arcgis');
       const success = await authenticateArcGIS();
       if (success) {
         // Set a new expiry time in cookie

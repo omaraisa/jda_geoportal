@@ -3,7 +3,6 @@
 import React, { useRef, useEffect } from "react";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
-import Basemap from "@arcgis/core/Basemap";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import useStateStore from "@/stateStore";
 import useCoordinatesDisplay from "@/lib/hooks/use-coordinates-display";
@@ -26,35 +25,18 @@ const MainMap = () => {
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
   const setAppReady = useStateStore((state) => state.setAppReady);
   const loadUserGroupLayers = useStateStore((state) => state.loadUserGroupLayers);
-  const setCustomBasemap = useStateStore((state) => state.setCustomBasemap);
   useCoordinatesDisplay(viewRef.current)
 
   useEffect(() => {
     if (!mapInitializedRef.current) {
       mapInitializedRef.current = true;
       try {
-        const customBasemapLayer = new MapImageLayer({
-          url: "https://gis.jda.gov.sa/agserver/rest/services/SDF_Basemap/MapServer"
-        });
-        
-        const customBasemap = new Basemap({
-          baseLayers: [customBasemapLayer],
-          title: "Atkins Basemap",
-          id: "atkins-basemap"
-        });
-
-        // Store the custom basemap in state store for reuse
-        setCustomBasemap(customBasemap);
-
-        // Add JDA Extent Layer (no symbology)
         const jdaExtentLayer = new MapImageLayer({
           url: "https://gis.jda.gov.sa/agserver/rest/services/JDA_Extent/MapServer"
         });
         (jdaExtentLayer as any).group = "HiddenLayers"; // Set group to "HiddenLayers" for JDA Extent Layer 
 
-
         const map = new Map({
-          // basemap: customBasemap,
           basemap: "satellite",
           layers: [jdaExtentLayer],
         });
@@ -62,15 +44,10 @@ const MainMap = () => {
         viewRef.current = new MapView({
           container: mapRef.current as unknown as HTMLDivElement,
           map: map,
-          // scale,center,
           background: {
             color: [255, 255, 255, 1] // white background
           },
           rotation: 277,
-          // constraints: {
-          //   minScale: 320000,
-          //   maxScale: 8000
-          // },
           ui: {
             components: [],
           },

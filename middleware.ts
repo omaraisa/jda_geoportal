@@ -8,7 +8,6 @@ const protectedPaths = [
 ];
 
 const AUTH_BASE_URL = process.env.NEXT_PUBLIC_AUTH_URL || '/';
-const REFRESH_PATH = process.env.NEXT_PUBLIC_AUTH_REFRESH_URL || '/';  
 const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://sdf.jda.gov.sa';
 
 export async function middleware(request: NextRequest) {

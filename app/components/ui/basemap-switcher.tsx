@@ -2,6 +2,7 @@ import useStateStore from "@/stateStore";
 import { useState, useCallback, useEffect } from "react";
 import Basemap from "@arcgis/core/Basemap";
 import { useTranslation } from "react-i18next";
+import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 
 interface BasemapProps {
     label: string;
@@ -19,8 +20,19 @@ const basemaps: BasemapProps[] = [
 
 const BasemapSwitcher: React.FC = () => {
     const { t } = useTranslation();
-    const { targetView, customBasemap } = useStateStore();
+    const { targetView } = useStateStore();
     const [activeIndex, setActiveIndex] = useState(0);
+
+    const customBasemapLayer = new MapImageLayer({
+          url: "https://gis.jda.gov.sa/agserver/rest/services/SDF_Basemap/MapServer"
+        });
+        
+        const customBasemap = new Basemap({
+          baseLayers: [customBasemapLayer],
+          title: "Atkins Basemap",
+          id: "atkins-basemap"
+        });
+
 
     const setBasemap = (basemapId: string | undefined) => {
         if (targetView && targetView.map && basemapId) {

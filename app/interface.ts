@@ -77,7 +77,6 @@ export interface State {
   accessToken: string | null;
   isAuthenticated: boolean;
   gisToken: string | null;
-  customBasemap: __esri.Basemap | null;
   setAppReady: (isReady: boolean) => void;
   setLanguage: (lang: string) => void;
   setMainMenuExpansion: (isExpanded: boolean) => void;
@@ -110,7 +109,6 @@ export interface State {
   updateStats: (featurename: string) => void;
   clearAuth: () => void;
   setGisToken: (token: string) => void;
-  setCustomBasemap: (basemap: __esri.Basemap) => void;
   updateExtent: (extent: __esri.Extent | null) => void;
 }
 
