@@ -4,6 +4,7 @@ import type EsriConfig from '@arcgis/core/config';
 import type IdentityManagerType from '@arcgis/core/identity/IdentityManager';
 import type ServerInfoType from '@arcgis/core/identity/ServerInfo';
 import { getCookie } from './token';
+import { AUTH_CONFIG, getCurrentConfig } from './auth-config';
 
 let esriConfig: typeof EsriConfig | undefined;
 let IdentityManager: typeof IdentityManagerType | undefined;
@@ -26,11 +27,14 @@ const config = {
 
 // Function to get current token, generate if needed
 export const getArcGISToken = async (): Promise<string | null> => {
+    const authConfig = getCurrentConfig();
+    const bufferMs = authConfig.SESSION_MODAL_BUFFER * 1000; // Convert seconds to milliseconds
+    
     // Check if we have a valid token in memory
     if (currentToken && tokenExpiry) {
         const timeUntilExpiry = tokenExpiry - Date.now();
         
-        if (timeUntilExpiry > 2 * 60 * 1000) { // 2-minute buffer
+        if (timeUntilExpiry > bufferMs) {
             // Token is still valid
             return currentToken;
         } else {
@@ -55,7 +59,7 @@ export const getArcGISToken = async (): Promise<string | null> => {
         } else {
             const timeUntilExpiry = expiry - Date.now();
             
-            if (timeUntilExpiry > 2 * 60 * 1000) { // 2-minute buffer
+            if (timeUntilExpiry > bufferMs) {
                 // Cookie token is still valid, updating module variables
                 currentToken = cookieToken;
                 tokenExpiry = expiry;
@@ -156,9 +160,12 @@ export const isArcgisTokenValid = (): boolean => {
         return false;
     }
 
+    const authConfig = getCurrentConfig();
+    const bufferMs = authConfig.SESSION_MODAL_BUFFER * 1000; // Convert seconds to milliseconds
+
     // Check module-level token first
     if (currentToken && tokenExpiry) {
-        const isValid = Date.now() < tokenExpiry - 2 * 60 * 1000;
+        const isValid = Date.now() < tokenExpiry - bufferMs;
         if (isValid) {
             return true;
         } else {
@@ -178,7 +185,7 @@ export const isArcgisTokenValid = (): boolean => {
 
     try {
         const expiryTime = parseInt(arcgisTokenExpiry, 10);
-        const isValid = Date.now() < expiryTime - 2 * 60 * 1000;
+        const isValid = Date.now() < expiryTime - bufferMs;
         
         if (!isValid) {
             // Clear expired cookies
@@ -246,9 +253,10 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
                 return false;
             }
 
-            // Calculate expiry time
-            const expiryTime = tokenData.expires * 1000;
-            
+            // Use configured token duration
+            const authConfig = getCurrentConfig();
+            const expiryTime = Date.now() + authConfig.TOKEN_DURATION_MINUTES * 60 * 1000;
+
             // Store token in module variables
             currentToken = tokenData.token;
             tokenExpiry = expiryTime;
@@ -271,7 +279,6 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
                     }
                 });
                 const testData = await testResponse.json();
-                
                 if (testData.error) {
                     console.error('Token test failed:', testData.error);
                     // Automatically generate a new token if validation fails
@@ -388,7 +395,9 @@ export const fetchArcGISUserInfo = async () => {
             return null;
         }
 
-        const expiryTime = Date.now() + (tokenData.expires * 1000);
+        // Use configured token duration
+        const authConfig = getCurrentConfig();
+        const expiryTime = Date.now() + authConfig.TOKEN_DURATION_MINUTES * 60 * 1000;
         document.cookie = `arcgis_token=${tokenData.token}; path=/; secure; samesite=strict`;
         document.cookie = `arcgis_token_expiry=${expiryTime}; path=/; secure; samesite=strict`;
 

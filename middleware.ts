@@ -34,23 +34,39 @@ export async function middleware(request: NextRequest) {
             }
 
             if (refreshToken) {
-                // Only allow refresh via POST
-                if (request.method === 'POST') {
-                    const refreshPayload = await verifyRefreshToken(refreshToken);
+                // Try to refresh the token by making a request to our local API
+                try {
+                    const refreshResponse = await fetch(`${APP_BASE_URL}/api/refresh-token`, {
+                        method: 'POST',
+                        headers: {
+                            'Cookie': `refresh_token=${refreshToken}`,
+                        },
+                    });
 
-                    if (refreshPayload) {
-                        // Use APP_BASE_URL to construct the callback URL
-                        const callbackUrl = encodeURIComponent(`${APP_BASE_URL}${path}`);
-                        const refreshUrl = new URL(REFRESH_PATH, AUTH_BASE_URL);
-                        refreshUrl.searchParams.set('callback', callbackUrl);
+                    if (refreshResponse.ok) {
+                        // Token refreshed successfully, continue with the request
+                        const requestHeaders = new Headers(request.headers);
+                        // Forward any new cookies from the refresh response
+                        const setCookieHeaders = refreshResponse.headers.getSetCookie();
+                        
+                        const response = NextResponse.next({
+                            request: {
+                                headers: requestHeaders,
+                            },
+                        });
 
-                        return NextResponse.redirect(refreshUrl);
+                        // Set the new cookies
+                        setCookieHeaders.forEach(cookieHeader => {
+                            response.headers.append('Set-Cookie', cookieHeader);
+                        });
+
+                        return response;
                     } else {
                         // Failed to refresh, redirect to AUTH_BASE_URL
                         return NextResponse.redirect(new URL(AUTH_BASE_URL));
                     }
-                } else {
-                    // If not POST, redirect to AUTH_BASE_URL
+                } catch (error) {
+                    console.error('Failed to refresh token:', error);
                     return NextResponse.redirect(new URL(AUTH_BASE_URL));
                 }
             }

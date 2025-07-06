@@ -258,8 +258,9 @@ export default function AttributeQueryComponent() {
 
       <div className="flex gap-2 w-full">
         <button
-          className="btn btn-primary flex-grow"
+          className={`btn ${state.inputMethod === "manual" ? 'btn-primary' : 'btn-gray'} flex-grow`}
           onClick={() => search()}
+          disabled={state.inputMethod !== "manual"}
         >
           {t("widgets.query.search")}
         </button>
@@ -277,7 +278,11 @@ export default function AttributeQueryComponent() {
           disabled={state.downloadBtnDisabled}
           onClick={() => {
             if (state.targetLayer && state.resultLayerSource) {
-          createSeparateLayer(state.targetLayer, state.resultLayerSource, view);
+              // Create unique layer title with timestamp
+              const timestamp = new Date().toLocaleString();
+              const uniqueTitle = `${state.targetLayer.title} - Attribute Query ${timestamp}`;
+              
+              createSeparateLayer(state.targetLayer, state.resultLayerSource, view, uniqueTitle);
             }
           }}
         >

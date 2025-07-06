@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import useStateStore from "@/stateStore";
 import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, refreshArcGISTokenIfNeeded } from '@/lib/authenticateArcGIS';
 import { getCookie } from '@/lib/token';
+import { getCurrentConfig, logCurrentConfig } from '@/lib/auth-config';
 
-const useAuthentication = (interval = 120000) => {
+const useAuthentication = (customInterval?: number) => {
+  const config = getCurrentConfig();
+  const interval = customInterval || config.CHECK_INTERVAL;
+  
   const { setUserInfo, setSessionModalOpen, clearAuth } = useStateStore((state) => state);
   const [isInitializing, setIsInitializing] = useState(true);
   
@@ -21,18 +25,30 @@ const useAuthentication = (interval = 120000) => {
           clearAuth();
           setSessionModalOpen(true);
         }
-        // Redirect to login page
-        const loginUrl = process.env.NEXT_PUBLIC_AUTH_URL || '/';
-        window.location.href = `${loginUrl}?redirect=${encodeURIComponent(window.location.href)}`;
         return false;
       }
       
       try {
-        // Parse the JWT token to get user info
+        // Parse the JWT token to get user info and check expiration
         const tokenParts = accessToken.split('.');
         if (tokenParts.length === 3) {
           // Base64 decode the payload
           const payload = JSON.parse(atob(tokenParts[1]));
+          
+          // Check if token is about to expire based on configured buffer
+          const currentTime = Math.floor(Date.now() / 1000);
+          const tokenExpiry = payload.exp;
+          const timeUntilExpiry = tokenExpiry - currentTime;
+          
+          // If token expires within the configured buffer time, show session modal
+          if (timeUntilExpiry < config.SESSION_MODAL_BUFFER) {
+            console.log(`Token expires in ${timeUntilExpiry} seconds, showing session modal (buffer: ${config.SESSION_MODAL_BUFFER}s)`);
+            if (isMounted) {
+              clearAuth();
+              setSessionModalOpen(true);
+            }
+            return false;
+          }
           
           // Extract user data from token
           if (payload) {
@@ -54,6 +70,11 @@ const useAuthentication = (interval = 120000) => {
         }
       } catch (error) {
         console.error("Failed to parse token:", error);
+        if (isMounted) {
+          clearAuth();
+          setSessionModalOpen(true);
+        }
+        return false;
       }
       
       return true;
@@ -91,6 +112,9 @@ const useAuthentication = (interval = 120000) => {
     };
 
     const initAuth = async () => {
+      // Log current configuration for debugging
+      logCurrentConfig();
+      
       await checkAuth();
       
       // Set up periodic check with the specified interval

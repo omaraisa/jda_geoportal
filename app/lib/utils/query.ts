@@ -115,7 +115,8 @@ export async function runQuery(
 export function createSeparateLayer(
     targetLayer: __esri.FeatureLayer,
     source: __esri.Graphic[],
-    view: __esri.MapView | __esri.SceneView | null
+    view: __esri.MapView | __esri.SceneView | null,
+    customTitle?: string
 ) {
     const randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
     const symbols: any = {
@@ -147,7 +148,7 @@ export function createSeparateLayer(
     }
 
     const newSelectionLayer = new FeatureLayer({
-        title: targetLayer.title + "_modified",
+        title: customTitle || `${targetLayer.title}_${Date.now()}`,
         geometryType: targetLayer.geometryType,
         spatialReference: targetLayer.spatialReference,
         popupEnabled: true,

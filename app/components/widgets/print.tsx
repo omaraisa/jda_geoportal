@@ -36,7 +36,8 @@ const PrintComponent: React.FC = () => {
   const JDALAYOUTS = ["Standard", "Presentation"] // Only show these two to the user
   const CLASSIFICATION_KEYS = ["Restricted", "Confidential", "Internal"];
   const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map";
-
+  // const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map";
+  //   https://gis.jda.gov.sa/agserver/rest/services/SDF_Basemap_Service/MapServer 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
