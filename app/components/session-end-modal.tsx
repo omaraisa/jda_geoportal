@@ -73,14 +73,6 @@ const SessionEndModal = () => {
         const { setSessionModalOpen } = useStateStore.getState();
         setSessionModalOpen(false);
         
-        // Also refresh ArcGIS token if needed
-        try {
-          const { authenticateArcGIS } = await import('../lib/authenticate-arcgis');
-          await authenticateArcGIS();
-        } catch (arcgisError) {
-          console.error('Failed to refresh ArcGIS token:', arcgisError);
-        }
-        
         console.log('Session extended successfully');
       } else {
         // Failed to refresh, exit session

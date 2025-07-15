@@ -93,16 +93,23 @@ const useAuthentication = (customInterval?: number) => {
         
         const isArcGISValid = isArcgisTokenValid();
         
-        // Authenticate with ArcGIS if needed
+        // Authenticate with ArcGIS if needed, but handle failures gracefully
         if (!isArcGISValid) {
-          const arcgisAuthenticated = await authenticateArcGIS();
-          
-          if (!arcgisAuthenticated) {
-            console.error("Failed to authenticate with ArcGIS");
-            return;
+          try {
+            const arcgisAuthenticated = await authenticateArcGIS();
+            
+            if (!arcgisAuthenticated) {
+              console.warn("Failed to authenticate with ArcGIS - portal session may have expired. Token will be refreshed on next map interaction.");
+            }
+          } catch (arcgisError) {
+            console.warn("ArcGIS authentication failed:", arcgisError, "- continuing without ArcGIS token. Token will be refreshed on next map interaction.");
           }
         } else {
-          await refreshArcGISTokenIfNeeded();
+          try {
+            await refreshArcGISTokenIfNeeded();
+          } catch (refreshError) {
+            console.warn("Failed to refresh ArcGIS token:", refreshError, "- token will be refreshed on next map interaction.");
+          }
         }
       } finally {
         if (isMounted) {
