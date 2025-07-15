@@ -105,6 +105,14 @@ const useLayerActions = () => {
         if (view) setLayers(view.map.layers.toArray());
     }, [view]);
 
+    const renameLayer = useCallback((layer: __esri.Layer, newTitle: string, setLayers: (layers: __esri.Layer[]) => void) => {
+        if (newTitle.trim() && newTitle !== layer.title) {
+            layer.title = newTitle.trim();
+            if (view) setLayers(view.map.layers.toArray());
+            else setLayers([]);
+        }
+    }, [view]);
+
     return {
         moveLayer,
         toggleLayerLabels,
@@ -113,6 +121,7 @@ const useLayerActions = () => {
         handleRemoveLayer,
         toggleLayerPopup,
         toggleLayerVisibility,
+        renameLayer,
     };
 };
 
