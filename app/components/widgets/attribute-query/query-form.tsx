@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
-import LayerSelector from "../../ui/layer-selector";
+import LayerSelector from "../layer-list/layer-selector";
 import Selector from "../../ui/selector";
 import { AttributeQueryState } from "@/interface";
 

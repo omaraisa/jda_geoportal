@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
-import LayerSelector from "../ui/layer-selector";
+import LayerSelector from "./layer-list/layer-selector";
 
 const EXPORT_GP_URL = process.env.NEXT_PUBLIC_EXPORT_GP_URL!;
 

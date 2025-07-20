@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styles from './layer-group.module.css';
-import LayerItem from "../ui/layer-item";
+import LayerItem from "./layer-item";
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 

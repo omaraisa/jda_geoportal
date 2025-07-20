@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import useStateStore from "@/stateStore";
-import LayerGroup from "../ui/layer-group";
+import LayerGroup from "./layer-group";
 
 export default function LayerListComponent() {
   const view = useStateStore((state) => state.targetView);
