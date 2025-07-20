@@ -37,7 +37,7 @@ const menuOptions: MenuOptions = {
     { name: "LegendComponent", icon: "legend" },
     { name: "AddLayer", icon: "add-layer" },
     { name: "UploadLayer", icon: "upload" },
-    // { name: "ExportLayer", icon: "export" },
+    { name: "ExportLayer", icon: "export" },
   ],
 };
 
