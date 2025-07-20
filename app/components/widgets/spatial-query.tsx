@@ -2,13 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import Sketch from "@arcgis/core/widgets/Sketch";
-import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
-import styles from "./spatial-query.module.css";
-import { addQueryResult, clearSelection, runQuery } from "@/lib/utils/query";
-import {featureBasedLayerTypes} from "@/lib/global-constants";
+import { clearSelection } from "@/lib/utils/query";
+import LayerSelector from "./spatial-query/layer-selector";
+import SelectionMethodToggle from "./spatial-query/selection-method-toggle";
+import QueryActions from "./spatial-query/query-actions";
+import { SpatialQueryService } from "./spatial-query/spatial-query-service";
 
 export default function SpatialQueryComponent() {
   const { t } = useTranslation();
@@ -16,10 +16,11 @@ export default function SpatialQueryComponent() {
   const sendMessage = useStateStore((state) => state.sendMessage);
   const widgets = useStateStore((state) => state.widgets);
   const updateStats = useStateStore((state) => state.updateStats);
+  
   const targetLayerRef = useRef<HTMLSelectElement>(null);
   const selectionLayerRef = useRef<HTMLSelectElement>(null);
   const sketchContainerRef = useRef<HTMLDivElement>(null);
-  const graphicsLayerRef = useRef<GraphicsLayer>(null);
+  const graphicsLayerRef = useRef<GraphicsLayer | null>(null);
   const sketchInitialized = useRef<boolean>(false);
 
   const [state, setState] = useState<{
@@ -32,7 +33,6 @@ export default function SpatialQueryComponent() {
     selectionMethodChecked: true,
   });
 
-
   useEffect(() => {
     if (view && !sketchInitialized.current) {
       sketchInitialized.current = true;
@@ -42,102 +42,34 @@ export default function SpatialQueryComponent() {
       });
       view.map.add(graphicsLayerRef.current);
 
-      const sketch = new Sketch({
-        layer: graphicsLayerRef.current,
-        view,
-        container: sketchContainerRef.current || undefined,
-        availableCreateTools: ["polygon", "rectangle", "circle"],
-        creationMode: "single",
-        visibleElements: {
-          settingsMenu: false,
-          selectionTools: {
-            "lasso-selection": false,
-            "rectangle-selection": false,
-          },
-        },
-      });
-
-      sketch.on("create", async ({ graphic, state: sketchState }) => {
-        if (sketchState === "complete") {
-          const query = {
-            geometry: graphic.geometry,
-            spatialRelationship: "intersects" as __esri.QueryProperties["spatialRelationship"],
-            outFields: ["*"],
-            returnGeometry: true,
-          };
-          const targetLayer =
-            view && targetLayerRef.current
-              ? (view.map.layers.toArray()[Number(targetLayerRef.current.value)] as __esri.FeatureLayer)
-              : null;
-          if (!targetLayer) {
-            sendMessage({
-              type: "error",
-              title: t("systemMessages.error.queryError.title"),
-              body: t("systemMessages.error.completeSearchRequirements.body"),
-              duration: 10,
-            });
-            return;
-          }
-          await handleQuery(targetLayer, query);
-        }
-      });
+      if (sketchContainerRef.current) {
+        SpatialQueryService.initializeSketch(
+          view,
+          graphicsLayerRef.current,
+          sketchContainerRef.current,
+          handleSketchComplete
+        );
+      }
     }
   }, [view]);
 
-  async function runQueryByLayer() {
-    const targetLayer =
-      view && targetLayerRef.current
-        ? (view.map.layers.toArray()[Number(targetLayerRef.current.value)] as __esri.FeatureLayer)
-        : null;
-    const selectionLayer = view
-      ? view.map.layers.toArray()[Number(selectionLayerRef.current?.value)]
-      : null;
-
-    if (!targetLayer || !selectionLayer) {
-      sendMessage({
-        type: "error",
-        title: t("systemMessages.error.queryError.title"),
-        body: t("systemMessages.error.completeSearchRequirements.body"),
-        duration: 10,
-      });
+  const handleSketchComplete = async (graphic: __esri.Graphic) => {
+    const targetLayer = getSelectedTargetLayer();
+    if (!targetLayer) {
+      showErrorMessage();
       return;
     }
 
     try {
-      const selectionFeatures = await (selectionLayer as __esri.FeatureLayer).queryFeatures({
-        outFields: ["*"],
-        where: "1=1",
-        returnGeometry: true,
-      });
-
-      const combinedGeometry = geometryEngine.union(
-        selectionFeatures.features.map((feature) => feature.geometry)
-      );
-
-      const query = {
-        geometry: combinedGeometry,
-        spatialRelationship: "intersects" as __esri.QueryProperties["spatialRelationship"],
-        outFields: ["*"],
-        returnGeometry: true,
-      };
-
-      await handleQuery(targetLayer, query);
-    } catch (error) {
-      sendMessage({
-        type: "error",
-        title: t("systemMessages.error.queryError.title"),
-        body: t("systemMessages.error.searchError.body"),
-        duration: 10,
-      });
-    }
-    updateStats("Spatial Query");
-  }
-
-  async function handleQuery(targetLayer: __esri.FeatureLayer, query: __esri.QueryProperties) {
-    try {
-      const response = await runQuery(targetLayer, query);
+      const response = await SpatialQueryService.queryByGeometry(targetLayer, graphic.geometry);
       if (response && response.features.length) {
-        addQueryResult(response.features, graphicsLayerRef.current, view, targetLayer, widgets);
+        SpatialQueryService.processQueryResult(
+          response,
+          graphicsLayerRef.current!,
+          view,
+          targetLayer,
+          widgets
+        );
       } else {
         sendMessage({
           type: "error",
@@ -153,9 +85,67 @@ export default function SpatialQueryComponent() {
         body: t("systemMessages.error.searchError.body"),
         duration: 10,
       });
-      console.error("Query Error:", error);
     }
-  }
+  };
+
+  const runQueryByLayer = async () => {
+    const targetLayer = getSelectedTargetLayer();
+    const selectionLayer = getSelectedSelectionLayer();
+
+    if (!targetLayer || !selectionLayer) {
+      showErrorMessage();
+      return;
+    }
+
+    try {
+      const response = await SpatialQueryService.queryByLayer(targetLayer, selectionLayer);
+      if (response && response.features.length) {
+        SpatialQueryService.processQueryResult(
+          response,
+          graphicsLayerRef.current!,
+          view,
+          targetLayer,
+          widgets
+        );
+      } else {
+        sendMessage({
+          type: "error",
+          title: t("systemMessages.error.queryError.title"),
+          body: t("systemMessages.error.noResultsFound.body"),
+          duration: 10,
+        });
+      }
+    } catch (error) {
+      sendMessage({
+        type: "error",
+        title: t("systemMessages.error.queryError.title"),
+        body: t("systemMessages.error.searchError.body"),
+        duration: 10,
+      });
+    }
+    updateStats("Spatial Query");
+  };
+
+  const getSelectedTargetLayer = (): __esri.FeatureLayer | null => {
+    return view && targetLayerRef.current
+      ? (view.map.layers.toArray()[Number(targetLayerRef.current.value)] as __esri.FeatureLayer)
+      : null;
+  };
+
+  const getSelectedSelectionLayer = (): __esri.FeatureLayer | null => {
+    return view && selectionLayerRef.current
+      ? (view.map.layers.toArray()[Number(selectionLayerRef.current.value)] as __esri.FeatureLayer)
+      : null;
+  };
+
+  const showErrorMessage = () => {
+    sendMessage({
+      type: "error",
+      title: t("systemMessages.error.queryError.title"),
+      body: t("systemMessages.error.completeSearchRequirements.body"),
+      duration: 10,
+    });
+  };
 
   const selectionMethodHandler = () => {
     setState((prevState) => ({
@@ -164,113 +154,41 @@ export default function SpatialQueryComponent() {
     }));
   };
 
+  const handleClearSelection = () => {
+    clearSelection(
+      graphicsLayerRef.current,
+      view,
+      state.targetLayer as __esri.FeatureLayer,
+      widgets
+    );
+  };
+
   return (
     <div className="flex flex-col space-y-4 p-4">
-      <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="targetLayer" className="font-semibold text-foreground">
-          {t("widgets.query.selectLayer")}
-        </label>
+      <LayerSelector
+        view={view}
+        targetLayerRef={targetLayerRef}
+        selectionLayerRef={selectionLayerRef}
+        selectionMethodChecked={state.selectionMethodChecked}
+      />
 
-        <div className="select">
-          <select ref={targetLayerRef} id="targetLayer">
-            <option value="" hidden>
-              {t("widgets.query.selectLayer")}
-            </option>
-            {view?.map.layers.toArray().map((layer, index) => {
-              if (featureBasedLayerTypes.includes(layer.type)) {
-                return (
-                  <option key={layer.id} value={index}>
-                    {layer.title}
-                  </option>
-                );
-              }
-            })}
-          </select>
-        </div>
+      <SelectionMethodToggle
+        selectionMethodChecked={state.selectionMethodChecked}
+        onToggle={selectionMethodHandler}
+      />
 
-        <label
-          className={styles.label}
-          style={{
-            background: "white",
-            border: !state.selectionMethodChecked ? "2px solid var(--secondary)" : " 2px solid var(--primary-dark-transparent)",
-          }}
-        >
-          <input
-            type="checkbox"
-            className={styles.input}
-            checked={state.selectionMethodChecked}
-            onChange={selectionMethodHandler}
-          />
-          <span
-            className={styles.circle}
-            style={{
-              backgroundColor: !state.selectionMethodChecked ? "var(--secondary)" : "var(--primary-dark-transparent)",
-              right: state.selectionMethodChecked ? "calc(100% - 45px)" : "5px",
-            }}
-          ></span>
-          <p
-            className={`${styles.title} ${!state.selectionMethodChecked ? styles.visible : styles.hidden}`}
-            style={{
-              color: "var(--secondary-dark)",
-            }}
-          >
-             {t("widgets.query.byLayer")}
-          </p>
-            <p
-            className={`${styles.title} ${state.selectionMethodChecked ? styles.visible : styles.hidden}`}
-            style={{
-              color: "var(--secondary-dark)",
-            }}
-            >
-            {t("widgets.query.byDrawing")}
-            </p>
-        </label>
-      </div>
       <div
         ref={sketchContainerRef}
         style={{
           display: state.selectionMethodChecked ? "block" : "none",
         }}
       ></div>
-      <div
-        className="flex flex-col w-full space-y-2"
-        style={{
-          display: !state.selectionMethodChecked ? "flex" : "none",
-        }}
-      >
-        <label htmlFor="selectionLayer" className="font-semibold text-foreground">
-          {t("widgets.query.selectionLayer")}
-        </label>
 
-        <div className="select">
-          <select ref={selectionLayerRef} id="selectionLayer">
-            <option value="" hidden>
-              {t("widgets.query.select")}
-            </option>
-            {view?.map.layers.toArray().map((layer, index) => {
-              if (featureBasedLayerTypes.includes(layer.type)) {
-                return (
-                  <option key={layer.id} value={index}>
-                    {layer.title}
-                  </option>
-                );
-              }
-            })}
-          </select>
-        </div>
-
-        <button className="btn btn-primary w-full" onClick={runQueryByLayer}>
-          {t("widgets.query.search")}
-        </button>
-      </div>
-      <button
-        className="btn btn-danger w-full"
-        onClick={() =>
-          clearSelection(graphicsLayerRef.current, view, state.targetLayer as __esri.FeatureLayer, widgets)
-        }
-      >
-        {t("widgets.query.clearSearch")}
-      </button>
+      <QueryActions
+        selectionMethodChecked={state.selectionMethodChecked}
+        onRunQueryByLayer={runQueryByLayer}
+        onClearSelection={handleClearSelection}
+      />
     </div>
   );
 }
