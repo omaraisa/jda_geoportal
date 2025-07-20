@@ -214,7 +214,7 @@
       }
     },
     "closestFacility": {
-      "title": "Closest Facility Analysis",
+      "title": "Nearest Landmark Analysis",
       "addIncident": "Add Location",
       "changeIncident": "Change Location",
       "addFacility": "Add Facility",

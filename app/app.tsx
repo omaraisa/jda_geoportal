@@ -8,7 +8,7 @@ import useStateStore from "./stateStore";
 import "./i18n";
 import AppLoader from "./components/ui/app-loader";
 import BottomPane from "./components/bottom-pane";
-import MainMenu from "./components/ui/main-menu";
+import MainMenu from "./components/ui/menu/main-menu";
 import useAuthentication from "@/lib/hooks/use-authentication";
 import '@esri/calcite-components/dist/components/calcite-icon';
 import SessionEndModal from "./components/session-end-modal";

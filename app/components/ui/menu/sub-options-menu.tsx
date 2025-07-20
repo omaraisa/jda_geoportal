@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import styles from "./main-menu.module.css";
 import SubOptionsMenuHeader from "./sub-options-menu-header";
 import dynamic from "next/dynamic";
-import Loading from "./loading";
+import Loading from "../loading";
 
 const BasemapSwitcher = dynamic(
     () => import("@/components/ui/basemap-switcher"),
