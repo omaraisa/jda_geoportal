@@ -17,11 +17,9 @@ export default function SketchComponent() {
   useEffect(() => {
     if (!view) return;
 
-    // Initialize or update the Sketch widget
     if (sketchWidget.current) {
-      sketchWidget.current.view = view; // Update the view of the existing widget
+      sketchWidget.current.view = view; 
     } else {
-      // Create a new GraphicsLayer and add it to the view if it doesn't exist
       const existingLayer = view.map.layers.find(
         (layer) => layer.title === "drawing Layer"
       );
@@ -36,10 +34,9 @@ export default function SketchComponent() {
         view: view,
         layer: graphicsLayer.current,
         container: sketchRef.current || undefined,
-        creationMode: "update", // Allow updating graphics after creation
+        creationMode: "update", 
       });
 
-      // Set default symbols for different geometry types
       sketchWidget.current.on("create", (event) => {
         if (event.state === "complete") {
           const graphic = event.graphic;
@@ -60,7 +57,6 @@ export default function SketchComponent() {
       });
     }
 
-    // Cleanup on unmount or dependency change
     return () => {
       if (graphicsLayer.current && graphicsLayer.current.graphics.length === 0) {
         // view.map.remove(graphicsLayer.current);

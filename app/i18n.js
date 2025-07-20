@@ -11,9 +11,9 @@ i18n.use(initReactI18next).init({
     en: { translation: en },
     ar: { translation: ar },
   },
-  lng: "en", // Default language
+  lng: "en", 
   fallbackLng: "en",
-  interpolation: { escapeValue: false }, // React already escapes by default
+  interpolation: { escapeValue: false }, 
 })
 
 export default i18n;

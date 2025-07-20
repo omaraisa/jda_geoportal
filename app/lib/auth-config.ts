@@ -1,7 +1,3 @@
-/**
- * Authentication configuration for different environments
- * Use this to easily switch between testing and production settings
- */
 
 export const AUTH_CONFIG = {
   // Development/Testing configuration (1-minute tokens)
@@ -35,16 +31,12 @@ export const AUTH_CONFIG = {
   }
 };
 
-// Current environment - change this to switch between testing and production
-// export const CURRENT_ENV = process.env.NODE_ENV === 'development' ? 'TESTING' : 'PRODUCTION';
 export const CURRENT_ENV = 'PRODUCTION';
 
-// Get current configuration
 export const getCurrentConfig = () => {
   return AUTH_CONFIG[CURRENT_ENV];
 };
 
-// Helper function to get human-readable time
 export const formatTime = (seconds: number) => {
   if (seconds < 60) {
     return `${seconds} seconds`;

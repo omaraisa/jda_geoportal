@@ -8,7 +8,7 @@ const protectedPaths = [
 ];
 
 const AUTH_BASE_URL = process.env.NEXT_PUBLIC_AUTH_URL || '/';
-const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://sdf.jda.gov.sa';
+const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || '/';
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
@@ -33,7 +33,6 @@ export async function middleware(request: NextRequest) {
             }
 
             if (refreshToken) {
-                // Try to refresh the token by making a request to our local API
                 try {
                     const refreshResponse = await fetch(`${APP_BASE_URL}/api/refresh-token`, {
                         method: 'POST',
@@ -43,9 +42,7 @@ export async function middleware(request: NextRequest) {
                     });
 
                     if (refreshResponse.ok) {
-                        // Token refreshed successfully, continue with the request
                         const requestHeaders = new Headers(request.headers);
-                        // Forward any new cookies from the refresh response
                         const setCookieHeaders = refreshResponse.headers.getSetCookie();
                         
                         const response = NextResponse.next({
@@ -54,14 +51,12 @@ export async function middleware(request: NextRequest) {
                             },
                         });
 
-                        // Set the new cookies
                         setCookieHeaders.forEach(cookieHeader => {
                             response.headers.append('Set-Cookie', cookieHeader);
                         });
 
                         return response;
                     } else {
-                        // Failed to refresh, redirect to AUTH_BASE_URL
                         return NextResponse.redirect(new URL(AUTH_BASE_URL));
                     }
                 } catch (error) {
@@ -70,7 +65,6 @@ export async function middleware(request: NextRequest) {
                 }
             }
 
-            // Use APP_BASE_URL to construct the callback URL
             const callbackUrl = encodeURIComponent(`${APP_BASE_URL}${path}`);
             const loginUrl = new URL(AUTH_BASE_URL);
             loginUrl.searchParams.set('callback', callbackUrl);

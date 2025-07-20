@@ -4,7 +4,6 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import { State, Bookmark, ArcGISUserInfo } from "@/interface";
-import * as InitialLayersConfiguration from "@/lib/initial-layers";
 import { incrementStatisticsFeature } from "@/lib/database";
 import { getCookie } from "@/lib/token";
 
@@ -225,20 +224,6 @@ const useStateStore = create<State>((set, get) => ({
         targetView.map.add(layer);
       });
     }
-  },
-
-  addBasemapLayers: () => {
-    const { targetView } = get()
-    if (!targetView) return;
-
-    const selectedConfigs =
-      targetView.type === "2d"
-        ? InitialLayersConfiguration.baseMapLayerConfigurations
-        : InitialLayersConfiguration.sceneBasemapConfigurations;
-
-    selectedConfigs.forEach((layerConfig) => {
-      get().createLayer(layerConfig);
-    })
   },
 
   setTargetLayerId: (id: string) => {

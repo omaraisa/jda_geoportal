@@ -12,9 +12,8 @@ export default function LegendComponent() {
   useEffect(() => {
     if (!view) return;
     
-    // Initialize or update the Legend widget
     if (legendWidget.current) {
-      legendWidget.current.view = view; // Update the view of the existing widget
+      legendWidget.current.view = view; 
     } else {
       legendWidget.current = new Legend({
         view: view,
@@ -22,7 +21,6 @@ export default function LegendComponent() {
       });
     }
 
-    // Cleanup on unmount or dependency change
     return () => {
       if (legendWidget.current) {
         // Do not destroy, simply unbind the view if needed
@@ -30,7 +28,7 @@ export default function LegendComponent() {
         // legendWidget.current = null;
       }
     };
-  }, [view]); // Re-run when the view changes
+  }, [view]); 
 
   return (
     <div

@@ -12,11 +12,9 @@ const useAuthentication = (customInterval?: number) => {
   const [isInitializing, setIsInitializing] = useState(true);
   
   useEffect(() => {
-    // Track if the component is still mounted
     let isMounted = true;
     
     const checkToken = async () => {
-      // Check if we have an access token cookie
       const accessToken = getCookie('access_token');
       const isAuthenticated = getCookie('is_authenticated') === 'true';
       
@@ -29,18 +27,13 @@ const useAuthentication = (customInterval?: number) => {
       }
       
       try {
-        // Parse the JWT token to get user info and check expiration
         const tokenParts = accessToken.split('.');
         if (tokenParts.length === 3) {
-          // Base64 decode the payload
           const payload = JSON.parse(atob(tokenParts[1]));
-          
-          // Check if token is about to expire based on configured buffer
           const currentTime = Math.floor(Date.now() / 1000);
           const tokenExpiry = payload.exp;
           const timeUntilExpiry = tokenExpiry - currentTime;
           
-          // If token expires within the configured buffer time, show session modal
           if (timeUntilExpiry < config.SESSION_MODAL_BUFFER) {
             console.log(`Token expires in ${timeUntilExpiry} seconds, showing session modal (buffer: ${config.SESSION_MODAL_BUFFER}s)`);
             if (isMounted) {
@@ -50,7 +43,6 @@ const useAuthentication = (customInterval?: number) => {
             return false;
           }
           
-          // Extract user data from token
           if (payload) {
             const userInfo = {
               fullName: payload.firstName && payload.lastName ? 
@@ -82,18 +74,15 @@ const useAuthentication = (customInterval?: number) => {
     
     const checkAuth = async () => {
       try {
-        // Check access token validity first
         const hasValidTokens = await checkToken();
         if (!hasValidTokens) return;
         
-        // Initialize ArcGIS only if we have a valid access token
         await initializeArcGIS().catch(err => {
           console.error("Failed to initialize ArcGIS:", err);
         });
         
         const isArcGISValid = isArcgisTokenValid();
         
-        // Authenticate with ArcGIS if needed, but handle failures gracefully
         if (!isArcGISValid) {
           try {
             const arcgisAuthenticated = await authenticateArcGIS();
@@ -120,8 +109,6 @@ const useAuthentication = (customInterval?: number) => {
 
     const initAuth = async () => {
       await checkAuth();
-      
-      // Set up periodic check with the specified interval
       const timer = setInterval(checkAuth, interval);
       return () => {
         clearInterval(timer);
@@ -129,10 +116,8 @@ const useAuthentication = (customInterval?: number) => {
       };
     };
     
-    // Initialize authentication
     initAuth();
     
-    // Cleanup function
     return () => {
       isMounted = false;
     };

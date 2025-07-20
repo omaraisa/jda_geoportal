@@ -6,8 +6,8 @@ import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import KMLLayer from "@arcgis/core/layers/KMLLayer";
 import CSVLayer from "@arcgis/core/layers/CSVLayer";
 
-const GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/Data%20Conversion%20Tool/submitJob";
-const UPLOAD_URL = "https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/uploads/upload";
+const GP_URL = process.env.NEXT_PUBLIC_UPLOAD_GP_URL!;
+const UPLOAD_URL = process.env.NEXT_PUBLIC_UPLOAD_URL!;
 
 async function uploadFile(file: File) {
     const formData = new FormData();

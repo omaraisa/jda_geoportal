@@ -32,9 +32,9 @@ const MainMap = () => {
       mapInitializedRef.current = true;
       try {
         const jdaExtentLayer = new MapImageLayer({
-          url: "https://gis.jda.gov.sa/agserver/rest/services/JDA_Extent/MapServer"
+          url: process.env.NEXT_PUBLIC_JDA_EXTENT_URL!
         });
-        (jdaExtentLayer as any).group = "HiddenLayers"; // Set group to "HiddenLayers" for JDA Extent Layer 
+        (jdaExtentLayer as any).group = "HiddenLayers"; 
 
         const map = new Map({
           basemap: "satellite",
@@ -45,7 +45,7 @@ const MainMap = () => {
           container: mapRef.current as unknown as HTMLDivElement,
           map: map,
           background: {
-            color: [255, 255, 255, 1] // white background
+            color: [255, 255, 255, 1]
           },
           rotation: 277,
           ui: {
@@ -55,7 +55,6 @@ const MainMap = () => {
 
         viewRef.current
           ?.when(async () => {
-            // Wait for the JDA Extent layer to load, then zoom to its full extent
             await jdaExtentLayer.when();
             const extent = jdaExtentLayer.fullExtent;
             if (extent) {

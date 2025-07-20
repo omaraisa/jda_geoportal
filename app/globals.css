@@ -62,9 +62,6 @@ body {
   padding: 0;
 }
 
-button, a, i, [role="button"], [onclick] {
-}
-
 :lang(en) {
   font-family: var(--font-oxanium), Arial, Helvetica, sans-serif;
   direction: ltr;

@@ -1,4 +1,4 @@
-//  Z-index Dictionary
+//  Z-index Dictionary | Below are components names
 const zIndex = {
     30: ['SessionEndModal'],
     20: ['AppLoader'],

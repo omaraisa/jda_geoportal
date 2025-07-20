@@ -1,37 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Environment variables
 const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
 const tokenServiceUrl = process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET';
 const username = process.env.NEXT_PUBLIC_PORTAL_USERNAME ?? '';
 const password = process.env.NEXT_PUBLIC_PORTAL_PASSWORD ?? '';
 
-// Cache for services to avoid fetching from portal on every request
 let servicesCache: { [key: string]: string } = {};
 let cacheExpiry = 0;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 5 * 60 * 1000;
 
-// Get token for ArcGIS API access
 async function getToken(): Promise<string | null> {
   try {
     if (!username || !password) {
       console.error('Missing ArcGIS credentials in environment variables');
       return null;
     }
-
     if (tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
       console.error('Token service URL not configured');
       return null;
     }
-
     const params = new URLSearchParams({
       username,
       password,
       client: 'referer',
-      referer: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+      referer: process.env.NEXT_PUBLIC_APP_URL || '/',
       f: 'json',
     });
-
     const response = await fetch(tokenServiceUrl, {
       method: 'POST',
       headers: {
@@ -39,14 +33,11 @@ async function getToken(): Promise<string | null> {
       },
       body: params.toString(),
     });
-
     const data = await response.json();
-
     if (data.error) {
       console.error('Error getting token:', data.error);
       return null;
     }
-
     return data.token;
   } catch (error) {
     console.error('Token fetch error:', error);
@@ -54,10 +45,8 @@ async function getToken(): Promise<string | null> {
   }
 }
 
-// Fetch allowed services from all gportal_* groups (unified with discover)
 async function fetchAllowedServices(token: string): Promise<{ [key: string]: string }> {
   try {
-    // Get all groups that start with gportal_
     const groupsUrl = `${portalUrl}/sharing/rest/community/groups?f=json&q=gportal_&token=${token}&num=100`;
     const groupsResponse = await fetch(groupsUrl);
     if (!groupsResponse.ok) {
@@ -102,52 +91,36 @@ async function fetchAllowedServices(token: string): Promise<{ [key: string]: str
   }
 }
 
-// Get cached services or fetch fresh ones
 async function getServices(): Promise<{ [key: string]: string }> {
   const now = Date.now();
-  
-  // Return cached services if still valid
   if (now < cacheExpiry && Object.keys(servicesCache).length > 0) {
     return servicesCache;
   }
-
-  // Fetch fresh services
   const token = await getToken();
   if (!token) {
     return {};
   }
-
   servicesCache = await fetchAllowedServices(token);
   cacheExpiry = now + CACHE_DURATION;
-  
   return servicesCache;
 }
 
-// Handle all HTTP methods
 async function handleRequest(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   try {
     const params = await context.params;
     const pathSegments = params.path;
-    
     if (!pathSegments || pathSegments.length === 0) {
-      // Redirect to discover page if no service name is provided
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/api/mapservice/discover`, 302);
     }
-
-    // Get allowed services
     const services = await getServices();
-    
     if (Object.keys(services).length === 0) {
       return NextResponse.json(
         { error: 'No services available or authentication failed' },
         { status: 503 }
       );
     }
-
-    // Extract service name (first path segment)
     const [serviceName, ...subPath] = pathSegments;
     const targetUrl = services[serviceName];
-
     if (!targetUrl) {
       return NextResponse.json(
         { 
@@ -155,34 +128,25 @@ async function handleRequest(request: NextRequest, context: { params: Promise<{ 
           availableServices: Object.keys(services)
         },
         { status: 404 }
-      );    }
-
-    // Build the final URL
+      );
+    }
     let finalUrl = targetUrl;
     if (subPath.length > 0) {
-      // Skip 'MapServer' if it's the first element in subPath since targetUrl already ends with it
       const actualSubPath = subPath[0] === 'MapServer' ? subPath.slice(1) : subPath;
       if (actualSubPath.length > 0) {
         finalUrl = `${targetUrl}/${actualSubPath.join('/')}`;
       }
     }
-
-    // Add query parameters
     const url = new URL(request.url);
     const searchParams = url.searchParams;
-    
-    // Get a fresh token for the service request
     const token = await getToken();
     if (token) {
       searchParams.set('token', token);
     }
-    
     if (searchParams.toString()) {
       const separator = finalUrl.includes('?') ? '&' : '?';
       finalUrl = `${finalUrl}${separator}${searchParams.toString()}`;
     }
-
-    // Make the proxied request
     const proxyResponse = await fetch(finalUrl, {
       method: request.method,
       headers: {
@@ -194,19 +158,14 @@ async function handleRequest(request: NextRequest, context: { params: Promise<{ 
         ? await request.arrayBuffer() 
         : undefined,
     });
-
     if (!proxyResponse.ok) {
       return NextResponse.json(
         { error: `Service responded with status: ${proxyResponse.status}` },
         { status: proxyResponse.status }
       );
     }
-
-    // Get response content
     const contentType = proxyResponse.headers.get('content-type') || 'application/json';
     const responseBody = await proxyResponse.arrayBuffer();
-
-    // Create response with proper headers
     const response = new NextResponse(responseBody, {
       status: proxyResponse.status,
       headers: {
@@ -216,9 +175,7 @@ async function handleRequest(request: NextRequest, context: { params: Promise<{ 
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       },
     });
-
     return response;
-
   } catch (error) {
     console.error('Proxy error:', error);
     return NextResponse.json(
@@ -228,7 +185,6 @@ async function handleRequest(request: NextRequest, context: { params: Promise<{ 
   }
 }
 
-// Export handlers for all HTTP methods
 export const GET = handleRequest;
 export const POST = handleRequest;
 export const PUT = handleRequest;

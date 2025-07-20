@@ -88,7 +88,6 @@ export interface State {
   updateMapView: (mapView: __esri.MapView | null) => void;
   updateSceneView: (sceneView: __esri.SceneView | null) => void;
   createLayer: (params: InitialLayersConfiguration) => void;
-  addBasemapLayers: () => void;
   setTargetLayerId: (id: string) => void;
   setSyncing: (isOn: boolean) => void;
   getTargetLayer: () => __esri.FeatureLayer | null;

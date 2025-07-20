@@ -24,8 +24,8 @@ const BasemapSwitcher: React.FC = () => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     const customBasemapLayer = new MapImageLayer({
-          url: "https://gis.jda.gov.sa/agserver/rest/services/SDF_Basemap/MapServer"
-        });
+      url: process.env.NEXT_PUBLIC_SDF_BASEMAP_URL!
+    });
         
         const customBasemap = new Basemap({
           baseLayers: [customBasemapLayer],

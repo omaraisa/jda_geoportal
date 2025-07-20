@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
 import LayerSelector from "../ui/layer-selector";
 
-const EXPORT_GP_URL = "https://gis.jda.gov.sa/agserver/rest/services/ExportLayer/GPServer/Export%20Layer";
+const EXPORT_GP_URL = process.env.NEXT_PUBLIC_EXPORT_GP_URL!;
 
 export default function ExportLayer() {
   const { t } = useTranslation();

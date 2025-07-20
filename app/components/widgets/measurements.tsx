@@ -9,14 +9,13 @@ export default function MeasurementComponent() {
   const areaMeasurementRef = useRef(null);
   const distanceMeasurementWidget = useRef<Measurement | null>(null);
   const areaMeasurementWidget = useRef<Measurement | null>(null);
-  const [showDistance, setShowDistance] = useState(false); // Track if Distance widget is visible
-  const [showArea, setShowArea] = useState(false); // Track if Area widget is visible
-  const [activeTool, setActiveTool] = useState<string | null>(null); // Track which tool is active (distance/area)
+  const [showDistance, setShowDistance] = useState(false);
+  const [showArea, setShowArea] = useState(false);
+  const [activeTool, setActiveTool] = useState<string | null>(null);
 
   const view = useStateStore((state) => state.targetView);
   const updateStats = useStateStore((state) => state.updateStats);
 
-  // Initialize or destroy Distance Measurement widget
   useEffect(() => {
     if (!view || !showDistance) return;
 
@@ -24,20 +23,18 @@ export default function MeasurementComponent() {
       distanceMeasurementWidget.current = new Measurement({
         view: view,
         container: distanceMeasurementRef.current || undefined,
-        activeTool: "distance", // Set to distance measurement
+        activeTool: "distance",
       });
     }
 
-    // Cleanup when Distance widget is hidden or tool changes
     return () => {
       if (distanceMeasurementWidget.current) {
         distanceMeasurementWidget.current.destroy();
         distanceMeasurementWidget.current = null;
       }
     };
-  }, [view, showDistance]); // Re-run when view or showDistance changes
+  }, [view, showDistance]);
 
-  // Initialize or destroy Area Measurement widget
   useEffect(() => {
     if (!view || !showArea) return;
 
@@ -45,24 +42,21 @@ export default function MeasurementComponent() {
       areaMeasurementWidget.current = new Measurement({
         view: view,
         container: areaMeasurementRef.current || undefined,
-        activeTool: "area", // Set to area measurement
+        activeTool: "area",
       });
     }
 
-    // Cleanup when Area widget is hidden or tool changes
     return () => {
       if (areaMeasurementWidget.current) {
         areaMeasurementWidget.current.destroy();
         areaMeasurementWidget.current = null;
       }
     };
-  }, [view, showArea]); // Re-run when view or showArea changes
+  }, [view, showArea]);
 
-  // Handle tool switching and cleanup
   const handleToolChange = (tool: string) => {
-    if (activeTool === tool) return; // Prevent redundant toggles
+    if (activeTool === tool) return;
 
-    // Cleanup the current active tool drawing before switching to a new one
     if (activeTool === "distance" && distanceMeasurementWidget.current) {
       distanceMeasurementWidget.current.destroy();
       distanceMeasurementWidget.current = null;
@@ -71,24 +65,20 @@ export default function MeasurementComponent() {
       areaMeasurementWidget.current = null;
     }
 
-    // Activate the new tool
     if (tool === "distance") {
       setShowDistance(true);
       setShowArea(false);
-    updateStats("Distance Measurement");
+      updateStats("Distance Measurement");
     } else if (tool === "area") {
       setShowArea(true);
       setShowDistance(false);
-    updateStats("Area Measurement");
-  }
+      updateStats("Area Measurement");
+    }
 
-    // Update active tool state
     setActiveTool(tool);
   };
 
-  // Clear the drawing and reset the view
   const handleClear = () => {
-    // Clear the drawing if active
     if (distanceMeasurementWidget.current) {
       distanceMeasurementWidget.current.destroy();
       distanceMeasurementWidget.current = null;
@@ -98,20 +88,17 @@ export default function MeasurementComponent() {
       areaMeasurementWidget.current = null;
     }
 
-    // Reset tool states
     setShowDistance(false);
     setShowArea(false);
     setActiveTool(null);
 
-    // Optionally clear the view (map) here if needed
     if (view) {
-      view.graphics.removeAll(); // Removes all graphics from the view
+      view.graphics.removeAll();
     }
   };
 
   return (
     <div className="h-full w-full flex flex-col gap-4 p-4">
-      {/* Buttons to toggle between Distance and Area */}
       <div className="flex gap-4">
         <button
           className={`btn ${showDistance ? "btn-primary" : "btn-gray"} flex-grow`}
@@ -127,7 +114,6 @@ export default function MeasurementComponent() {
         </button>
       </div>
 
-      {/* Distance Measurement Widget */}
       {showDistance && (
         <div className="flex flex-col gap-2">
           <h3 className="text-foreground font-semibold">{t('widgets.measurements.distanceMeasurement')}</h3>
@@ -139,7 +125,6 @@ export default function MeasurementComponent() {
         </div>
       )}
 
-      {/* Area Measurement Widget */}
       {showArea && (
         <div className="flex flex-col gap-2">
           <h3 className="text-foreground font-semibold">{t('widgets.measurements.areaMeasurement')}</h3>
@@ -151,7 +136,6 @@ export default function MeasurementComponent() {
         </div>
       )}
 
-      {/* Clear Button */}
       <div className="mt-4">
         <button className="btn btn-danger w-full" onClick={handleClear}>
           {t('widgets.measurements.clear')}

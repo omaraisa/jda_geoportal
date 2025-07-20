@@ -3,7 +3,7 @@ import Directions from "@arcgis/core/widgets/Directions";
 import RouteLayer from "@arcgis/core/layers/RouteLayer";
 import useStateStore from "@/stateStore";
 
-const ROUTE_SERVICE_URL = "https://gis.jda.gov.sa/agserver/rest/services/JeddahNetwork/NAServer/Route";
+const ROUTE_SERVICE_URL = process.env.NEXT_PUBLIC_ROUTE_SERVICE_URL!;
 
 export default function DirectionsComponent() {
   const directionsRef = useRef<HTMLDivElement>(null);

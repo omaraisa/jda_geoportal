@@ -5,7 +5,6 @@ import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import useStateStore from "@/stateStore";
 import Loading from "./ui/loading";
-// import { sceneBasemapConfigurations } from "@/lib/initial-layers";
 
 declare module "@arcgis/core/views/SceneView" {
   interface SceneView {
@@ -18,7 +17,7 @@ const MainScene: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const eventHandlersRef = useRef<Record<string, __esri.Handle>>({});
 
-  const { sendMessage, center, zoom, scale, mapView, targetView, updateSceneView, updateTargetView, viewsSyncOn, addBasemapLayers } = useStateStore((state) => state);
+  const { sendMessage, center, zoom, scale, mapView, targetView, updateSceneView, updateTargetView, viewsSyncOn } = useStateStore((state) => state);
   
   useEffect(() => {
     if (!viewRef.current) {
@@ -45,7 +44,6 @@ const MainScene: React.FC = () => {
           .when(() => {
             updateSceneView(viewRef.current);
             setLoading(false);
-            // if(viewRef.current) addBasemapLayers();
           })
           .catch((error: Error) => {
             sendMessage({
@@ -70,7 +68,6 @@ const MainScene: React.FC = () => {
     return () => {
       if (viewRef.current) {
         // viewRef.current.destroy();
-        // updateSceneView(null);
       }
     };
   }, [sendMessage, center, zoom, scale, updateSceneView]);

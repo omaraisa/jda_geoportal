@@ -8,7 +8,7 @@ import Graphic from "@arcgis/core/Graphic";
 import * as projection from "@arcgis/core/geometry/projection";
 const Point = require("@arcgis/core/geometry/Point").default;
 
-const CLOSEST_FACILITY_URL = "https://gis.jda.gov.sa/agserver/rest/services/JeddahNetwork/NAServer/Closest%20Facility/";
+const CLOSEST_FACILITY_URL = process.env.NEXT_PUBLIC_CLOSEST_FACILITY_URL!;
 const INCIDENT_GRAPHICS_LAYER_ID = "closest-facility-incident";
 const FACILITY_GRAPHICS_LAYER_ID = "closest-facility-facilities";
 const ROUTE_LAYER_ID = "Closest_Facility_Route"

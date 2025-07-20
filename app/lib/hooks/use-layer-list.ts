@@ -28,13 +28,10 @@ const useLayerActions = () => {
     const toggleLayerPopup = useCallback((layer: __esri.Layer, setLayers: (layers: __esri.Layer[]) => void) => {
         const featureLayer = layer as __esri.FeatureLayer;
 
-        // Check if the feature layer already has a popup template
         if (!featureLayer.popupTemplate) {
-            // Create a default popup template
             const titleField = getTitleField(featureLayer.fields);
             const popupTemplate = createPopupTemplate(titleField, featureLayer.fields);
 
-            // Try to check for attachments using the layer's capabilities
             let hasAttachments = false;
             if (featureLayer.capabilities.operations.supportsQueryAttachments) {
                 hasAttachments = true;
@@ -52,23 +49,19 @@ const useLayerActions = () => {
 
             featureLayer.popupTemplate = popupTemplate;
         } else {
-            // Toggle the popup visibility if the template already exists
             featureLayer.popupEnabled = !featureLayer.popupEnabled;
         }
 
-        // Update the layers in the view
         if (view) {
             setLayers(view.map.layers.toArray());
         }
     }, [view]);
     
-    // Helper function to find the title field
     function getTitleField(fields: __esri.Field[]): string {
         const titleField = fields.find(f => f?.name && /name|الاسم|id/i.test(f.name.toLowerCase()));
         return titleField?.name || "OBJECTID";
     }
     
-    // Helper function to create a popup template
     function createPopupTemplate(titleField: string, fields: __esri.Field[]):any {
         return {
             title: `{${titleField}}`,
