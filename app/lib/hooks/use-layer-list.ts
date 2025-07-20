@@ -36,7 +36,7 @@ const useLayerActions = () => {
             if (featureLayer.capabilities.operations.supportsQueryAttachments) {
                 hasAttachments = true;
             } else if (
-                featureLayer.capabilities.attachment.supportsName
+                featureLayer.capabilities.attachment && featureLayer.capabilities.attachment.supportsName
             ) {
                 hasAttachments = true;
             }
