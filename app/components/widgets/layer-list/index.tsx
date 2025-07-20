@@ -15,14 +15,11 @@ export default function LayerListComponent() {
       const groups = Array.from(
         new Set(
           layersArr
-            .map((layer: any) => layer.group)
-            .filter(Boolean)
+            .map((layer: any) => (layer as any).group || "MyLayers") // Treat ungrouped layers as MyLayers
             .filter((group: string) => group !== "HiddenLayers")
         )
       );
-      const hasUngrouped = layersArr.some((layer: any) => !layer.group);
-      const allGroups = hasUngrouped ? ["MyLayers", ...groups] : groups;
-      setUniqueGroups(allGroups);
+      setUniqueGroups(groups);
     };
 
     updateGroups();
@@ -39,7 +36,7 @@ export default function LayerListComponent() {
       <div ref={layerListRef}></div>
       <div className="flex-1 flex flex-col gap-2 p-2 overflow-y-auto">
         {uniqueGroups.map((group, index) => (
-          <LayerGroup key={group || index} group={group} />
+          <LayerGroup key={index} group={group} />
         ))}
       </div>
     </div>

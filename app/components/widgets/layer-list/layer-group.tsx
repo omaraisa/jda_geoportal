@@ -36,11 +36,10 @@ export default function LayerGroup({group}: {group: string}) {
       <div className={`${styles.content} ${isExpanded ? styles.contentExpanded : ''}`} id="content">
         {view?.map.layers
           .toArray()
-          .filter((layer) =>
-            group === "MyLayers"
-              ? !(layer as any).group // Only layers without a group
-              : (layer as any).group === group
-          )
+          .filter((layer) => {
+            const layerGroup = (layer as any).group || "MyLayers"; // Assign ungrouped layers to MyLayers
+            return layerGroup === group;
+          })
           .map((layer) => (
             <LayerItem
               key={layer.id}
