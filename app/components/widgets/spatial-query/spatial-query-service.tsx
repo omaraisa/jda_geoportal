@@ -80,6 +80,33 @@ export class SpatialQueryService {
     widgets: any
   ): void {
     if (response && response.features.length) {
+      // Ensure the graphics layer has a proper title and is added to the map
+      if (!graphicsLayer.title) {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const seconds = now.getSeconds().toString().padStart(2, "0");
+        const timeCode = `${hours}${minutes}${seconds}`;
+        graphicsLayer.title = `${targetLayer?.title || "Layer"} - Spatial Query ${timeCode}`;
+      }
+      
+      // Ensure the graphics layer is added to the map and visible
+      if (view && !view.map.layers.includes(graphicsLayer)) {
+        view.map.add(graphicsLayer);
+      }
+      
+      // Make sure the layer is visible and on top
+      graphicsLayer.visible = true;
+      graphicsLayer.listMode = "show";
+      
+      // Move the graphics layer to the top
+      if (view && view.map.layers.includes(graphicsLayer)) {
+        view.map.reorder(graphicsLayer, view.map.layers.length - 1);
+      }
+      
+      // Clear any existing graphics
+      graphicsLayer.removeAll();
+      
       addQueryResult(response.features, graphicsLayer, view, targetLayer, widgets);
     }
   }

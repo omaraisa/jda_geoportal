@@ -30,7 +30,8 @@ export default function LayerSelector({
             {t("widgets.query.selectLayer")}
           </option>
           {view?.map.layers.toArray().map((layer: any, index: number) => {
-            if (featureBasedLayerTypes.includes(layer.type)) {
+            // Only show layers that are FeatureLayers and have queryFeatures method
+            if (layer.type === "feature" && typeof layer.queryFeatures === "function") {
               return (
                 <option key={layer.id} value={index}>
                   {layer.title}
@@ -53,7 +54,8 @@ export default function LayerSelector({
                 {t("widgets.query.select")}
               </option>
               {view?.map.layers.toArray().map((layer: any, index: number) => {
-                if (featureBasedLayerTypes.includes(layer.type)) {
+                // Only show layers that are FeatureLayers and have queryFeatures method
+                if (layer.type === "feature" && typeof layer.queryFeatures === "function") {
                   return (
                     <option key={layer.id} value={index}>
                       {layer.title}

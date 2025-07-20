@@ -17,17 +17,66 @@ export function addQueryResult(
   graphicsLayer.removeAll();
 
   features.forEach((feature) => {
+    let symbol: any;
+    
+    // Determine symbol based on geometry type
+    const geometryType = feature.geometry?.type;
+    
+    switch (geometryType) {
+      case "point":
+      case "multipoint":
+        symbol = {
+          type: "simple-marker",
+          style: "circle",
+          color: [0, 255, 255, 0.8], // Cyan
+          size: 12,
+          outline: {
+            color: [0, 255, 255, 1], // Cyan
+            width: 2,
+          },
+        };
+        break;
+        
+      case "polyline":
+        symbol = {
+          type: "simple-line",
+          color: [0, 255, 255, 1], // Cyan
+          width: 3,
+          style: "solid",
+        };
+        break;
+        
+      case "polygon":
+      case "extent":
+        symbol = {
+          type: "simple-fill",
+          color: [0, 255, 255, 0.3], // Cyan with transparency
+          outline: {
+            color: [0, 255, 255, 1], // Cyan
+            width: 2,
+          },
+          style: "solid",
+        };
+        break;
+        
+      default:
+        // Fallback symbol
+        symbol = {
+          type: "simple-fill",
+          color: [0, 255, 255, 0.3],
+          outline: {
+            color: [0, 255, 255, 1],
+            width: 2,
+          },
+        };
+    }
+
     const outlineGraphic = new Graphic({
       geometry: feature.geometry,
-      symbol: {
-        type: "simple-fill",
-        color: [0, 0, 0, 0],
-        outline: {
-          color: "cyan",
-          width: "2px",
-        },
-      } as __esri.SimpleFillSymbolProperties,
+      symbol: symbol,
+      attributes: feature.attributes,
     });
+    
     graphicsLayer.add(outlineGraphic);
   });
 
