@@ -1,6 +1,9 @@
 services:
-  geoportal1:
-    build:
+  geoportal1         - NEXT_PUBLIC_PRINT_GP_URL
+        - NEXT_PUBLIC_UPLOAD_GP_URL
+        - NEXT_PUBLIC_UPLOAD_URL  - NEXT_PUBLIC_PRINT_GP_URL
+        - NEXT_PUBLIC_UPLOAD_GP_URL
+        - NEXT_PUBLIC_UPLOAD_URL  build:
       context: .
       args:
         - NEXT_PUBLIC_ARCGIS_API_KEY
@@ -16,6 +19,15 @@ services:
         - NEXT_PUBLIC_APP_URL
         - NEXT_PUBLIC_MAPSERVICES_URL
         - NEXT_PUBLIC_PORTAL_GROUP_NAME
+        - NEXT_PUBLIC_JDA_EXTENT_URL
+        - NEXT_PUBLIC_SDF_BASEMAP_URL
+        - NEXT_PUBLIC_CLOSEST_FACILITY_URL
+        - NEXT_PUBLIC_ROUTE_SERVICE_URL
+        - NEXT_PUBLIC_EXPORT_GP_URL
+        - NEXT_PUBLIC_PRINT_GP_URL
+        - NEXT_PUBLIC_UPLOAD_GP_URL
+        - NEXT_PUBLIC_UPLOAD_URL
+        - NEXT_PUBLIC_ADMIN_URL
     environment:
       - PORT=3000
     expose:
@@ -42,6 +54,15 @@ services:
         - NEXT_PUBLIC_APP_URL
         - NEXT_PUBLIC_MAPSERVICES_URL
         - NEXT_PUBLIC_PORTAL_GROUP_NAME
+        - NEXT_PUBLIC_JDA_EXTENT_URL
+        - NEXT_PUBLIC_SDF_BASEMAP_URL
+        - NEXT_PUBLIC_CLOSEST_FACILITY_URL
+        - NEXT_PUBLIC_ROUTE_SERVICE_URL
+        - NEXT_PUBLIC_EXPORT_GP_URL
+        - NEXT_PUBLIC_PRINT_GP_URL
+        - NEXT_PUBLIC_UPLOAD_GP_URL
+        - NEXT_PUBLIC_UPLOAD_URL
+        - NEXT_PUBLIC_ADMIN_URL
     environment:
       - PORT=3000
     expose:

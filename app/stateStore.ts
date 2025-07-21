@@ -4,7 +4,7 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import { State, Bookmark, ArcGISUserInfo } from "@/interface";
-import { incrementStatisticsFeature } from "@/lib/database";
+import { incrementStatisticsFeature } from "@/lib/statistics-client";
 import { getCookie } from "@/lib/token";
 
 const useStateStore = create<State>((set, get) => ({

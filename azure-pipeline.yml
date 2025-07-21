@@ -1,8 +1,10 @@
 trigger:
   - main
 
-pool:
-  name: 'Default'
+pool:  NEXT_PUBLIC_UPLOAD_URL: 'ht      NEXT_PUBLIC_PRINT_GP_URL=${NEXT_PUBLIC_PRINT_GP_URL}
+      NEXT_PUBLIC_UPLOAD_GP_URL=${NEXT_PUBLIC_UPLOAD_GP_URL}
+      NEXT_PUBLIC_UPLOAD_URL=${NEXT_PUBLIC_UPLOAD_URL}
+      EOFgis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/uploads/upload'name: 'Default'
 
 variables:
   imageName: 'geoportal'
@@ -27,6 +29,7 @@ variables:
   NEXT_PUBLIC_PRINT_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map'
   NEXT_PUBLIC_UPLOAD_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/Data%20Conversion%20Tool/submitJob'
   NEXT_PUBLIC_UPLOAD_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/uploads/upload'
+  NEXT_PUBLIC_ADMIN_URL: 'https://sdf.jda.gov.sa'
       
 steps:
   - script: |
@@ -56,6 +59,7 @@ steps:
       NEXT_PUBLIC_PRINT_GP_URL=${NEXT_PUBLIC_PRINT_GP_URL}
       NEXT_PUBLIC_UPLOAD_GP_URL=${NEXT_PUBLIC_UPLOAD_GP_URL}
       NEXT_PUBLIC_UPLOAD_URL=${NEXT_PUBLIC_UPLOAD_URL}
+      NEXT_PUBLIC_ADMIN_URL=${NEXT_PUBLIC_ADMIN_URL}
       EOF
       
       # Use the .env file with docker-compose
