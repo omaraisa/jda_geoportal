@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import styles from "../spatial-query.module.css";
+import DualLabelToggle from "../../ui/dual-label-toggle";
 
 interface SelectionMethodToggleProps {
   selectionMethodChecked: boolean;
@@ -15,42 +15,12 @@ export default function SelectionMethodToggle({
   const { t } = useTranslation();
 
   return (
-    <label
-      className={styles.label}
-      style={{
-        background: "white",
-        border: !selectionMethodChecked ? "2px solid var(--secondary)" : " 2px solid var(--primary-dark-transparent)",
-      }}
-    >
-      <input
-        type="checkbox"
-        className={styles.input}
-        checked={selectionMethodChecked}
-        onChange={onToggle}
-      />
-      <span
-        className={styles.circle}
-        style={{
-          backgroundColor: !selectionMethodChecked ? "var(--secondary)" : "var(--primary-dark-transparent)",
-          right: selectionMethodChecked ? "calc(100% - 45px)" : "5px",
-        }}
-      ></span>
-      <p
-        className={`${styles.title} ${!selectionMethodChecked ? styles.visible : styles.hidden}`}
-        style={{
-          color: "var(--secondary-dark)",
-        }}
-      >
-        {t("widgets.query.byLayer")}
-      </p>
-      <p
-        className={`${styles.title} ${selectionMethodChecked ? styles.visible : styles.hidden}`}
-        style={{
-          color: "var(--secondary-dark)",
-        }}
-      >
-        {t("widgets.query.byDrawing")}
-      </p>
-    </label>
+    <DualLabelToggle
+      id="spatial-query-toggle"
+      leftLabel={t("widgets.query.byLayer")}
+      rightLabel={t("widgets.query.byDrawing")}
+      checked={selectionMethodChecked}
+      onChange={onToggle}
+    />
   );
 }

@@ -2,7 +2,7 @@
 interface IncrementStatisticsOptions {
     featureName: string;
     username?: string;
-    adminPanelUrl?: string; // e.g., 'http://localhost:3103' or your production URL
+    adminPanelUrl?: string; // e.g., '' or your production URL
     apiKey?: string; // API key for authentication (required for secure connections)
 }
 
@@ -23,7 +23,7 @@ export async function incrementStatisticsFeature(
     const { 
         featureName, 
         username, 
-        adminPanelUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3103',
+        adminPanelUrl = process.env.NEXT_PUBLIC_ADMIN_URL || '',
         apiKey = process.env.TOKEN_SECRET
     } = options;
 

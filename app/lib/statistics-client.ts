@@ -13,7 +13,6 @@ interface StatisticsResponse {
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_URL; 
 const API_KEY = process.env.TOKEN_SECRET;
-// const API_KEY = process.env.NEXT_PUBLIC_ADMIN_PANEL_API_KEY;
 
 if (!ADMIN_PANEL_URL) {
     // Statistics tracking will be disabled if not set
