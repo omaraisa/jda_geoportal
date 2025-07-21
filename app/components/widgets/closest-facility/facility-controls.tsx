@@ -1,6 +1,5 @@
-"use client";
-
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
+import SelectDropdown from '../../ui/select-dropdown';
 
 interface FacilityControlsProps {
   targetLayerId: string;
@@ -19,6 +18,16 @@ export default function FacilityControls({
 }: FacilityControlsProps) {
   const { t } = useTranslation();
 
+  const handleLayerChange = (value: string) => {
+    const event = { target: { value } } as React.ChangeEvent<HTMLSelectElement>;
+    onLayerChange(event);
+  };
+
+  const handleNumFacilitiesChange = (value: string) => {
+    const event = { target: { value } } as React.ChangeEvent<HTMLSelectElement>;
+    onNumFacilitiesChange(event);
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -26,18 +35,17 @@ export default function FacilityControls({
           {t("widgets.closestFacility.targetLayer")}
         </label>
         <div className="select">
-          <select
-            className="input-select w-full"
+          <SelectDropdown
             value={targetLayerId}
-            onChange={onLayerChange}
-          >
-            <option value="">{t("widgets.closestFacility.selectLayer")}</option>
-            {layers.map((layer: any) => (
-              <option key={layer.id} value={layer.id}>
-                {layer.title || layer.name || layer.id}
-              </option>
-            ))}
-          </select>
+            onChange={handleLayerChange}
+            options={[
+              { value: "", label: t("widgets.closestFacility.selectLayer") },
+              ...layers.map((layer: any) => ({ 
+                value: layer.id, 
+                label: layer.title || layer.name || layer.id 
+              }))
+            ]}
+          />
         </div>
       </div>
 
@@ -46,15 +54,14 @@ export default function FacilityControls({
           {t("widgets.closestFacility.numFacilities")}
         </label>
         <div className="select">
-          <select
-            className="input-select w-full"
-            value={numFacilities}
-            onChange={onNumFacilitiesChange}
-          >
-            {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
+          <SelectDropdown
+            value={numFacilities.toString()}
+            onChange={handleNumFacilitiesChange}
+            options={[1, 2, 3, 4, 5].map((n) => ({ 
+              value: n.toString(), 
+              label: n.toString() 
+            }))}
+          />
         </div>
       </div>
     </div>

@@ -1,46 +1,41 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
 import { featureBasedLayerTypes } from "@/lib/global-constants";
+import SelectDropdown from '../../ui/select-dropdown';
 
 interface LayerSelectorProps {
   getSelectedValue: (layerId: string) => void;
 }
 
 const LayerSelector: React.FC<LayerSelectorProps> = ({ getSelectedValue }) => {
-  const layerSelector = useRef<HTMLSelectElement>(null);
   const { t } = useTranslation();
   const view = useStateStore((state) => state.targetView);
+  const [selectedValue, setSelectedValue] = useState("");
 
-  const handleChange = useCallback(() => {
-    const selectedLayerId = layerSelector.current?.value || "";
-    getSelectedValue(selectedLayerId);
-  }, [ getSelectedValue]);
+  const handleChange = useCallback((value: string) => {
+    setSelectedValue(value);
+    getSelectedValue(value);
+  }, [getSelectedValue]);
 
   return (
     <div className="flex flex-col w-full">
       <label htmlFor="layerSelector" className="font-semibold text-2c2c2c">
         {t("widgets.query.selectLayer")}
       </label>
-      <div className="select">
-        <select
-          defaultValue=""
-          ref={layerSelector}
-          id="layerSelector"
-          onChange={handleChange}
-        >
-          <option value="" hidden>
-            {t("widgets.query.select")}
-          </option>
-          {view?.map.layers.toArray().map((layer) => 
-            featureBasedLayerTypes.includes(layer.type) ? (
-              <option key={layer.id} value={layer.id}>
-                {layer.title}
-              </option>
-            ) : null
-          )}
-        </select>
-      </div>
+      <SelectDropdown
+        value={selectedValue}
+        onChange={handleChange}
+        options={[
+          { value: "", label: t("widgets.query.select") },
+          ...view?.map.layers.toArray()
+            .filter(layer => featureBasedLayerTypes.includes(layer.type))
+            .map(layer => ({ 
+              value: layer.id, 
+              label: layer.title 
+            })) || []
+        ]}
+      />
     </div>
   );
 };

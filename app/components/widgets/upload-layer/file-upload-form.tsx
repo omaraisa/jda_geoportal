@@ -1,6 +1,8 @@
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import { ACCEPTED_FILE_TYPES, SUPPORTED_FILE_EXTENSIONS } from "./constants";
+import Button from '../../ui/button';
+import TextInput from '../../ui/text-input';
 
 interface FileUploadFormProps {
   title: string;
@@ -41,17 +43,12 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
           </span>
         </label>
         
-        <label htmlFor="layerTitle" className="textInput">
-          <input
-            id="layerTitle"
-            type="text"
-            className="input-text"
-            value={title}
-            onChange={(e) => onTitleChange(e.target.value)}
-            placeholder=" "
-          />
-          <span className="label">{t("widgets.uploadLayer.titlePlaceholder")}</span>
-        </label>
+        <TextInput
+          id="layerTitle"
+          value={title}
+          onChange={onTitleChange}
+          placeholder={t("widgets.uploadLayer.titlePlaceholder")}
+        />
         
         <label className="font-semibold text-foreground">
           {t("widgets.uploadLayer.selectFile")}
@@ -83,13 +80,14 @@ export const FileUploadForm: React.FC<FileUploadFormProps> = ({
           )}
         </div>
         
-        <button 
-          className={`btn ${loading ? 'btn-gray' : 'btn-primary'} w-full`} 
+        <Button
+          variant={loading ? 'secondary' : 'primary'}
           onClick={onUpload} 
           disabled={loading}
+          noFlex
         >
           {loading ? t("widgets.uploadLayer.uploading") : t("widgets.uploadLayer.upload")}
-        </button>
+        </Button>
       </div>
     </div>
   );

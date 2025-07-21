@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import Button from "@/components/ui/button";
 
 interface AnalysisControlsProps {
   onRun: () => void;
@@ -18,12 +19,13 @@ export default function AnalysisControls({
   return (
     <div className="space-y-4">
       <div className="flex space-x-2">
-        <button
-          className="btn btn-primary w-full"
+        <Button
+          variant="primary"
           onClick={onRun}
+          className="w-full"
         >
           {t("widgets.closestFacility.run")}
-        </button>
+        </Button>
       </div>
       
       {status && (

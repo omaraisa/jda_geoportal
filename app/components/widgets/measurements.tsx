@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Measurement from "@arcgis/core/widgets/Measurement";
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
+import Button from '../ui/button';
 
 export default function MeasurementComponent() {
   const { t } = useTranslation();
@@ -100,18 +101,18 @@ export default function MeasurementComponent() {
   return (
     <div className="h-full w-full flex flex-col gap-4 p-4">
       <div className="flex gap-4">
-        <button
-          className={`btn ${showDistance ? "btn-primary" : "btn-gray"} flex-grow`}
+        <Button
+          variant={showDistance ? "primary" : "secondary"}
           onClick={() => handleToolChange("distance")}
         >
           {t('widgets.measurements.distance')}
-        </button>
-        <button
-          className={`btn ${showArea ? "btn-primary" : "btn-gray"} flex-grow`}
+        </Button>
+        <Button
+          variant={showArea ? "primary" : "secondary"}
           onClick={() => handleToolChange("area")}
         >
           {t('widgets.measurements.area')}
-        </button>
+        </Button>
       </div>
 
       {showDistance && (
@@ -137,9 +138,13 @@ export default function MeasurementComponent() {
       )}
 
       <div className="mt-4">
-        <button className="btn btn-danger w-full" onClick={handleClear}>
+        <Button 
+          variant="danger" 
+          onClick={handleClear}
+          noFlex
+        >
           {t('widgets.measurements.clear')}
-        </button>
+        </Button>
       </div>
     </div>
   );

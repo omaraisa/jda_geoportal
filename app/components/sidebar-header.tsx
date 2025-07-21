@@ -16,7 +16,7 @@ const SidebarHeader: React.FC = () => {
     }
   };
 
-  const title = t(`sidebar.titles.${activeComponent}`, "");
+  const title = t(`menu.${activeComponent}`, "");
 
   return (
     <div className="relative flex items-center w-full py-2 px-4 text-foreground min-h-10">

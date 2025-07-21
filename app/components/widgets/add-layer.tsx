@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
+import Button from "@/components/ui/button";
+import TextInput from "@/components/ui/text-input";
+import SelectDropdown from "@/components/ui/select-dropdown";
 
 const LAYER_TYPES = [
-  { value: "csv", labelKey: "widgets.addLayer.csv" },
-  { value: "geojson", labelKey: "widgets.addLayer.geojson" },
-  { value: "kml", labelKey: "widgets.addLayer.kml" },
-  { value: "map-service", labelKey: "widgets.addLayer.mapService" },
+  { value: "csv", label: "widgets.addLayer.csv" },
+  { value: "geojson", label: "widgets.addLayer.geojson" },
+  { value: "kml", label: "widgets.addLayer.kml" },
+  { value: "map-service", label: "widgets.addLayer.mapService" },
 ];
 
 export default function AddLayer() {
@@ -168,59 +171,45 @@ export default function AddLayer() {
   return (
     <div className="flex flex-col space-y-4 p-4">
       <div className="flex flex-col space-y-2 w-full">
-        <label htmlFor="layerType" className="font-semibold text-foreground">
+        <label className="font-semibold text-foreground">
           {t("widgets.addLayer.selectType")}
         </label>
-        <div className="select">
-          <select
-            id="layerType"
-            value={layerType}
-            onChange={(e) => setLayerType(e.target.value)}
-          >
-            <option value="" hidden>
-              {t("widgets.addLayer.selectType")}
-            </option>
-            {LAYER_TYPES.map((type) => (
-              <option key={type.value} value={type.value}>
-                {t(type.labelKey)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <label htmlFor="layerTitle" className="font-semibold text-foreground">
+        <SelectDropdown
+          options={LAYER_TYPES.map(type => ({ 
+            value: type.value, 
+            label: t(type.label) 
+          }))}
+          value={layerType}
+          onChange={setLayerType}
+          placeholder={t("widgets.addLayer.selectType")}
+        />
+        
+        <label className="font-semibold text-foreground">
           {t("widgets.addLayer.enterTitle")}
           <span className="text-xs text-muted ml-2 mr-2">
             ({t("widgets.addLayer.optional")})
           </span>
         </label>
-        <label htmlFor="layerTitle" className="textInput">
-          <input
-            id="layerTitle"
-            type="text"
-            className="input-text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="&nbsp;"
-          />
-          <span className="label">{t("widgets.addLayer.titlePlaceholder")}</span>
-        </label>
-        <label htmlFor="layerUrl" className="font-semibold text-foreground">
+        <TextInput
+          id="layerTitle"
+          label={t("widgets.addLayer.titlePlaceholder")}
+          value={title}
+          onChange={setTitle}
+        />
+        
+        <label className="font-semibold text-foreground">
           {t("widgets.addLayer.enterUrl")}
         </label>
-        <label htmlFor="layerUrl" className="textInput">
-          <input
-            id="layerUrl"
-            type="text"
-            className="input-text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="&nbsp;"
-          />
-          <span className="label">{t("widgets.addLayer.urlPlaceholder")}</span>
-        </label>
-        <button className="btn btn-primary w-full" onClick={handleAddLayer}>
+        <TextInput
+          id="layerUrl"
+          label={t("widgets.addLayer.urlPlaceholder")}
+          value={url}
+          onChange={setUrl}
+        />
+        
+        <Button variant="primary" onClick={handleAddLayer} className="w-full">
           {t("widgets.addLayer.add")}
-        </button>
+        </Button>
       </div>
     </div>
   );

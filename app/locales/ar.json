@@ -58,22 +58,6 @@
     "UploadLayer": "رفع طبقة",
     "ExportLayer": "تصدير طبقة"
   },
-  "sidebar": {
-    "titles": {
-      "BasemapGalleryComponent": "خرائط الأساس",
-      "BookmarkComponent": "الإشارات المرجعية",
-      "AttributeQueryComponent": "استعلام وصفي",
-      "LayerListComponent": "قائمة الطبقات",
-      "LegendComponent": "مفتاح الخريطة",
-      "SpatialQueryComponent": "استعلام مكاني",
-      "EditorComponent": "المحرر",
-      "PrintComponent": "طباعة",
-      "CoordinateConversionComponent": "تحويل الإحداثيات",
-      "MeasurementComponent": "القياس",
-      "SketchComponent": "الرسم",
-      "UnderDevelopment": "قيد التطوير"
-    }
-  },
   "bottomPane": {
     "titles": {
       "FeatureTableComponent": "جدول البيانات الوصفية"

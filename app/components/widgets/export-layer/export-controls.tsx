@@ -1,3 +1,7 @@
+import Button from '../../ui/button';
+import TextInput from '../../ui/text-input';
+import SelectDropdown from '../../ui/select-dropdown';
+
 interface ExportControlsProps {
   exportFormat: string;
   setExportFormat: (format: string) => void;
@@ -27,56 +31,47 @@ export function ExportControls({
           ({t("widgets.exportLayer.optional")})
         </span>
       </label>
-      <label htmlFor="layerTitle" className="textInput">
-        <input
-          id="layerTitle"
-          type="text"
-          className="input-text"
-          value={outputName}
-          onChange={(e) => setOutputName(e.target.value)}
-          placeholder=" "
-        />
-        <span className="label">{t("widgets.exportLayer.titlePlaceholder")}</span>
-      </label>
+      <TextInput
+        id="layerTitle"
+        value={outputName}
+        onChange={(value) => setOutputName(value)}
+        placeholder={t("widgets.exportLayer.titlePlaceholder")}
+      />
 
       <div className="flex flex-col w-full">
         <label htmlFor="formatSelect" className="font-semibold text-foreground">
           {t("widgets.exportLayer.selectFormat")}
         </label>
-        <div className="select">
-          <select
-            id="formatSelect"
-            value={exportFormat}
-            onChange={(e) => setExportFormat(e.target.value)}
-            className="input-select"
-          >
-            <option value="csv">{t("widgets.exportLayer.csv")}</option>
-            <option value="shapefile">{t("widgets.exportLayer.shapefile")}</option>
-            <option value="kml">{t("widgets.exportLayer.kml")}</option>
-            <option value="geojson">{t("widgets.exportLayer.geojson")}</option>
-          </select>
-        </div>
+        <SelectDropdown
+          value={exportFormat}
+          onChange={setExportFormat}
+          options={[
+            { value: "csv", label: t("widgets.exportLayer.csv") },
+            { value: "shapefile", label: t("widgets.exportLayer.shapefile") },
+            { value: "kml", label: t("widgets.exportLayer.kml") },
+            { value: "geojson", label: t("widgets.exportLayer.geojson") }
+          ]}
+        />
       </div>
 
       <div className="flex space-x-2">
-        <button
-          className={`btn ${isExporting ? "btn-gray" : "btn-primary"} w-full`}
+        <Button
+          variant={isExporting ? "secondary" : "primary"}
           onClick={onExport}
           disabled={isExporting}
         >
           {isExporting
             ? t("widgets.exportLayer.exporting")
             : t("widgets.exportLayer.export")}
-        </button>
+        </Button>
         {/* Uncomment if stop functionality is needed
         {isExporting && (
-          <button
-            className="btn btn-danger w-full"
+          <Button
+            variant="danger"
             onClick={onStop}
-            type="button"
           >
             {t("widgets.exportLayer.stop") || "Stop"}
-          </button>
+          </Button>
         )} */}
       </div>
     </>

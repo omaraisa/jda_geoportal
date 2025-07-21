@@ -2,6 +2,10 @@ import React from "react";
 import { FormField } from "./form-field";
 import { PrintFormData } from "./types";
 import { FORMATS, JDALAYOUTS, CLASSIFICATION_KEYS, RESOLUTION_OPTIONS } from "./constants";
+import Button from '../../ui/button';
+import TextInput from '../../ui/text-input';
+import SelectDropdown from '../../ui/select-dropdown';
+import CheckboxField from '../../ui/checkbox-field';
 
 interface PrintFormProps {
   formData: PrintFormData;
@@ -27,108 +31,102 @@ export const PrintForm: React.FC<PrintFormProps> = ({
   return (
     <form onSubmit={onSubmit}>
       <FormField label={t("widgets.print.title")}>
-        <input
-          type="text"
-          name="title"
+        <TextInput
+          id="print-title"
           value={formData.title}
-          onChange={onInputChange}
-          className="w-full p-2 border rounded"
+          onChange={(value) => {
+            const event = { target: { name: 'title', value } } as React.ChangeEvent<HTMLInputElement>;
+            onInputChange(event);
+          }}
         />
       </FormField>
 
       <FormField label={t("widgets.print.Format")}>
-        <select
-          name="format"
+        <SelectDropdown
           value={formData.format}
-          onChange={onInputChange}
-          className="w-full p-2 border rounded"
-        >
-          {FORMATS.map((fmt) => (
-            <option key={fmt} value={fmt}>{fmt.toUpperCase()}</option>
-          ))}
-        </select>
+          onChange={(value) => {
+            const event = { target: { name: 'format', value } } as React.ChangeEvent<HTMLSelectElement>;
+            onInputChange(event);
+          }}
+          options={FORMATS.map((fmt) => ({ 
+            value: fmt, 
+            label: fmt.toUpperCase() 
+          }))}
+        />
       </FormField>
 
       <FormField label={t("widgets.print.Layout")}>
-        <select
-          name="layout"
+        <SelectDropdown
           value={formData.layout}
-          onChange={onInputChange}
-          className="w-full p-2 border rounded"
-        >
-          {JDALAYOUTS.map((lay) => (
-            <option key={lay} value={lay}>{lay}</option>
-          ))}
-        </select>
+          onChange={(value) => {
+            const event = { target: { name: 'layout', value } } as React.ChangeEvent<HTMLSelectElement>;
+            onInputChange(event);
+          }}
+          options={JDALAYOUTS.map((lay) => ({ 
+            value: lay, 
+            label: lay 
+          }))}
+        />
       </FormField>
 
       <FormField label={t("widgets.print.Classification")}>
-        <select
-          name="classification"
+        <SelectDropdown
           value={formData.classification}
-          onChange={onInputChange}
-          className="w-full p-2 border rounded"
-        >
-          {CLASSIFICATION_KEYS.map((key) => (
-            <option key={key} value={key}>
-              {t(`widgets.print.classificationLevels.${key}`)}
-            </option>
-          ))}
-        </select>
+          onChange={(value) => {
+            const event = { target: { name: 'classification', value } } as React.ChangeEvent<HTMLSelectElement>;
+            onInputChange(event);
+          }}
+          options={CLASSIFICATION_KEYS.map((key) => ({ 
+            value: key, 
+            label: t(`widgets.print.classificationLevels.${key}`)
+          }))}
+        />
       </FormField>
 
       <FormField label={t("widgets.print.Resolution")}>
-        <select
-          name="resolution"
-          value={resolution}
-          className="w-full p-2 border rounded"
-          onChange={onResolutionChange}
-        >
-          {RESOLUTION_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {t(`widgets.print.${option.label}`)}
-            </option>
-          ))}
-        </select>
+        <SelectDropdown
+          value={resolution.toString()}
+          onChange={(value) => {
+            const event = { target: { name: 'resolution', value } } as React.ChangeEvent<HTMLSelectElement>;
+            onResolutionChange(event);
+          }}
+          options={RESOLUTION_OPTIONS.map((option) => ({ 
+            value: option.value.toString(), 
+            label: t(`widgets.print.${option.label}`)
+          }))}
+        />
       </FormField>
 
-      <div className="flex items-center mb-2">
-        <input
-          type="checkbox"
-          className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
-          id="legend_checkbox"
-          checked={formData.includeLegend}
-          onChange={onCheckboxChange}
-          name="includeLegend"
-        />
-        <label className="tick-label" htmlFor="legend_checkbox">
-          <div id="tick_mark"></div>
-        </label>
-        <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeLegend")}</span>
-      </div>
+      <CheckboxField
+        checked={formData.includeLegend}
+        onChange={(checked: boolean) => {
+          const event = { target: { name: 'includeLegend', checked } } as React.ChangeEvent<HTMLInputElement>;
+          onCheckboxChange(event);
+        }}
+        label={t("widgets.print.IncludeLegend")}
+        name="includeLegend"
+        id="legend_checkbox"
+      />
 
-      <div className="flex items-center mb-2">
-        <input
-          type="checkbox"
-          className="checkbox mr-2 rtl:ml-2 rtl:mr-0"
-          id="scale_checkbox"
-          checked={formData.includeScale}
-          onChange={onCheckboxChange}
-          name="includeScale"
-        />
-        <label className="tick-label" htmlFor="scale_checkbox">
-          <div id="tick_mark"></div>
-        </label>
-        <span className="ml-2 rtl:mr-2 rtl:ml-0">{t("widgets.print.IncludeScale")}</span>
-      </div>
+      <CheckboxField
+        checked={formData.includeScale}
+        onChange={(checked: boolean) => {
+          const event = { target: { name: 'includeScale', checked } } as React.ChangeEvent<HTMLInputElement>;
+          onCheckboxChange(event);
+        }}
+        label={t("widgets.print.IncludeScale")}
+        name="includeScale"
+        id="scale_checkbox"
+      />
 
-      <button
+      <Button
         type="submit"
         disabled={isLoading}
-        className="btn btn-primary flex-grow flex justify-stretch w-full"
+        variant="primary"
+        noFlex
       >
         {isLoading ? t("widgets.print.printing") : t("widgets.print.print")}
-      </button>
+      </Button>
     </form>
   );
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import Button from '../../ui/button';
 
 interface IncidentControlsProps {
   incident: { x: number; y: number } | null;
@@ -19,15 +20,16 @@ export default function IncidentControls({
 
   return (
     <div className="space-y-2">
-      <button
-        className={`btn btn-primary w-full ${addingIncident ? "opacity-70" : ""}`}
+      <Button
+        variant="primary"
         onClick={onAddIncident}
         disabled={addingIncident}
+        noFlex
       >
         {incident
           ? t("widgets.closestFacility.changeIncident")
           : t("widgets.closestFacility.addIncident")}
-      </button>
+      </Button>
       
       {showAddIncidentMsg && (
         <div className="mb-2 p-2 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded animate-pulse text-center">

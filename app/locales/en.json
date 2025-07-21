@@ -59,22 +59,6 @@
       "UploadLayer": "Upload Layer",
       "ExportLayer": "Export Layer"
   },
-  "sidebar": {
-    "titles": {
-      "BasemapGalleryComponent": "Basemap Gallery",
-      "BookmarkComponent": "Bookmarks",
-      "AttributeQueryComponent": "Attribute Query",
-      "LayerListComponent": "Layer List",
-      "LegendComponent": "Legend",
-      "SpatialQueryComponent": "Spatial Query",
-      "EditorComponent": "Editor",
-      "PrintComponent": "Print",
-      "CoordinateConversionComponent": "Coordinate Conversion",
-      "MeasurementComponent": "Measurement",
-      "SketchComponent": "Sketch",
-      "UnderDevelopment": "Under Development"
-    }
-  },
   "bottomPane": {
     "titles": {
       "FeatureTableComponent": "Attribute Table"
