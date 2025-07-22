@@ -243,7 +243,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
             document.cookie = `arcgis_token=${tokenData.token}; path=/; secure; samesite=strict`;
             document.cookie = `arcgis_token_expiry=${expiryTime}; path=/; secure; samesite=strict`;
             
-            const { default: useStateStore } = await import('../stateStore');
+            const { default: useStateStore } = await import('../../stateStore');
             useStateStore.getState().setGisToken(tokenData.token);
             
             try {

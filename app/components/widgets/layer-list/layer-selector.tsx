@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
-import { featureBasedLayerTypes } from "@/lib/global-constants";
+import { featureBasedLayerTypes } from "@/lib/utils/global-constants";
 import SelectDropdown from '../../ui/select-dropdown';
 
 interface LayerSelectorProps {

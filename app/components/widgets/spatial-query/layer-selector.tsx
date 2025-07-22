@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { featureBasedLayerTypes } from "@/lib/global-constants";
+import { featureBasedLayerTypes } from "@/lib/utils/global-constants";
 
 interface LayerSelectorProps {
   view: any;

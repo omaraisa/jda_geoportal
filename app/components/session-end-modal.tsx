@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import useStateStore from "../stateStore";
 import { useTranslation } from "react-i18next";
-import { getCurrentConfig } from "@/lib/auth-config";
+import { getCurrentConfig } from "@/lib/utils/auth-config";
 
 const SessionEndModal = () => {
   const { t } = useTranslation();

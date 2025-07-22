@@ -3,7 +3,7 @@ import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Field from "@arcgis/core/layers/support/Field";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
-import { queryPointSymbol, queryLineSymbol, queryPolygonSymbol } from "@/lib/symbols";
+import { queryPointSymbol, queryLineSymbol, queryPolygonSymbol } from "@/lib/utils/symbols";
 
 export function addQueryResult(
   features: __esri.Graphic[],

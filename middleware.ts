@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import { verifyAccessToken, verifyRefreshToken } from '@/lib/token';
+import { verifyAccessToken, verifyRefreshToken } from '@/lib/utils/token';
 
 const protectedPaths = [
     '/',

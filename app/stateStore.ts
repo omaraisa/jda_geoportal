@@ -4,8 +4,8 @@ import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
 import { State, Bookmark, ArcGISUserInfo } from "@/interface";
-import { incrementStatisticsFeature } from "@/lib/statistics-client";
-import { getCookie } from "@/lib/token";
+import { incrementStatisticsFeature } from "@/lib/utils/statistics-client";
+import { getCookie } from "@/lib/utils/token";
 
 const useStateStore = create<State>((set, get) => ({
   language: typeof localStorage !== "undefined" ? localStorage.getItem("appLanguage") || "en" : "en",
@@ -428,7 +428,7 @@ const useStateStore = create<State>((set, get) => ({
     const { userInfo, targetView } = get();
 
     // Get token from authenticateArcGIS module (this will now validate expiry)
-    const { getArcGISToken, clearArcGISToken } = await import('./lib/authenticate-arcgis');
+    const { getArcGISToken, clearArcGISToken } = await import('./lib/utils/authenticate-arcgis');
     let gisToken = await getArcGISToken();
 
     if (!gisToken) {
@@ -719,7 +719,7 @@ const useStateStore = create<State>((set, get) => ({
     // Actually refresh the token when extending the session
     try {
       // Import authenticateArcGIS dynamically to avoid circular dependencies
-      const { authenticateArcGIS } = await import('./lib/authenticate-arcgis');
+      const { authenticateArcGIS } = await import('./lib/utils/authenticate-arcgis');
       const success = await authenticateArcGIS();
       if (success) {
         // Set a new expiry time in cookie

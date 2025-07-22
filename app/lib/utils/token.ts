@@ -16,7 +16,7 @@ export interface RefreshTokenPayload extends TokenPayload {
 
 export async function verifyAccessToken(token: string): Promise<TokenPayload | null> {
     try {
-        const secret = process.env.TOKEN_SECRET;
+        const secret = process.env.NEXT_PUBLIC_TOKEN_SECRET;
         if (!secret) {
             console.error("TOKEN_SECRET not configured in environment");
             return null;
@@ -34,7 +34,7 @@ export async function verifyAccessToken(token: string): Promise<TokenPayload | n
 
 export async function verifyRefreshToken(token: string): Promise<RefreshTokenPayload | null> {
     try {
-        const secret = process.env.TOKEN_SECRET;
+        const secret = process.env.NEXT_PUBLIC_TOKEN_SECRET;
         if (!secret) {
             console.error("TOKEN_SECRET is not defined in environment variables");
             return null;

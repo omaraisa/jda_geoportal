@@ -3,7 +3,7 @@ import Sketch from "@arcgis/core/widgets/Sketch";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
-import { pointSymbol, lineSymbol, polygonSymbol } from "@/lib/symbols";
+import { pointSymbol, lineSymbol, polygonSymbol } from "@/lib/utils/symbols";
 
 export default function SketchComponent() {
   const { t } = useTranslation();

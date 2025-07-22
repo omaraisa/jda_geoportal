@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./main-menu.module.css";
-import menuOptions from "@/lib/menu-options";
+import menuOptions from "@/lib/utils/menu-options";
 import MenuOption from "./menu-option";
 import OptionsMenuHeader from "./options-menu-header";
 import SubOptionsMenu from "./sub-options-menu";
-import { hasPermission } from "@/lib/hasPermission";
+import { hasPermission } from "@/lib/utils/hasPermission";
 import useStateStore from "@/stateStore";
 
 interface OptionsProps {

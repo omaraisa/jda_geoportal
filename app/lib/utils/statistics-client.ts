@@ -12,7 +12,7 @@ interface StatisticsResponse {
 }
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_URL; 
-const API_KEY = process.env.TOKEN_SECRET;
+const API_KEY = process.env.NEXT_PUBLIC_TOKEN_SECRET;
 
 if (!ADMIN_PANEL_URL) {
     // Statistics tracking will be disabled if not set
@@ -32,6 +32,7 @@ export async function sendStatisticsToAdminPanel(data: StatisticsRequest): Promi
             headers['x-api-key'] = API_KEY;
         }
 
+        // const url = `${ADMIN_PANEL_URL.replace(/\/admin$/, '')}/api/statistics/increment`;
         const url = `${ADMIN_PANEL_URL}/api/statistics/increment`;
 
         const response = await fetch(url, {

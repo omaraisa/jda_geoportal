@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import useStateStore from "@/stateStore";
-import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, refreshArcGISTokenIfNeeded } from '@/lib/authenticate-arcgis';
-import { getCookie } from '@/lib/token';
-import { getCurrentConfig } from '@/lib/auth-config';
+import { initializeArcGIS, isArcgisTokenValid, authenticateArcGIS, refreshArcGISTokenIfNeeded } from '@/lib/utils/authenticate-arcgis';
+import { getCookie } from '@/lib/utils/token';
+import { getCurrentConfig } from '@/lib/utils/auth-config';
 
 const useAuthentication = (customInterval?: number) => {
   const config = getCurrentConfig();
