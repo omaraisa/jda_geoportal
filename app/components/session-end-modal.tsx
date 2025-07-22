@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import useStateStore from "../stateStore";
 import { useTranslation } from "react-i18next";
 import { getCurrentConfig } from "@/lib/utils/auth-config";
+import { authenticateArcGIS } from "@/lib/utils/authenticate-arcgis";
 
 const SessionEndModal = () => {
   const { t } = useTranslation();
@@ -56,6 +57,14 @@ const SessionEndModal = () => {
         const data = await response.json();
         const { setSessionModalOpen } = useStateStore.getState();
         setSessionModalOpen(false);
+        
+        // Refresh ArcGIS token as well
+        try {
+          await authenticateArcGIS();
+          console.log('Both access token and ArcGIS token refreshed successfully');
+        } catch (arcgisError) {
+          console.warn('Failed to refresh ArcGIS token:', arcgisError);
+        }
       } else {
         await response.text();
         handleSessionExit();
