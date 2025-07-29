@@ -1,8 +1,6 @@
-FROM node:22-alpinARG NEXT_PUBLIC_PRINT_GP_URL
-ARG NENV NEXT_PUBLIC_PRINT_GP_URL=$NEXT_PUBLIC_PRINT_GP_URL
-ENV NEXT_PUBLIC_UPLOAD_GP_URL=$NEXT_PUBLIC_UPLOAD_GP_URL
-ENV NEXT_PUBLIC_UPLOAD_URL=$NEXT_PUBLIC_UPLOAD_URLUBLIC_UPLOAD_GP_URL
-ARG NEXT_PUBLIC_UPLOAD_URL# Declare build arguments
+FROM node:22-alpine
+
+# Declare build arguments
 ARG NEXT_PUBLIC_ARCGIS_API_KEY
 ARG NEXT_PUBLIC_PORTAL_URL
 ARG NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL
@@ -31,7 +29,6 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install --production
-# RUN npm install
 
 # Copy the rest of the application code
 COPY . .
@@ -65,4 +62,3 @@ EXPOSE 3000
 
 # Start the application
 CMD ["npm", "start"]
-# CMD ["npm", "run", "dev"]

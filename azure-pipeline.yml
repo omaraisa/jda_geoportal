@@ -3,6 +3,8 @@ trigger:
 
 pool:
   name: 'Default'
+  demands:
+    - agent.name -equals docker-jda
 
 variables:
   imageName: 'geoportal'
