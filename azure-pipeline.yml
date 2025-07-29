@@ -4,7 +4,7 @@ trigger:
 pool:
   name: 'Default'
   demands:
-    - agent.name -equals docker-jda
+    - agent.name -in docker-jda,agent 42
 
 variables:
   imageName: 'geoportal'
