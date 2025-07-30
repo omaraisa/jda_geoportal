@@ -47,11 +47,11 @@ jobs:
       displayName: 'Run Container'
 
 - job: agent42Job
-  displayName: 'Build on agent 42'
+  displayName: 'Build on agent42'
   pool:
     name: 'Default'
     demands:
-      - agent.name -equals agent 42
+      - agent.name -equals agent42
   steps:
     - script: |
         mkdir -p ~/.docker
