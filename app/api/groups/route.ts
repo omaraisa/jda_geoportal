@@ -104,14 +104,14 @@ async function fetchPortalGroups(token: string): Promise<string[]> {
 
 
 export async function POST(request: Request) {
-  // Require valid JWT in Authorization header
-  const valid = await verifyRequestJWT(request);
-  if (!valid) {
-    return NextResponse.json(
-      { error: 'Unauthorized: Invalid or missing token' },
-      { status: 401 }
-    );
-  }
+  // JWT requirement temporarily DISABLED for insecure access
+  // const valid = await verifyRequestJWT(request);
+  // if (!valid) {
+  //   return NextResponse.json(
+  //     { error: 'Unauthorized: Invalid or missing token' },
+  //     { status: 401 }
+  //   );
+  // }
   try {
     const token = await getToken();
     if (!token) {
