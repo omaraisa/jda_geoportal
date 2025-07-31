@@ -1,6 +1,32 @@
 trigger:
   - main
 
+
+variables:
+  imageName: 'geoportal'
+  NEXT_PUBLIC_ARCGIS_API_KEY : 'AAPKc691d193fde14ea9bae49f48970f5fbcmPjkAffm__8tJdoM-iasTahd05z_ngTfiIdqY_FcU8Vp1t0my13dG7TlKBWfy5cx'
+  NEXT_PUBLIC_PORTAL_URL : 'https://gis.jda.gov.sa/portal'
+  NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL : 'https://gis.jda.gov.sa/portal/sharing/rest/generateToken'
+  NEXT_PUBLIC_PORTAL_USERNAME : 'gisguest'
+  NEXT_PUBLIC_PORTAL_PASSWORD : 'Gisguest@2030'
+  NEXT_PUBLIC_TOKEN_SECRET : 'mySecureTokenSecret2030!@#$%^&*()_+=-[]{}|;:,.<>?'
+  NEXT_PUBLIC_ADMIN_URL: 'https://sdf.jda.gov.sa/admin'
+  NEXT_PUBLIC_AUTH_URL: 'https://sdf.jda.gov.sa/auth'
+  NEXT_PUBLIC_AUTH_REFRESH_URL: 'https://sdf.jda.gov.sa/auth/api/refresh-token'
+  NEXT_PUBLIC_AUTH_LOGOUT_URL: 'https://sdf.jda.gov.sa/auth/api/logout'
+  NEXT_PUBLIC_APP_URL : "https://sdf.jda.gov.sa"
+  NEXT_PUBLIC_MAPSERVICES_URL: 'https://sdf.jda.gov.sa/admin/api/v1/mapservices'
+  NEXT_PUBLIC_PORTAL_GROUP_NAME: 'gportal_api_services'
+  NEXT_PUBLIC_JDA_EXTENT_URL: 'https://gis.jda.gov.sa/agserver/rest/services/JDA_Extent/MapServer'
+  NEXT_PUBLIC_SDF_BASEMAP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/SDF_Basemap/MapServer'
+  NEXT_PUBLIC_CLOSEST_FACILITY_URL: 'https://gis.jda.gov.sa/agserver/rest/services/JeddahNetwork/NAServer/Closest%20Facility/'
+  NEXT_PUBLIC_ROUTE_SERVICE_URL: 'https://gis.jda.gov.sa/agserver/rest/services/JeddahNetwork/NAServer/Route'
+  NEXT_PUBLIC_EXPORT_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/ExportLayer/GPServer/Export%20Layer'
+  NEXT_PUBLIC_PRINT_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map'
+  NEXT_PUBLIC_UPLOAD_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/Data%20Conversion%20Tool/submitJob'
+  NEXT_PUBLIC_UPLOAD_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/uploads/upload'
+  NEXT_PUBLIC_ADMIN_URL: 'https://sdf.jda.gov.sa'
+
 jobs:
 - job: dockerJdaJob
   displayName: 'Build on docker-jda'
@@ -24,7 +50,7 @@ jobs:
         NEXT_PUBLIC_AUTH_LOGOUT_URL=${NEXT_PUBLIC_AUTH_LOGOUT_URL}
         NEXT_PUBLIC_PORTAL_USERNAME=${NEXT_PUBLIC_PORTAL_USERNAME}
         NEXT_PUBLIC_PORTAL_PASSWORD=${NEXT_PUBLIC_PORTAL_PASSWORD}
-        TOKEN_SECRET=${TOKEN_SECRET}
+        NEXT_PUBLIC_TOKEN_SECRET=${NEXT_PUBLIC_TOKEN_SECRET}
         NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
         NEXT_PUBLIC_MAPSERVICES_URL=${NEXT_PUBLIC_MAPSERVICES_URL}
         NEXT_PUBLIC_PORTAL_GROUP_NAME=${NEXT_PUBLIC_PORTAL_GROUP_NAME}
