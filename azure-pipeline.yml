@@ -25,7 +25,6 @@ variables:
   NEXT_PUBLIC_PRINT_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map'
   NEXT_PUBLIC_UPLOAD_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/Data%20Conversion%20Tool/submitJob'
   NEXT_PUBLIC_UPLOAD_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/uploads/upload'
-  NEXT_PUBLIC_ADMIN_URL: 'https://sdf.jda.gov.sa'
 
 jobs:
 - job: dockerJdaJob
