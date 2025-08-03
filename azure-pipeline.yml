@@ -24,7 +24,7 @@ variables:
   NEXT_PUBLIC_PRINT_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/PrintService/GPServer/Export%20Web%20Map'
   NEXT_PUBLIC_UPLOAD_GP_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/Data%20Conversion%20Tool/submitJob'
   NEXT_PUBLIC_UPLOAD_URL: 'https://gis.jda.gov.sa/agserver/rest/services/DataConversionTool/GPServer/uploads/upload'
-  NEXT_SERVER_ACTIONS_ENCRYPTION_KEY : "myEncryptionKey1234567890!@#$%^&*()_+=-[]{}|;:,.<>?"
+  NEXT_SERVER_ACTIONS_ENCRYPTION_KEY : "58bf48155b0d97c8f52471416ae40286"
 
 jobs:
 - job: dockerJdaJob
@@ -94,7 +94,7 @@ jobs:
         NEXT_PUBLIC_AUTH_LOGOUT_URL=${NEXT_PUBLIC_AUTH_LOGOUT_URL}
         NEXT_PUBLIC_PORTAL_USERNAME=${NEXT_PUBLIC_PORTAL_USERNAME}
         NEXT_PUBLIC_PORTAL_PASSWORD=${NEXT_PUBLIC_PORTAL_PASSWORD}
-        TOKEN_SECRET=${TOKEN_SECRET}
+        TOKEN_SECRET=${NEXT_PUBLIC_TOKEN_SECRET}
         NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
         NEXT_PUBLIC_MAPSERVICES_URL=${NEXT_PUBLIC_MAPSERVICES_URL}
         NEXT_PUBLIC_PORTAL_GROUP_NAME=${NEXT_PUBLIC_PORTAL_GROUP_NAME}
