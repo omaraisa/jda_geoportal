@@ -51,6 +51,15 @@ export const getArcGISToken = async (): Promise<string | null> => {
             if (timeUntilExpiry > bufferMs) {
                 currentToken = cookieToken;
                 tokenExpiry = expiry;
+                // Register token with IdentityManager
+                if (IdentityManager && config.portalUrl) {
+                    IdentityManager.registerToken({
+                        server: config.portalUrl,
+                        token: cookieToken,
+                        expires: expiry,
+                        userId: config.username
+                    });
+                }
                 return currentToken;
             } else {
                 document.cookie = 'arcgis_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
