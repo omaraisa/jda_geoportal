@@ -18,13 +18,13 @@ export const AUTH_CONFIG = {
   // Production configuration (15-minute tokens)
   PRODUCTION: {
     // Token check interval (check every minute for 15-min tokens)
-    CHECK_INTERVAL: 10000, // 10 seconds for testing
+    CHECK_INTERVAL: 60000, // 1 minute
     
     // Session modal buffer (show modal when token expires in 2 minutes)
-    SESSION_MODAL_BUFFER: 840, // 14 minutes for testing (show modal 1 min after login)
+    SESSION_MODAL_BUFFER: 120, // 2 minutes
     
     // Session modal timeout (auto-logout after 2 minutes)
-    SESSION_MODAL_TIMEOUT: 30000, // 30 seconds for testing
+    SESSION_MODAL_TIMEOUT: 120000, // 2 minutes
     
     // Token duration for server-side configuration reference
     TOKEN_DURATION_MINUTES: 15,
