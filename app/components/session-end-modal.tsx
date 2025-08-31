@@ -49,27 +49,34 @@ const SessionEndModal = () => {
     if (isExtending) return;
     setIsExtending(true);
     try {
+      console.log('Starting token extension...');
       const response = await fetch('/api/refresh-token', {
         method: 'POST',
         credentials: 'include',
       });
+      console.log('Refresh token response status:', response.status);
+      console.log('Refresh token response ok:', response.ok);
       if (response.ok) {
         const data = await response.json();
+        console.log('Refresh token data:', data);
         const { setSessionModalOpen } = useStateStore.getState();
         setSessionModalOpen(false);
         
         // Refresh ArcGIS token as well
         try {
+          console.log('Attempting to refresh ArcGIS token...');
           await authenticateArcGIS();
-          console.log('Both access token and ArcGIS token refreshed successfully');
+          console.log('ArcGIS token refreshed successfully');
         } catch (arcgisError) {
           console.warn('Failed to refresh ArcGIS token:', arcgisError);
         }
       } else {
-        await response.text();
+        const errorText = await response.text();
+        console.error('Refresh token failed:', errorText);
         handleSessionExit();
       }
     } catch (error) {
+      console.error('Error during token extension:', error);
       handleSessionExit();
     } finally {
       setIsExtending(false);

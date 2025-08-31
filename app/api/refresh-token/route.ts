@@ -16,6 +16,9 @@ export async function POST(request: NextRequest) {
     // Make request to the auth server's refresh endpoint
     const authRefreshUrl = process.env.NEXT_PUBLIC_AUTH_REFRESH_URL || '';
     
+    console.log('Attempting to refresh token at:', authRefreshUrl);
+    console.log('Refresh token present:', !!refreshToken);
+    
     const response = await fetch(authRefreshUrl, {
       method: 'POST',
       headers: {
@@ -25,7 +28,12 @@ export async function POST(request: NextRequest) {
       credentials: 'include',
     });
 
+    console.log('Auth server response status:', response.status);
+    console.log('Auth server response ok:', response.ok);
+
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Auth server error response:', errorText);
       return NextResponse.json(
         { message: 'Failed to refresh token' },
         { status: 401 }
