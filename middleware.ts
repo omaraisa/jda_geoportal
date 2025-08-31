@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import { verifyAccessToken } from '@/lib/utils/token';
+import { verifyAccessToken, verifyRefreshToken } from '@/lib/utils/token';
 
 const protectedPaths = [
     '/',
@@ -32,46 +32,22 @@ export async function middleware(request: NextRequest) {
                 }
             }
 
+            // If access token is invalid but refresh token exists and is valid,
+            // let the request through - the client will handle token refresh
             if (refreshToken) {
                 try {
-                    // Use internal URL for middleware in production, external for client
-                    const internalUrl = process.env.NODE_ENV === 'production' 
-                        ? `http://localhost:${process.env.PORT || 3000}` 
-                        : APP_BASE_URL;
-                    
-                    const refreshResponse = await fetch(`${internalUrl}/api/refresh-token`, {
-                        method: 'POST',
-                        headers: {
-                            'Cookie': `refresh_token=${refreshToken}`,
-                        },
-                    });
-
-                    if (refreshResponse.ok) {
-                        const requestHeaders = new Headers(request.headers);
-                        const setCookieHeaders = refreshResponse.headers.getSetCookie();
-                        
-                        const response = NextResponse.next({
-                            request: {
-                                headers: requestHeaders,
-                            },
-                        });
-
-                        setCookieHeaders.forEach(cookieHeader => {
-                            response.headers.append('Set-Cookie', cookieHeader);
-                        });
-
-                        return response;
-                    } else {
-                        return NextResponse.redirect(new URL(AUTH_BASE_URL));
+                    const refreshPayload = await verifyRefreshToken(refreshToken);
+                    if (refreshPayload) {
+                        // Refresh token is valid, allow request through
+                        // Client-side authentication hook will handle the actual refresh
+                        return NextResponse.next();
                     }
                 } catch (error) {
-                    console.error('Failed to refresh token in middleware:', error);
-                    console.error('APP_BASE_URL was:', APP_BASE_URL);
-                    console.error('Full URL was:', `${APP_BASE_URL}/api/refresh-token`);
-                    return NextResponse.redirect(new URL(AUTH_BASE_URL));
+                    console.error('Refresh token verification failed:', error);
                 }
             }
 
+            // No valid tokens, redirect to auth
             const callbackUrl = encodeURIComponent(`${APP_BASE_URL}${path}`);
             const loginUrl = new URL(AUTH_BASE_URL);
             loginUrl.searchParams.set('callback', callbackUrl);
