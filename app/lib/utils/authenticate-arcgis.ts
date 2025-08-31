@@ -221,7 +221,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
                 username,
                 password,
                 client: 'referer',
-                referer: process.env.NEXT_PUBLIC_APP_URL || window.location.origin,
+                referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || window.location.origin,
                 f: 'json',
             });
 

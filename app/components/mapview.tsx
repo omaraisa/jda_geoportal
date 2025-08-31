@@ -4,6 +4,7 @@ import React, { useRef, useEffect } from "react";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import useStateStore from "@/stateStore";
 import useCoordinatesDisplay from "@/lib/hooks/use-coordinates-display";
 
@@ -34,11 +35,27 @@ const MainMap = () => {
         const jdaExtentLayer = new MapImageLayer({
           url: process.env.NEXT_PUBLIC_JDA_EXTENT_URL!
         });
+        const DistrictsLayer = new FeatureLayer({
+          url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/JeddahDistrict/FeatureServer",
+          outFields: ["*"],
+          title: "Districts",
+          visible: false,
+        });
+        (DistrictsLayer as any).group = "Administrative Boundaries";
+        // Atkins basemap: add sublayer 4 as a FeatureLayer so features are individually accessible
+        const JeddahSportsLayer = new FeatureLayer({
+          url: "https://gis.jda.gov.sa/agserver/rest/services/Hosted/JeddahSports/FeatureServer",
+          outFields: ["*"],
+          title: "Jeddah Sports",
+          visible: false,
+        });
+        // optional grouping flag used elsewhere in the app
+        (JeddahSportsLayer as any).group = "Sports";
         (jdaExtentLayer as any).group = "HiddenLayers"; 
 
         const map = new Map({
           basemap: "satellite",
-          layers: [jdaExtentLayer],
+          layers: [JeddahSportsLayer, jdaExtentLayer,DistrictsLayer],
         });
 
         viewRef.current = new MapView({

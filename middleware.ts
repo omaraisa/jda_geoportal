@@ -8,7 +8,7 @@ const protectedPaths = [
 ];
 
 const AUTH_BASE_URL = process.env.NEXT_PUBLIC_AUTH_URL || '/';
-const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || '/';
+const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || '/';
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
