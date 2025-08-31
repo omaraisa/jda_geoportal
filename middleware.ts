@@ -34,7 +34,12 @@ export async function middleware(request: NextRequest) {
 
             if (refreshToken) {
                 try {
-                    const refreshResponse = await fetch(`${APP_BASE_URL}/api/refresh-token`, {
+                    // Use internal URL for middleware in production, external for client
+                    const internalUrl = process.env.NODE_ENV === 'production' 
+                        ? `http://localhost:${process.env.PORT || 3000}` 
+                        : APP_BASE_URL;
+                    
+                    const refreshResponse = await fetch(`${internalUrl}/api/refresh-token`, {
                         method: 'POST',
                         headers: {
                             'Cookie': `refresh_token=${refreshToken}`,
@@ -60,7 +65,9 @@ export async function middleware(request: NextRequest) {
                         return NextResponse.redirect(new URL(AUTH_BASE_URL));
                     }
                 } catch (error) {
-                    console.error('Failed to refresh token:', error);
+                    console.error('Failed to refresh token in middleware:', error);
+                    console.error('APP_BASE_URL was:', APP_BASE_URL);
+                    console.error('Full URL was:', `${APP_BASE_URL}/api/refresh-token`);
                     return NextResponse.redirect(new URL(AUTH_BASE_URL));
                 }
             }
