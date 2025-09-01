@@ -108,17 +108,6 @@ export const PrintForm: React.FC<PrintFormProps> = ({
         id="legend_checkbox"
       />
 
-      <CheckboxField
-        checked={formData.includeScale}
-        onChange={(checked: boolean) => {
-          const event = { target: { name: 'includeScale', checked } } as React.ChangeEvent<HTMLInputElement>;
-          onCheckboxChange(event);
-        }}
-        label={t("widgets.print.IncludeScale")}
-        name="includeScale"
-        id="scale_checkbox"
-      />
-
       <Button
         type="submit"
         disabled={isLoading}
