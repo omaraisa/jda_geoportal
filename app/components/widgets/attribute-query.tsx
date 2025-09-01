@@ -168,11 +168,19 @@ export default function AttributeQueryComponent() {
 
   const handleCreateLayer = () => {
     if (state.targetLayer && state.resultLayerSource) {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      const seconds = now.getSeconds().toString().padStart(2, "0");
+      const timeCode = `${hours}${minutes}${seconds}`;
+      
+      const uniqueTitle = `Query Result - ${state.targetLayer.title} ${timeCode}`;
+      
       AttributeQueryService.createLayerFromResults(
         state.targetLayer,
         state.resultLayerSource,
         view,
-        state.targetLayer?.title || "Query Result"
+        uniqueTitle
       );
     }
   };
