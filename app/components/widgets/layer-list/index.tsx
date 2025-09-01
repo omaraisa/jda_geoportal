@@ -15,7 +15,7 @@ export default function LayerListComponent() {
       const groups = Array.from(
         new Set(
           layersArr
-            .map((layer: any) => (layer as any).group || "MyLayers") // Treat ungrouped layers as MyLayers
+            .map((layer: any) => (layer as any).group || "My Layers") // Treat ungrouped layers as MyLayers
             .filter((group: string) => group !== "HiddenLayers")
         )
       );

@@ -28,7 +28,7 @@ export const polygonSymbol = new SimpleFillSymbol({
 });
 
 export const queryPointSymbol = new SimpleMarkerSymbol({
-  color: [255, 0, 0, 1],
+  color: [0, 123, 255, 1], // Blue
   outline: {
     color: [255, 255, 255, 1],
     width: 2,
@@ -38,13 +38,13 @@ export const queryPointSymbol = new SimpleMarkerSymbol({
 });
 
 export const queryLineSymbol = new SimpleLineSymbol({
-  color: [255, 0, 0, 1],
+  color: [34, 139, 34, 1], // Green
   width: 3,
   style: "solid",
 });
 
 export const queryPolygonSymbol = new SimpleFillSymbol({
-  color: [255, 0, 0, 0.5],
+  color: [138, 43, 226, 0.5], // Purple
   outline: {
     color: [255, 255, 255, 1],
     width: 2,

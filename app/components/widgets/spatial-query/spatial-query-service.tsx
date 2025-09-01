@@ -88,6 +88,7 @@ export class SpatialQueryService {
         const seconds = now.getSeconds().toString().padStart(2, "0");
         const timeCode = `${hours}${minutes}${seconds}`;
         graphicsLayer.title = `${targetLayer?.title || "Layer"} - Spatial Query ${timeCode}`;
+        (graphicsLayer as any).group = "My Layers";
       }
       
       // Ensure the graphics layer is added to the map and visible

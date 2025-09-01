@@ -37,7 +37,7 @@ export default function LayerGroup({group}: {group: string}) {
         {view?.map.layers
           .toArray()
           .filter((layer) => {
-            const layerGroup = (layer as any).group || "MyLayers"; // Assign ungrouped layers to MyLayers
+            const layerGroup = (layer as any).group || "My Layers"; // Assign ungrouped layers to MyLayers
             return layerGroup === group;
           })
           .map((layer) => (

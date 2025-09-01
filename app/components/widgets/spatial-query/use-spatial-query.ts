@@ -43,7 +43,8 @@ export const useSpatialQuery = (
         title: t("widgets.query.queryLayerTitle"),
         listMode: "show",
         visible: true,
-      });
+        group: "My Layers",
+      } as any);
       view.map.add(graphicsLayerRef.current);
 
       if (sketchContainerRef.current) {

@@ -72,7 +72,7 @@ static processQueryResult(
 
     const graphicsLayer =
         state.graphicsLayer ||
-        new GraphicsLayer({ title: uniqueTitle });
+        new GraphicsLayer({ title: uniqueTitle, group: "My Layers" } as any);
     view?.map.add(graphicsLayer);
 
     addQueryResult(response.features, graphicsLayer, view, state.targetLayer, widgets);
