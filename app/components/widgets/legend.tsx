@@ -12,16 +12,42 @@ export default function LegendComponent() {
   useEffect(() => {
     if (!view) return;
     
+    const updateLayerInfos = () => {
+      if (legendWidget.current) {
+        legendWidget.current.layerInfos = view.map.layers
+          .toArray()
+          .filter((layer: any) => (layer as any).group !== "HiddenLayers")
+          .map((layer: any) => ({
+            layer: layer,
+            title: layer.title || layer.id
+          }));
+      }
+    };
+
     if (legendWidget.current) {
-      legendWidget.current.view = view; 
+      legendWidget.current.view = view;
+      updateLayerInfos();
     } else {
       legendWidget.current = new Legend({
         view: view,
         container: legendRef.current || undefined,
+        layerInfos: view.map.layers
+          .toArray()
+          .filter((layer: any) => (layer as any).group !== "HiddenLayers")
+          .map((layer: any) => ({
+            layer: layer,
+            title: layer.title || layer.id
+          }))
       });
     }
 
+    // Watch for layer changes
+    const layerWatchHandle = view.map.layers.on("change", updateLayerInfos);
+
     return () => {
+      if (layerWatchHandle) {
+        layerWatchHandle.remove();
+      }
       if (legendWidget.current) {
         // Do not destroy, simply unbind the view if needed
         // legendWidget.current.destroy();

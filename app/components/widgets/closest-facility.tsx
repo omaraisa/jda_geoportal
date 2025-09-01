@@ -44,7 +44,10 @@ const ClosestFacility: React.FC = () => {
     incident,
     INCIDENT_GRAPHICS_LAYER_ID,
     FACILITY_GRAPHICS_LAYER_ID,
-    ROUTE_LAYER_ID
+    ROUTE_LAYER_ID,
+    t("widgets.closestFacility.layerTitles.incident"),
+    t("widgets.closestFacility.layerTitles.facilities"),
+    t("widgets.closestFacility.layerTitles.route")
   );
 
   useEffect(() => {

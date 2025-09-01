@@ -52,7 +52,10 @@ export const useGraphicsLayers = (
   incident: { x: number; y: number } | null,
   incidentLayerId: string,
   facilityLayerId: string,
-  routeLayerId: string
+  routeLayerId: string,
+  incidentTitle: string,
+  facilityTitle: string,
+  routeTitle: string
 ) => {
   const graphicsLayerRef = useRef<GraphicsLayer | null>(null);
   const facilityGraphicsLayerRef = useRef<GraphicsLayer | null>(null);
@@ -62,21 +65,21 @@ export const useGraphicsLayers = (
     if (view && view.map) {
       let layer = view.map.findLayerById(incidentLayerId) as GraphicsLayer;
       if (!layer) {
-        layer = new GraphicsLayer({ id: incidentLayerId });
+        layer = new GraphicsLayer({ id: incidentLayerId, title: incidentTitle });
         view.map.add(layer);
       }
       graphicsLayerRef.current = layer;
 
       let facilityLayer = view.map.findLayerById(facilityLayerId) as GraphicsLayer;
       if (!facilityLayer) {
-        facilityLayer = new GraphicsLayer({ id: facilityLayerId });
+        facilityLayer = new GraphicsLayer({ id: facilityLayerId, title: facilityTitle });
         view.map.add(facilityLayer);
       }
       facilityGraphicsLayerRef.current = facilityLayer;
 
       let routeLayer = view.map.findLayerById(routeLayerId) as GraphicsLayer;
       if (!routeLayer) {
-        routeLayer = new GraphicsLayer({ id: routeLayerId });
+        routeLayer = new GraphicsLayer({ id: routeLayerId, title: routeTitle });
         view.map.add(routeLayer);
       }
       routeGraphicsLayerRef.current = routeLayer;

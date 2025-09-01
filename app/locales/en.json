@@ -215,7 +215,12 @@
         "noRoutes": "No routes found. Please check your incident and facilities.",
         "error": "Analysis failed."
       },
-      "clickMapToAddIncident": "Click on the map to add location."
+      "clickMapToAddIncident": "Click on the map to add location.",
+      "layerTitles": {
+        "incident": "Incident Point",
+        "facilities": "Facilities",
+        "route": "Closest Facility Route"
+      }
     }
   },
   "layerList": {
