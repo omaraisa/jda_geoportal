@@ -7,6 +7,7 @@ export default function EditorComponent() {
   const editorWidget =useRef<Editor | null>(null);
 
   const view = useStateStore((state) => state.targetView);
+  const sidebarOpen = useStateStore((state) => state.layout.sidebarOpen);
 
   useEffect(() => {
     if (!view) return;
@@ -24,12 +25,13 @@ export default function EditorComponent() {
     // Cleanup on unmount or dependency change
     return () => {
       if (editorWidget.current) {
+        editorWidget.current.cancelWorkflow();
         // Widget destruction is disabled to preserve state. Uncomment to enable cleanup:
         // editorWidget.current.destroy();
         // editorWidget.current = null;
       }
     };
-  }, [view]); // Re-run when the view changes
+  }, [view, sidebarOpen]); // Re-run when the view or sidebarOpen changes
 
   return (
     <div
