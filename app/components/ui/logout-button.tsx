@@ -9,7 +9,8 @@ const LogoutButton: React.FC = () => {
     document.cookie = 'is_authenticated=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     document.cookie = "arcgis_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "arcgis_token_expiry=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    redirect(process.env.NEXT_PUBLIC_AUTH_LOGOUT_URL || '/');
+    const logoutUrl = process.env.NEXT_PUBLIC_AUTH_LOGOUT_URL;
+    redirect(`${logoutUrl}?callback=${encodeURIComponent(window.location.origin)}`);
   };
 
   return (
