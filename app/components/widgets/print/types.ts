@@ -3,7 +3,6 @@ export interface PrintFormData {
   format: 'pdf' | 'png8' | 'jpg';
   layout: string;
   includeLegend: boolean;
-  includeScale: boolean;
   scalebarUnit: 'metric' | 'imperial';
   classification: 'Restricted' | 'Confidential' | 'Internal';
 }
