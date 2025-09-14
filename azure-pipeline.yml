@@ -42,9 +42,12 @@ jobs:
         NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
         EOF
         
-        # Use the .env file with docker-compose
-        docker compose -f docker-compose.yml build
-      displayName: 'Build Docker Image with Docker Mirror'
+        # Stop existing containers
+        docker compose -f docker-compose.yml down || true
+        
+        # Force no-cache build to ensure fresh webpack chunks
+        docker compose -f docker-compose.yml build --no-cache
+      displayName: 'Build Docker Image with No Cache'
       env:
         NEXT_PUBLIC_ARCGIS_API_KEY: $(NEXT_PUBLIC_ARCGIS_API_KEY)
         NEXT_PUBLIC_PORTAL_URL: $(NEXT_PUBLIC_PORTAL_URL)
@@ -70,8 +73,17 @@ jobs:
         NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: $(NEXT_SERVER_ACTIONS_ENCRYPTION_KEY)
 
     - script: |
+        # Start the new containers with the fresh images
         docker compose -f docker-compose.yml up -d
-      displayName: 'Run Container'
+        
+        # Verify containers are running
+        docker compose -f docker-compose.yml ps
+      displayName: 'Deploy New Containers'
+
+    - script: |
+        # Clean up unused images to free space
+        docker image prune -f
+      displayName: 'Clean Up Old Images'
 
 - job: agent42Job
   displayName: 'Build on agent42'
@@ -103,16 +115,19 @@ jobs:
         NEXT_PUBLIC_SDF_BASEMAP_URL=${NEXT_PUBLIC_SDF_BASEMAP_URL}
         NEXT_PUBLIC_CLOSEST_FACILITY_URL=${NEXT_PUBLIC_CLOSEST_FACILITY_URL}
         NEXT_PUBLIC_ROUTE_SERVICE_URL=${NEXT_PUBLIC_ROUTE_SERVICE_URL}
-        NEXT_PUBLIC_EXPORT_GP_URL=${NEXT_PUBLIC_EXPORT_GP_URL}
+        NEXT_PUBLIC_EXPORT_GP_URL=${NEXT_PUBLIC_EXTRA_GP_URL}
         NEXT_PUBLIC_PRINT_GP_URL=${NEXT_PUBLIC_PRINT_GP_URL}
         NEXT_PUBLIC_UPLOAD_GP_URL=${NEXT_PUBLIC_UPLOAD_GP_URL}
         NEXT_PUBLIC_UPLOAD_URL=${NEXT_PUBLIC_UPLOAD_URL}
         NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=${NEXT_SERVER_ACTIONS_ENCRYPTION_KEY}
         EOF
         
-        # Use the .env file with docker-compose
-        docker compose -f docker-compose.yml build
-      displayName: 'Build Docker Image with Docker Mirror'
+        # Stop existing containers
+        docker compose -f docker-compose.yml down || true
+        
+        # Force no-cache build to ensure fresh webpack chunks
+        docker compose -f docker-compose.yml build --no-cache
+      displayName: 'Build Docker Image with No Cache'
       env:
         NEXT_PUBLIC_ARCGIS_API_KEY: $(NEXT_PUBLIC_ARCGIS_API_KEY)
         NEXT_PUBLIC_PORTAL_URL: $(NEXT_PUBLIC_PORTAL_URL)
@@ -136,3 +151,16 @@ jobs:
         NEXT_PUBLIC_UPLOAD_GP_URL: $(NEXT_PUBLIC_UPLOAD_GP_URL)
         NEXT_PUBLIC_UPLOAD_URL: $(NEXT_PUBLIC_UPLOAD_URL)
         NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: $(NEXT_SERVER_ACTIONS_ENCRYPTION_KEY)
+
+    - script: |
+        # Start the new containers with the fresh images
+        docker compose -f docker-compose.yml up -d
+        
+        # Verify containers are running
+        docker compose -f docker-compose.yml ps
+      displayName: 'Deploy New Containers'
+
+    - script: |
+        # Clean up unused images to free space
+        docker image prune -f
+      displayName: 'Clean Up Old Images'
