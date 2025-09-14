@@ -16,8 +16,9 @@ jobs:
         mkdir -p ~/.docker
         echo '{"registry-mirrors": ["https://hub-mirror.c.163.com"]}' > ~/.docker/config.json 
         
-        # Create a .env file for docker-compose to use
+        # Create a .env file for docker-compose to use with cache busting
         cat > .env << EOF
+        CACHE_BUST=$(date +%s)
         NEXT_PUBLIC_ARCGIS_API_KEY=${NEXT_PUBLIC_ARCGIS_API_KEY}
         NEXT_PUBLIC_PORTAL_URL=${NEXT_PUBLIC_PORTAL_URL}
         NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL=${NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL}
@@ -96,8 +97,9 @@ jobs:
         mkdir -p ~/.docker
         echo '{"registry-mirrors": ["https://hub-mirror.c.163.com"]}' > ~/.docker/config.json 
         
-        # Create a .env file for docker-compose to use
+        # Create a .env file for docker-compose to use with cache busting
         cat > .env << EOF
+        CACHE_BUST=$(date +%s)
         NEXT_PUBLIC_ARCGIS_API_KEY=${NEXT_PUBLIC_ARCGIS_API_KEY}
         NEXT_PUBLIC_PORTAL_URL=${NEXT_PUBLIC_PORTAL_URL}
         NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL=${NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL}

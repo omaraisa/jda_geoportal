@@ -24,6 +24,9 @@ ARG NEXT_PUBLIC_UPLOAD_URL
 ARG NEXT_PUBLIC_ADMIN_URL
 ARG NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
 
+# Cache busting argument - changes every build
+ARG CACHE_BUST=1
+
 # Set the working directory
 WORKDIR /jda_geoportal
 
@@ -35,6 +38,9 @@ RUN npm install
 
 # Copy the rest of the application code
 COPY . .
+
+# Use cache bust to force rebuild from this point
+RUN echo "Cache bust: $CACHE_BUST"
 
 ENV NEXT_PUBLIC_ARCGIS_API_KEY=${NEXT_PUBLIC_ARCGIS_API_KEY}
 ENV NEXT_PUBLIC_PORTAL_URL=${NEXT_PUBLIC_PORTAL_URL}
