@@ -31,7 +31,7 @@ WORKDIR /jda_geoportal
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --production
+RUN npm install
 
 # Copy the rest of the application code
 COPY . .
@@ -62,6 +62,9 @@ ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 
 # Build the Next.js application
 RUN npm run build
+
+# Remove dev dependencies after build to reduce image size
+RUN npm prune --production
 
 # Expose the port the app runs on
 EXPOSE 3000
