@@ -54,6 +54,9 @@ const UploadLayer = dynamic(() => import("@/components/widgets/upload-layer"), {
 const ExportLayer = dynamic(() => import("@/components/widgets/export-layer"), {
   ssr: false,
 });
+const ChangeDetectionComponent = dynamic(() => import("@/components/widgets/change-detection"), {
+  ssr: false,
+});
 
 
 const components = {
@@ -74,6 +77,7 @@ const components = {
   AddLayer,
   UploadLayer,
   ExportLayer,
+  ChangeDetectionComponent,
 };
 
 export default function Sidebar() {

@@ -27,6 +27,7 @@ const menuOptions: MenuOptions = {
   analysis: [
     { name: "DirectionsComponent", icon: "tour" }, 
     { name: "ClosestFacility", icon: "utility-network" },
+    { name: "ChangeDetectionComponent", icon: "change-detection" },
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },

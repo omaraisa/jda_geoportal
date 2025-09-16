@@ -47,6 +47,7 @@
     "statisticalAnalysis": "التحليل الإحصائي",
     "terrainAnalysis": "تحليل التضاريس",
     "ClosestFacility": "أقرب معلم",
+    "ChangeDetectionComponent": "كشف التغييرات",
     "DirectionsComponent": "الاتجاهات",
     "visibilityAnalysis": "تحليل الرؤية",
     "heatmapAnalysis": "تحليل خريطة الحرارة",
@@ -218,6 +219,18 @@
         "incident": "الموقع",
         "facilities": "المنشآت",
         "route": "مسار أقرب منشأة"
+      }
+    },
+    "changeDetection": {
+      "title": "كشف التغييرات",
+      "raster1": "الصورة الأولى",
+      "raster2": "الصورة الثانية",
+      "selectRaster": "اختر الصورة",
+      "run": "تشغيل",
+      "status": {
+        "running": "جاري تحليل كشف التغييرات...",
+        "success": "اكتمل تحليل كشف التغييرات بنجاح.",
+        "error": "فشل التحليل."
       }
     }
   },

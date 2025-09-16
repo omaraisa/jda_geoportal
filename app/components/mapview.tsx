@@ -17,7 +17,6 @@ const MainMap = () => {
   const mapInitializedRef = useRef(false);
 
   const sendMessage = useStateStore((state) => state.sendMessage);
-  const center = useStateStore((state) => state.center);
   const updateExtent = useStateStore((state) => state.updateExtent);
   const targetView = useStateStore((state) => state.targetView);
   const sceneView = useStateStore((state) => state.sceneView);

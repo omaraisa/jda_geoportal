@@ -48,6 +48,7 @@
       "statisticalAnalysis": "Statistical Analysis",
       "terrainAnalysis": "Terrain Analysis",
       "ClosestFacility": "Nearest Landmark",
+      "ChangeDetectionComponent": "Change Detection",
       "DirectionsComponent": "Directions",
       "visibilityAnalysis": "Visibility Analysis",
       "heatmapAnalysis": "Heatmap Analysis",
@@ -219,6 +220,18 @@
         "incident": "Incident Point",
         "facilities": "Facilities",
         "route": "Closest Facility Route"
+      }
+    },
+    "changeDetection": {
+      "title": "Change Detection",
+      "raster1": "Input Raster 1",
+      "raster2": "Input Raster 2",
+      "selectRaster": "Select Raster",
+      "run": "Run",
+      "status": {
+        "running": "Running change detection analysis...",
+        "success": "Change detection analysis completed successfully.",
+        "error": "Analysis failed."
       }
     }
   },
