@@ -1,5 +1,9 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
+import Collection from "@arcgis/core/core/Collection";
+import Field from "@arcgis/core/layers/support/Field";
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
 import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
@@ -9,23 +13,66 @@ import { getAnalysisPointSymbol, getAnalysisLineSymbol, getAnalysisPolygonSymbol
 
 export class AnalysisService {
   /**
-   * Creates a new temporary GraphicsLayer for analysis results
+   * Creates a new temporary FeatureLayer for analysis results with popup enabled
    */
-  static createResultLayer(title: string): GraphicsLayer {
-    const graphicsLayer = new GraphicsLayer({
+  static createResultLayer(title: string, geometryType?: string): FeatureLayer {
+    const view = useStateStore.getState().targetView;
+    
+    // Define fields for the FeatureLayer
+    const fields = [
+      new Field({
+        name: "OBJECTID",
+        alias: "Object ID",
+        type: "oid"
+      }),
+      new Field({
+        name: "geometry_type",
+        alias: "Geometry Type",
+        type: "string"
+      }),
+      new Field({
+        name: "area",
+        alias: "Area (sq meters)",
+        type: "double"
+      }),
+      new Field({
+        name: "length",
+        alias: "Length (meters)",
+        type: "double"
+      }),
+      new Field({
+        name: "created_at",
+        alias: "Created At",
+        type: "date"
+      })
+    ];
+
+    // Determine geometry type and create appropriate symbol
+    const defaultGeometryType = geometryType || "polygon";
+    const rendererSymbol = this.getRandomDefaultSymbol(defaultGeometryType);
+
+    const featureLayer = new FeatureLayer({
       title,
       visible: true,
-      listMode: "show"
+      listMode: "show",
+      source: [], // Start with empty source
+      fields,
+      objectIdField: "OBJECTID",
+      geometryType: defaultGeometryType as any,
+      spatialReference: view?.spatialReference || { wkid: 4326 },
+      popupEnabled: true,
+      renderer: new SimpleRenderer({
+        symbol: rendererSymbol
+      })
     });
 
-    const view = useStateStore.getState().targetView;
     if (view?.map) {
-      view.map.add(graphicsLayer);
+      view.map.add(featureLayer);
       // Move to top
-      view.map.reorder(graphicsLayer, view.map.layers.length - 1);
+      view.map.reorder(featureLayer, view.map.layers.length - 1);
     }
 
-    return graphicsLayer;
+    return featureLayer;
   }
 
   /**
@@ -64,24 +111,48 @@ export class AnalysisService {
   }
 
   /**
-   * Adds geometries to a graphics layer with a consistent random symbol for the entire layer
+   * Adds geometries to a feature layer with popup configuration for all fields
    */
-  static addGeometriesToLayer(geometries: __esri.Geometry[], graphicsLayer: GraphicsLayer): void {
-    // Clear any existing graphics
-    graphicsLayer.removeAll();
+  static addGeometriesToLayer(geometries: __esri.Geometry[], featureLayer: FeatureLayer): void {
+    if (geometries.length === 0) return;
 
     // Generate one random symbol for the entire layer
     const randomSymbol = this.getRandomDefaultSymbol(geometries[0]?.type || "polygon");
 
-    const graphics = geometries.map(geometry => {
-      const graphic = new Graphic({
+    // Create features with attributes for popup
+    const features = geometries.map((geometry, index) => {
+      const attributes: any = {
+        OBJECTID: index + 1,
+        geometry_type: geometry.type,
+        area: geometry.type === "polygon" ? geometryEngine.geodesicArea(geometry as __esri.Polygon, "square-meters") : null,
+        length: geometry.type === "polyline" ? geometryEngine.geodesicLength(geometry as __esri.Polyline, "meters") : null,
+        created_at: new Date().toISOString()
+      };
+
+      return new Graphic({
         geometry,
+        attributes,
         symbol: randomSymbol
       });
-      return graphic;
     });
 
-    graphicsLayer.addMany(graphics);
+    // Set the source
+    featureLayer.source = new Collection(features);
+
+    // Configure popup template with all fields
+    const fieldInfos = featureLayer.fields.map(field => ({
+      fieldName: field.name,
+      label: field.alias || field.name,
+      visible: true
+    }));
+
+    featureLayer.popupTemplate = {
+      title: featureLayer.title,
+      fieldInfos,
+      content: [{
+        type: "fields"
+      }]
+    } as any;
   }
 
   /**

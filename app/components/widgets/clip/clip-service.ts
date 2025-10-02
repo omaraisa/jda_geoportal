@@ -1,4 +1,5 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import { AnalysisService } from "../analysis-tools";
 
@@ -76,10 +77,10 @@ export class ClipService {
    * Runs clip/cut analysis between two layers
    */
   static async runClipAnalysis(
-    inputLayer: __esri.FeatureLayer,
-    clipLayer: __esri.FeatureLayer,
+    inputLayer: __esri.FeatureLayer | __esri.GraphicsLayer,
+    clipLayer: __esri.FeatureLayer | __esri.GraphicsLayer,
     operation: ClipOperation
-  ): Promise<GraphicsLayer> {
+  ): Promise<FeatureLayer> {
     // Validate input layers
     const [hasFeatures1, hasFeatures2] = await Promise.all([
       AnalysisService.validateLayerHasFeatures(inputLayer),
@@ -117,7 +118,8 @@ export class ClipService {
       "clip",
       operation
     );
-    const resultLayer = AnalysisService.createResultLayer(layerTitle);
+    const geometryType = resultGeometries[0]?.type || "polygon";
+    const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
 
     // Add results to layer
     AnalysisService.addGeometriesToLayer(resultGeometries, resultLayer);

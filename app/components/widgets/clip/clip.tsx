@@ -22,8 +22,8 @@ const Clip: React.FC = () => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   // Get the selected layers
-  const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer;
-  const clipLayer = view?.map.findLayerById(clipLayerId) as __esri.FeatureLayer;
+  const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer | __esri.GraphicsLayer;
+  const clipLayer = view?.map.findLayerById(clipLayerId) as __esri.FeatureLayer | __esri.GraphicsLayer;
 
   const handleRun = async () => {
     if (!inputLayer || !clipLayer) {

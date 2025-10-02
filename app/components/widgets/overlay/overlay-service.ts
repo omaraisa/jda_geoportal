@@ -1,4 +1,5 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import { AnalysisService } from "../analysis-tools";
 
@@ -90,7 +91,7 @@ export class OverlayService {
     layer1: __esri.FeatureLayer | __esri.GraphicsLayer,
     layer2: __esri.FeatureLayer | __esri.GraphicsLayer,
     operation: OverlayOperation
-  ): Promise<GraphicsLayer> {
+  ): Promise<FeatureLayer> {
     // Validate input layers
     const [hasFeatures1, hasFeatures2] = await Promise.all([
       AnalysisService.validateLayerHasFeatures(layer1),
@@ -128,7 +129,8 @@ export class OverlayService {
       "overlay",
       operation
     );
-    const resultLayer = AnalysisService.createResultLayer(layerTitle);
+    const geometryType = resultGeometries[0]?.type || "polygon";
+    const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
 
     // Add results to layer
     AnalysisService.addGeometriesToLayer(resultGeometries, resultLayer);

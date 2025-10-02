@@ -302,10 +302,18 @@
       "clip": "Clip",
       "cut": "Cut",
       "run": "Run",
+      "descriptions": {
+        "clip": "Extracts only the portions of input geometries that overlap with the clip geometries. Result shows intersecting areas.",
+        "cut": "Splits input geometries along polylines from the cut layer, creating multiple separate geometry pieces."
+      },
       "status": {
         "running": "Running analysis...",
         "success": "Clip analysis completed successfully.",
         "error": "Clip analysis failed."
+      },
+      "errors": {
+        "noLayers": "Please select both input and clip layers",
+        "sameLayer": "Please select different layers"
       }
     },
     "dissolve": {
@@ -315,10 +323,14 @@
       "dissolveField": "Dissolve Field (Optional)",
       "selectField": "Select Field",
       "run": "Run",
+      "description": "Merges overlapping or adjacent geometries into single geometries.",
       "status": {
         "running": "Running analysis...",
         "success": "Dissolve analysis completed successfully.",
         "error": "Dissolve analysis failed."
+      },
+      "errors": {
+        "noLayer": "Please select an input layer"
       }
     },
     "geometryModify": {
@@ -355,10 +367,16 @@
       "touches": "Touches",
       "within": "Within",
       "run": "Run",
+      "results": "Results",
+      "features": "features",
       "status": {
         "running": "Running analysis...",
         "success": "Spatial relationship analysis completed successfully.",
         "error": "Spatial relationship analysis failed."
+      },
+      "errors": {
+        "noLayers": "Please select both input layers",
+        "sameLayer": "Please select different layers"
       }
     },
     "analysis": {

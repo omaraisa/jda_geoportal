@@ -56,8 +56,8 @@ const SpatialRelationships: React.FC = () => {
   const [result, setResult] = useState<RelationshipResult | null>(null);
 
   // Get the selected layers
-  const layer1 = view?.map.findLayerById(layer1Id) as __esri.FeatureLayer;
-  const layer2 = view?.map.findLayerById(layer2Id) as __esri.FeatureLayer;
+  const layer1 = view?.map.findLayerById(layer1Id) as __esri.FeatureLayer | __esri.GraphicsLayer;
+  const layer2 = view?.map.findLayerById(layer2Id) as __esri.FeatureLayer | __esri.GraphicsLayer;
 
   const handleRun = async () => {
     if (!layer1 || !layer2) {

@@ -36,7 +36,7 @@ const GeometryModify: React.FC = () => {
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
   // Get the selected layer
-  const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer;
+  const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer | __esri.GraphicsLayer;
 
   const handleRun = async () => {
     if (!inputLayer) {

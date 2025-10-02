@@ -1,4 +1,5 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import { AnalysisService } from "../analysis-tools";
 
@@ -83,10 +84,10 @@ export class GeometryModifyService {
    * Runs geometry modification analysis on a layer
    */
   static async runGeometryModifyAnalysis(
-    layer: __esri.FeatureLayer,
+    layer: __esri.FeatureLayer | __esri.GraphicsLayer,
     operation: GeometryOperation,
     options: { distance?: number; maxSegmentLength?: number; tolerance?: number }
-  ): Promise<GraphicsLayer> {
+  ): Promise<FeatureLayer> {
     // Validate input layer
     const hasFeatures = await AnalysisService.validateLayerHasFeatures(layer);
     if (!hasFeatures) {
@@ -122,7 +123,8 @@ export class GeometryModifyService {
       "geometry_modify",
       value
     );
-    const resultLayer = AnalysisService.createResultLayer(layerTitle);
+    const geometryType = modifiedGeometries[0]?.type || "polygon";
+    const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
 
     // Add modified geometries to layer
     AnalysisService.addGeometriesToLayer(modifiedGeometries, resultLayer);

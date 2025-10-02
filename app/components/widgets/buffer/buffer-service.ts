@@ -1,4 +1,5 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import { AnalysisService } from "../analysis-tools";
 
@@ -67,7 +68,7 @@ export class BufferService {
     inputLayer: __esri.FeatureLayer,
     distances: number[],
     unit: string
-  ): Promise<GraphicsLayer> {
+  ): Promise<FeatureLayer> {
     const buffers = await this.createBuffers(inputLayer, distances, unit);
 
     // Dissolve all buffers into a single geometry by default
@@ -90,7 +91,7 @@ export class BufferService {
       "buffer",
       `${distanceValue}${unit}`
     );
-    const resultLayer = AnalysisService.createResultLayer(layerTitle);
+    const resultLayer = AnalysisService.createResultLayer(layerTitle, "polygon");
 
     // Add dissolved buffers to layer
     AnalysisService.addGeometriesToLayer(finalGeometries, resultLayer);

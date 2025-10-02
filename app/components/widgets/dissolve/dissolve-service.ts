@@ -1,4 +1,5 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import { AnalysisService } from "../analysis-tools";
 
@@ -32,7 +33,7 @@ export class DissolveService {
   /**
    * Runs dissolve analysis on a layer
    */
-  static async runDissolveAnalysis(layer: __esri.FeatureLayer): Promise<GraphicsLayer> {
+  static async runDissolveAnalysis(layer: __esri.FeatureLayer | __esri.GraphicsLayer): Promise<FeatureLayer> {
     // Validate input layer
     const hasFeatures = await AnalysisService.validateLayerHasFeatures(layer);
     if (!hasFeatures) {
@@ -61,7 +62,8 @@ export class DissolveService {
       "dissolve",
       "dissolved"
     );
-    const resultLayer = AnalysisService.createResultLayer(layerTitle);
+    const geometryType = dissolvedGeometries[0]?.type || "polygon";
+    const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
 
     // Add dissolved geometries to layer
     AnalysisService.addGeometriesToLayer(dissolvedGeometries, resultLayer);

@@ -1,4 +1,5 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import { AnalysisService } from "../analysis-tools";
 
@@ -78,10 +79,10 @@ export class SpatialRelationshipsService {
    * Runs spatial relationship analysis between two layers
    */
   static async runSpatialRelationshipsAnalysis(
-    layer1: __esri.FeatureLayer,
-    layer2: __esri.FeatureLayer,
+    layer1: __esri.FeatureLayer | __esri.GraphicsLayer,
+    layer2: __esri.FeatureLayer | __esri.GraphicsLayer,
     relationship: SpatialRelationship
-  ): Promise<{ result: RelationshipResult; resultLayer: GraphicsLayer }> {
+  ): Promise<{ result: RelationshipResult; resultLayer: FeatureLayer }> {
     // Validate input layers
     const [hasFeatures1, hasFeatures2] = await Promise.all([
       AnalysisService.validateLayerHasFeatures(layer1),
@@ -115,7 +116,8 @@ export class SpatialRelationshipsService {
       "spatial_relationships",
       relationship
     );
-    const resultLayer = AnalysisService.createResultLayer(layerTitle);
+    const geometryType = result.matchingGeometries[0]?.type || "polygon";
+    const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
 
     // Add matching geometries to layer
     if (result.matchingGeometries.length > 0) {
