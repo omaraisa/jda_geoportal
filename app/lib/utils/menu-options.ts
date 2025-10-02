@@ -28,6 +28,12 @@ const menuOptions: MenuOptions = {
     { name: "DirectionsComponent", icon: "tour" }, 
     { name: "ClosestFacility", icon: "utility-network" },
     { name: "ChangeDetectionComponent", icon: "change-detection" },
+    { name: "BufferComponent", icon: "buffer-polygon" },
+    { name: "OverlayComponent", icon: "analysis-overlay" },
+    { name: "ClipComponent", icon: "discard" },
+    { name: "DissolveComponent", icon: "dissolve-features" },
+    { name: "GeometryModifyComponent", icon: "vertex-edit" },
+    { name: "SpatialRelationshipsComponent", icon: "geographic-link-chart-layout" },
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },

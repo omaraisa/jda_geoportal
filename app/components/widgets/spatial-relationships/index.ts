@@ -1,0 +1,2 @@
+export { default as SpatialRelationships } from './spatial-relationships';
+export { SpatialRelationshipsService, type SpatialRelationship, type RelationshipResult } from './spatial-relationships-service';

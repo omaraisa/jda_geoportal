@@ -49,6 +49,12 @@
     "ClosestFacility": "أقرب معلم",
     "ChangeDetectionComponent": "كشف التغييرات",
     "DirectionsComponent": "الاتجاهات",
+    "BufferComponent": "تحليل العازل",
+    "OverlayComponent": "تحليل التراكب",
+    "ClipComponent": "تحليل القص",
+    "DissolveComponent": "تحليل الذوبان",
+    "GeometryModifyComponent": "تعديل الهندسة",
+    "SpatialRelationshipsComponent": "العلاقات المكانية",
     "visibilityAnalysis": "تحليل الرؤية",
     "heatmapAnalysis": "تحليل خريطة الحرارة",
     "clusterAnalysis": "تحليل التجمعات",
@@ -232,6 +238,131 @@
         "success": "اكتمل تحليل كشف التغييرات بنجاح.",
         "error": "فشل التحليل."
       }
+    },
+    "buffer": {
+      "title": "تحليل العازل",
+      "inputLayer": "طبقة الإدخال",
+      "selectLayer": "اختر الطبقة",
+      "distances": "مسافات العازل",
+      "unit": "وحدة المسافة",
+      "bufferDistance": "مسافة العازل",
+      "distanceUnit": "وحدة المسافة",
+      "bufferType": "نوع العازل",
+      "geodesic": "جيوديسي",
+      "planar": "مستوي",
+      "addDistance": "إضافة مسافة",
+      "run": "تشغيل",
+      "status": {
+        "running": "جاري التحليل...",
+        "success": "اكتمل تحليل العازل بنجاح.",
+        "error": "فشل تحليل العازل."
+      },
+      "errors": {
+        "noLayer": "يرجى اختيار طبقة إدخال",
+        "invalidDistance": "يجب أن تكون جميع المسافات أكبر من 0"
+      }
+    },
+    "overlay": {
+      "title": "تحليل التراكب",
+      "inputLayer1": "طبقة الإدخال 1",
+      "inputLayer2": "طبقة الإدخال 2",
+      "selectLayer1": "اختر الطبقة الأولى",
+      "selectLayer2": "اختر الطبقة الثانية",
+      "overlayType": "نوع التراكب",
+      "union": "اتحاد",
+      "intersect": "تقاطع",
+      "difference": "فرق",
+      "run": "تشغيل",
+      "layer1": "طبقة الإدخال 1",
+      "layer2": "طبقة الإدخال 2",
+      "operation": "عملية التراكب",
+      "descriptions": {
+        "union": "يجمع جميع الأشكال الهندسية من كلا الطبقتين في شكل هندسي واحد.",
+        "intersect": "ينشئ أشكال هندسية حيث تتداخل معالم كلا الطبقتين.",
+        "difference": "يزيل المناطق المتداخلة للطبقة 2 من الطبقة 1."
+      },
+      "status": {
+        "running": "جاري التحليل...",
+        "success": "اكتمل تحليل التراكب بنجاح.",
+        "error": "فشل تحليل التراكب."
+      },
+      "errors": {
+        "noLayers": "يرجى اختيار كلا طبقات الإدخال",
+        "sameLayer": "يرجى اختيار طبقات مختلفة"
+      }
+    },
+    "clip": {
+      "title": "تحليل القص",
+      "inputLayer": "طبقة الإدخال",
+      "clipLayer": "طبقة القص",
+      "selectInputLayer": "اختر طبقة الإدخال",
+      "selectClipLayer": "اختر طبقة القص",
+      "operation": "العملية",
+      "clip": "قص",
+      "cut": "قطع",
+      "run": "تشغيل",
+      "status": {
+        "running": "جاري التحليل...",
+        "success": "اكتمل تحليل القص بنجاح.",
+        "error": "فشل تحليل القص."
+      }
+    },
+    "dissolve": {
+      "title": "تحليل الذوبان",
+      "inputLayer": "طبقة الإدخال",
+      "selectLayer": "اختر الطبقة",
+      "dissolveField": "حقل الذوبان (اختياري)",
+      "selectField": "اختر الحقل",
+      "run": "تشغيل",
+      "status": {
+        "running": "جاري التحليل...",
+        "success": "اكتمل تحليل الذوبان بنجاح.",
+        "error": "فشل تحليل الذوبان."
+      }
+    },
+    "geometryModify": {
+      "title": "تعديل الهندسة",
+      "inputLayer": "طبقة الإدخال",
+      "selectLayer": "اختر الطبقة",
+      "operation": "العملية",
+      "offset": "إزاحة",
+      "densify": "تكثيف",
+      "simplify": "تبسيط",
+      "offsetDistance": "مسافة الإزاحة",
+      "maxSegmentLength": "أقصى طول للقطعة",
+      "tolerance": "التسامح",
+      "run": "تشغيل",
+      "status": {
+        "running": "جاري التحليل...",
+        "success": "اكتمل تعديل الهندسة بنجاح.",
+        "error": "فشل تعديل الهندسة."
+      }
+    },
+    "spatialRelationships": {
+      "title": "العلاقات المكانية",
+      "inputLayer1": "طبقة الإدخال 1",
+      "inputLayer2": "طبقة الإدخال 2",
+      "selectLayer1": "اختر الطبقة الأولى",
+      "selectLayer2": "اختر الطبقة الثانية",
+      "relationship": "العلاقة",
+      "contains": "يحتوي",
+      "crosses": "يعبر",
+      "disjoint": "منفصل",
+      "equals": "يساوي",
+      "intersects": "يتقاطع",
+      "overlaps": "يتداخل",
+      "touches": "يلامس",
+      "within": "داخل",
+      "run": "تشغيل",
+      "status": {
+        "running": "جاري التحليل...",
+        "success": "اكتمل تحليل العلاقات المكانية بنجاح.",
+        "error": "فشل تحليل العلاقات المكانية."
+      }
+    },
+    "analysis": {
+      "run": "تشغيل",
+      "running": "جاري..."
     }
   },
   "layerList": {

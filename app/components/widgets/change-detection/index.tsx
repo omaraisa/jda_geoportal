@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
 import RasterControls from "./raster-controls";
@@ -13,11 +13,20 @@ const ChangeDetection: React.FC = () => {
   const { t } = useTranslation();
   const updateStats = useStateStore((state) => state.updateStats);
   const gisToken = useStateStore((state) => state.gisToken);
+  const view = useStateStore((state) => state.targetView);
 
   const [raster1, setRaster1] = useState<string>("");
   const [raster2, setRaster2] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
+  const [imageryLayers, setImageryLayers] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (view?.map) {
+      const layers = view.map.layers.toArray().filter((l: any) => l.type === "imagery");
+      setImageryLayers(layers);
+    }
+  }, [view]);
 
   const handleRun = async () => {
     setStatusType("info");
@@ -72,6 +81,7 @@ const ChangeDetection: React.FC = () => {
         raster2={raster2}
         onRaster1Change={setRaster1}
         onRaster2Change={setRaster2}
+        imageryLayers={imageryLayers}
       />
 
       <AnalysisControls

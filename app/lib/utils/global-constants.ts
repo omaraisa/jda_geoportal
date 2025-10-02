@@ -1,4 +1,4 @@
-export const featureBasedLayerTypes = ["csv", "feature", "map-image","geojson"];
+export const featureBasedLayerTypes = ["csv", "feature", "map-image","geojson", "graphics"];
 
 export const imageBasedLayerTypes = [
     "tile",

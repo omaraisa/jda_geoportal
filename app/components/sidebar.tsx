@@ -57,6 +57,24 @@ const ExportLayer = dynamic(() => import("@/components/widgets/export-layer"), {
 const ChangeDetectionComponent = dynamic(() => import("@/components/widgets/change-detection"), {
   ssr: false,
 });
+const BufferComponent = dynamic(() => import("@/components/widgets/buffer").then(mod => ({ default: mod.Buffer })), {
+  ssr: false,
+});
+const OverlayComponent = dynamic(() => import("@/components/widgets/overlay").then(mod => ({ default: mod.Overlay })), {
+  ssr: false,
+});
+const DissolveComponent = dynamic(() => import("@/components/widgets/dissolve").then(mod => ({ default: mod.Dissolve })), {
+  ssr: false,
+});
+const SpatialRelationshipsComponent = dynamic(() => import("@/components/widgets/spatial-relationships").then(mod => ({ default: mod.SpatialRelationships })), {
+  ssr: false,
+});
+const ClipComponent = dynamic(() => import("@/components/widgets/clip").then(mod => ({ default: mod.Clip })), {
+  ssr: false,
+});
+const GeometryModifyComponent = dynamic(() => import("@/components/widgets/geometry-modify").then(mod => ({ default: mod.GeometryModify })), {
+  ssr: false,
+});
 
 
 const components = {
@@ -78,6 +96,12 @@ const components = {
   UploadLayer,
   ExportLayer,
   ChangeDetectionComponent,
+  BufferComponent,
+  OverlayComponent,
+  DissolveComponent,
+  SpatialRelationshipsComponent,
+  ClipComponent,
+  GeometryModifyComponent,
 };
 
 export default function Sidebar() {

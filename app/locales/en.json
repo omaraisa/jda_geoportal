@@ -50,6 +50,12 @@
       "ClosestFacility": "Nearest Landmark",
       "ChangeDetectionComponent": "Change Detection",
       "DirectionsComponent": "Directions",
+      "BufferComponent": "Buffer Analysis",
+      "OverlayComponent": "Overlay Analysis",
+      "ClipComponent": "Clip Analysis",
+      "DissolveComponent": "Dissolve Analysis",
+      "GeometryModifyComponent": "Geometry Modify",
+      "SpatialRelationshipsComponent": "Spatial Relationships",
       "visibilityAnalysis": "Visibility Analysis",
       "heatmapAnalysis": "Heatmap Analysis",
       "clusterAnalysis": "Cluster Analysis",
@@ -233,6 +239,131 @@
         "success": "Change detection analysis completed successfully.",
         "error": "Analysis failed."
       }
+    },
+    "buffer": {
+      "title": "Buffer Analysis",
+      "inputLayer": "Input Layer",
+      "selectLayer": "Select Layer",
+      "distances": "Buffer Distances",
+      "unit": "Distance Unit",
+      "bufferDistance": "Buffer Distance",
+      "distanceUnit": "Distance Unit",
+      "bufferType": "Buffer Type",
+      "geodesic": "Geodesic",
+      "planar": "Planar",
+      "addDistance": "Add Distance",
+      "run": "Run",
+      "status": {
+        "running": "Running analysis...",
+        "success": "Buffer analysis completed successfully.",
+        "error": "Buffer analysis failed."
+      },
+      "errors": {
+        "noLayer": "Please select an input layer",
+        "invalidDistance": "All distances must be greater than 0"
+      }
+    },
+    "overlay": {
+      "title": "Overlay Analysis",
+      "inputLayer1": "Input Layer 1",
+      "inputLayer2": "Input Layer 2",
+      "selectLayer1": "Select First Layer",
+      "selectLayer2": "Select Second Layer",
+      "overlayType": "Overlay Type",
+      "union": "Union",
+      "intersect": "Intersect",
+      "difference": "Difference",
+      "run": "Run",
+      "layer1": "Input Layer 1",
+      "layer2": "Input Layer 2",
+      "operation": "Overlay Operation",
+      "descriptions": {
+        "union": "Combines all geometries from both layers into a single geometry.",
+        "intersect": "Creates geometries where features from both layers overlap.",
+        "difference": "Removes overlapping areas of Layer 2 from Layer 1."
+      },
+      "status": {
+        "running": "Running analysis...",
+        "success": "Overlay analysis completed successfully.",
+        "error": "Overlay analysis failed."
+      },
+      "errors": {
+        "noLayers": "Please select both input layers",
+        "sameLayer": "Please select different layers"
+      }
+    },
+    "clip": {
+      "title": "Clip Analysis",
+      "inputLayer": "Input Layer",
+      "clipLayer": "Clip Layer",
+      "selectInputLayer": "Select Input Layer",
+      "selectClipLayer": "Select Clip Layer",
+      "operation": "Operation",
+      "clip": "Clip",
+      "cut": "Cut",
+      "run": "Run",
+      "status": {
+        "running": "Running analysis...",
+        "success": "Clip analysis completed successfully.",
+        "error": "Clip analysis failed."
+      }
+    },
+    "dissolve": {
+      "title": "Dissolve Analysis",
+      "inputLayer": "Input Layer",
+      "selectLayer": "Select Layer",
+      "dissolveField": "Dissolve Field (Optional)",
+      "selectField": "Select Field",
+      "run": "Run",
+      "status": {
+        "running": "Running analysis...",
+        "success": "Dissolve analysis completed successfully.",
+        "error": "Dissolve analysis failed."
+      }
+    },
+    "geometryModify": {
+      "title": "Geometry Modify",
+      "inputLayer": "Input Layer",
+      "selectLayer": "Select Layer",
+      "operation": "Operation",
+      "offset": "Offset",
+      "densify": "Densify",
+      "simplify": "Simplify",
+      "offsetDistance": "Offset Distance",
+      "maxSegmentLength": "Max Segment Length",
+      "tolerance": "Tolerance",
+      "run": "Run",
+      "status": {
+        "running": "Running analysis...",
+        "success": "Geometry modification completed successfully.",
+        "error": "Geometry modification failed."
+      }
+    },
+    "spatialRelationships": {
+      "title": "Spatial Relationships",
+      "inputLayer1": "Input Layer 1",
+      "inputLayer2": "Input Layer 2",
+      "selectLayer1": "Select First Layer",
+      "selectLayer2": "Select Second Layer",
+      "relationship": "Relationship",
+      "contains": "Contains",
+      "crosses": "Crosses",
+      "disjoint": "Disjoint",
+      "equals": "Equals",
+      "intersects": "Intersects",
+      "overlaps": "Overlaps",
+      "touches": "Touches",
+      "within": "Within",
+      "run": "Run",
+      "status": {
+        "running": "Running analysis...",
+        "success": "Spatial relationship analysis completed successfully.",
+        "error": "Spatial relationship analysis failed."
+      }
+    },
+    "analysis": {
+      "run": "Run",
+      "running": "Running..."
     }
   },
   "layerList": {
