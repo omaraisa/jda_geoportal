@@ -63,7 +63,9 @@
     "spatialQuery": "استعلام مكاني",
     "AddLayer": "إضافة طبقة",
     "UploadLayer": "رفع طبقة",
-    "ExportLayer": "تصدير طبقة"
+    "ExportLayer": "تصدير طبقة",
+    "NetworkAnalysis": "تحليل الشبكة",
+    "SpatialAnalysis": "التحليل المكاني"
   },
   "bottomPane": {
     "titles": {

@@ -64,7 +64,9 @@
       "spatialQuery": "Spatial Query",
       "AddLayer": "Add Layer",
       "UploadLayer": "Upload Layer",
-      "ExportLayer": "Export Layer"
+      "ExportLayer": "Export Layer",
+    "NetworkAnalysis": "Network Analysis",
+    "SpatialAnalysis": "Spatial Analysis"
   },
   "bottomPane": {
     "titles": {

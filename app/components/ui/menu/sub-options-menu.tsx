@@ -13,18 +13,30 @@ const ViewSwitcher = dynamic(
     () => import("@/components/ui/view-switcher"),
     { ssr: false }
 );
+const NetworkAnalysis = dynamic(
+    () => import("@/components/ui/network-analysis"),
+    { ssr: false }
+);
+const SpatialAnalysis = dynamic(
+    () => import("@/components/ui/spatial-analysis"),
+    { ssr: false }
+);
 
 const components = {
     BasemapSwitcher,
-    ViewSwitcher
+    ViewSwitcher,
+    NetworkAnalysis,
+    SpatialAnalysis
 };
 
 interface SubOptionsProps {
     isExpanded: boolean;
     selectedOption: string;
+    setMenuState?: (value: any) => void;
+    menuState?: any;
 }
 
-const SubOptionsMenu: React.FC<SubOptionsProps> = ({ selectedOption, isExpanded }) => {
+const SubOptionsMenu: React.FC<SubOptionsProps> = ({ selectedOption, isExpanded, setMenuState, menuState }) => {
     const currentComponentName: string = selectedOption || "DefaultComponent";
     const CurrentComponent = components[currentComponentName as keyof typeof components];
 
@@ -37,7 +49,7 @@ const SubOptionsMenu: React.FC<SubOptionsProps> = ({ selectedOption, isExpanded 
             <SubOptionsMenuHeader selectedMenu={selectedOption}/>
 
             <Suspense fallback={<Loading />}>
-                <CurrentComponent />
+                <CurrentComponent setMenuState={setMenuState} menuState={menuState} />
             </Suspense>
         </div>
     );

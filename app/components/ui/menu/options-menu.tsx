@@ -54,7 +54,7 @@ const OptionsMenu: React.FC<OptionsProps> = ({ menuState, setMenuState}) => {
         toggleOptionsMenu={() => toggleOptionsMenu()}
         />
       ))}
-      <SubOptionsMenu selectedOption={menuState.selectedSubMenu} isExpanded={menuState.isSubOptionsMenuExpanded} />
+      <SubOptionsMenu selectedOption={menuState.selectedSubMenu} isExpanded={menuState.isSubOptionsMenuExpanded} setMenuState={setMenuState} menuState={menuState} />
     </div>
   );
 };

@@ -94,7 +94,7 @@ const Header: React.FC = () => {
       {/* Content layer */}
       <div
         ref={headerRef}
-        className="relative flex flex-row items-center min-h-16 m-2 transition-opacity duration-600 pointer-events-auto"
+        className="relative flex flex-row items-center min-h-[38px] m-2 transition-opacity duration-600 pointer-events-auto"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         tabIndex={-1}
@@ -111,9 +111,9 @@ const Header: React.FC = () => {
           }}
         >
           {language === "ar" ? (
-            <Image src="/logo-ar.png" alt="Logo AR" width={180} height={40} />
+            <Image src="/logo-ar-horizontal.png" alt="Logo AR" width={200} height={50} />
           ) : (
-            <Image src="/logo-en.png" alt="Logo EN" width={180} height={40} />
+            <Image src="/logo-en-horizontal.png" alt="Logo EN" width={200} height={50} />
           )}
         </div>
 
