@@ -4,10 +4,7 @@ import useStateStore from "@/stateStore";
 import { LayerSelector, AnalysisControls } from "../analysis-tools";
 import { ClipService, ClipOperation } from "./clip-service";
 
-const CLIP_OPERATIONS: Array<{ value: ClipOperation; label: string }> = [
-  { value: "clip", label: "Clip" },
-  { value: "cut", label: "Cut" }
-];
+// Operation is fixed to 'clip' by default
 
 const Clip: React.FC = () => {
   const { t } = useTranslation();
@@ -16,7 +13,7 @@ const Clip: React.FC = () => {
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
   const [clipLayerId, setClipLayerId] = useState<string>("");
-  const [operation, setOperation] = useState<ClipOperation>("clip");
+  const operation: ClipOperation = "clip";
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -76,30 +73,10 @@ const Clip: React.FC = () => {
         view={view}
       />
 
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          {t("widgets.clip.operation") || "Operation"}
-        </label>
-        <select
-          value={operation}
-          onChange={(e) => setOperation(e.target.value as ClipOperation)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        >
-          {CLIP_OPERATIONS.map((op) => (
-            <option key={op.value} value={op.value}>
-              {op.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* Operation selector removed; defaulting to 'clip' */}
 
       <div className="text-sm text-gray-600">
-        {operation === "clip" && (
-          <p>{t("widgets.clip.descriptions.clip") || "Extracts portions of the input layer that overlap with the clip layer."}</p>
-        )}
-        {operation === "cut" && (
-          <p>{t("widgets.clip.descriptions.cut") || "Cuts the input layer geometries using polylines from the cut layer."}</p>
-        )}
+        <p>{t("widgets.clip.descriptions.clip") || "Extracts portions of the input layer that overlap with the clip layer."}</p>
       </div>
 
       <AnalysisControls

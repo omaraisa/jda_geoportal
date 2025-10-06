@@ -258,9 +258,17 @@ export class AnalysisService {
       } else {
         // FeatureLayer
         const featureLayer = layer as __esri.FeatureLayer;
-        const count = await featureLayer.queryFeatureCount({ where: "1=1" });
-        console.log("AnalysisService.validateLayerHasFeatures - FeatureLayer feature count:", count);
-        return count > 0;
+        if (!featureLayer.url) {
+          // Client-side FeatureLayer
+          const count = featureLayer.source?.length || 0;
+          console.log("AnalysisService.validateLayerHasFeatures - Client-side FeatureLayer source count:", count);
+          return count > 0;
+        } else {
+          // Server-side FeatureLayer
+          const count = await featureLayer.queryFeatureCount({ where: "1=1" });
+          console.log("AnalysisService.validateLayerHasFeatures - Server-side FeatureLayer feature count:", count);
+          return count > 0;
+        }
       }
     } catch (error) {
       console.error("AnalysisService.validateLayerHasFeatures - Error validating layer:", error);
