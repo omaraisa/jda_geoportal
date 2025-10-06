@@ -1,6 +1,11 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import Graphic from "@arcgis/core/Graphic";
+import Field from "@arcgis/core/layers/support/Field";
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
+import { getAnalysisPolygonSymbol } from "../../../lib/utils/symbols";
+import useStateStore from "../../../stateStore";
 import { AnalysisService } from "../analysis-tools";
 
 export type OverlayOperation = "union" | "intersect" | "difference";
@@ -92,6 +97,9 @@ export class OverlayService {
     layer2: __esri.FeatureLayer | __esri.GraphicsLayer,
     operation: OverlayOperation
   ): Promise<FeatureLayer> {
+    const view = useStateStore.getState().targetView;
+    if (!view) throw new Error("No view available");
+
     // Validate input layers
     const [hasFeatures1, hasFeatures2] = await Promise.all([
       AnalysisService.validateLayerHasFeatures(layer1),
@@ -122,18 +130,73 @@ export class OverlayService {
       throw new Error(`No ${operation} results found`);
     }
 
-    // Create result layer with new naming convention
-    const layerName = `${layer1.title || "layer1"}_${layer2.title || "layer2"}`;
-    const layerTitle = AnalysisService.generateOutputLayerName(
-      layerName,
-      "overlay",
-      operation
-    );
-    const geometryType = resultGeometries[0]?.type || "polygon";
-    const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
+    // Create individual overlay features
+    const overlayFeatures: Graphic[] = [];
+    let objectIdCounter = 1;
 
-    // Add results to layer
-    AnalysisService.addGeometriesToLayer(resultGeometries, resultLayer);
+    for (let i = 0; i < resultGeometries.length; i++) {
+      const geometry = resultGeometries[i];
+
+      // Create feature with overlay geometry and attributes
+      const overlayFeature = new Graphic({
+        geometry: geometry,
+        attributes: {
+          OBJECTID: objectIdCounter++,
+          operation_type: operation,
+          source_layer1: layer1.title || "layer1",
+          source_layer2: layer2.title || "layer2",
+          result_index: i + 1,
+          total_results: resultGeometries.length,
+          area: geometry.type === "polygon" ? geometryEngine.geodesicArea(geometry as __esri.Polygon, "square-meters") : null,
+          length: geometry.type === "polyline" ? geometryEngine.geodesicLength(geometry as __esri.Polyline, "meters") : null,
+          created_at: Date.now()
+        }
+      });
+
+      overlayFeatures.push(overlayFeature);
+    }
+
+    // Define fields
+    const fields = [
+      new Field({ name: "OBJECTID", type: "oid" }),
+      new Field({ name: "operation_type", type: "string", alias: "Operation Type" }),
+      new Field({ name: "source_layer1", type: "string", alias: "Source Layer 1" }),
+      new Field({ name: "source_layer2", type: "string", alias: "Source Layer 2" }),
+      new Field({ name: "result_index", type: "integer", alias: "Result Index" }),
+      new Field({ name: "total_results", type: "integer", alias: "Total Results" }),
+      new Field({ name: "area", type: "double", alias: "Area (sq meters)" }),
+      new Field({ name: "length", type: "double", alias: "Length (meters)" }),
+      new Field({ name: "created_at", type: "date", alias: "Created At" })
+    ];
+
+    // Create symbol using the shared utility
+    const symbol = getAnalysisPolygonSymbol();
+
+    // Create result layer
+    const layerTitle = `${layer1.title || "layer1"}_${layer2.title || "layer2"}_${operation}_${Date.now()}`;
+    const resultLayer = new FeatureLayer({
+      title: layerTitle,
+      geometryType: "polygon",
+      spatialReference: view.spatialReference,
+      source: overlayFeatures,
+      fields,
+      objectIdField: "OBJECTID",
+      renderer: new SimpleRenderer({ symbol }),
+      popupEnabled: true,
+      popupTemplate: {
+        title: "Overlay Feature",
+        content: [{
+          type: "fields",
+          fieldInfos: fields.map(f => ({
+            fieldName: f.name,
+            label: f.alias || f.name
+          }))
+        }]
+      }
+    } as any);
+
+    // Add to map
+    view.map.layers.add(resultLayer);
 
     return resultLayer;
   }
