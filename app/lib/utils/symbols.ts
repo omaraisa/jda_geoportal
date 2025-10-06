@@ -104,12 +104,15 @@ export function getAnalysisLineSymbol(): SimpleLineSymbol {
  */
 export function getAnalysisPolygonSymbol(): SimpleFillSymbol {
   const color = getRandomSoftColor('polygon');
+  // Use an explicit outline with the same fill color and zero width.
+  // Some renderers fall back to a default black outline if outline is omitted.
+  const outlineColor = [color[0], color[1], color[2], 0];
   return new SimpleFillSymbol({
     color: color,
-    outline: {
-      color: [205, 133, 63, 0.7], // Peru outline
-      width: 2
-    }
+    outline: new SimpleLineSymbol({
+      color: outlineColor,
+      width: 0
+    })
   });
 }
 

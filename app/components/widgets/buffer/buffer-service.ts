@@ -3,6 +3,7 @@ import Graphic from "@arcgis/core/Graphic";
 import Field from "@arcgis/core/layers/support/Field";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
+import { getAnalysisPolygonSymbol } from "../../../lib/utils/symbols";
 import useStateStore from "../../../stateStore";
 
 export class BufferService {
@@ -73,15 +74,8 @@ export class BufferService {
       new Field({ name: "created_at", type: "date", alias: "Created At" })
     ];
 
-    // Create symbol
-    const symbol = {
-      type: "simple-fill",
-      color: [255, 165, 0, 0.3], // Orange with transparency
-      outline: {
-        color: [255, 165, 0, 1],
-        width: 2
-      }
-    };
+  // Create symbol using the shared utility (keeps outline settings from symbols.ts)
+  const symbol = getAnalysisPolygonSymbol();
 
     // Create result layer
     const distanceText = distances.length === 1 ? distances[0] : distances.join('_');
@@ -93,7 +87,7 @@ export class BufferService {
       source: bufferFeatures,
       fields,
       objectIdField: "OBJECTID",
-      renderer: new SimpleRenderer({ symbol }),
+  renderer: new SimpleRenderer({ symbol }),
       popupEnabled: true,
       popupTemplate: {
         title: "Buffer Feature",
