@@ -4,7 +4,8 @@ import Graphic from "@arcgis/core/Graphic";
 import Field from "@arcgis/core/layers/support/Field";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
-import { getAnalysisPolygonSymbol } from "../../../lib/utils/symbols";
+import * as projection from "@arcgis/core/geometry/projection";
+import { getAnalysisPolygonSymbol, getAnalysisPointSymbol, getAnalysisLineSymbol } from "../../../lib/utils/symbols";
 import useStateStore from "../../../stateStore";
 import { AnalysisService } from "../analysis-tools";
 
@@ -17,34 +18,69 @@ export class OverlayService {
   static performOverlay(
     geometries1: __esri.Geometry[],
     geometries2: __esri.Geometry[],
-    operation: OverlayOperation
-  ): __esri.Geometry[] {
+    operation: OverlayOperation,
+    targetSpatialReference: __esri.SpatialReference
+  ): { geometry: __esri.Geometry; sourceIndex1?: number }[] {
     if (geometries1.length === 0 || geometries2.length === 0) {
-      throw new Error("Both input geometry sets must contain geometries");
+      throw { key: 'widgets.overlay.errors.noGeometries', message: 'Both input geometry sets must contain geometries' };
     }
 
-    let result: __esri.Geometry[] = [];
+    // Project geometries to target spatial reference if necessary
+    const projectedGeometries1 = geometries1.map(geom => {
+      if (geom.spatialReference?.wkid !== targetSpatialReference.wkid) {
+        try {
+          return projection.project(geom, targetSpatialReference);
+        } catch (error) {
+          console.warn("Failed to project geometry1:", error);
+          return null;
+        }
+      }
+      return geom;
+    }).filter(geom => geom !== null) as __esri.Geometry[];
+
+    const projectedGeometries2 = geometries2.map(geom => {
+      if (geom.spatialReference?.wkid !== targetSpatialReference.wkid) {
+        try {
+          return projection.project(geom, targetSpatialReference);
+        } catch (error) {
+          console.warn("Failed to project geometry2:", error);
+          return null;
+        }
+      }
+      return geom;
+    }).filter(geom => geom !== null) as __esri.Geometry[];
+
+    if (projectedGeometries1.length === 0 || projectedGeometries2.length === 0) {
+      throw { key: 'widgets.overlay.errors.noValidGeometries', message: 'No valid geometries after projection' };
+    }
+
+    const result: { geometry: __esri.Geometry; sourceIndex1?: number }[] = [];
 
     try {
       switch (operation) {
         case "union":
           // Union all geometries from both sets
-          const allGeometries = [...geometries1, ...geometries2];
+          const allGeometries = [...projectedGeometries1, ...projectedGeometries2];
           const unionResult = geometryEngine.union(allGeometries);
-          result = Array.isArray(unionResult) ? unionResult : [unionResult];
+          const unionGeoms = Array.isArray(unionResult) ? unionResult : [unionResult];
+          for (const geom of unionGeoms) {
+            result.push({ geometry: geom });
+          }
           break;
 
         case "intersect":
           // Intersect geometries pairwise
-          for (const geom1 of geometries1) {
-            for (const geom2 of geometries2) {
+          for (let i = 0; i < projectedGeometries1.length; i++) {
+            for (let j = 0; j < projectedGeometries2.length; j++) {
               try {
-                const intersectResult = geometryEngine.intersect(geom1, geom2);
+                const intersectResult = geometryEngine.intersect(projectedGeometries1[i], projectedGeometries2[j]);
                 if (intersectResult) {
                   if (Array.isArray(intersectResult)) {
-                    result.push(...intersectResult);
+                    for (const ir of intersectResult) {
+                      result.push({ geometry: ir, sourceIndex1: i });
+                    }
                   } else {
-                    result.push(intersectResult);
+                    result.push({ geometry: intersectResult, sourceIndex1: i });
                   }
                 }
               } catch (error) {
@@ -57,9 +93,9 @@ export class OverlayService {
 
         case "difference":
           // Difference: geometries1 minus geometries2
-          for (const geom1 of geometries1) {
-            let diffGeom = geom1;
-            for (const geom2 of geometries2) {
+          for (let i = 0; i < projectedGeometries1.length; i++) {
+            let diffGeom = projectedGeometries1[i];
+            for (const geom2 of projectedGeometries2) {
               try {
                 const diffResult = geometryEngine.difference(diffGeom, geom2);
                 if (Array.isArray(diffResult)) {
@@ -73,7 +109,7 @@ export class OverlayService {
               }
             }
             if (diffGeom) {
-              result.push(diffGeom);
+              result.push({ geometry: diffGeom, sourceIndex1: i });
             }
           }
           break;
@@ -83,10 +119,10 @@ export class OverlayService {
       }
     } catch (error) {
       console.error(`Overlay operation ${operation} failed:`, error);
-      throw new Error(`Failed to perform ${operation} operation`);
+      throw { key: 'widgets.overlay.errors.operationFailed', message: 'Failed to perform overlay operation' };
     }
 
-    return result.filter(geom => geom !== null);
+    return result.filter(item => item.geometry !== null);
   }
 
   /**
@@ -96,7 +132,7 @@ export class OverlayService {
     layer1: __esri.FeatureLayer | __esri.GraphicsLayer,
     layer2: __esri.FeatureLayer | __esri.GraphicsLayer,
     operation: OverlayOperation
-  ): Promise<FeatureLayer> {
+  ): Promise<FeatureLayer | GraphicsLayer> {
     const view = useStateStore.getState().targetView;
     if (!view) throw new Error("No view available");
 
@@ -124,41 +160,55 @@ export class OverlayService {
     }
 
     // Perform overlay operation
-    const resultGeometries = this.performOverlay(geometries1, geometries2, operation);
+    const resultGeometries = this.performOverlay(geometries1, geometries2, operation, view.spatialReference);
 
     if (resultGeometries.length === 0) {
-      throw new Error(`No ${operation} results found`);
+      throw { key: 'widgets.overlay.errors.noResults', message: 'No overlay results found' };
     }
 
     // Create individual overlay features
-    const overlayFeatures: Graphic[] = [];
+    const groups: Record<string, Graphic[]> = { point: [], polyline: [], polygon: [] };
     let objectIdCounter = 1;
 
-    for (let i = 0; i < resultGeometries.length; i++) {
-      const geometry = resultGeometries[i];
+    for (const result of resultGeometries) {
+      const attributes: any = {
+        OBJECTID: objectIdCounter++,
+        operation_type: operation,
+        source_layer1: layer1.title || "layer1",
+        source_layer2: layer2.title || "layer2",
+        result_index: groups.point.length + groups.polyline.length + groups.polygon.length + 1,
+        total_results: resultGeometries.length,
+        area: result.geometry.type === "polygon" ? geometryEngine.geodesicArea(result.geometry as __esri.Polygon, "square-meters") : null,
+        length: result.geometry.type === "polyline" ? geometryEngine.geodesicLength(result.geometry as __esri.Polyline, "meters") : null,
+        created_at: Date.now()
+      };
 
-      // Create feature with overlay geometry and attributes
+      // Include attributes from layer1 if available
+      if (result.sourceIndex1 !== undefined) {
+        Object.assign(attributes, features1[result.sourceIndex1].attributes);
+      }
+
       const overlayFeature = new Graphic({
-        geometry: geometry,
-        attributes: {
-          OBJECTID: objectIdCounter++,
-          operation_type: operation,
-          source_layer1: layer1.title || "layer1",
-          source_layer2: layer2.title || "layer2",
-          result_index: i + 1,
-          total_results: resultGeometries.length,
-          area: geometry.type === "polygon" ? geometryEngine.geodesicArea(geometry as __esri.Polygon, "square-meters") : null,
-          length: geometry.type === "polyline" ? geometryEngine.geodesicLength(geometry as __esri.Polyline, "meters") : null,
-          created_at: Date.now()
-        }
+        geometry: result.geometry,
+        attributes
       });
 
-      overlayFeatures.push(overlayFeature);
+      if (result.geometry.type === "point" || result.geometry.type === "multipoint") {
+        groups.point.push(overlayFeature);
+      } else if (result.geometry.type === "polyline") {
+        groups.polyline.push(overlayFeature);
+      } else if (result.geometry.type === "polygon" || result.geometry.type === "extent") {
+        groups.polygon.push(overlayFeature);
+      } else {
+        // Fallback to polygon group
+        groups.polygon.push(overlayFeature);
+      }
     }
 
-    // Define fields
-    const fields = [
-      new Field({ name: "OBJECTID", type: "oid" }),
+    // Define common fields - include layer1 fields plus new ones
+    const layer1Typed = layer1 as __esri.FeatureLayer;
+    const inputFields = layer1Typed.fields || [];
+    const newFields = [
       new Field({ name: "operation_type", type: "string", alias: "Operation Type" }),
       new Field({ name: "source_layer1", type: "string", alias: "Source Layer 1" }),
       new Field({ name: "source_layer2", type: "string", alias: "Source Layer 2" }),
@@ -168,36 +218,45 @@ export class OverlayService {
       new Field({ name: "length", type: "double", alias: "Length (meters)" }),
       new Field({ name: "created_at", type: "date", alias: "Created At" })
     ];
+    const fields = [...inputFields, ...newFields];
 
-    // Create symbol using the shared utility
-    const symbol = getAnalysisPolygonSymbol();
+    const layerTitleBase = `${layer1.title || "layer1"}_${layer2.title || "layer2"}_${operation}_${Date.now()}`;
 
-    // Create result layer
-    const layerTitle = `${layer1.title || "layer1"}_${layer2.title || "layer2"}_${operation}_${Date.now()}`;
-    const resultLayer = new FeatureLayer({
-      title: layerTitle,
-      geometryType: "polygon",
-      spatialReference: view.spatialReference,
-      source: overlayFeatures,
-      fields,
-      objectIdField: "OBJECTID",
-      renderer: new SimpleRenderer({ symbol }),
-      popupEnabled: true,
-      popupTemplate: {
-        title: "Overlay Feature",
-        content: [{
-          type: "fields",
-          fieldInfos: fields.map(f => ({
-            fieldName: f.name,
-            label: f.alias || f.name
-          }))
-        }]
-      }
-    } as any);
+    // If results are all of one geometry type, return a single FeatureLayer of that type
+    const nonEmptyGroups = Object.entries(groups).filter(([, arr]) => arr.length > 0);
+    if (nonEmptyGroups.length === 1) {
+      const [geomType, features] = nonEmptyGroups[0];
+      const symbol = geomType === "point" ? getAnalysisPointSymbol() : geomType === "polyline" ? getAnalysisLineSymbol() : getAnalysisPolygonSymbol();
 
-    // Add to map
-    view.map.layers.add(resultLayer);
+      const resultLayer = new FeatureLayer({
+        title: layerTitleBase,
+        geometryType: geomType as any,
+        spatialReference: view.spatialReference,
+        source: features,
+        fields,
+        objectIdField: "OBJECTID",
+        renderer: new SimpleRenderer({ symbol }),
+        popupEnabled: true,
+        popupTemplate: {
+          title: "Overlay Feature",
+          content: [{
+            type: "fields",
+            fieldInfos: fields.map(f => ({ fieldName: f.name, label: f.alias || f.name }))
+          }]
+        }
+      } as any);
 
-    return resultLayer;
+      view.map.layers.add(resultLayer);
+      return resultLayer;
+    }
+
+    // Mixed geometry types: create a GraphicsLayer and add all features to it
+    const graphicsLayer = new GraphicsLayer({ title: layerTitleBase });
+    Object.values(groups).forEach(arr => {
+      for (const g of arr) graphicsLayer.add(g);
+    });
+
+    view.map.layers.add(graphicsLayer);
+    return graphicsLayer;
   }
 }

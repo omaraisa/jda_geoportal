@@ -51,6 +51,7 @@ export class BufferService {
         const bufferFeature = new Graphic({
           geometry: buffer,
           attributes: {
+            ...feature.attributes,
             OBJECTID: objectIdCounter++,
             buffer_distance: distance,
             buffer_unit: unit,
@@ -64,15 +65,16 @@ export class BufferService {
       }
     }
 
-    // Define fields
-    const fields = [
-      new Field({ name: "OBJECTID", type: "oid" }),
+    // Define fields - include input layer fields plus new ones
+    const inputFields = inputLayer.fields || [];
+    const newFields = [
       new Field({ name: "buffer_distance", type: "double", alias: "Buffer Distance" }),
       new Field({ name: "buffer_unit", type: "string", alias: "Buffer Unit" }),
       new Field({ name: "source_layer", type: "string", alias: "Source Layer" }),
       new Field({ name: "source_objectid", type: "integer", alias: "Source Object ID" }),
       new Field({ name: "created_at", type: "date", alias: "Created At" })
     ];
+    const fields = [...inputFields, ...newFields];
 
   // Create symbol using the shared utility (keeps outline settings from symbols.ts)
   const symbol = getAnalysisPolygonSymbol();

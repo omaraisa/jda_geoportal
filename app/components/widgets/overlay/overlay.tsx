@@ -50,8 +50,9 @@ const Overlay: React.FC = () => {
       setStatus(t("widgets.overlay.status.success") || `${operation} analysis completed successfully`);
       updateStats("Overlay Analysis");
     } catch (error: any) {
+      const err = error as any;
       setStatusType("error");
-      setStatus(error.message || `${operation} analysis failed`);
+      setStatus(t(err.key) || err.message || `${operation} analysis failed`);
     } finally {
       setIsRunning(false);
     }

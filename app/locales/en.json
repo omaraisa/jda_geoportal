@@ -291,7 +291,11 @@
       },
       "errors": {
         "noLayers": "Please select both input layers",
-        "sameLayer": "Please select different layers"
+        "sameLayer": "Please select different layers",
+        "noGeometries": "Both input geometry sets must contain geometries",
+        "noValidGeometries": "No valid geometries after projection",
+        "noResults": "No overlay results found",
+        "operationFailed": "Failed to perform overlay operation"
       }
     },
     "clip": {
@@ -315,7 +319,13 @@
       },
       "errors": {
         "noLayers": "Please select both input and clip layers",
-        "sameLayer": "Please select different layers"
+        "sameLayer": "Please select different layers",
+        "noGeometries": "Both input and clip geometry sets must contain geometries",
+        "noValidGeometries": "No valid geometries after projection",
+        "invalidClipLayer": "Clip operation requires the clip layer to contain polygon geometries (polygons or extents)",
+        "invalidCutLayer": "Cut operation requires the clip layer to contain polyline geometries to cut by",
+        "noResults": "No clip results found",
+        "operationFailed": "Failed to perform clip operation"
       }
     },
     "dissolve": {

@@ -26,7 +26,7 @@ const menuOptions: MenuOptions = {
   ],
   analysis: [
     { name: "NetworkAnalysis", icon: "utility-network", subMenuComponent: "NetworkAnalysis" },
-    { name: "SpatialAnalysis", icon: "analysis-overlay", subMenuComponent: "SpatialAnalysis" },
+    // { name: "SpatialAnalysis", icon: "analysis-overlay", subMenuComponent: "SpatialAnalysis" },
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },

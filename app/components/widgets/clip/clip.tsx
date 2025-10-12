@@ -46,8 +46,9 @@ const Clip: React.FC = () => {
       setStatus(t("widgets.clip.status.success") || `${operation} analysis completed successfully`);
       updateStats("Clip Analysis");
     } catch (error: any) {
+      const err = error as any;
       setStatusType("error");
-      setStatus(error.message || `${operation} analysis failed`);
+      setStatus(t(err.key) || err.message || `${operation} analysis failed`);
     } finally {
       setIsRunning(false);
     }
