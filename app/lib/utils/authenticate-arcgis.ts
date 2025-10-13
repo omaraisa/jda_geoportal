@@ -20,8 +20,8 @@ const config = {
     apiKey: process.env.NEXT_PUBLIC_ARCGIS_API_KEY ?? 'API_KEY_NOT_SET',
     portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET',
     tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
-    username: process.env.NEXT_PUBLIC_PORTAL_USERNAME ?? '',
-    password: process.env.NEXT_PUBLIC_PORTAL_PASSWORD ?? '',
+    username: process.env.NEXT_PUBLIC_SDF_USERNAME ?? '',
+    password: process.env.NEXT_PUBLIC_SDF_PASSWORD ?? '',
 };
 
 export const getArcGISToken = async (): Promise<string | null> => {

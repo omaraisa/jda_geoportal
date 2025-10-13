@@ -40,6 +40,7 @@ export default function LayerGroup({group}: {group: string}) {
             const layerGroup = (layer as any).group || "My Layers"; // Assign ungrouped layers to MyLayers
             return layerGroup === group;
           })
+          .reverse() // Reverse the order so top layers appear at the top of the list
           .map((layer) => (
             <LayerItem
               key={layer.id}

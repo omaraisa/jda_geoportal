@@ -29,8 +29,8 @@ async function verifyRequestJWT(request: Request): Promise<boolean> {
 
 const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
 const tokenServiceUrl = process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET';
-const username = process.env.NEXT_PUBLIC_PORTAL_USERNAME ?? '';
-const password = process.env.NEXT_PUBLIC_PORTAL_PASSWORD ?? '';
+const username = process.env.NEXT_PUBLIC_SDF_USERNAME ?? '';
+const password = process.env.NEXT_PUBLIC_SDF_PASSWORD ?? '';
 
 async function getToken(): Promise<string | null> {
   try {
@@ -48,7 +48,7 @@ async function getToken(): Promise<string | null> {
       username,
       password,
       client: 'referer',
-      referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || window.location.origin,
+      referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
       f: 'json',
     });
     
