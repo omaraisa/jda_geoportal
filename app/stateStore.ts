@@ -611,7 +611,7 @@ const useStateStore = create<State>((set, get) => ({
                   id: `${item.id}_${sublayer.id}`,
                   title: sublayer.name,
                   outFields: ["*"],
-                  visible: false,
+                  visible: sublayer.defaultVisibility !== false, // Use default visibility from service
                 });
                 if (item._groupName) {
                   (subLayerInstance as any).group = item._groupName;
@@ -625,7 +625,7 @@ const useStateStore = create<State>((set, get) => ({
                 id: item.id,
                 title: item.title,
                 outFields: ["*"],
-                visible: false,
+                visible: true, // Single feature layers are usually visible by default
               });
               if (item._groupName) {
                 (featureLayer as any).group = item._groupName;
@@ -640,7 +640,7 @@ const useStateStore = create<State>((set, get) => ({
               id: item.id,
               title: item.title,
               outFields: ["*"],
-              visible: false,
+              visible: true, // Single feature layers are usually visible by default
             });
             if (item._groupName) {
               (featureLayer as any).group = item._groupName;
@@ -667,7 +667,7 @@ const useStateStore = create<State>((set, get) => ({
                   id: `${item.id}_${sublayer.id}`,
                   title: sublayer.name,
                   outFields: ["*"],
-                  visible: false,
+                  visible: sublayer.defaultVisibility !== false, // Use default visibility from service
                 });
                 if (item._groupName) {
                   (subLayerInstance as any).group = item._groupName;
@@ -694,9 +694,9 @@ const useStateStore = create<State>((set, get) => ({
         })();
         return;
       } else if (item.type.includes("Tile")) {
-        layer = new TileLayer({ url: item.url, visible: false });
+        layer = new TileLayer({ url: item.url, visible: true }); // Tile layers are usually visible by default
       } else if (item.type.includes("Vector")) {
-        layer = new VectorTileLayer({ url: item.url, visible: false });
+        layer = new VectorTileLayer({ url: item.url, visible: true }); // Vector tile layers are usually visible by default
       }
 
       if (layer && item._groupName) {
