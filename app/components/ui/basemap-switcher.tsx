@@ -56,7 +56,7 @@ const BasemapSwitcher: React.FC = () => {
                         // Apply constraints for Graphic basemap
                         targetView.constraints = {
                             ...targetView.constraints,
-                            minScale: 350000,
+                            minScale: 650000,
                             maxScale: 5000
                         };
                     } else {

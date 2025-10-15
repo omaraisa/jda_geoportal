@@ -7,12 +7,12 @@ import { ReactNode } from "react";
 const oxanium = localFont({
   src: [
     {
-      path: "/fonts/Oxanium-Regular.ttf",
+      path: "/fonts/Tajawal-Regular.ttf",
       weight: "400",
       style: "normal",
     },
     {
-      path: "/fonts/Oxanium-Bold.ttf",
+      path: "/fonts/Tajawal-Regular.ttf",
       weight: "600",
       style: "normal",
     }
@@ -23,7 +23,7 @@ const oxanium = localFont({
 const droidArabicKufi = localFont({
   src: [
     {
-      path: "/fonts/alfont_com_AlFont_com_Droid-Arabic-Kufi.ttf",
+      path: "/fonts/Tajawal-Regular.ttf",
       weight: "400",
       style: "normal",
     }
