@@ -11,7 +11,7 @@ interface BasemapProps {
 }
 
 const basemaps: BasemapProps[] = [
-    { label: "Atkins", value: "atkins-basemap", src: "/atkins-basemap.jpg" },
+    { label: "Graphic", value: "graphic-basemap", src: "/atkins-basemap.jpg" },
     { label: "Topo", value: "topo-vector", src: "/topographic-basemap.jpg" },
     { label: "Satellite", value: "satellite", src: "/satellite-basemap.jpg" },
     { label: "Street", value: "streets-vector", src: "/streets-basemap.jpg" },
@@ -29,8 +29,8 @@ const BasemapSwitcher: React.FC = () => {
         
         const customBasemap = new Basemap({
           baseLayers: [customBasemapLayer],
-          title: "Atkins Basemap",
-          id: "atkins-basemap"
+          title: "Graphic Basemap",
+          id: "graphic-basemap"
         });
 
 
@@ -41,7 +41,7 @@ const BasemapSwitcher: React.FC = () => {
                 let newBasemap;
 
                 // Use shared custom basemap from state store
-                if (basemapId === "atkins-basemap" && customBasemap) {
+                if (basemapId === "graphic-basemap" && customBasemap) {
                     newBasemap = customBasemap;
                 } else {
                     // Handle standard Esri basemaps
@@ -52,8 +52,8 @@ const BasemapSwitcher: React.FC = () => {
                     targetView.map.basemap = newBasemap;
 
                     // Handle scale constraints based on basemap
-                    if (basemapId === "atkins-basemap") {
-                        // Apply constraints for Atkins basemap
+                    if (basemapId === "graphic-basemap") {
+                        // Apply constraints for Graphic basemap
                         targetView.constraints = {
                             ...targetView.constraints,
                             minScale: 350000,

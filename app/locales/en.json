@@ -66,7 +66,8 @@
       "UploadLayer": "Upload Layer",
       "ExportLayer": "Export Layer",
     "NetworkAnalysis": "Network Analysis",
-    "SpatialAnalysis": "Spatial Analysis"
+    "SpatialAnalysis": "Spatial Analysis",
+    "GoToXYComponent": "Go to XY"
   },
   "bottomPane": {
     "titles": {
@@ -170,7 +171,7 @@
       "Satellite": "Imagery",
       "Street": "Street",
       "DarkGray": "Dark Gray",
-      "Atkins": "Atkins Basemap"
+      "Graphic": "Graphic Basemap"
     },
     "measurements": {
       "distance": "Distance",
@@ -391,9 +392,14 @@
         "sameLayer": "Please select different layers"
       }
     },
-    "analysis": {
-      "run": "Run",
-      "running": "Running..."
+    "goToXY": {
+      "title": "Go to X Y",
+      "longitude": "Longitude",
+      "latitude": "Latitude",
+      "zoom": "Zoom Level",
+      "goToLocation": "Go to Location",
+      "clear": "Clear",
+      "invalidCoordinates": "Please enter valid coordinates. Longitude must be between -180 and 180, latitude between -90 and 90."
     }
   },
   "layerList": {
@@ -429,7 +435,7 @@
       "TheSaudiArabiaNationalSpatialReferenceSystem": "The Saudi Arabia National Spatial Reference System",
       "Transport": "Transport",
       "Utilities": "Utilities",
-      "AtkinsLayers": "Atkins Layers",
+      "GraphicLayers": "Graphic Layers",
       "Water": "Water",
       "Projects": "Projects"
     }
@@ -448,7 +454,8 @@
     "spatialQuery": "Spatial Query",
     "coordinateConversion": "Coordinate Conversion",
     "legendWidget": "Legend Widget",
-    "bookmarkWidget": "Bookmark Widget"
+    "bookmarkWidget": "Bookmark Widget",
+    "goToXYWidget": "Go to XY"
   },
   "systemMessages": {
     "info": {

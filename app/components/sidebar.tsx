@@ -75,6 +75,9 @@ const ClipComponent = dynamic(() => import("@/components/widgets/clip").then(mod
 const GeometryModifyComponent = dynamic(() => import("@/components/widgets/geometry-modify").then(mod => ({ default: mod.GeometryModify })), {
   ssr: false,
 });
+const GoToXYComponent = dynamic(() => import("@/components/widgets/go-to-xy"), {
+  ssr: false,
+});
 
 
 const components = {
@@ -102,6 +105,7 @@ const components = {
   SpatialRelationshipsComponent,
   ClipComponent,
   GeometryModifyComponent,
+  GoToXYComponent,
 };
 
 export default function Sidebar() {

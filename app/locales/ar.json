@@ -65,7 +65,8 @@
     "UploadLayer": "رفع طبقة",
     "ExportLayer": "تصدير طبقة",
     "NetworkAnalysis": "تحليل الشبكة",
-    "SpatialAnalysis": "التحليل المكاني"
+    "SpatialAnalysis": "التحليل المكاني",
+    "GoToXYComponent": "الذهاب إلى إحداثيات"
   },
   "bottomPane": {
     "titles": {
@@ -169,7 +170,7 @@
       "Satellite": "صور",
       "Street": "شارع",
       "DarkGray": "رمادي غامق",
-      "Atkins": "خريطة أتكنز"
+      "Graphic": "خريطة جرافيك"
     },
     "measurements": {
       "distance": "المسافة",
@@ -393,6 +394,15 @@
     "analysis": {
       "run": "تشغيل",
       "running": "جاري..."
+    },
+    "goToXY": {
+      "title": "الذهاب إلى إحداثيات X Y",
+      "longitude": "خط الطول",
+      "latitude": "خط العرض",
+      "zoom": "مستوى التكبير",
+      "goToLocation": "الذهاب إلى الموقع",
+      "clear": "مسح",
+      "invalidCoordinates": "يرجى إدخال إحداثيات صحيحة. يجب أن يكون خط الطول بين -180 و 180، وخط العرض بين -90 و 90."
     }
   },
   "layerList": {
@@ -447,7 +457,8 @@
     "spatialQuery": "استعلام مكاني",
     "coordinateConversion": "تحويل الإحداثيات",
     "legendWidget": "مفتاح الخريطة",
-    "bookmarkWidget": "الإشارات المرجعية"
+    "bookmarkWidget": "الإشارات المرجعية",
+    "goToXYWidget": "الذهاب إلى إحداثيات"
   },
   "systemMessages": {
     "info": {

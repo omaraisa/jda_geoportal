@@ -22,6 +22,7 @@ const menuOptions: MenuOptions = {
     { name: "EditorComponent", icon: "vertex-edit" },
     { name: "SketchComponent", icon: "pencil-mark" },
     { name: "BookmarkComponent", icon: "bookmark" },
+    { name: "GoToXYComponent", icon: "cursor-click" },
     { name: "CoordinateConversionComponent", icon: "coordinate-system" },
   ],
   analysis: [
