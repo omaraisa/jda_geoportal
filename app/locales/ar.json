@@ -6,7 +6,7 @@
       "selectFeatures": "اختيار المعالم",
       "basemaps": "خرائط الأساس",
       "drawingEditing": "الرسم والتعديل",
-      "bookmarks": "الإشارات المرجعية",
+      "bookmarks": "العلامات المرجعية",
       "attributeQuery": "استعلام وصفي",
       "printMap": "طباعة الخريطة",
       "saveMap": "حفظ الخريطة",
@@ -23,7 +23,7 @@
     "LegendComponent": "مفتاح الخريطة",
     "PrintComponent": "طباعة",
     "BasemapGalleryComponent": "خرائط الأساس",
-    "BookmarkComponent": "الإشارات المرجعية",
+    "BookmarkComponent": "العلامات المرجعية",
     "CoordinateConversionComponent": "تحويل الإحداثيات",
     "LayerListComponent": "قائمة الطبقات",
     "ViewSwitcher": "تبديل العرض",
@@ -98,7 +98,7 @@
     "bookmarks": {
       "addBookmark": "إضافة إشارة مرجعية",
       "noBookmarks": "لا توجد إشارات مرجعية",
-      "bookmarkName": "اسم الإشارة المرجعية",
+      "bookmarkName": "اسم العلامة المرجعية",
       "enterName": "أدخل الاسم",
       "saveBookmark": "حفظ",
       "cancel": "إلغاء"
@@ -457,7 +457,7 @@
     "spatialQuery": "استعلام مكاني",
     "coordinateConversion": "تحويل الإحداثيات",
     "legendWidget": "مفتاح الخريطة",
-    "bookmarkWidget": "الإشارات المرجعية",
+    "bookmarkWidget": "العلامات المرجعية",
     "goToXYWidget": "الذهاب إلى إحداثيات"
   },
   "systemMessages": {
