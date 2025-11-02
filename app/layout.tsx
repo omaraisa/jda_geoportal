@@ -20,17 +20,6 @@ const tajawal = localFont({
   variable: "--font-tajawal",
 });
 
-const tajawalArabic = localFont({
-  src: [
-    {
-      path: "/fonts/Tajawal-Regular.ttf",
-      weight: "400",
-      style: "normal",
-    }
-  ],
-  variable: "--font-tajawal-arabic",
-});
-
 export const metadata = {
   title: "SDF | Spatial Data Front",
   description: "SDF | Spatial Data Front is a modern web application for exploring, analyzing, and visualizing geospatial data.",
@@ -44,7 +33,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body
-        className={`${tajawal.variable} ${tajawalArabic.variable} antialiased`}
+        className={`${tajawal.variable} antialiased`}
       >
         {children}
       </body>
