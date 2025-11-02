@@ -12,7 +12,7 @@ export const DEFAULT_FORM_DATA = {
   title: "My Map",
   format: "pdf" as const,
   layout: "Standard",
-  includeLegend: false,
+  includeLegend: true,
   includeScale: true,
   scalebarUnit: "metric" as const,
   classification: "Restricted" as const,

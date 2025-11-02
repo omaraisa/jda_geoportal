@@ -60,19 +60,6 @@ export const buildWebMapJSON = (
   const baseMap = view.map.basemap.toJSON();
   const extent = view.extent.toJSON();
 
-  // Replace sdfbasemap URLs in baseMap layers
-  if (baseMap.baseMapLayers) {
-    baseMap.baseMapLayers = baseMap.baseMapLayers.map((layer: any) => {
-      if (layer.url && layer.url.includes('sdfbasemap/MapServer')) {
-        layer.url = layer.url.replace(
-          'https://gis.jda.gov.sa/agserver/rest/services/sdfbasemap/MapServer',
-          'https://gis.jda.gov.sa/agserver/rest/services/sdfbasemap_p/MapServer'
-        );
-      }
-      return layer;
-    });
-  }
-
   return {
     mapOptions: {
       extent,
@@ -81,21 +68,12 @@ export const buildWebMapJSON = (
     operationalLayers: operationalLayers
       .filter((layer: LayerGroup) => layer.title !== "JDA Extent")
       .map((layer: LayerGroup) => {
-        // Replace sdfbasemap URL with print-optimized version
-        let printUrl = layer.url;
-        if (printUrl && printUrl.includes('sdfbasemap/MapServer')) {
-          printUrl = printUrl.replace(
-            'https://gis.jda.gov.sa/agserver/rest/services/sdfbasemap/MapServer',
-            'https://gis.jda.gov.sa/agserver/rest/services/sdfbasemap_p/MapServer'
-          );
-        }
-
         const mappedLayer: any = {
           id: layer.id,
           title: layer.title,
           opacity: layer.opacity,
           visible: layer.visible,
-          url: printUrl,
+          url: layer.url,
           layerType: layer.layerType
         };
 
