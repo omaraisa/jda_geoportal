@@ -4,7 +4,7 @@ import "@arcgis/core/assets/esri/themes/light/main.css";
 
 import { ReactNode } from "react";
 
-const oxanium = localFont({
+const tajawal = localFont({
   src: [
     {
       path: "/fonts/Tajawal-Regular.ttf",
@@ -12,15 +12,15 @@ const oxanium = localFont({
       style: "normal",
     },
     {
-      path: "/fonts/Tajawal-Regular.ttf",
+      path: "/fonts/Tajawal-Bold.ttf",
       weight: "600",
       style: "normal",
     }
   ],
-  variable: "--font-oxanium",
+  variable: "--font-tajawal",
 });
 
-const droidArabicKufi = localFont({
+const tajawalArabic = localFont({
   src: [
     {
       path: "/fonts/Tajawal-Regular.ttf",
@@ -28,7 +28,7 @@ const droidArabicKufi = localFont({
       style: "normal",
     }
   ],
-  variable: "--font-droid-arabic-kufi",
+  variable: "--font-tajawal-arabic",
 });
 
 export const metadata = {
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body
-        className={`${oxanium.variable} ${droidArabicKufi.variable} antialiased`}
+        className={`${tajawal.variable} ${tajawalArabic.variable} antialiased`}
       >
         {children}
       </body>
