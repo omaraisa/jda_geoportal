@@ -78,6 +78,9 @@ const GeometryModifyComponent = dynamic(() => import("@/components/widgets/geome
 const GoToXYComponent = dynamic(() => import("@/components/widgets/go-to-xy"), {
   ssr: false,
 });
+const MapLayoutComponent = dynamic(() => import("@/components/widgets/map-layout"), {
+  ssr: false,
+});
 
 
 const components = {
@@ -106,6 +109,7 @@ const components = {
   ClipComponent,
   GeometryModifyComponent,
   GoToXYComponent,
+  MapLayoutComponent,
 };
 
 export default function Sidebar() {

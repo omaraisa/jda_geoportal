@@ -67,7 +67,8 @@
       "ExportLayer": "Export Layer",
     "NetworkAnalysis": "Network Analysis",
     "SpatialAnalysis": "Spatial Analysis",
-    "GoToXYComponent": "Go to XY"
+    "GoToXYComponent": "Go to XY",
+    "MapLayoutComponent": "Map Print"
   },
   "bottomPane": {
     "titles": {
@@ -400,6 +401,16 @@
       "goToLocation": "Go to Location",
       "clear": "Clear",
       "invalidCoordinates": "Please enter valid coordinates. Longitude must be between -180 and 180, latitude between -90 and 90."
+    },
+    "mapLayouts": {
+      "title": "Map Print",
+      "description": "Print the current map view with custom layout options.",
+      "printCurrent": "Print Current Map",
+      "generating": "Generating PDF...",
+      "includeTitle": "Include Title",
+      "includeScale": "Include Scale",
+      "includeDate": "Include Date",
+      "titlePlaceholder": "Enter map title"
     }
   },
   "layerList": {

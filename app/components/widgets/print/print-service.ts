@@ -103,7 +103,14 @@ export const buildWebMapJSON = (
       legendOptions: formData.includeLegend ? {
         operationalLayers: operationalLayers
           .filter((layer: LayerGroup) => layer.title !== "JDA Extent")
-          .map((layer: LayerGroup) => ({ id: layer.id })),
+          .map((layer: LayerGroup) => {
+            const legendLayer: any = { id: layer.id };
+            // Add subLayerIds for MapServices that have visibleLayers
+            if (layer.visibleLayers && Array.isArray(layer.visibleLayers) && layer.visibleLayers.length > 0) {
+              legendLayer.subLayerIds = layer.visibleLayers;
+            }
+            return legendLayer;
+          }),
       } : undefined,
       customTextElements: [
         { Title: formData.title },

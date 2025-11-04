@@ -24,6 +24,7 @@ const menuOptions: MenuOptions = {
     { name: "BookmarkComponent", icon: "bookmark" },
     { name: "GoToXYComponent", icon: "cursor-click" },
     { name: "CoordinateConversionComponent", icon: "coordinate-system" },
+    { name: "MapLayoutComponent", icon: "print" },
   ],
   analysis: [
     { name: "NetworkAnalysis", icon: "utility-network", subMenuComponent: "NetworkAnalysis" },

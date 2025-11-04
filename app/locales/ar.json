@@ -66,7 +66,8 @@
     "ExportLayer": "تصدير طبقة",
     "NetworkAnalysis": "تحليل الشبكة",
     "SpatialAnalysis": "التحليل المكاني",
-    "GoToXYComponent": "الذهاب إلى إحداثيات"
+    "GoToXYComponent": "الذهاب إلى إحداثيات",
+    "MapLayoutComponent": "طباعة الخريطة"
   },
   "bottomPane": {
     "titles": {
@@ -403,6 +404,16 @@
       "goToLocation": "الذهاب إلى الموقع",
       "clear": "مسح",
       "invalidCoordinates": "يرجى إدخال إحداثيات صحيحة. يجب أن يكون خط الطول بين -180 و 180، وخط العرض بين -90 و 90."
+    },
+    "mapLayouts": {
+      "title": "طباعة الخريطة",
+      "description": "طباعة عرض الخريطة الحالي مع خيارات تخطيط مخصصة.",
+      "printCurrent": "طباعة الخريطة الحالية",
+      "generating": "جاري إنشاء PDF...",
+      "includeTitle": "تضمين العنوان",
+      "includeScale": "تضمين المقياس",
+      "includeDate": "تضمين التاريخ",
+      "titlePlaceholder": "أدخل عنوان الخريطة"
     }
   },
   "layerList": {
