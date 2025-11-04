@@ -24,6 +24,7 @@ const MainMap = () => {
   const viewsSyncOn = useStateStore((state) => state.viewsSyncOn);
   const setAppReady = useStateStore((state) => state.setAppReady);
   const loadUserGroupLayers = useStateStore((state) => state.loadUserGroupLayers);
+  const printBoundaryVisible = useStateStore((state) => state.printBoundaryVisible);
   useCoordinatesDisplay(viewRef.current)
 
   useEffect(() => {
@@ -136,7 +137,44 @@ const MainMap = () => {
     }
   }, [viewsSyncOn, viewRef.current, targetView]);
 
-  return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <div ref={mapRef} style={{ width: "100%", height: "100%", position: "relative" }}>
+      {/* Print Boundary Overlay */}
+      {printBoundaryVisible && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "1920px",
+            height: "1080px",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+            zIndex: 1000,
+            border: "3px solid #253080",
+            backgroundColor: "rgba(37, 48, 128, 0.1)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              color: "#253080",
+              padding: "8px 16px",
+              borderRadius: "4px",
+              fontSize: "14px",
+              fontWeight: "bold",
+              border: "2px solid #253080",
+            }}
+          >
+            Print Area (1920×1080)
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default MainMap;

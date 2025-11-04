@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
 import jsPDF from "jspdf";
@@ -10,6 +10,15 @@ const MapLayoutComponent: React.FC = () => {
   const targetView = useStateStore((state) => state.targetView);
   const [isGenerating, setIsGenerating] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const setPrintBoundaryVisible = useStateStore((state) => state.setPrintBoundaryVisible);
+
+  // Show print boundary when component mounts, hide when unmounts
+  useEffect(() => {
+    setPrintBoundaryVisible(true);
+    return () => {
+      setPrintBoundaryVisible(false);
+    };
+  }, [setPrintBoundaryVisible]);
 
   // Fixed canvas dimensions (A4 landscape in pixels at 300 DPI)
   const CANVAS_WIDTH = 3508;  // A4 landscape width at 300 DPI
@@ -50,23 +59,33 @@ const MapLayoutComponent: React.FC = () => {
         // Draw map to fill entire canvas
         ctx.drawImage(mapImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+        // Add semi-transparent white background for top elements
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fillRect(0, 0, CANVAS_WIDTH, 150);
+
         // Add title on top of the map background at precise coordinates
-        ctx.fillStyle = '#000000';
+        ctx.fillStyle = '#253080';
         ctx.font = 'bold 72px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Map Export', CANVAS_WIDTH / 2, 150);
+        ctx.fillText('Map Export', CANVAS_WIDTH / 2, 100);
+
+        // Add semi-transparent white background for bottom elements
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fillRect(0, CANVAS_HEIGHT - 80, CANVAS_WIDTH, 150);
 
         // Add date at bottom right corner on top of map
+        ctx.fillStyle = '#253080';
         ctx.font = '36px Arial';
         ctx.textAlign = 'right';
         const currentDate = new Date().toLocaleDateString();
-        ctx.fillText(`Date: ${currentDate}`, CANVAS_WIDTH - 100, CANVAS_HEIGHT - 100);
+        ctx.fillText(`Date: ${currentDate}`, CANVAS_WIDTH - 20, CANVAS_HEIGHT - 20);
 
         // Add scale at bottom left corner on top of map
+        ctx.fillStyle = '#253080';
         ctx.font = '32px Arial';
         ctx.textAlign = 'left';
         const scale = targetView.scale ? `1:${Math.round(targetView.scale).toLocaleString()}` : 'Unknown';
-        ctx.fillText(`Scale: ${scale}`, 100, CANVAS_HEIGHT - 100);
+        ctx.fillText(`Scale: ${scale}`, 20, CANVAS_HEIGHT - 20);
 
         // Load and add images
         let imagesLoaded = 0;
@@ -95,7 +114,24 @@ const MapLayoutComponent: React.FC = () => {
         // Add north arrow at top left corner
         const northArrow = new Image();
         northArrow.onload = () => {
-          ctx.drawImage(northArrow, 20, 10, 100, 100); // x, y, width, height
+          // Get map rotation and apply it to north arrow
+          const mapRotation = (targetView as any).rotation || (targetView as any).camera?.heading || 0;
+          
+          // Save context state
+          ctx.save();
+          
+          // Move to center of north arrow position and rotate
+          const centerX = 5 + 60; // 5 + half of 120 (width/2)
+          const centerY = 20 + 60; // 20 + half of 120 (height/2)
+          ctx.translate(centerX, centerY);
+          ctx.rotate((mapRotation * Math.PI) / 180); // Convert degrees to radians
+          
+          // Draw rotated north arrow (centered at origin after translation)
+          ctx.drawImage(northArrow, -60, -60, 120, 120); // x, y, width, height (centered)
+          
+          // Restore context state
+          ctx.restore();
+          
           checkAllImagesLoaded();
         };
         northArrow.onerror = () => {
@@ -110,7 +146,7 @@ const MapLayoutComponent: React.FC = () => {
           const aspectRatio = jdaLogo.naturalHeight / jdaLogo.naturalWidth;
           const newWidth = 500;
           const newHeight = newWidth * aspectRatio;
-          ctx.drawImage(jdaLogo, CANVAS_WIDTH - 520, 10, newWidth, newHeight); // x, y, width, height
+          ctx.drawImage(jdaLogo, CANVAS_WIDTH - 520, 5, newWidth, newHeight); // x, y, width, height
           checkAllImagesLoaded();
         };
         jdaLogo.onerror = () => {
