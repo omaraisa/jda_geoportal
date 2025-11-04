@@ -34,7 +34,7 @@ const MainMap = () => {
         const jdaExtentLayer = new MapImageLayer({
           url: process.env.NEXT_PUBLIC_JDA_EXTENT_URL!
         });
-        (jdaExtentLayer as any).group = "HiddenLayers"; 
+        (jdaExtentLayer as any).group = "HiddenLayers";
 
         const map = new Map({
           basemap: "satellite",
@@ -51,6 +51,10 @@ const MainMap = () => {
           ui: {
             components: [],
           },
+          constraints: {
+            snapToZoom: false,
+            // Optionally define custom lods for finer zoom steps
+          }
         });
 
         viewRef.current

@@ -11,7 +11,7 @@ const ZoomControls: React.FC = () => {
     <>
       <div 
         className={`${styles.fixedButton} ${styles.zoomIn}`} 
-        onClick={() => mapView?.goTo({ scale: mapView.scale / 2 })}
+        onClick={() => mapView?.goTo({ scale: mapView.scale / 1.1 })}
       ></div>
       <div 
         className={`${styles.fixedButton} ${styles.home}`} 
@@ -21,7 +21,7 @@ const ZoomControls: React.FC = () => {
       ></div>
       <div 
         className={`${styles.fixedButton} ${styles.zoomOut}`} 
-        onClick={() => mapView?.goTo({ scale: mapView.scale * 2 })}
+        onClick={() => mapView?.goTo({ scale: mapView.scale * 1.1 })}
       ></div>
     </>
   );

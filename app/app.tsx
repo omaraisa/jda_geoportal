@@ -12,6 +12,7 @@ import MainMenu from "./components/ui/menu/main-menu";
 import useAuthentication from "@/lib/hooks/use-authentication";
 import '@esri/calcite-components/dist/components/calcite-icon';
 import SessionEndModal from "./components/session-end-modal";
+import FullScreenLayoutMode from "./components/layout-mode/FullScreenLayoutMode";
 
 export default function App() {
   useAuthentication()
@@ -22,6 +23,7 @@ export default function App() {
     appReady,
     language,
     updateStats,
+    layoutModeActive,
   } = useStateStore((state) => state);
 
   React.useEffect(() => {
@@ -31,6 +33,9 @@ export default function App() {
 
   return (
     <div className="absolute w-screen h-screen flex flex-col overflow-hidden">
+      {/* Full Screen Layout Mode */}
+      {layoutModeActive && <FullScreenLayoutMode />}
+
       {/* Session Modal */}
       <SessionEndModal />
 

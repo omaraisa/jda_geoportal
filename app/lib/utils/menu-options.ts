@@ -15,7 +15,7 @@ const menuOptions: MenuOptions = {
   settings: [
     { name: "ViewSwitcher", icon: "system-management", subMenuComponent: "ViewSwitcher",  },
     { name: "BasemapSwitcher", icon: "basemap", subMenuComponent: "BasemapSwitcher",  },
-    { name: "PrintComponent", icon: "print" },
+    { name: "MapLayout", icon: "print" },
   ],
   tools: [
     { name: "MeasurementComponent", icon: "measure" },

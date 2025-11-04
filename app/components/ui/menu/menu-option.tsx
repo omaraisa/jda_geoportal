@@ -25,6 +25,16 @@ const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggl
         if (subMenuComponent) {
             toggleSubOptionsMenu();
         } else {
+            // Special handling for MapLayout - go directly to layout mode
+            if (name === 'MapLayout') {
+                toggleOptionsMenu();
+                // Hide sidebar and activate layout mode
+                toggleSidebar(false);
+                const setLayoutModeActive = useStateStore.getState().setLayoutModeActive;
+                setLayoutModeActive(true);
+                return;
+            }
+
             toggleOptionsMenu();
             if (sidebarOpen) {
                 if (activeSideBar !== name) {

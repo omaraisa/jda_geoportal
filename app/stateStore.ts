@@ -36,6 +36,7 @@ const useStateStore = create<State>((set, get) => ({
   messages: {},
   bookmarks: [],
   printBoundaryVisible: false,
+  layoutModeActive: false,
 
   setAppReady: (isReady: boolean) => {
     setTimeout(() => set({ appReady: isReady }), 3000);
@@ -237,6 +238,10 @@ const useStateStore = create<State>((set, get) => ({
 
   setPrintBoundaryVisible: (visible: boolean) => {
     set({ printBoundaryVisible: visible });
+  },
+
+  setLayoutModeActive: (active: boolean) => {
+    set({ layoutModeActive: active });
   },
 
   getTargetLayer: () => {
