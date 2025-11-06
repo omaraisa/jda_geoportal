@@ -96,12 +96,57 @@ static clearQueryResults(
     clearSelection(state.graphicsLayer, view, state.targetLayer, widgets);
 }
 
-static createLayerFromResults(
+  static async switchSelection(
+    targetLayer: FeatureLayer,
+    graphicsLayer: GraphicsLayer,
+    view: any,
+    widgets: any
+  ): Promise<void> {
+    if (!targetLayer || !graphicsLayer) return;
+
+    // Get all features from the target layer
+    const allFeaturesQuery = {
+      where: "1=1",
+      outFields: ["*"],
+      returnGeometry: true,
+    };
+
+    const allFeatures = await targetLayer.queryFeatures(allFeaturesQuery);
+    
+    // Get currently selected features (those in the graphics layer)
+    const selectedFeatures = graphicsLayer.graphics.toArray();
+    
+    // Create a set of selected feature IDs for quick lookup
+    const selectedIds = new Set(
+      selectedFeatures.map(feature => {
+        // Use objectId or create a unique identifier
+        return feature.attributes?.OBJECTID || feature.attributes?.objectId || 
+               JSON.stringify(feature.attributes);
+      })
+    );
+
+    // Find features that are NOT currently selected
+    const unselectedFeatures = allFeatures.features.filter(feature => {
+      const featureId = feature.attributes?.OBJECTID || feature.attributes?.objectId || 
+                       JSON.stringify(feature.attributes);
+      return !selectedIds.has(featureId);
+    });
+
+    // Clear current selection
+    graphicsLayer.removeAll();
+
+    // Add the previously unselected features to create the switched selection
+    if (unselectedFeatures.length > 0) {
+      addQueryResult(unselectedFeatures, graphicsLayer, view, targetLayer, widgets);
+    }
+  }
+
+  static createLayerFromResults(
     targetLayer: FeatureLayer,
     resultLayerSource: Graphic[],
     view: any,
     uniqueTitle: string
-): void {
+  ): void {
     createSeparateLayer(targetLayer, resultLayerSource, view, uniqueTitle);
-}
+  }
 }

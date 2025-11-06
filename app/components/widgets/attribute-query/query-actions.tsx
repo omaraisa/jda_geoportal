@@ -8,13 +8,15 @@ interface QueryActionsProps {
   onSearch: () => void;
   onClearSearch: () => void;
   onCreateLayer: () => void;
+  onSwitchSelection: () => void;
 }
 
 export default function QueryActions({
   state,
   onSearch,
   onClearSearch,
-  onCreateLayer
+  onCreateLayer,
+  onSwitchSelection
 }: QueryActionsProps) {
   const { t } = useTranslation();
 
@@ -28,6 +30,18 @@ export default function QueryActions({
         >
           {t("widgets.query.search")}
         </button>
+      </div>
+
+      <div className="flex gap-2 w-full">
+        <button
+          className="btn btn-secondary flex-grow"
+          onClick={onSwitchSelection}
+        >
+          {t("widgets.query.switchSelection")}
+        </button>
+      </div>
+
+      <div className="flex gap-2 w-full">
         <button
           className="btn btn-secondary flex-grow"
           onClick={onClearSearch}

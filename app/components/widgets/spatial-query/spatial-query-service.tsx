@@ -111,4 +111,44 @@ export class SpatialQueryService {
       addQueryResult(response.features, graphicsLayer, view, targetLayer, widgets);
     }
   }
+
+  static async switchSelection(
+    targetLayer: __esri.FeatureLayer,
+    graphicsLayer: GraphicsLayer,
+    view: any,
+    widgets: any
+  ): Promise<void> {
+    try {
+      // Query all features from the target layer
+      const allFeaturesQuery = {
+        where: "1=1",
+        outFields: ["*"],
+        returnGeometry: true,
+      };
+
+      const allFeaturesResponse = await targetLayer.queryFeatures(allFeaturesQuery);
+      const allFeatures = allFeaturesResponse.features || [];
+
+      // Get currently selected features from the graphics layer
+      const currentSelection = graphicsLayer.graphics.toArray();
+
+      // Find features that are not currently selected
+      const unselectedFeatures = allFeatures.filter((feature) => {
+        return !currentSelection.some((selectedGraphic) => {
+          // Compare by OBJECTID or another unique identifier
+          return selectedGraphic.attributes?.OBJECTID === feature.attributes?.OBJECTID;
+        });
+      });
+
+      // Clear current selection
+      graphicsLayer.removeAll();
+
+      // Add the previously unselected features to create the switched selection
+      if (unselectedFeatures.length > 0) {
+        addQueryResult(unselectedFeatures, graphicsLayer, view, targetLayer, widgets);
+      }
+    } catch (error) {
+      console.error("Error switching selection:", error);
+    }
+  }
 }
