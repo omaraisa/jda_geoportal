@@ -49,6 +49,7 @@ export default function SpatialQueryComponent() {
         selectionMethodChecked={state.selectionMethodChecked}
         onRunQueryByLayer={handlers.runQueryByLayer}
         onClearSelection={handlers.handleClearSelection}
+        onSwitchSelection={handlers.handleSwitchSelection}
       />
     </div>
   );

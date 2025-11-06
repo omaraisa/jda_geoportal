@@ -6,12 +6,14 @@ interface QueryActionsProps {
   selectionMethodChecked: boolean;
   onRunQueryByLayer: () => void;
   onClearSelection: () => void;
+  onSwitchSelection: () => void;
 }
 
 export default function QueryActions({
   selectionMethodChecked,
   onRunQueryByLayer,
-  onClearSelection
+  onClearSelection,
+  onSwitchSelection
 }: QueryActionsProps) {
   const { t } = useTranslation();
 
@@ -23,12 +25,23 @@ export default function QueryActions({
         </button>
       )}
       
-      <button
-        className="btn btn-danger w-full"
-        onClick={onClearSelection}
-      >
-        {t("widgets.query.clearSearch")}
-      </button>
+      <div className="flex gap-2">
+        <button
+          className="btn btn-secondary flex-grow"
+          onClick={onSwitchSelection}
+        >
+          {t("widgets.query.switchSelection")}
+        </button>
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          className="btn btn-danger flex-grow"
+          onClick={onClearSelection}
+        >
+          {t("widgets.query.clearSearch")}
+        </button>
+      </div>
     </div>
   );
 }

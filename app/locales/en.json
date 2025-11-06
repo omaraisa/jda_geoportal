@@ -95,7 +95,8 @@
       "createNewLayer": "Create New Layer",
       "byDrawing": "By drawing",
       "byLayer": "By Layer",
-      "clearSearch": "Clear Search"
+      "clearSearch": "Clear Search",
+      "switchSelection": "Switch Selection"
     },
     "bookmarks": {
       "addBookmark": "Add Bookmark",

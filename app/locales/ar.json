@@ -94,7 +94,8 @@
       "createNewLayer": "إنشاء طبقة جديدة",
       "byDrawing": "عن طريق الرسم",
       "byLayer": "باستعمال طبقة",
-      "clearSearch": "مسح البحث"
+      "clearSearch": "مسح البحث",
+      "switchSelection": "عكس الاختيار"
     },
     "bookmarks": {
       "addBookmark": "إضافة إشارة مرجعية",

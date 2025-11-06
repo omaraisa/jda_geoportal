@@ -185,6 +185,17 @@ export default function AttributeQueryComponent() {
     }
   };
 
+  const handleSwitchSelection = async () => {
+    if (state.targetLayer && state.graphicsLayer && view) {
+      await AttributeQueryService.switchSelection(
+        state.targetLayer,
+        state.graphicsLayer,
+        view,
+        widgets
+      );
+    }
+  };
+
   return (
     <div className="flex flex-col space-y-4 p-4">
       <QueryForm
@@ -203,6 +214,7 @@ export default function AttributeQueryComponent() {
         onSearch={() => search()}
         onClearSearch={clearSearch}
         onCreateLayer={handleCreateLayer}
+        onSwitchSelection={handleSwitchSelection}
       />
     </div>
   );

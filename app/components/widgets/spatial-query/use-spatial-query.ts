@@ -3,6 +3,7 @@ import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import { clearSelection } from "@/lib/utils/query";
 import { SpatialQueryService } from "./spatial-query-service";
 import { createSketchCompleteHandler, createQueryByLayerHandler } from "./query-handlers";
+import { getSelectedTargetLayer } from "./query-utils";
 import { SpatialQueryState, SpatialQueryRefs, MessagePayload } from "./types";
 
 export const useSpatialQuery = (
@@ -95,6 +96,18 @@ export const useSpatialQuery = (
     );
   };
 
+  const handleSwitchSelection = async () => {
+    const targetLayer = getSelectedTargetLayer(view, targetLayerRef);
+    if (targetLayer && graphicsLayerRef.current && view) {
+      await SpatialQueryService.switchSelection(
+        targetLayer,
+        graphicsLayerRef.current,
+        view,
+        widgets
+      );
+    }
+  };
+
   return {
     state,
     refs,
@@ -102,6 +115,7 @@ export const useSpatialQuery = (
       runQueryByLayer,
       selectionMethodHandler,
       handleClearSelection,
+      handleSwitchSelection,
     },
   };
 };
