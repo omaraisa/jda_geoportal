@@ -14,6 +14,7 @@ const useStateStore = create<State>((set, get) => ({
     sidebarOpen: true,
     sidebarHeight: 70,
     bottomPaneOpen: false,
+    bottomPaneHeight: 200,
   },
   activeSideBar: "LayerListComponent",
   appReady: false,
@@ -88,7 +89,15 @@ const useStateStore = create<State>((set, get) => ({
   },
 
   setActiveBottomPane: (component: string) => {
-    set({ activeBottomPane: component });
+    // Set different heights based on component type
+    const height = component === 'FeatureTableComponent' ? 400 : 200;
+    set((state) => ({ 
+      activeBottomPane: component,
+      layout: {
+        ...state.layout,
+        bottomPaneHeight: height,
+      }
+    }));
   },
 
   updateTargetView: (targetView) => set({ targetView }),

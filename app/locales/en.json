@@ -49,6 +49,7 @@
       "terrainAnalysis": "Terrain Analysis",
       "ClosestFacility": "Nearest Landmark",
       "ChangeDetectionComponent": "Change Detection",
+    "TimeSliderComponent": "Time Slider",
       "DirectionsComponent": "Directions",
       "BufferComponent": "Buffer Analysis",
       "OverlayComponent": "Overlay Analysis",
@@ -72,7 +73,8 @@
   },
   "bottomPane": {
     "titles": {
-      "FeatureTableComponent": "Attribute Table"
+      "FeatureTableComponent": "Attribute Table",
+      "TimeSliderComponent": "Time Slider"
     }
   },
   "widgets": {
@@ -478,6 +480,14 @@
       "queryCompleted": {
         "title": "Query",
         "body": "Query completed for layer "
+      },
+      "timeSliderReady": {
+        "title": "Time Slider Ready",
+        "body": "Satellite imagery time slider is now active. Use the slider to explore historical satellite data."
+      },
+      "worldImageryTimeSlider": {
+        "title": "World Imagery Time Slider",
+        "body": "World Imagery time slider is active. Note: World Imagery shows the most recent available imagery for each location."
       }
     },
     "error": {
@@ -524,6 +534,10 @@
       "uploadLayerError": {
         "title": "Layer Upload Error",
         "body": "Please complete the upload layer requirements."
+      },
+      "timeSliderError": {
+        "title": "Time Slider Error",
+        "body": "Failed to load satellite imagery time slider. Please try again."
       }
     },
     "warning": {
@@ -537,5 +551,14 @@
     "sessionExpiringMsg": "Your session is about to expire. Do you want to extend it?",
     "Extend": "Extend",
     "Exit": "Exit"
+  },
+  "timeSlider": {
+    "description": "Use the time slider below to explore historical satellite imagery. Drag the handles to select a time range.",
+    "loading": "Loading satellite imagery...",
+    "reset": "Reset to Recent",
+    "hint": "Drag slider handles to change time range",
+    "info1": "Satellite imagery availability varies by location and date",
+    "info2": "Some areas may show the most recent available imagery",
+    "info3": "Cloud cover may affect image quality"
   }
 }

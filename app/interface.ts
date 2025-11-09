@@ -54,6 +54,7 @@ export interface State {
     sidebarOpen: boolean;
     sidebarHeight: number;
     bottomPaneOpen: boolean;
+    bottomPaneHeight: number;
   };
   activeSideBar: string;
   appReady: boolean;

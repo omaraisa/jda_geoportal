@@ -16,15 +16,26 @@ interface OptionProps {
 const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggleSubOptionsMenu, toggleOptionsMenu }) => {
     const { t } = useTranslation();
     const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
+    const setActiveBottomPane = useStateStore((state) => state.setActiveBottomPane);
     const toggleSidebar = useStateStore((state) => state.toggleSidebar);
+    const toggleBottomPane = useStateStore((state) => state.toggleBottomPane);
     const activeSideBar = useStateStore((state) => state.activeSideBar);
     const sidebarOpen = useStateStore((state) => state.layout.sidebarOpen);
+    const bottomPaneOpen = useStateStore((state) => state.layout.bottomPaneOpen);
 
 
     const handleClick = () => {
         if (subMenuComponent) {
             toggleSubOptionsMenu();
         } else {
+            // Special handling for TimeSliderComponent - activate bottom pane
+            if (name === 'TimeSliderComponent') {
+                toggleOptionsMenu();
+                setActiveBottomPane(name);
+                toggleBottomPane(true);
+                return;
+            }
+
             // Special handling for MapLayout - go directly to layout mode
             if (name === 'MapLayout') {
                 toggleOptionsMenu();

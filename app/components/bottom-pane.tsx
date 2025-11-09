@@ -8,9 +8,14 @@ const FeatureTableComponent = dynamic(() => import("@/components/widgets/feature
   ssr: false,
 });
 
+const TimeSliderComponent = dynamic(() => import("@/components/widgets/time-slider"), {
+  ssr: false,
+});
+
 const components: { [key: string]: React.ComponentType } = {
   DefaultComponent,
   FeatureTableComponent,
+  TimeSliderComponent,
 };
 
 const BottomPane: React.FC = () => {

@@ -62,11 +62,12 @@ export default function App() {
           </div>
 
           <div
-            className={`absolute px-6 py-3 bottom-20 left-1/2 transform -translate-x-1/2 w-[calc(100%-600px)] h-[40vh] max-w-[1200px] bg-transparent rounded-lg overflow-hidden transition-all duration-1000 ${
+            className={`absolute px-6 py-3 bottom-20 left-1/2 transform -translate-x-1/2 w-[calc(100%-600px)] max-w-[1200px] bg-transparent rounded-lg overflow-hidden transition-all duration-1000 ${
               layoutState.bottomPaneOpen
                 ? "translate-y-0 opacity-100"
                 : "translate-y-full opacity-0"
             }`}
+            style={{ height: `${layoutState.bottomPaneHeight}px` }}
           >
             <BottomPane />
           </div>
