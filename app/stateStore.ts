@@ -475,45 +475,142 @@ const useStateStore = create<State>((set, get) => ({
 
       console.log(`🗺️ Found ${groupContent.items.length} basemap items`);
       
-      // Add basemap layers
-      groupContent.items.forEach((item: any) => {
+      // Add basemap layers using the same sophisticated approach as user group layers
+      const layerPromises: Promise<number>[] = [];
+      
+      for (const item of groupContent.items) {
         item._groupName = "Basemap"; // Remove gportal_ prefix for display
-        
-        let layer: any = null;
         
         if (item.url) {
           item.url = item.url.replace(/^http:/, "https:");
         }
 
-        if (item.type.includes("Tile")) {
-          layer = new TileLayer({ 
-            url: item.url, 
-            id: item.id,
-            title: item.title,
-            visible: true 
-          });
-        } else if (item.type.includes("Vector")) {
-          layer = new VectorTileLayer({ 
-            url: item.url, 
-            id: item.id,
-            title: item.title,
-            visible: true 
-          });
-        } else if (item.type.includes("Map Service")) {
-          layer = new MapImageLayer({ 
-            url: item.url, 
-            id: item.id,
-            title: item.title,
-            visible: true 
-          });
-        }
+        if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
+          // Handle Feature Services with sublayers approach
+          const featureLayerPromise = (async (): Promise<number> => {
+            let addedCount = 0;
+            try {
+              const serviceUrl = item.url.replace(/\/+$/, "");
+              const metadataUrl = `${serviceUrl}?f=json${gisToken ? `&token=${gisToken}` : ''}`;
 
-        if (layer) {
+              const response = await fetch(metadataUrl);
+              const data = await response.json();
+
+              if (!data.error && Array.isArray(data.layers) && data.layers.length > 0) {
+                // Add each sublayer as a separate FeatureLayer
+                data.layers.reverse().forEach((sublayer: any) => {
+                  const subLayerInstance = new FeatureLayer({
+                    url: `${serviceUrl}/${sublayer.id}`,
+                    id: `${item.id}_${sublayer.id}`,
+                    title: sublayer.name,
+                    outFields: ["*"],
+                    visible: sublayer.defaultVisibility !== false,
+                  });
+                  (subLayerInstance as any).group = item._groupName;
+                  targetView.map.add(subLayerInstance);
+                  console.log(`✅ Added backup FeatureLayer: ${sublayer.name}`);
+                  addedCount++;
+                });
+              } else {
+                // Single feature layer or error fetching metadata
+                const featureLayer = new FeatureLayer({
+                  url: item.url,
+                  id: item.id,
+                  title: item.title,
+                  outFields: ["*"],
+                  visible: true,
+                });
+                (featureLayer as any).group = item._groupName;
+                targetView.map.add(featureLayer);
+                console.log(`✅ Added backup single FeatureLayer: ${item.title}`);
+                addedCount++;
+              }
+            } catch (error) {
+              console.error(`❌ Failed to process backup FeatureLayer URL ${item.url}:`, error);
+              // Fallback: create as a single FeatureLayer
+              const featureLayer = new FeatureLayer({
+                url: item.url,
+                id: item.id,
+                title: item.title,
+                outFields: ["*"],
+                visible: true,
+              });
+              (featureLayer as any).group = item._groupName;
+              targetView.map.add(featureLayer);
+              console.log(`✅ Added backup fallback FeatureLayer: ${item.title}`);
+              addedCount++;
+            }
+            return addedCount;
+          })();
+          layerPromises.push(featureLayerPromise);
+        } else if (item.type.includes("Map Service")) {
+          // Handle Map Services with FeatureLayer sublayers approach
+          const mapServicePromise = (async (): Promise<number> => {
+            let addedCount = 0;
+            try {
+              const response = await fetch(`${item.url}?f=json&token=${gisToken}`);
+              const data = await response.json();
+
+              if (data.error) {
+                console.warn(`⚠️ Map Service metadata fetch error for ${item.title}, skipping`);
+              } else if (Array.isArray(data.layers)) {
+                // Add each sublayer as a separate FeatureLayer
+                data.layers.reverse().forEach((sublayer: any) => {
+                  const subLayerInstance = new FeatureLayer({
+                    url: `${item.url.replace(/\/+$/, "")}/${sublayer.id}`,
+                    id: `${item.id}_${sublayer.id}`,
+                    title: sublayer.name,
+                    outFields: ["*"],
+                    visible: sublayer.defaultVisibility !== false,
+                  });
+                  (subLayerInstance as any).group = item._groupName;
+                  targetView.map.add(subLayerInstance);
+                  console.log(`✅ Added backup Map Service FeatureLayer: ${sublayer.name}`);
+                  addedCount++;
+                });
+              } else {
+                console.warn(`⚠️ Map Service ${item.title} has no sublayers, skipping`);
+              }
+            } catch (error) {
+              console.error("❌ Failed to fetch backup Map Service sublayers:", error);
+            }
+            return addedCount;
+          })();
+          layerPromises.push(mapServicePromise);
+        } else if (item.type.includes("Tile")) {
+          const layer = new TileLayer({ 
+            url: item.url, 
+            id: item.id,
+            title: item.title,
+            visible: true 
+          });
           (layer as any).group = item._groupName;
           targetView.map.add(layer);
-          console.log(`✅ Added backup basemap layer: ${item.title}`);
+          console.log(`✅ Added backup TileLayer: ${item.title}`);
+        } else if (item.type.includes("Vector")) {
+          const layer = new VectorTileLayer({ 
+            url: item.url, 
+            id: item.id,
+            title: item.title,
+            visible: true 
+          });
+          (layer as any).group = item._groupName;
+          targetView.map.add(layer);
+          console.log(`✅ Added backup VectorTileLayer: ${item.title}`);
         }
-      });
+      }
+
+      // Wait for all async backup layer operations to complete
+      if (layerPromises.length > 0) {
+        console.log(`⏳ Waiting for ${layerPromises.length} backup async layer operations to complete...`);
+        try {
+          const layerCounts = await Promise.all(layerPromises);
+          const asyncLayersAdded = layerCounts.reduce((sum, count) => sum + count, 0);
+          console.log(`✅ Backup async layer operations completed. Added ${asyncLayersAdded} backup async layers`);
+        } catch (error) {
+          console.error("❌ Error waiting for backup async layer operations:", error);
+        }
+      }
       
     } catch (error) {
       console.error("❌ Failed to load backup basemap layers:", error);
