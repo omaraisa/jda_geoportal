@@ -105,6 +105,7 @@ export interface State {
   deleteBookmark: (id: number) => void;
   loadBookmarks: () => void;
   loadUserGroupLayers: () => void;
+  loadBackupBasemapLayers: (portalUrl: string, gisToken: string, targetView: any, groupNameToIdMap: { [key: string]: string }) => Promise<void>;
   setUserInfo: (userInfo: ArcGISUserInfo) => void;
   sessionModalOpen: boolean;
   setSessionModalOpen: (open: boolean) => void;

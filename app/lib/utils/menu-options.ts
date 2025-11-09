@@ -15,7 +15,7 @@ const menuOptions: MenuOptions = {
   settings: [
     { name: "ViewSwitcher", icon: "system-management", subMenuComponent: "ViewSwitcher",  },
     { name: "BasemapSwitcher", icon: "basemap", subMenuComponent: "BasemapSwitcher",  },
-    { name: "MapLayout", icon: "print" },
+    { name: "PrintComponent", icon: "print" },
   ],
   tools: [
     { name: "MeasurementComponent", icon: "measure" },
@@ -24,11 +24,11 @@ const menuOptions: MenuOptions = {
     { name: "BookmarkComponent", icon: "bookmark" },
     { name: "GoToXYComponent", icon: "cursor-click" },
     { name: "CoordinateConversionComponent", icon: "coordinate-system" },
-    { name: "MapLayoutComponent", icon: "print" },
+    // { name: "MapLayoutComponent", icon: "print" },
   ],
   analysis: [
     { name: "NetworkAnalysis", icon: "utility-network", subMenuComponent: "NetworkAnalysis" },
-    { name: "SpatialAnalysis", icon: "analysis-overlay", subMenuComponent: "SpatialAnalysis" },
+    // { name: "SpatialAnalysis", icon: "analysis-overlay", subMenuComponent: "SpatialAnalysis" },
   ],
   query: [
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },
