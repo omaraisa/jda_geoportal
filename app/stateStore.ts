@@ -702,9 +702,9 @@ const useStateStore = create<State>((set, get) => ({
     }
 
     let successfullyAddedLayers = 0;
+    const layerPromises: Promise<number>[] = [];
 
     allGroupLayers.forEach((item) => {
-
       let layer: any = null;
 
       if (item.url) {
@@ -713,7 +713,8 @@ const useStateStore = create<State>((set, get) => ({
 
       if (item.type === "Feature Service" || item.type.includes("Feature Layer")) {
         // Try to fetch sublayers and add each as a FeatureLayer
-        (async () => {
+        const featureLayerPromise = (async (): Promise<number> => {
+          let addedCount = 0;
           try {
             const serviceUrl = item.url.replace(/\/+$/, "");
             const metadataUrl = `${serviceUrl}?f=json${gisToken ? `&token=${gisToken}` : ''}`;
@@ -735,7 +736,7 @@ const useStateStore = create<State>((set, get) => ({
                   (subLayerInstance as any).group = item._groupName;
                 }
                 targetView.map.add(subLayerInstance);
-                successfullyAddedLayers++;
+                addedCount++;
               });
             } else {
               // Not a FeatureServer with multiple layers, or error fetching metadata, or no sublayers.
@@ -750,7 +751,7 @@ const useStateStore = create<State>((set, get) => ({
                 (featureLayer as any).group = item._groupName;
               }
               targetView.map.add(featureLayer);
-              successfullyAddedLayers++;
+              addedCount++;
             }
           } catch (error) {
             console.error(`❌ Failed to process FeatureLayer URL ${item.url}:`, error);
@@ -766,13 +767,16 @@ const useStateStore = create<State>((set, get) => ({
               (featureLayer as any).group = item._groupName;
             }
             targetView.map.add(featureLayer);
-            successfullyAddedLayers++;
+            addedCount++;
           }
+          return addedCount;
         })();
+        layerPromises.push(featureLayerPromise);
         return;
       } else if (item.type.includes("Map Service")) {
         // Fetch sublayers and add each as a FeatureLayer
-        (async () => {
+        const mapServicePromise = (async (): Promise<number> => {
+          let addedCount = 0;
           try {
             const response = await fetch(`${item.url}?f=json&token=${gisToken}`);
             const data = await response.json();
@@ -780,6 +784,11 @@ const useStateStore = create<State>((set, get) => ({
             if (data.error) {
               // fallback: add as MapImageLayer if metadata fetch fails
               layer = new MapImageLayer({ url: item.url, visible: false });
+              if (item._groupName) {
+                (layer as any).group = item._groupName;
+              }
+              targetView.map.add(layer);
+              addedCount++;
             } else if (Array.isArray(data.layers)) {
               // Add each sublayer as a separate FeatureLayer
               data.layers.reverse().forEach((sublayer: any) => {
@@ -794,27 +803,30 @@ const useStateStore = create<State>((set, get) => ({
                   (subLayerInstance as any).group = item._groupName;
                 }
                 targetView.map.add(subLayerInstance);
-                successfullyAddedLayers++;
+                addedCount++;
               });
-              layer = null; // Already added sublayers
             } else {
               // fallback: add as MapImageLayer if no sublayers
               layer = new MapImageLayer({ url: item.url, visible: false });
+              if (item._groupName) {
+                (layer as any).group = item._groupName;
+              }
+              targetView.map.add(layer);
+              addedCount++;
             }
           } catch (error) {
             console.error("❌ Failed to fetch Map Service sublayers:", error);
             // fallback: add as MapImageLayer on error
             layer = new MapImageLayer({ url: item.url, visible: false });
-          }
-
-          if (layer && item._groupName) {
-            (layer as any).group = item._groupName;
-          }
-          if (layer) {
+            if (item._groupName) {
+              (layer as any).group = item._groupName;
+            }
             targetView.map.add(layer);
-            successfullyAddedLayers++;
+            addedCount++;
           }
+          return addedCount;
         })();
+        layerPromises.push(mapServicePromise);
         return;
       } else if (item.type.includes("Tile")) {
         layer = new TileLayer({ url: item.url, visible: true }); // Tile layers are usually visible by default
@@ -832,6 +844,19 @@ const useStateStore = create<State>((set, get) => ({
       } else {
       }
     });
+
+    // Wait for all async layer operations to complete
+    if (layerPromises.length > 0) {
+      console.log(`⏳ Waiting for ${layerPromises.length} async layer operations to complete...`);
+      try {
+        const layerCounts = await Promise.all(layerPromises);
+        const asyncLayersAdded = layerCounts.reduce((sum, count) => sum + count, 0);
+        successfullyAddedLayers += asyncLayersAdded;
+        console.log(`✅ Async layer operations completed. Added ${asyncLayersAdded} async layers`);
+      } catch (error) {
+        console.error("❌ Error waiting for async layer operations:", error);
+      }
+    }
 
     // Check if we successfully added any layers from user groups
     console.log(`🎯 Successfully added ${successfullyAddedLayers} layers from user groups`);
