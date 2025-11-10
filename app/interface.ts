@@ -74,7 +74,6 @@ export interface State {
   previousSideBars: Record<string, string | null>;
   messages: Record<number, Message>;
   bookmarks: Bookmark[];
-  printBoundaryVisible: boolean;
   layoutModeActive: boolean;
   userInfo: ArcGISUserInfo | null;
   accessToken: string | null;
@@ -93,7 +92,6 @@ export interface State {
   createLayer: (params: InitialLayersConfiguration) => void;
   setTargetLayerId: (id: string) => void;
   setSyncing: (isOn: boolean) => void;
-  setPrintBoundaryVisible: (visible: boolean) => void;
   setLayoutModeActive: (active: boolean) => void;
   getTargetLayer: () => __esri.FeatureLayer | null;
   switchViewMode: (mode: "2D" | "3D" | "Dual") => void;

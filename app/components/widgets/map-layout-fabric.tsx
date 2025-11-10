@@ -53,18 +53,15 @@ const MapLayoutComponent: React.FC = () => {
   const [mapScreenshot, setMapScreenshot] = useState<string>('');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(0.3); // Start with smaller zoom for better overview
-  const setPrintBoundaryVisible = useStateStore((state) => state.setPrintBoundaryVisible);
   const setLayoutModeActive = useStateStore((state) => state.setLayoutModeActive);
 
   // Activate full-screen layout mode when component mounts
   useEffect(() => {
     setLayoutModeActive(true);
-    setPrintBoundaryVisible(true);
     return () => {
       setLayoutModeActive(false);
-      setPrintBoundaryVisible(false);
     };
-  }, [setLayoutModeActive, setPrintBoundaryVisible]);
+  }, [setLayoutModeActive]);
 
   // Default map elements configuration
   const [elements, setElements] = useState<MapElement[]>([

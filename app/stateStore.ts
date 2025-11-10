@@ -36,7 +36,6 @@ const useStateStore = create<State>((set, get) => ({
   },
   messages: {},
   bookmarks: [],
-  printBoundaryVisible: false,
   layoutModeActive: false,
 
   setAppReady: (isReady: boolean) => {
@@ -243,10 +242,6 @@ const useStateStore = create<State>((set, get) => ({
 
   setSyncing: (isOn: boolean) => {
     set({ viewsSyncOn: isOn });
-  },
-
-  setPrintBoundaryVisible: (visible: boolean) => {
-    set({ printBoundaryVisible: visible });
   },
 
   setLayoutModeActive: (active: boolean) => {
