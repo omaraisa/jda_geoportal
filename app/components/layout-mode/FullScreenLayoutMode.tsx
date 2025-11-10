@@ -421,7 +421,7 @@ const FullScreenLayoutMode: React.FC = () => {
     // Calculate content height first
     let contentHeight = config.padding * 3 + config.titleSize + 8; // Title area
     let preCalcItems = 0;
-    const maxLegendItems = size === 'small' ? 8 : size === 'medium' ? 12 : 16;
+    const maxLegendItems = 1000; // Allow all layers to be displayed
 
     // Pre-calculate content height
     for (const layerData of data) {
@@ -495,7 +495,7 @@ const FullScreenLayoutMode: React.FC = () => {
 
     let currentY = legendTop + config.padding * 3 + config.titleSize + 8;
     let totalItems = 0;
-    const maxItems = size === 'small' ? 8 : size === 'medium' ? 12 : 16;
+    const maxItems = 1000; // Allow all layers to be displayed
 
     // Add legend items with better spacing and alignment
     for (const layerData of data) {
