@@ -62,11 +62,13 @@ const FullScreenLayoutMode: React.FC = () => {
     if (!targetView || !fabricCanvasRef.current) return;
 
     try {
+      // Take high-resolution screenshot for crisp PDF export
+      // Since we export at 2x resolution, we need higher source resolution
       const screenshot = await targetView.takeScreenshot({
         format: "png",
         quality: 100,
-        width: 1920,
-        height: 1080
+        width: 3840,  // 4x the original width for ultra-high quality
+        height: 2160  // 4x the original height for ultra-high quality
       });
 
       fabric.Image.fromURL(screenshot.dataUrl, (img) => {
