@@ -6,6 +6,341 @@ import useStateStore from "@/stateStore";
 import jsPDF from "jspdf";
 import { useTranslation } from "react-i18next";
 
+// Properties Panel Components
+const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas | null }> = ({ object, canvas }) => {
+  const [text, setText] = useState(object.text || '');
+  const [fontSize, setFontSize] = useState(object.fontSize || 12);
+  const [fontFamily, setFontFamily] = useState(object.fontFamily || 'Arial');
+  const [fill, setFill] = useState(object.fill || '#000000');
+
+  useEffect(() => {
+    setText(object.text || '');
+    setFontSize(object.fontSize || 12);
+    setFontFamily(object.fontFamily || 'Arial');
+    setFill(object.fill || '#000000');
+  }, [object]);
+
+  const updateText = (property: string, value: any) => {
+    object.set(property, value);
+    canvas?.renderAll();
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Text Content</label>
+        <textarea
+          value={text}
+          onChange={(e) => {
+            setText(e.target.value);
+            updateText('text', e.target.value);
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          rows={3}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Font Size</label>
+        <input
+          type="number"
+          value={fontSize}
+          onChange={(e) => {
+            const value = parseInt(e.target.value);
+            setFontSize(value);
+            updateText('fontSize', value);
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          min="8"
+          max="200"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Font Family</label>
+        <select
+          value={fontFamily}
+          onChange={(e) => {
+            setFontFamily(e.target.value);
+            updateText('fontFamily', e.target.value);
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+        >
+          <option value="Tajawal, Arial, Helvetica, sans-serif">Tajawal</option>
+          <option value="Arial">Arial</option>
+          <option value="Helvetica">Helvetica</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Georgia">Georgia</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={fill}
+            onChange={(e) => {
+              setFill(e.target.value);
+              updateText('fill', e.target.value);
+            }}
+            className="w-10 h-8 border border-gray-300 rounded"
+          />
+          <input
+            type="text"
+            value={fill}
+            onChange={(e) => {
+              setFill(e.target.value);
+              updateText('fill', e.target.value);
+            }}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+            placeholder="#000000"
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={() => updateText('fontWeight', object.fontWeight === 'bold' ? 'normal' : 'bold')}
+          className={`px-3 py-1 text-xs rounded ${object.fontWeight === 'bold' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          Bold
+        </button>
+        <button
+          onClick={() => updateText('fontStyle', object.fontStyle === 'italic' ? 'normal' : 'italic')}
+          className={`px-3 py-1 text-xs rounded ${object.fontStyle === 'italic' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          Italic
+        </button>
+        <button
+          onClick={() => updateText('underline', !object.underline)}
+          className={`px-3 py-1 text-xs rounded ${object.underline ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+        >
+          Underline
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canvas: fabric.Canvas | null }> = ({ object, canvas }) => {
+  const [fill, setFill] = useState(object.fill || '#cccccc');
+  const [stroke, setStroke] = useState(object.stroke || '#000000');
+  const [strokeWidth, setStrokeWidth] = useState(object.strokeWidth || 1);
+  const [opacity, setOpacity] = useState(object.opacity || 1);
+
+  useEffect(() => {
+    setFill(object.fill || '#cccccc');
+    setStroke(object.stroke || '#000000');
+    setStrokeWidth(object.strokeWidth || 1);
+    setOpacity(object.opacity || 1);
+  }, [object]);
+
+  const updateShape = (property: string, value: any) => {
+    object.set(property, value);
+    canvas?.renderAll();
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Fill Color</label>
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={fill}
+            onChange={(e) => {
+              setFill(e.target.value);
+              updateShape('fill', e.target.value);
+            }}
+            className="w-10 h-8 border border-gray-300 rounded"
+          />
+          <input
+            type="text"
+            value={fill}
+            onChange={(e) => {
+              setFill(e.target.value);
+              updateShape('fill', e.target.value);
+            }}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+            placeholder="#cccccc"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Stroke Color</label>
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={stroke}
+            onChange={(e) => {
+              setStroke(e.target.value);
+              updateShape('stroke', e.target.value);
+            }}
+            className="w-10 h-8 border border-gray-300 rounded"
+          />
+          <input
+            type="text"
+            value={stroke}
+            onChange={(e) => {
+              setStroke(e.target.value);
+              updateShape('stroke', e.target.value);
+            }}
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+            placeholder="#000000"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Stroke Width</label>
+        <input
+          type="number"
+          value={strokeWidth}
+          onChange={(e) => {
+            const value = parseInt(e.target.value);
+            setStrokeWidth(value);
+            updateShape('strokeWidth', value);
+          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          min="0"
+          max="20"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Opacity</label>
+        <input
+          type="range"
+          value={opacity}
+          onChange={(e) => {
+            const value = parseFloat(e.target.value);
+            setOpacity(value);
+            updateShape('opacity', value);
+          }}
+          className="w-full"
+          min="0"
+          max="1"
+          step="0.1"
+        />
+        <div className="text-xs text-gray-500 mt-1">{Math.round(opacity * 100)}%</div>
+      </div>
+    </div>
+  );
+};
+
+const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canvas | null; isLegend?: boolean; legendColumns?: number; onLegendColumnsChange?: (columns: number) => void }> = ({ object, canvas, isLegend = false, legendColumns = 1, onLegendColumnsChange }) => {
+  const [opacity, setOpacity] = useState(object.opacity || 1);
+  const [scaleX, setScaleX] = useState(object.scaleX || 1);
+  const [scaleY, setScaleY] = useState(object.scaleY || 1);
+
+  useEffect(() => {
+    setOpacity(object.opacity || 1);
+    setScaleX(object.scaleX || 1);
+    setScaleY(object.scaleY || 1);
+  }, [object]);
+
+  const updateGroup = (property: string, value: any) => {
+    object.set(property, value);
+    canvas?.renderAll();
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="text-sm text-gray-600">
+        <p><strong>Type:</strong> {isLegend ? 'Legend' : 'Group'}</p>
+        <p><strong>Objects:</strong> {object._objects?.length || 0}</p>
+      </div>
+
+      {isLegend && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Columns</label>
+          <select
+            value={legendColumns}
+            onChange={(e) => {
+              const newColumns = parseInt(e.target.value);
+              onLegendColumnsChange?.(newColumns);
+            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+          >
+            <option value={1}>1 Column</option>
+            <option value={2}>2 Columns</option>
+            <option value={3}>3 Columns</option>
+            <option value={4}>4 Columns</option>
+            <option value={5}>5 Columns</option>
+          </select>
+        </div>
+      )}
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Opacity</label>
+        <input
+          type="range"
+          value={opacity}
+          onChange={(e) => {
+            const value = parseFloat(e.target.value);
+            setOpacity(value);
+            updateGroup('opacity', value);
+          }}
+          className="w-full"
+          min="0"
+          max="1"
+          step="0.1"
+        />
+        <div className="text-xs text-gray-500 mt-1">{Math.round(opacity * 100)}%</div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Scale X</label>
+          <input
+            type="number"
+            value={scaleX.toFixed(2)}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value);
+              setScaleX(value);
+              updateGroup('scaleX', value);
+            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            step="0.1"
+            min="0.1"
+            max="5"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Scale Y</label>
+          <input
+            type="number"
+            value={scaleY.toFixed(2)}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value);
+              setScaleY(value);
+              updateGroup('scaleY', value);
+            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            step="0.1"
+            min="0.1"
+            max="5"
+          />
+        </div>
+      </div>
+
+      <button
+        onClick={() => {
+          object.set({ scaleX: 1, scaleY: 1 });
+          setScaleX(1);
+          setScaleY(1);
+          canvas?.renderAll();
+        }}
+        className="w-full px-3 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
+      >
+        Reset Scale
+      </button>
+    </div>
+  );
+};
+
 const FullScreenLayoutMode: React.FC = () => {
   const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -18,6 +353,8 @@ const FullScreenLayoutMode: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [mapImageLoaded, setMapImageLoaded] = useState(false);
   const [mapTitle, setMapTitle] = useState('Map Export');
+  const [selectedObject, setSelectedObject] = useState<fabric.Object | null>(null);
+  const [showProperties, setShowProperties] = useState(true);
 
   // Fixed canvas dimensions for A4 landscape at 300 DPI
   const CANVAS_WIDTH = 3508;
@@ -47,6 +384,19 @@ const FullScreenLayoutMode: React.FC = () => {
     canvas.setZoom(scale);
     canvas.setWidth(CANVAS_WIDTH * scale);
     canvas.setHeight(CANVAS_HEIGHT * scale);
+
+    // Add selection event listeners
+    canvas.on('selection:created', (e) => {
+      setSelectedObject(e.selected?.[0] || null);
+    });
+
+    canvas.on('selection:updated', (e) => {
+      setSelectedObject(e.selected?.[0] || null);
+    });
+
+    canvas.on('selection:cleared', () => {
+      setSelectedObject(null);
+    });
 
     // Load map as background
     loadMapBackground();
@@ -128,9 +478,9 @@ const FullScreenLayoutMode: React.FC = () => {
     // Add semi-transparent background for bottom elements
     const bottomBg = new fabric.Rect({
       left: 0,
-      top: CANVAS_HEIGHT - 150,
+      top: CANVAS_HEIGHT - 100,
       width: CANVAS_WIDTH,
-      height: 150,
+      height: 100,
       fill: 'rgba(255, 255, 255, 0.8)',
       selectable: false,
       evented: false,
@@ -260,9 +610,66 @@ const FullScreenLayoutMode: React.FC = () => {
     fabricCanvasRef.current.renderAll();
   };
 
-  const [legendSize, setLegendSize] = useState<'small' | 'medium' | 'large'>('medium');
+  const [legendSize, setLegendSize] = useState<'small' | 'medium' | 'large'>('large');
   const [legendData, setLegendData] = useState<any[]>([]);
   const [hasLegend, setHasLegend] = useState(false);
+  const [legendColumns, setLegendColumns] = useState<number>(1);
+
+  // Helper function to wrap text based on available width with better distribution
+  const wrapText = (text: string, maxWidth: number, fontSize: number, fontFamily: string): string[] => {
+    if (!text) return [''];
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return [text];
+
+    ctx.font = `${fontSize}px ${fontFamily}`;
+    
+    // Check if the entire text fits on one line
+    const fullTextWidth = ctx.measureText(text).width;
+    if (fullTextWidth <= maxWidth) {
+      return [text];
+    }
+
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    // Try to distribute words more evenly
+    for (const word of words) {
+      const testLine = currentLine ? `${currentLine} ${word}` : word;
+      const testMetrics = ctx.measureText(testLine);
+      
+      if (testMetrics.width > maxWidth && currentLine) {
+        // Check if we should add the word to current line or start new line
+        const currentLineWidth = ctx.measureText(currentLine).width;
+        const wordWidth = ctx.measureText(word).width;
+        const spaceWidth = ctx.measureText(' ').width;
+        
+        // If adding this word would exceed by less than 15% of maxWidth, keep it
+        // This prevents leaving just one or two words hanging
+        const exceedBy = (currentLineWidth + spaceWidth + wordWidth) - maxWidth;
+        const threshold = maxWidth * 0.15; // 15% threshold
+        
+        if (exceedBy <= threshold && words.indexOf(word) < words.length - 1) {
+          // Add the word to current line if it doesn't exceed too much
+          currentLine = testLine;
+        } else {
+          // Start a new line
+          lines.push(currentLine);
+          currentLine = word;
+        }
+      } else {
+        currentLine = testLine;
+      }
+    }
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    return lines.length > 0 ? lines : [''];
+  };
 
   // Update existing title text when mapTitle changes
   useEffect(() => {
@@ -356,6 +763,35 @@ const FullScreenLayoutMode: React.FC = () => {
     return legendItems;
   };
 
+  const handleLegendColumnsChange = (newColumns: number) => {
+    if (!hasLegend || legendData.length === 0) return;
+
+    setLegendColumns(newColumns);
+
+    // Remove existing legend
+    const canvas = fabricCanvasRef.current;
+    if (!canvas) return;
+
+    const objects = canvas.getObjects();
+    const legendGroup = objects.find(obj => {
+      if (obj.type === 'group') {
+        const group = obj as fabric.Group;
+        return group._objects?.some((o: any) => o.type === 'text' && o.text === 'Legend');
+      }
+      return false;
+    });
+
+    if (legendGroup) {
+      canvas.remove(legendGroup);
+    }
+
+    // Create new legend with updated column count
+    const newLegendGroup = createLegendGroup(legendData, legendSize, newColumns);
+    canvas.add(newLegendGroup);
+    canvas.setActiveObject(newLegendGroup);
+    canvas.renderAll();
+  };
+
   const handleAddLegend = async () => {
     if (!fabricCanvasRef.current || !targetView) return;
 
@@ -386,7 +822,7 @@ const FullScreenLayoutMode: React.FC = () => {
 
     if (data.length === 0) {
       // Add placeholder if no legend data
-      const legendGroup = createLegendGroup([{ layerTitle: 'Legend', symbols: [{ color: '#cccccc', label: 'No legend data available', type: 'simple-fill' }] }], legendSize);
+      const legendGroup = createLegendGroup([{ layerTitle: 'Legend', symbols: [{ color: '#cccccc', label: 'No legend data available', type: 'simple-fill' }] }], legendSize, legendColumns);
       canvas.add(legendGroup);
       canvas.setActiveObject(legendGroup);
       canvas.renderAll();
@@ -394,15 +830,15 @@ const FullScreenLayoutMode: React.FC = () => {
       return;
     }
 
-    // Create legend group with real data using current legendSize
-    const legendGroup = createLegendGroup(data, legendSize);
+    // Create legend group with real data using current legendSize and columns
+    const legendGroup = createLegendGroup(data, legendSize, legendColumns);
     canvas.add(legendGroup);
     canvas.setActiveObject(legendGroup);
     canvas.renderAll();
     setHasLegend(true);
   };
 
-  const createLegendGroup = (data: any[], size: 'small' | 'medium' | 'large') => {
+  const createLegendGroup = (data: any[], size: 'small' | 'medium' | 'large', columns: number = 1) => {
     const canvas = fabricCanvasRef.current!;
     
     // Size configurations
@@ -413,42 +849,108 @@ const FullScreenLayoutMode: React.FC = () => {
     };
 
     const config = configs[size];
-    const legendWidth = config.width;
+    
+    // Calculate total legend width based on columns
+    const columnWidth = config.width;
+    const legendWidth = (columnWidth * columns) + (config.padding * (columns - 1));
     const legendLeft = CANVAS_WIDTH - legendWidth - 50;
 
     const legendElements: fabric.Object[] = [];
 
-    // Calculate content height first
-    let contentHeight = config.padding * 3 + config.titleSize + 8; // Title area
-    let preCalcItems = 0;
-    const maxLegendItems = 1000; // Allow all layers to be displayed
+    // Calculate items per column for even distribution
+    const totalSymbols = data.reduce((sum, layer) => sum + layer.symbols.length, 0);
+    const itemsPerColumn = Math.ceil(totalSymbols / columns);
+    
+    // Track current column and position
+    const startY = 100; // Starting Y position for legend content relative to legend top
+    let columnY = Array(columns).fill(startY);
+    let columnItemCount = Array(columns).fill(0);
+    let totalItems = 0;
+    const maxItems = 1000; // Allow all layers to be displayed
 
-    // Pre-calculate content height
+    // Add legend items distributed across columns
     for (const layerData of data) {
-      if (preCalcItems >= maxLegendItems) break;
+      if (totalItems >= maxItems) break;
 
-      // Layer title height (if needed)
-      if (layerData.symbols.length > 1 && layerData.layerTitle !== layerData.symbols[0]?.label) {
-        contentHeight += config.itemSpacing - 2;
-      }
-
-      // Add height for each symbol
+      // Process each symbol in the layer
       for (const symbol of layerData.symbols) {
-        if (preCalcItems >= maxLegendItems) break;
-        contentHeight += config.itemSpacing;
-        preCalcItems++;
-      }
+        if (totalItems >= maxItems) break;
 
-      // Add spacing between layers
-      if (layerData.symbols.length > 1) {
-        contentHeight += 4;
+        // Find the column with the least items
+        let targetColumn = 0;
+        let minItems = columnItemCount[0];
+        for (let col = 1; col < columns; col++) {
+          if (columnItemCount[col] < minItems) {
+            minItems = columnItemCount[col];
+            targetColumn = col;
+          }
+        }
+
+        // Calculate position in the target column
+        const columnLeft = legendLeft + (targetColumn * (columnWidth + config.padding));
+        const currentY = columnY[targetColumn];
+
+        // Create symbol container background for better visibility
+        const symbolContainer = new fabric.Rect({
+          left: columnLeft + config.padding,
+          top: currentY - config.symbolSize / 2 - 2,
+          width: config.symbolSize + 4,
+          height: config.symbolSize + 4,
+          fill: 'rgba(248, 249, 250, 0.8)',
+          stroke: '#e9ecef',
+          strokeWidth: 1,
+          rx: 3,
+          ry: 3,
+        });
+        legendElements.push(symbolContainer);
+
+        // Create appropriate symbol based on type
+        const symbolElement = createBetterSymbolElement(symbol.symbol, {
+          left: columnLeft + config.padding + 2,
+          top: currentY - config.symbolSize / 2,
+          size: config.symbolSize
+        });
+        
+        if (symbolElement) {
+          legendElements.push(symbolElement);
+        }
+
+        // Symbol label with text wrapping for better positioning
+        const availableLabelWidth = columnWidth - (config.padding + config.symbolSize + config.symbolPadding + 8);
+        const wrappedLabelLines = wrapText(symbol.label, availableLabelWidth, config.fontSize, 'Tajawal, Arial, Helvetica, sans-serif');
+        
+        // Add each line of wrapped label text
+        for (let i = 0; i < wrappedLabelLines.length; i++) {
+          const labelText = new fabric.Text(wrappedLabelLines[i], {
+            left: columnLeft + config.padding + config.symbolSize + config.symbolPadding + 4,
+            top: currentY + (i * (config.fontSize + 2)), // Line height with small spacing
+            fontSize: config.fontSize,
+            fontFamily: 'Tajawal, Arial, Helvetica, sans-serif',
+            fill: '#2c3e50',
+            originY: 'center',
+          });
+          legendElements.push(labelText);
+        }
+
+        // Adjust column Y position based on number of wrapped lines
+        const labelHeight = Math.max(config.itemSpacing, wrappedLabelLines.length * (config.fontSize + 2));
+        columnY[targetColumn] += labelHeight;
+        columnItemCount[targetColumn]++;
+        totalItems++;
       }
     }
 
-    const legendHeight = Math.max(120, contentHeight + config.padding); // Minimum height of 120px
-    const legendTop = CANVAS_HEIGHT - legendHeight - 50;
+    // Calculate legend height based on the tallest column
+    const maxColumnHeight = Math.max(...columnY) - startY;
+    const legendHeight = Math.max(120, maxColumnHeight + config.padding * 4 + config.titleSize + 8);
+    const legendTop = CANVAS_HEIGHT - legendHeight - 120;
 
-    // Legend background with shadow effect
+    // Adjust all element positions to account for the calculated legendTop
+    legendElements.forEach(element => {
+      element.top! += legendTop;
+    });
+
+    // Create legend background with correct height
     const legendBg = new fabric.Rect({
       left: legendLeft,
       top: legendTop,
@@ -466,7 +968,7 @@ const FullScreenLayoutMode: React.FC = () => {
         offsetY: 2,
       }),
     });
-    legendElements.push(legendBg);
+    legendElements.unshift(legendBg); // Add background first
 
     // Legend title with better styling
     const legendTitle = new fabric.Text('Legend', {
@@ -479,7 +981,7 @@ const FullScreenLayoutMode: React.FC = () => {
       originX: 'center',
       originY: 'center',
     });
-    legendElements.push(legendTitle);
+    legendElements.splice(1, 0, legendTitle); // Insert title after background
 
     // Title underline
     const titleUnderline = new fabric.Rect({
@@ -491,95 +993,7 @@ const FullScreenLayoutMode: React.FC = () => {
       rx: 1,
       ry: 1,
     });
-    legendElements.push(titleUnderline);
-
-    let currentY = legendTop + config.padding * 3 + config.titleSize + 8;
-    let totalItems = 0;
-    const maxItems = 1000; // Allow all layers to be displayed
-
-    // Add legend items with better spacing and alignment
-    for (const layerData of data) {
-      if (totalItems >= maxItems) break;
-
-      // Add layer separator if multiple symbols
-      if (layerData.symbols.length > 1 && totalItems > 0) {
-        const separator = new fabric.Line([
-          legendLeft + config.padding,
-          currentY - 6,
-          legendLeft + legendWidth - config.padding,
-          currentY - 6
-        ], {
-          stroke: '#ecf0f1',
-          strokeWidth: 1,
-        });
-        legendElements.push(separator);
-        currentY += 4;
-      }
-
-      // Layer title (if different from first symbol label and multiple symbols)
-      if (layerData.symbols.length > 1 && layerData.layerTitle !== layerData.symbols[0]?.label) {
-        const layerTitleText = new fabric.Text(layerData.layerTitle, {
-          left: legendLeft + config.padding,
-          top: currentY,
-          fontSize: config.fontSize + 1,
-          fontFamily: 'Tajawal, Arial, Helvetica, sans-serif',
-          fontWeight: '600',
-          fill: '#34495e',
-          originY: 'center',
-        });
-        legendElements.push(layerTitleText);
-        currentY += config.itemSpacing - 2;
-      }
-
-      // Add symbols for this layer
-      for (const symbol of layerData.symbols) {
-        if (totalItems >= maxItems) break;
-
-        // Create symbol container background for better visibility
-        const symbolContainer = new fabric.Rect({
-          left: legendLeft + config.padding,
-          top: currentY - config.symbolSize / 2 - 2,
-          width: config.symbolSize + 4,
-          height: config.symbolSize + 4,
-          fill: 'rgba(248, 249, 250, 0.8)',
-          stroke: '#e9ecef',
-          strokeWidth: 1,
-          rx: 3,
-          ry: 3,
-        });
-        legendElements.push(symbolContainer);
-
-        // Create appropriate symbol based on type
-        const symbolElement = createBetterSymbolElement(symbol.symbol, {
-          left: legendLeft + config.padding + 2,
-          top: currentY - config.symbolSize / 2,
-          size: config.symbolSize
-        });
-        
-        if (symbolElement) {
-          legendElements.push(symbolElement);
-        }
-
-        // Symbol label with better positioning
-        const labelText = new fabric.Text(symbol.label, {
-          left: legendLeft + config.padding + config.symbolSize + config.symbolPadding + 4,
-          top: currentY,
-          fontSize: config.fontSize,
-          fontFamily: 'Tajawal, Arial, Helvetica, sans-serif',
-          fill: '#2c3e50',
-          originY: 'center',
-        });
-        legendElements.push(labelText);
-
-        currentY += config.itemSpacing;
-        totalItems++;
-      }
-
-      // Add small spacing between layers
-      if (layerData.symbols.length > 1) {
-        currentY += 4;
-      }
-    }
+    legendElements.splice(2, 0, titleUnderline); // Insert underline after title
 
     // Group all legend elements
     const legendGroup = new fabric.Group(legendElements, {
@@ -979,21 +1393,6 @@ const FullScreenLayoutMode: React.FC = () => {
           {t('layoutMode.exit', 'Exit Layout Mode')}
         </button>
 
-        <div className="w-px h-6 bg-gray-300"></div>
-
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium text-gray-700">Title:</label>
-          <input
-            type="text"
-            value={mapTitle}
-            onChange={(e) => setMapTitle(e.target.value)}
-            className="px-2 py-1 text-sm border border-gray-300 rounded w-48"
-            placeholder="Enter map title"
-          />
-        </div>
-
-        <div className="w-px h-6 bg-gray-300"></div>
-
         <button
           onClick={handleAddText}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
@@ -1022,6 +1421,17 @@ const FullScreenLayoutMode: React.FC = () => {
         <div className="w-px h-6 bg-gray-300"></div>
 
         <button
+          onClick={() => setShowProperties(!showProperties)}
+          className={`px-4 py-2 text-white rounded hover:opacity-90 transition-colors ${
+            showProperties ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'
+          }`}
+        >
+          {showProperties ? 'Hide Properties' : 'Show Properties'}
+        </button>
+
+        <div className="w-px h-6 bg-gray-300"></div>
+
+        <button
           onClick={handleExportPDF}
           disabled={isGenerating || !mapImageLoaded}
           className={`px-6 py-2 rounded font-medium transition-colors ${
@@ -1038,8 +1448,61 @@ const FullScreenLayoutMode: React.FC = () => {
       </div>
 
       {/* Canvas Container */}
-      <div className="w-full h-full flex items-center justify-center p-8 pt-20">
+      <div className="w-full h-full flex items-center justify-center p-8 pt-20 relative">
         <canvas ref={canvasRef} className="border border-gray-300 shadow-lg" />
+        
+        {/* Properties Sidebar - Absolutely positioned */}
+        {showProperties && (
+          <div className="absolute right-8 top-28 w-80 bg-white border border-gray-300 rounded-lg shadow-lg p-4 overflow-y-auto max-h-[calc(100vh-160px)]">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Properties</h3>
+              <button
+                onClick={() => setShowProperties(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+
+            {selectedObject ? (
+              <div className="space-y-4">
+                {selectedObject.type === 'text' && (
+                  <TextPropertiesPanel 
+                    object={selectedObject as fabric.Text} 
+                    canvas={fabricCanvasRef.current}
+                  />
+                )}
+                {selectedObject.type === 'rect' && (
+                  <ShapePropertiesPanel 
+                    object={selectedObject as fabric.Rect} 
+                    canvas={fabricCanvasRef.current}
+                  />
+                )}
+                {selectedObject.type === 'circle' && (
+                  <ShapePropertiesPanel 
+                    object={selectedObject as fabric.Circle} 
+                    canvas={fabricCanvasRef.current}
+                  />
+                )}
+                {selectedObject.type === 'group' && (
+                  <GroupPropertiesPanel 
+                    object={selectedObject as fabric.Group} 
+                    canvas={fabricCanvasRef.current}
+                    isLegend={(selectedObject as fabric.Group)._objects?.some((o: any) => o.type === 'text' && o.text === 'Legend') || false}
+                    legendColumns={legendColumns}
+                    onLegendColumnsChange={(columns) => {
+                      handleLegendColumnsChange(columns);
+                    }}
+                  />
+                )}
+              </div>
+            ) : (
+              <div className="text-center text-gray-500 py-8">
+                <p>Select an object to edit its properties</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Loading Overlay */}
