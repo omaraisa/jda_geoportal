@@ -17,6 +17,7 @@ const FullScreenLayoutMode: React.FC = () => {
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [mapImageLoaded, setMapImageLoaded] = useState(false);
+  const [mapTitle, setMapTitle] = useState('Map Export');
 
   // Fixed canvas dimensions for A4 landscape at 300 DPI
   const CANVAS_WIDTH = 3508;
@@ -111,11 +112,11 @@ const FullScreenLayoutMode: React.FC = () => {
     canvas.add(titleBg);
 
     // Add title text
-    const title = new fabric.Text('Map Export', {
+    const title = new fabric.Text(mapTitle, {
       left: CANVAS_WIDTH / 2,
       top: 75,
       fontSize: 72,
-      fontFamily: 'Arial',
+      fontFamily: 'Tajawal, Arial, Helvetica, sans-serif',
       fontWeight: 'bold',
       fill: '#253080',
       textAlign: 'center',
@@ -262,6 +263,26 @@ const FullScreenLayoutMode: React.FC = () => {
   const [legendSize, setLegendSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [legendData, setLegendData] = useState<any[]>([]);
   const [hasLegend, setHasLegend] = useState(false);
+
+  // Update existing title text when mapTitle changes
+  useEffect(() => {
+    if (!fabricCanvasRef.current) return;
+
+    const canvas = fabricCanvasRef.current;
+    const objects = canvas.getObjects();
+
+    // Find the title text object (it's positioned at center with large font)
+    const titleObject = objects.find(obj => 
+      obj.type === 'text' && 
+      (obj as fabric.Text).fontSize === 72 && 
+      (obj as fabric.Text).textAlign === 'center'
+    );
+
+    if (titleObject && titleObject.type === 'text') {
+      (titleObject as fabric.Text).set('text', mapTitle);
+      canvas.renderAll();
+    }
+  }, [mapTitle]);
 
   // Extract legend data from visible layers
   const extractLegendData = async () => {
@@ -957,6 +978,19 @@ const FullScreenLayoutMode: React.FC = () => {
         >
           {t('layoutMode.exit', 'Exit Layout Mode')}
         </button>
+
+        <div className="w-px h-6 bg-gray-300"></div>
+
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-700">Title:</label>
+          <input
+            type="text"
+            value={mapTitle}
+            onChange={(e) => setMapTitle(e.target.value)}
+            className="px-2 py-1 text-sm border border-gray-300 rounded w-48"
+            placeholder="Enter map title"
+          />
+        </div>
 
         <div className="w-px h-6 bg-gray-300"></div>
 
