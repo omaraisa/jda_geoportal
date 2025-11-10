@@ -282,41 +282,36 @@ const FullScreenLayoutMode: React.FC = () => {
         let symbols: any[] = [];
 
         if (renderer.type === 'simple') {
+          // SimpleRenderer - symbol is directly on renderer
           const symbol = renderer.symbol;
           if (symbol) {
-            const color = getColorFromSymbol(symbol);
-            if (color) {
-              symbols.push({
-                color: color,
-                label: layer.title || 'Layer',
-                type: symbol.type,
-                originalSymbol: symbol
-              });
-            }
+            symbols.push({
+              symbol: symbol,
+              label: layer.title || 'Layer',
+              type: symbol.type
+            });
           }
         } else if (renderer.type === 'unique-value') {
+          // UniqueValueRenderer - symbols are in uniqueValueInfos
           const uniqueValueInfos = renderer.uniqueValueInfos || [];
           for (const info of uniqueValueInfos.slice(0, 5)) { // Limit to 5 per layer
-            const color = getColorFromSymbol(info.symbol);
-            if (color && info.label) {
+            if (info.symbol && info.label) {
               symbols.push({
-                color: color,
+                symbol: info.symbol,
                 label: info.label,
-                type: info.symbol?.type,
-                originalSymbol: info.symbol
+                type: info.symbol.type
               });
             }
           }
         } else if (renderer.type === 'class-breaks') {
+          // ClassBreaksRenderer - symbols are in classBreakInfos
           const classBreakInfos = renderer.classBreakInfos || [];
           for (const info of classBreakInfos.slice(0, 5)) { // Limit to 5 per layer
-            const color = getColorFromSymbol(info.symbol);
-            if (color && info.label) {
+            if (info.symbol && info.label) {
               symbols.push({
-                color: color,
+                symbol: info.symbol,
                 label: info.label,
-                type: info.symbol?.type,
-                originalSymbol: info.symbol
+                type: info.symbol.type
               });
             }
           }
@@ -405,8 +400,8 @@ const FullScreenLayoutMode: React.FC = () => {
       left: legendLeft + legendWidth / 2,
       top: legendTop + config.padding + 5,
       fontSize: config.titleSize,
-      fontFamily: 'Arial',
-      fontWeight: 'bold',
+      fontFamily: 'Tajawal, Arial, Helvetica, sans-serif',
+      fontWeight: '600',
       fill: '#2c3e50',
       originX: 'center',
       originY: 'center',
@@ -454,8 +449,8 @@ const FullScreenLayoutMode: React.FC = () => {
           left: legendLeft + config.padding,
           top: currentY,
           fontSize: config.fontSize + 1,
-          fontFamily: 'Arial',
-          fontWeight: 'bold',
+          fontFamily: 'Tajawal, Arial, Helvetica, sans-serif',
+          fontWeight: '600',
           fill: '#34495e',
           originY: 'center',
         });
@@ -482,7 +477,7 @@ const FullScreenLayoutMode: React.FC = () => {
         legendElements.push(symbolContainer);
 
         // Create appropriate symbol based on type
-        const symbolElement = createBetterSymbolElement(symbol, {
+        const symbolElement = createBetterSymbolElement(symbol.symbol, {
           left: legendLeft + config.padding + 2,
           top: currentY - config.symbolSize / 2,
           size: config.symbolSize
@@ -497,7 +492,7 @@ const FullScreenLayoutMode: React.FC = () => {
           left: legendLeft + config.padding + config.symbolSize + config.symbolPadding + 4,
           top: currentY,
           fontSize: config.fontSize,
-          fontFamily: 'Arial',
+          fontFamily: 'Tajawal, Arial, Helvetica, sans-serif',
           fill: '#2c3e50',
           originY: 'center',
         });
@@ -523,6 +518,83 @@ const FullScreenLayoutMode: React.FC = () => {
       lockScalingFlip: true,
     });
 
+    // Store original text properties for scaling
+    const textElements = legendElements.filter(el => el.type === 'text') as fabric.Text[];
+    const originalTextProps = textElements.map(text => ({
+      element: text,
+      originalFontSize: text.fontSize || 12, // Default to 12 if undefined
+      originalLeft: text.left,
+      originalTop: text.top,
+    }));
+
+    // Add scaling event listener to maintain crisp text rendering
+    legendGroup.on('scaling', () => {
+      const scaleX = legendGroup.scaleX || 1;
+      const scaleY = legendGroup.scaleY || 1;
+
+      // Check if scaling is uniform (corner scaling) vs non-uniform (edge scaling)
+      const scaleRatio = Math.max(scaleX, scaleY) / Math.min(scaleX, scaleY);
+      const isUniformScaling = scaleRatio < 1.2; // Allow small tolerance for "uniform" scaling
+
+      if (isUniformScaling) {
+        // Uniform scaling - scale text proportionally
+        const scale = Math.max(scaleX, scaleY);
+        originalTextProps.forEach(({ element, originalFontSize }) => {
+          const newFontSize = Math.min(12, Math.max(8, originalFontSize * scale));
+          element.set({
+            fontSize: newFontSize,
+            scaleX: 1 / scale,
+            scaleY: 1 / scale,
+          });
+        });
+      } else {
+        // Non-uniform scaling - keep text at original size, just reposition
+        originalTextProps.forEach(({ element, originalFontSize }) => {
+          element.set({
+            fontSize: originalFontSize, // Keep original size
+            scaleX: 1,
+            scaleY: 1,
+          });
+        });
+      }
+
+      canvas.renderAll();
+    });
+
+    // Reset text properties when scaling ends
+    legendGroup.on('modified', () => {
+      const finalScaleX = legendGroup.scaleX || 1;
+      const finalScaleY = legendGroup.scaleY || 1;
+
+      // Check if final scaling is uniform
+      const finalScaleRatio = Math.max(finalScaleX, finalScaleY) / Math.min(finalScaleX, finalScaleY);
+      const isFinalUniformScaling = finalScaleRatio < 1.2;
+
+      if (isFinalUniformScaling) {
+        // Apply final uniform scaled font sizes
+        const finalScale = Math.max(finalScaleX, finalScaleY);
+        originalTextProps.forEach(({ element, originalFontSize }) => {
+          const newFontSize = Math.min(12, Math.max(8, originalFontSize * finalScale));
+          element.set({
+            fontSize: newFontSize,
+            scaleX: 1,
+            scaleY: 1,
+          });
+        });
+      } else {
+        // Non-uniform final scaling - keep text at original size
+        originalTextProps.forEach(({ element, originalFontSize }) => {
+          element.set({
+            fontSize: originalFontSize,
+            scaleX: 1,
+            scaleY: 1,
+          });
+        });
+      }
+
+      canvas.renderAll();
+    });
+
     return legendGroup;
   };
 
@@ -536,17 +608,22 @@ const FullScreenLayoutMode: React.FC = () => {
       switch (symbol.type) {
         case 'simple-fill':
           // Polygon symbol - rectangle with fill and outline
-          const fillColor = getColorFromSymbol(symbol) || '#cccccc';
-          const outlineColor = symbol.originalSymbol?.outline?.color ? 
-            getColorFromSymbolProperty(symbol.originalSymbol.outline.color) : '#666666';
-          const outlineWidth = Math.max(1, (symbol.originalSymbol?.outline?.width || 2) / 2);
+          const fillColor = getColorFromSymbol(symbol);
+          let outlineColor = symbol.outline?.color ? getColorFromSymbolProperty(symbol.outline.color) : '#666666';
+          
+          // If outline is completely transparent, use a default visible color
+          if (outlineColor.includes('rgba') && outlineColor.endsWith(', 0)')) {
+            outlineColor = '#e0d2b8'; // Light brown to match the fill
+          }
+          
+          const outlineWidth = Math.max(1, (symbol.outline?.width || 2) / 2);
           
           return new fabric.Rect({
             left: left,
             top: top,
             width: size,
             height: size,
-            fill: fillColor,
+            fill: fillColor || '#cccccc',
             stroke: outlineColor,
             strokeWidth: outlineWidth,
             rx: 2,
@@ -556,7 +633,7 @@ const FullScreenLayoutMode: React.FC = () => {
         case 'simple-line':
           // Line symbol - horizontal line with proper styling
           const lineColor = getColorFromSymbol(symbol) || '#000000';
-          const lineWidth = Math.max(2, Math.min(6, (symbol.originalSymbol?.width || 2)));
+          const lineWidth = Math.max(2, Math.min(6, (symbol.width || 2)));
           
           // Create a line that spans the symbol area
           return new fabric.Line([
@@ -574,12 +651,12 @@ const FullScreenLayoutMode: React.FC = () => {
           // Point symbol - circle, square, or other marker
           const markerColor = getColorFromSymbol(symbol) || '#ff0000';
           const markerSize = Math.min(size * 0.8, 18);
-          const markerOutlineColor = symbol.originalSymbol?.outline?.color ? 
-            getColorFromSymbolProperty(symbol.originalSymbol.outline.color) : '#333333';
-          const markerOutlineWidth = symbol.originalSymbol?.outline?.width ? 
-            Math.max(1, symbol.originalSymbol.outline.width / 2) : 1;
+          const markerOutlineColor = symbol.outline?.color ? 
+            getColorFromSymbolProperty(symbol.outline.color) : '#333333';
+          const markerOutlineWidth = symbol.outline?.width ? 
+            Math.max(1, symbol.outline.width / 2) : 1;
           
-          const markerStyle = symbol.originalSymbol?.style || 'circle';
+          const markerStyle = symbol.style || 'circle';
           const centerX = left + size / 2;
           const centerY = top + size / 2;
           
@@ -687,14 +764,25 @@ const FullScreenLayoutMode: React.FC = () => {
   const getColorFromSymbolProperty = (colorProp: any): string => {
     try {
       if (Array.isArray(colorProp)) {
-        return `rgba(${colorProp[0]}, ${colorProp[1]}, ${colorProp[2]}, ${colorProp[3] !== undefined ? colorProp[3]/255 : 1})`;
+        const [r, g, b, a] = colorProp;
+        // Handle case where alpha might be in 0-255 range instead of 0-1
+        const alpha = a !== undefined ? (a <= 1 ? a : a / 255) : 1;
+        // If alpha is very small (like 1/255), treat as fully opaque
+        const finalAlpha = alpha < 0.01 ? 1 : alpha;
+        const result = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${finalAlpha})`;
+        return result;
       } else if (typeof colorProp === 'string') {
         return colorProp;
-      } else if (colorProp.r !== undefined && colorProp.g !== undefined && colorProp.b !== undefined) {
-        return `rgba(${colorProp.r}, ${colorProp.g}, ${colorProp.b}, ${colorProp.a !== undefined ? colorProp.a/255 : 1})`;
+      } else if (colorProp && typeof colorProp === 'object' && colorProp.r !== undefined && colorProp.g !== undefined && colorProp.b !== undefined) {
+        const alpha = colorProp.a !== undefined ? (colorProp.a <= 1 ? colorProp.a : colorProp.a / 255) : 1;
+        const finalAlpha = alpha < 0.01 ? 1 : alpha;
+        const result = `rgba(${colorProp.r}, ${colorProp.g}, ${colorProp.b}, ${finalAlpha})`;
+        return result;
       }
+      
       return '#666666';
     } catch (error) {
+      console.warn('Error processing color:', error);
       return '#666666';
     }
   };
@@ -706,59 +794,54 @@ const FullScreenLayoutMode: React.FC = () => {
 
       // Handle different symbol types
       if (symbol.type === 'simple-fill') {
-        const color = symbol.color || symbol.fillColor;
+        const color = symbol.color;
         if (color) {
-          if (Array.isArray(color)) {
-            return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] !== undefined ? color[3]/255 : 1})`;
-          } else if (typeof color === 'string') {
-            return color;
-          } else if (color.r !== undefined && color.g !== undefined && color.b !== undefined) {
-            return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a !== undefined ? color.a/255 : 1})`;
+          const colorStr = getColorFromSymbolProperty(color);
+          // If the color is completely transparent, use a default visible color
+          if (colorStr.includes('rgba') && colorStr.endsWith(', 0)')) {
+            return '#e0d2b8'; // Light brown color for visibility
           }
+          return colorStr;
         }
         // If no fill color, check outline
         const outline = symbol.outline;
         if (outline && outline.color) {
-          if (Array.isArray(outline.color)) {
-            return `rgba(${outline.color[0]}, ${outline.color[1]}, ${outline.color[2]}, ${outline.color[3] !== undefined ? outline.color[3]/255 : 1})`;
-          } else if (typeof outline.color === 'string') {
-            return outline.color;
-          } else if (outline.color.r !== undefined) {
-            return `rgba(${outline.color.r}, ${outline.color.g}, ${outline.color.b}, ${outline.color.a !== undefined ? outline.color.a/255 : 1})`;
+          const outlineColorStr = getColorFromSymbolProperty(outline.color);
+          // If outline is completely transparent, use a default visible color
+          if (outlineColorStr.includes('rgba') && outlineColorStr.endsWith(', 0)')) {
+            return '#cccccc'; // Default gray
           }
+          return outlineColorStr;
         }
       } else if (symbol.type === 'simple-marker') {
-        const color = symbol.color || symbol.fillColor;
+        const color = symbol.color;
         if (color) {
-          if (Array.isArray(color)) {
-            return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] !== undefined ? color[3]/255 : 1})`;
-          } else if (typeof color === 'string') {
-            return color;
-          } else if (color.r !== undefined && color.g !== undefined && color.b !== undefined) {
-            return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a !== undefined ? color.a/255 : 1})`;
+          const colorStr = getColorFromSymbolProperty(color);
+          // If the color is completely transparent, use a default visible color
+          if (colorStr.includes('rgba') && colorStr.endsWith(', 0)')) {
+            return '#ff6b6b'; // Default red
           }
+          return colorStr;
         }
         // If no fill color, check outline
         const outline = symbol.outline;
         if (outline && outline.color) {
-          if (Array.isArray(outline.color)) {
-            return `rgba(${outline.color[0]}, ${outline.color[1]}, ${outline.color[2]}, ${outline.color[3] !== undefined ? outline.color[3]/255 : 1})`;
-          } else if (typeof outline.color === 'string') {
-            return outline.color;
-          } else if (outline.color.r !== undefined) {
-            return `rgba(${outline.color.r}, ${outline.color.g}, ${outline.color.b}, ${outline.color.a !== undefined ? outline.color.a/255 : 1})`;
+          const outlineColorStr = getColorFromSymbolProperty(outline.color);
+          // If outline is completely transparent, use a default visible color
+          if (outlineColorStr.includes('rgba') && outlineColorStr.endsWith(', 0)')) {
+            return '#333333'; // Default dark gray
           }
+          return outlineColorStr;
         }
       } else if (symbol.type === 'simple-line') {
         const color = symbol.color;
         if (color) {
-          if (Array.isArray(color)) {
-            return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] !== undefined ? color[3]/255 : 1})`;
-          } else if (typeof color === 'string') {
-            return color;
-          } else if (color.r !== undefined && color.g !== undefined && color.b !== undefined) {
-            return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a !== undefined ? color.a/255 : 1})`;
+          const colorStr = getColorFromSymbolProperty(color);
+          // If the color is completely transparent, use a default visible color
+          if (colorStr.includes('rgba') && colorStr.endsWith(', 0)')) {
+            return '#a80000'; // Default dark red
           }
+          return colorStr;
         }
       } else if (symbol.type === 'picture-fill' || symbol.type === 'picture-marker') {
         // For picture symbols, return a default color
@@ -766,13 +849,12 @@ const FullScreenLayoutMode: React.FC = () => {
       } else if (symbol.type === 'text') {
         const color = symbol.color;
         if (color) {
-          if (Array.isArray(color)) {
-            return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3] !== undefined ? color[3]/255 : 1})`;
-          } else if (typeof color === 'string') {
-            return color;
-          } else if (color.r !== undefined) {
-            return `rgba(${color.r}, ${color.g}, ${color.b}, ${color.a !== undefined ? color.a/255 : 1})`;
+          const colorStr = getColorFromSymbolProperty(color);
+          // If the color is completely transparent, use a default visible color
+          if (colorStr.includes('rgba') && colorStr.endsWith(', 0)')) {
+            return '#000000'; // Default black
           }
+          return colorStr;
         }
       }
 
