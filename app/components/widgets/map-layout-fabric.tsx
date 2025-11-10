@@ -54,16 +54,9 @@ const MapLayoutComponent: React.FC = () => {
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [zoom, setZoom] = useState(0.3); // Start with smaller zoom for better overview
   const setLayoutModeActive = useStateStore((state) => state.setLayoutModeActive);
+  const layoutModeActive = useStateStore((state) => state.layoutModeActive);
 
-  // Activate full-screen layout mode when component mounts
-  useEffect(() => {
-    setLayoutModeActive(true);
-    return () => {
-      setLayoutModeActive(false);
-    };
-  }, [setLayoutModeActive]);
-
-  // Default map elements configuration
+  // Default map elements configuration - always define this hook
   const [elements, setElements] = useState<MapElement[]>([
     {
       id: 'title',
@@ -115,6 +108,16 @@ const MapLayoutComponent: React.FC = () => {
     }
   ]);
 
+  // Reset component state when layout mode becomes inactive
+  useEffect(() => {
+    if (!layoutModeActive) {
+      setMapScreenshot('');
+      setSelectedElementId(null);
+      setZoom(0.3);
+      setIsGenerating(false);
+    }
+  }, [layoutModeActive]);
+
   // Get display text for each element
   const getElementDisplayText = (element: MapElement): string => {
     switch (element.type) {
@@ -132,8 +135,8 @@ const MapLayoutComponent: React.FC = () => {
 
   // Update element properties
   const onUpdateElement = (elementId: string, updates: Partial<MapElement>) => {
-    setElements(prev => 
-      prev.map(element => 
+    setElements(prev =>
+      prev.map(element =>
         element.id === elementId ? { ...element, ...updates } : element
       )
     );
@@ -148,7 +151,7 @@ const MapLayoutComponent: React.FC = () => {
 
     try {
       setIsGenerating(true);
-      
+
       // Capture map at A4 aspect ratio to avoid distortion
       const screenshot = await targetView.takeScreenshot({
         format: "png",
@@ -158,11 +161,11 @@ const MapLayoutComponent: React.FC = () => {
       });
 
       setMapScreenshot(screenshot.dataUrl);
-      
+
       // Also update north arrow rotation based on map rotation
       const mapRotation = (targetView as any).rotation || (targetView as any).camera?.heading || 0;
       onUpdateElement('north-arrow', { rotation: mapRotation });
-      
+
     } catch (error) {
       console.error('Error capturing map:', error);
       alert('Failed to capture map');
@@ -180,7 +183,28 @@ const MapLayoutComponent: React.FC = () => {
     }
   };
 
-  return (
+  // Only activate layout mode when explicitly requested, not on mount
+  const handleEnterLayoutMode = () => {
+    setLayoutModeActive(true);
+  };
+
+  // If layout mode is not active, show simple entry interface
+  if (!layoutModeActive) {
+    return (
+      <div className="p-4 text-black w-full max-w-md">
+        <h3 className="text-lg font-semibold mb-4">{t('mapLayouts.title', 'Map Print')}</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          {t('mapLayouts.description', 'Enter full-screen layout mode to design your map with draggable elements.')}
+        </p>
+        <button
+          onClick={handleEnterLayoutMode}
+          className="w-full font-medium py-2 px-4 rounded-md transition-colors bg-[#253080] hover:bg-[#1e2660] text-white"
+        >
+          {t('mapLayouts.enterLayoutMode', 'Enter Layout Mode')}
+        </button>
+      </div>
+    );
+  }  return (
     <div className="flex flex-col h-full">
       {/* Controls */}
       <div className="p-4 bg-white border-b">

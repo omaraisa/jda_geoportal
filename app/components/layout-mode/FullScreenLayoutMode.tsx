@@ -789,7 +789,28 @@ const FullScreenLayoutMode: React.FC = () => {
       className="fixed inset-0 z-50 bg-gray-100 overflow-hidden"
       ref={containerRef}
     >
-      {/* Floating Toolbar */}
+      {/* Custom styles for Esri Legend */}
+      <style jsx>{`
+        .esri-legend {
+          background-color: transparent !important;
+        }
+        .esri-legend__service {
+          background-color: transparent !important;
+        }
+        .esri-legend__layer {
+          background-color: transparent !important;
+        }
+        .esri-legend__layer-table {
+          background-color: transparent !important;
+        }
+        .esri-legend__layer-caption {
+          color: #253080 !important;
+          font-weight: bold !important;
+        }
+        .esri-legend__symbol {
+          background-color: transparent !important;
+        }
+      `}</style>
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-white rounded-lg shadow-lg p-4 flex items-center gap-4">
         <button
           onClick={handleExitLayoutMode}
