@@ -259,6 +259,7 @@ const FullScreenLayoutMode: React.FC = () => {
 
   const [legendSize, setLegendSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [legendData, setLegendData] = useState<any[]>([]);
+  const [hasLegend, setHasLegend] = useState(false);
 
   // Extract legend data from visible layers
   const extractLegendData = async () => {
@@ -337,6 +338,25 @@ const FullScreenLayoutMode: React.FC = () => {
 
     const canvas = fabricCanvasRef.current;
 
+    if (hasLegend) {
+      // Remove existing legend
+      const objects = canvas.getObjects();
+      const legendGroup = objects.find(obj => {
+        if (obj.type === 'group') {
+          const group = obj as fabric.Group;
+          return group._objects?.some((o: any) => o.type === 'text' && o.text === 'Legend');
+        }
+        return false;
+      });
+      if (legendGroup) {
+        canvas.remove(legendGroup);
+        canvas.renderAll();
+      }
+      setHasLegend(false);
+      return;
+    }
+
+    // Add new legend
     // Extract real legend data
     const data = await extractLegendData();
     setLegendData(data);
@@ -347,6 +367,7 @@ const FullScreenLayoutMode: React.FC = () => {
       canvas.add(legendGroup);
       canvas.setActiveObject(legendGroup);
       canvas.renderAll();
+      setHasLegend(true);
       return;
     }
 
@@ -355,6 +376,7 @@ const FullScreenLayoutMode: React.FC = () => {
     canvas.add(legendGroup);
     canvas.setActiveObject(legendGroup);
     canvas.renderAll();
+    setHasLegend(true);
   };
 
   const createLegendGroup = (data: any[], size: 'small' | 'medium' | 'large') => {
@@ -362,18 +384,46 @@ const FullScreenLayoutMode: React.FC = () => {
     
     // Size configurations
     const configs = {
-      small: { width: 280, height: 250, fontSize: 11, titleSize: 14, symbolSize: 16, padding: 12, itemSpacing: 18, symbolPadding: 8 },
-      medium: { width: 380, height: 350, fontSize: 13, titleSize: 16, symbolSize: 20, padding: 16, itemSpacing: 22, symbolPadding: 10 },
-      large: { width: 480, height: 450, fontSize: 15, titleSize: 18, symbolSize: 24, padding: 20, itemSpacing: 26, symbolPadding: 12 }
+      small: { width: 280, fontSize: 11, titleSize: 14, symbolSize: 16, padding: 12, itemSpacing: 24, symbolPadding: 8 },
+      medium: { width: 380, fontSize: 13, titleSize: 16, symbolSize: 20, padding: 16, itemSpacing: 28, symbolPadding: 10 },
+      large: { width: 480, fontSize: 15, titleSize: 18, symbolSize: 24, padding: 20, itemSpacing: 32, symbolPadding: 12 }
     };
 
     const config = configs[size];
     const legendWidth = config.width;
-    const legendHeight = config.height;
     const legendLeft = CANVAS_WIDTH - legendWidth - 50;
-    const legendTop = CANVAS_HEIGHT - legendHeight - 50;
 
     const legendElements: fabric.Object[] = [];
+
+    // Calculate content height first
+    let contentHeight = config.padding * 3 + config.titleSize + 8; // Title area
+    let preCalcItems = 0;
+    const maxLegendItems = size === 'small' ? 8 : size === 'medium' ? 12 : 16;
+
+    // Pre-calculate content height
+    for (const layerData of data) {
+      if (preCalcItems >= maxLegendItems) break;
+
+      // Layer title height (if needed)
+      if (layerData.symbols.length > 1 && layerData.layerTitle !== layerData.symbols[0]?.label) {
+        contentHeight += config.itemSpacing - 2;
+      }
+
+      // Add height for each symbol
+      for (const symbol of layerData.symbols) {
+        if (preCalcItems >= maxLegendItems) break;
+        contentHeight += config.itemSpacing;
+        preCalcItems++;
+      }
+
+      // Add spacing between layers
+      if (layerData.symbols.length > 1) {
+        contentHeight += 4;
+      }
+    }
+
+    const legendHeight = Math.max(120, contentHeight + config.padding); // Minimum height of 120px
+    const legendTop = CANVAS_HEIGHT - legendHeight - 50;
 
     // Legend background with shadow effect
     const legendBg = new fabric.Rect({
@@ -381,7 +431,7 @@ const FullScreenLayoutMode: React.FC = () => {
       top: legendTop,
       width: legendWidth,
       height: legendHeight,
-      fill: 'rgba(255, 255, 255, 0.98)',
+      fill: 'rgba(255, 255, 255, 0.6)',
       stroke: '#dddddd',
       strokeWidth: 1,
       rx: 8,
@@ -922,9 +972,13 @@ const FullScreenLayoutMode: React.FC = () => {
           </select>
           <button
             onClick={handleAddLegend}
-            className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
+            className={`px-4 py-2 text-white rounded hover:opacity-90 transition-colors ${
+              hasLegend 
+                ? 'bg-red-500 hover:bg-red-600' 
+                : 'bg-purple-500 hover:bg-purple-600'
+            }`}
           >
-            {t('layoutMode.addLegend', 'Add Legend')}
+            {hasLegend ? t('layoutMode.removeLegend', 'Remove Legend') : t('layoutMode.addLegend', 'Add Legend')}
           </button>
         </div>
 
