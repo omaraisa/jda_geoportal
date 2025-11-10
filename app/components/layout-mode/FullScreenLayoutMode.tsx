@@ -11,16 +11,20 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
   const [text, setText] = useState(object.text || '');
   const [fontSize, setFontSize] = useState(object.fontSize || 12);
   const [fontFamily, setFontFamily] = useState(object.fontFamily || 'Arial');
-  const [fill, setFill] = useState(object.fill || '#000000');
+  const [fill, setFill] = useState(() => {
+    const objFill = object.fill;
+    if (typeof objFill === 'string') return objFill;
+    return '#000000'; // Default fallback for Pattern/Gradient
+  });
 
   useEffect(() => {
-    setText(object.text || '');
+    const objFill = object.fill;
+    setFill(typeof objFill === 'string' ? objFill : '#000000');
     setFontSize(object.fontSize || 12);
     setFontFamily(object.fontFamily || 'Arial');
-    setFill(object.fill || '#000000');
   }, [object]);
 
-  const updateText = (property: string, value: any) => {
+  const updateText = (property: keyof fabric.Text, value: any) => {
     object.set(property, value);
     canvas?.renderAll();
   };
@@ -124,20 +128,28 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
 };
 
 const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canvas: fabric.Canvas | null }> = ({ object, canvas }) => {
-  const [fill, setFill] = useState(object.fill || '#cccccc');
-  const [stroke, setStroke] = useState(object.stroke || '#000000');
+  const [fill, setFill] = useState(() => {
+    const objFill = object.fill;
+    return typeof objFill === 'string' ? objFill : '#cccccc';
+  });
+  const [stroke, setStroke] = useState(() => {
+    const objStroke = object.stroke;
+    return typeof objStroke === 'string' ? objStroke : '#000000';
+  });
   const [strokeWidth, setStrokeWidth] = useState(object.strokeWidth || 1);
   const [opacity, setOpacity] = useState(object.opacity || 1);
 
   useEffect(() => {
-    setFill(object.fill || '#cccccc');
-    setStroke(object.stroke || '#000000');
+    const objFill = object.fill;
+    const objStroke = object.stroke;
+    setFill(typeof objFill === 'string' ? objFill : '#cccccc');
+    setStroke(typeof objStroke === 'string' ? objStroke : '#000000');
     setStrokeWidth(object.strokeWidth || 1);
     setOpacity(object.opacity || 1);
   }, [object]);
 
-  const updateShape = (property: string, value: any) => {
-    object.set(property, value);
+  const updateShape = (property: keyof fabric.Object, value: any) => {
+    (object as fabric.Object).set(property, value);
     canvas?.renderAll();
   };
 
@@ -241,7 +253,7 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
     setScaleY(object.scaleY || 1);
   }, [object]);
 
-  const updateGroup = (property: string, value: any) => {
+  const updateGroup = (property: keyof fabric.Group, value: any) => {
     object.set(property, value);
     canvas?.renderAll();
   };
@@ -342,19 +354,27 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
 };
 
 const FullScreenLayoutMode: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const targetView = useStateStore((state) => state.targetView);
   const setLayoutModeActive = useStateStore((state) => state.setLayoutModeActive);
+  const language = useStateStore((state) => state.language);
   
   const [isGenerating, setIsGenerating] = useState(false);
   const [mapImageLoaded, setMapImageLoaded] = useState(false);
   const [mapTitle, setMapTitle] = useState('Map Export');
   const [selectedObject, setSelectedObject] = useState<fabric.Object | null>(null);
   const [showProperties, setShowProperties] = useState(true);
+
+  // Synchronize i18n with state store language
+  useEffect(() => {
+    if (language && i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
 
   // Fixed canvas dimensions for A4 landscape at 300 DPI
   const CANVAS_WIDTH = 3508;
@@ -497,6 +517,8 @@ const FullScreenLayoutMode: React.FC = () => {
       fill: '#253080',
       originX: 'right',
       originY: 'center',
+      selectable: false,
+      evented: false,
     });
     canvas.add(dateText);
 
@@ -509,28 +531,44 @@ const FullScreenLayoutMode: React.FC = () => {
       fontFamily: 'Arial',
       fill: '#253080',
       originY: 'center',
+      selectable: false,
+      evented: false,
     });
     canvas.add(scaleText);
 
-    // Add north arrow
-    fabric.Image.fromURL('/north-arrow.png', (img) => {
-      if (!fabricCanvasRef.current) return;
+    // Add north arrow (only if not already exists)
+    const existingNorthArrow = canvas.getObjects().find(obj =>
+      obj.type === 'image' && (obj as any).getSrc && (obj as any).getSrc().includes('north-arrow')
+    );
 
-      // Get map rotation
-      const mapRotation = (targetView as any)?.rotation || (targetView as any)?.camera?.heading || 0;
-      
-      img.set({
-        left: 65,
-        top: 80,
-        width: 120,
-        height: 120,
-        angle: mapRotation,
-        originX: 'center',
-        originY: 'center',
+    if (!existingNorthArrow) {
+      fabric.Image.fromURL('/north-arrow.png', (img) => {
+        if (!fabricCanvasRef.current) return;
+
+        // Get map rotation
+        const mapRotation = (targetView as any)?.rotation || (targetView as any)?.camera?.heading || 0;
+        
+        // Scale image proportionally to fit within 120x120 while maintaining aspect ratio
+        const maxSize = 120;
+        const scaleX = maxSize / img.width!;
+        const scaleY = maxSize / img.height!;
+        const scale = Math.min(scaleX, scaleY);
+        
+        img.scale(scale);
+        
+        img.set({
+          left: 80,
+          top: 80,
+          angle: mapRotation,
+          originX: 'center',
+          originY: 'center',
+          selectable: false,
+          evented: false,
+        });
+        
+        fabricCanvasRef.current.add(img);
       });
-      
-      fabricCanvasRef.current.add(img);
-    });
+    }
 
     // Add JDA logo
     fabric.Image.fromURL('/jda_logo.png', (img) => {
@@ -1426,7 +1464,7 @@ const FullScreenLayoutMode: React.FC = () => {
             showProperties ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'
           }`}
         >
-          {showProperties ? 'Hide Properties' : 'Show Properties'}
+          {showProperties ? t('layoutMode.hideProperties', 'Hide Properties') : t('layoutMode.showProperties', 'Show Properties')}
         </button>
 
         <div className="w-px h-6 bg-gray-300"></div>
@@ -1455,7 +1493,7 @@ const FullScreenLayoutMode: React.FC = () => {
         {showProperties && (
           <div className="absolute right-8 top-28 w-80 bg-white border border-gray-300 rounded-lg shadow-lg p-4 overflow-y-auto max-h-[calc(100vh-160px)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Properties</h3>
+              <h3 className="text-lg font-semibold text-gray-800">{t('layoutMode.properties', 'Properties')}</h3>
               <button
                 onClick={() => setShowProperties(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -1498,7 +1536,7 @@ const FullScreenLayoutMode: React.FC = () => {
               </div>
             ) : (
               <div className="text-center text-gray-500 py-8">
-                <p>Select an object to edit its properties</p>
+                <p>{t('layoutMode.selectObject', 'Select an object to edit its properties')}</p>
               </div>
             )}
           </div>

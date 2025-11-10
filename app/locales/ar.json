@@ -410,7 +410,8 @@
     },
     "mapLayouts": {
       "title": "طباعة الخريطة",
-      "description": "طباعة عرض الخريطة الحالي مع خيارات تخطيط مخصصة.",
+      "description": "الدخول إلى وضع التخطيط الكامل الشاشة لتصميم خريطتك مع عناصر قابلة للسحب.",
+      "enterLayoutMode": "الدخول إلى وضع التخطيط",
       "printCurrent": "طباعة الخريطة الحالية",
       "generating": "جاري إنشاء PDF...",
       "includeTitle": "تضمين العنوان",
@@ -418,6 +419,20 @@
       "includeDate": "تضمين التاريخ",
       "titlePlaceholder": "أدخل عنوان الخريطة"
     }
+  },
+  "layoutMode": {
+    "exit": "الخروج من وضع التخطيط",
+    "addText": "إضافة نص",
+    "addLegend": "إضافة مفتاح الخريطة",
+    "removeLegend": "إزالة مفتاح الخريطة",
+    "refreshMap": "تحديث الخريطة",
+    "exportPDF": "تصدير PDF",
+    "generating": "جاري إنشاء PDF...",
+    "loadingMap": "جاري تحميل تخطيط الخريطة...",
+    "showProperties": "إظهار الخصائص",
+    "hideProperties": "إخفاء الخصائص",
+    "properties": "الخصائص",
+    "selectObject": "اختر عنصرًا لتعديل خصائصه"
   },
   "layerList": {
     "showHideLabels": "إظهار/إخفاء التسميات",

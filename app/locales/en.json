@@ -407,7 +407,8 @@
     },
     "mapLayouts": {
       "title": "Map Print",
-      "description": "Print the current map view with custom layout options.",
+      "description": "Enter full-screen layout mode to design your map with draggable elements.",
+      "enterLayoutMode": "Enter Layout Mode",
       "printCurrent": "Print Current Map",
       "generating": "Generating PDF...",
       "includeTitle": "Include Title",
@@ -415,6 +416,20 @@
       "includeDate": "Include Date",
       "titlePlaceholder": "Enter map title"
     }
+  },
+  "layoutMode": {
+    "exit": "Exit Layout Mode",
+    "addText": "Add Text",
+    "addLegend": "Add Legend",
+    "removeLegend": "Remove Legend",
+    "refreshMap": "Refresh Map",
+    "exportPDF": "Export PDF",
+    "generating": "Generating PDF...",
+    "loadingMap": "Loading map layout...",
+    "showProperties": "Show Properties",
+    "hideProperties": "Hide Properties",
+    "properties": "Properties",
+    "selectObject": "Select an object to edit its properties"
   },
   "layerList": {
     "showHideLabels": "Show/Hide Labels",

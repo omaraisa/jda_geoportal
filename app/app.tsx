@@ -13,9 +13,11 @@ import useAuthentication from "@/lib/hooks/use-authentication";
 import '@esri/calcite-components/dist/components/calcite-icon';
 import SessionEndModal from "./components/session-end-modal";
 import FullScreenLayoutMode from "./components/layout-mode/FullScreenLayoutMode";
+import { useTranslation } from "react-i18next";
 
 export default function App() {
   useAuthentication()
+  const { i18n } = useTranslation();
 
   const {
     layout: layoutState,
@@ -25,6 +27,13 @@ export default function App() {
     updateStats,
     layoutModeActive,
   } = useStateStore((state) => state);
+
+  // Sync language with i18n immediately on language change
+  React.useEffect(() => {
+    if (language && i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
 
   React.useEffect(() => {
     setLanguage(language);
