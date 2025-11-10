@@ -614,6 +614,10 @@ const FullScreenLayoutMode: React.FC = () => {
     setIsGenerating(true);
 
     try {
+      // Get username from state store
+      const { userInfo } = useStateStore.getState();
+      const fullName = userInfo?.fullName || 'Unknown User';
+
       // Export canvas as image with double resolution
       const dataURL = fabricCanvasRef.current.toDataURL({
         format: 'png',
@@ -628,13 +632,87 @@ const FullScreenLayoutMode: React.FC = () => {
         format: 'a4'
       });
 
-      pdf.addImage(dataURL, 'PNG', 0, 0, 297, 210);
+      // Create a temporary canvas to add watermark
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      if (!tempCtx) {
+        console.error('Could not get canvas context for watermark');
+        pdf.addImage(dataURL, 'PNG', 0, 0, 297, 210);
+        const fileName = `map-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`;
+        pdf.save(fileName);
+        setIsGenerating(false);
+        return;
+      }
 
-      const fileName = `map-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`;
-      pdf.save(fileName);
+      // Load the original image
+      const img = new Image();
+      img.onload = () => {
+        // Use the original high-resolution dimensions (already doubled by multiplier: 2)
+        const highResWidth = img.width;
+        const highResHeight = img.height;
+
+        tempCanvas.width = highResWidth;
+        tempCanvas.height = highResHeight;
+
+        // Draw the original high-resolution image without scaling
+        tempCtx.drawImage(img, 0, 0);
+
+        // Add watermark
+        tempCtx.save();
+
+        // Set watermark properties
+        tempCtx.globalAlpha = 0.1; // Very transparent
+        tempCtx.fillStyle = '#000000';
+        tempCtx.font = 'bold 24px Arial';
+        tempCtx.textAlign = 'center';
+        tempCtx.textBaseline = 'middle';
+
+        // Rotate context for diagonal text
+        tempCtx.translate(highResWidth / 2, highResHeight / 2);
+        tempCtx.rotate(-Math.PI / 6); // -30 degrees diagonal
+
+        // Calculate spacing for repeated watermark (scaled for high resolution)
+        const textWidth = tempCtx.measureText(fullName).width;
+        const textHeight = 24;
+        const spacingX = textWidth + 100; // Horizontal spacing
+        const spacingY = textHeight + 80; // Vertical spacing
+
+        // Calculate how many watermarks to place
+        const numX = Math.ceil(highResWidth / spacingX) + 2;
+        const numY = Math.ceil(highResHeight / spacingY) + 2;
+
+        // Draw repeated diagonal watermarks
+        for (let i = -numX; i < numX; i++) {
+          for (let j = -numY; j < numY; j++) {
+            const x = i * spacingX;
+            const y = j * spacingY;
+            tempCtx.fillText(fullName, x, y);
+          }
+        }
+
+        tempCtx.restore();
+
+        // Convert to data URL and add to PDF
+        const watermarkedDataURL = tempCanvas.toDataURL('image/png', 1.0);
+        pdf.addImage(watermarkedDataURL, 'PNG', 0, 0, 297, 210);
+
+        const fileName = `map-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`;
+        pdf.save(fileName);
+        setIsGenerating(false);
+      };
+
+      img.onerror = () => {
+        console.error('Failed to load image for watermarking');
+        // Fallback: save PDF without watermark
+        pdf.addImage(dataURL, 'PNG', 0, 0, 297, 210);
+        const fileName = `map-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.pdf`;
+        pdf.save(fileName);
+        setIsGenerating(false);
+      };
+
+      img.src = dataURL;
     } catch (error) {
       console.error('Error generating PDF:', error);
-    } finally {
       setIsGenerating(false);
     }
   };
