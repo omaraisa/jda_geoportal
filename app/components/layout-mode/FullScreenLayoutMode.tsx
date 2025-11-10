@@ -207,11 +207,11 @@ const FullScreenLayoutMode: React.FC = () => {
     setIsGenerating(true);
 
     try {
-      // Export canvas as image
+      // Export canvas as image with double resolution
       const dataURL = fabricCanvasRef.current.toDataURL({
         format: 'png',
         quality: 1.0,
-        multiplier: 1,
+        multiplier: 2, // Double the resolution for higher quality PDF
       });
 
       // Create PDF
@@ -371,7 +371,7 @@ const FullScreenLayoutMode: React.FC = () => {
       return;
     }
 
-    // Create legend group with real data
+    // Create legend group with real data using current legendSize
     const legendGroup = createLegendGroup(data, legendSize);
     canvas.add(legendGroup);
     canvas.setActiveObject(legendGroup);
@@ -590,7 +590,7 @@ const FullScreenLayoutMode: React.FC = () => {
         // Uniform scaling - scale text proportionally
         const scale = Math.max(scaleX, scaleY);
         originalTextProps.forEach(({ element, originalFontSize }) => {
-          const newFontSize = Math.min(12, Math.max(8, originalFontSize * scale));
+          const newFontSize = Math.min(12, Math.max(4, originalFontSize * scale));
           element.set({
             fontSize: newFontSize,
             scaleX: 1 / scale,
@@ -598,10 +598,13 @@ const FullScreenLayoutMode: React.FC = () => {
           });
         });
       } else {
-        // Non-uniform scaling - keep text at original size, just reposition
+        // Non-uniform scaling - adjust text size based on width scaling to maintain readability
+        const widthScale = scaleX;
         originalTextProps.forEach(({ element, originalFontSize }) => {
+          // Reduce font size when width is shrunk, but keep minimum of 10px
+          const newFontSize = Math.min(12, Math.max(4, originalFontSize * widthScale));
           element.set({
-            fontSize: originalFontSize, // Keep original size
+            fontSize: newFontSize,
             scaleX: 1,
             scaleY: 1,
           });
@@ -624,7 +627,7 @@ const FullScreenLayoutMode: React.FC = () => {
         // Apply final uniform scaled font sizes
         const finalScale = Math.max(finalScaleX, finalScaleY);
         originalTextProps.forEach(({ element, originalFontSize }) => {
-          const newFontSize = Math.min(12, Math.max(8, originalFontSize * finalScale));
+          const newFontSize = Math.min(16, Math.max(10, originalFontSize * finalScale));
           element.set({
             fontSize: newFontSize,
             scaleX: 1,
@@ -632,10 +635,12 @@ const FullScreenLayoutMode: React.FC = () => {
           });
         });
       } else {
-        // Non-uniform final scaling - keep text at original size
+        // Non-uniform final scaling - adjust text size based on width scaling
+        const widthScale = finalScaleX;
         originalTextProps.forEach(({ element, originalFontSize }) => {
+          const newFontSize = Math.min(16, Math.max(10, originalFontSize * widthScale));
           element.set({
-            fontSize: originalFontSize,
+            fontSize: newFontSize,
             scaleX: 1,
             scaleY: 1,
           });
@@ -960,27 +965,16 @@ const FullScreenLayoutMode: React.FC = () => {
           {t('layoutMode.addText', 'Add Text')}
         </button>
 
-        <div className="flex items-center gap-2">
-          <select
-            value={legendSize}
-            onChange={(e) => setLegendSize(e.target.value as 'small' | 'medium' | 'large')}
-            className="px-2 py-1 text-sm border border-gray-300 rounded"
-          >
-            <option value="small">Small Legend</option>
-            <option value="medium">Medium Legend</option>
-            <option value="large">Large Legend</option>
-          </select>
-          <button
-            onClick={handleAddLegend}
-            className={`px-4 py-2 text-white rounded hover:opacity-90 transition-colors ${
-              hasLegend 
-                ? 'bg-red-500 hover:bg-red-600' 
-                : 'bg-purple-500 hover:bg-purple-600'
-            }`}
-          >
-            {hasLegend ? t('layoutMode.removeLegend', 'Remove Legend') : t('layoutMode.addLegend', 'Add Legend')}
-          </button>
-        </div>
+        <button
+          onClick={handleAddLegend}
+          className={`px-4 py-2 text-white rounded hover:opacity-90 transition-colors ${
+            hasLegend 
+              ? 'bg-red-500 hover:bg-red-600' 
+              : 'bg-purple-500 hover:bg-purple-600'
+          }`}
+        >
+          {hasLegend ? t('layoutMode.removeLegend', 'Remove Legend') : t('layoutMode.addLegend', 'Add Legend')}
+        </button>
 
         <button
           onClick={() => loadMapBackground()}
