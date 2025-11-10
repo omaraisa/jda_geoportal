@@ -242,7 +242,7 @@ const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canv
   );
 };
 
-const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canvas | null; isLegend?: boolean; legendColumns?: number; onLegendColumnsChange?: (columns: number) => void }> = ({ object, canvas, isLegend = false, legendColumns = 1, onLegendColumnsChange }) => {
+const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canvas | null; isLegend?: boolean; legendColumns?: number; onLegendColumnsChange?: (columns: number) => void; legendTitle?: string; onLegendTitleChange?: (title: string) => void }> = ({ object, canvas, isLegend = false, legendColumns = 1, onLegendColumnsChange, legendTitle = 'مفتاح الخريطة', onLegendTitleChange }) => {
   const [opacity, setOpacity] = useState(object.opacity || 1);
   const [scaleX, setScaleX] = useState(object.scaleX || 1);
   const [scaleY, setScaleY] = useState(object.scaleY || 1);
@@ -266,23 +266,39 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
       </div>
 
       {isLegend && (
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Columns</label>
-          <select
-            value={legendColumns}
-            onChange={(e) => {
-              const newColumns = parseInt(e.target.value);
-              onLegendColumnsChange?.(newColumns);
-            }}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-          >
-            <option value={1}>1 Column</option>
-            <option value={2}>2 Columns</option>
-            <option value={3}>3 Columns</option>
-            <option value={4}>4 Columns</option>
-            <option value={5}>5 Columns</option>
-          </select>
-        </div>
+        <>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Columns</label>
+            <select
+              value={legendColumns}
+              onChange={(e) => {
+                const newColumns = parseInt(e.target.value);
+                onLegendColumnsChange?.(newColumns);
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+            >
+              <option value={1}>1 Column</option>
+              <option value={2}>2 Columns</option>
+              <option value={3}>3 Columns</option>
+              <option value={4}>4 Columns</option>
+              <option value={5}>5 Columns</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <input
+              type="text"
+              value={legendTitle}
+              onChange={(e) => {
+                const newTitle = e.target.value;
+                onLegendTitleChange?.(newTitle);
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+              placeholder="Enter legend title"
+            />
+          </div>
+        </>
       )}
 
       <div>
@@ -652,6 +668,7 @@ const FullScreenLayoutMode: React.FC = () => {
   const [legendData, setLegendData] = useState<any[]>([]);
   const [hasLegend, setHasLegend] = useState(false);
   const [legendColumns, setLegendColumns] = useState<number>(1);
+  const [legendTitle, setLegendTitle] = useState<string>('مفتاح الخريطة');
 
   // Helper function to wrap text based on available width with better distribution
   const wrapText = (text: string, maxWidth: number, fontSize: number, fontFamily: string): string[] => {
@@ -814,7 +831,7 @@ const FullScreenLayoutMode: React.FC = () => {
     const legendGroup = objects.find(obj => {
       if (obj.type === 'group') {
         const group = obj as fabric.Group;
-        return group._objects?.some((o: any) => o.type === 'text' && o.text === 'Legend');
+        return group._objects?.some((o: any) => o.type === 'text' && o.text === legendTitle);
       }
       return false;
     });
@@ -824,7 +841,7 @@ const FullScreenLayoutMode: React.FC = () => {
     }
 
     // Create new legend with updated column count
-    const newLegendGroup = createLegendGroup(legendData, legendSize, newColumns);
+    const newLegendGroup = createLegendGroup(legendData, legendSize, newColumns, legendTitle);
     canvas.add(newLegendGroup);
     canvas.setActiveObject(newLegendGroup);
     canvas.renderAll();
@@ -841,7 +858,7 @@ const FullScreenLayoutMode: React.FC = () => {
       const legendGroup = objects.find(obj => {
         if (obj.type === 'group') {
           const group = obj as fabric.Group;
-          return group._objects?.some((o: any) => o.type === 'text' && o.text === 'Legend');
+          return group._objects?.some((o: any) => o.type === 'text' && o.text === legendTitle);
         }
         return false;
       });
@@ -860,7 +877,7 @@ const FullScreenLayoutMode: React.FC = () => {
 
     if (data.length === 0) {
       // Add placeholder if no legend data
-      const legendGroup = createLegendGroup([{ layerTitle: 'Legend', symbols: [{ color: '#cccccc', label: 'No legend data available', type: 'simple-fill' }] }], legendSize, legendColumns);
+      const legendGroup = createLegendGroup([{ layerTitle: 'Legend', symbols: [{ color: '#cccccc', label: 'No legend data available', type: 'simple-fill' }] }], legendSize, legendColumns, legendTitle);
       canvas.add(legendGroup);
       canvas.setActiveObject(legendGroup);
       canvas.renderAll();
@@ -869,14 +886,14 @@ const FullScreenLayoutMode: React.FC = () => {
     }
 
     // Create legend group with real data using current legendSize and columns
-    const legendGroup = createLegendGroup(data, legendSize, legendColumns);
+    const legendGroup = createLegendGroup(data, legendSize, legendColumns, legendTitle);
     canvas.add(legendGroup);
     canvas.setActiveObject(legendGroup);
     canvas.renderAll();
     setHasLegend(true);
   };
 
-  const createLegendGroup = (data: any[], size: 'small' | 'medium' | 'large', columns: number = 1) => {
+  const createLegendGroup = (data: any[], size: 'small' | 'medium' | 'large', columns: number = 1, title: string = 'Legend') => {
     const canvas = fabricCanvasRef.current!;
     
     // Size configurations
@@ -1009,7 +1026,7 @@ const FullScreenLayoutMode: React.FC = () => {
     legendElements.unshift(legendBg); // Add background first
 
     // Legend title with better styling
-    const legendTitle = new fabric.Text('Legend', {
+    const legendTitle = new fabric.Text(title, {
       left: legendLeft + legendWidth / 2,
       top: legendTop + config.padding + 5,
       fontSize: config.titleSize,
@@ -1526,10 +1543,35 @@ const FullScreenLayoutMode: React.FC = () => {
                   <GroupPropertiesPanel 
                     object={selectedObject as fabric.Group} 
                     canvas={fabricCanvasRef.current}
-                    isLegend={(selectedObject as fabric.Group)._objects?.some((o: any) => o.type === 'text' && o.text === 'Legend') || false}
+                    isLegend={(selectedObject as fabric.Group)._objects?.some((o: any) => o.type === 'text' && o.text === legendTitle) || false}
                     legendColumns={legendColumns}
                     onLegendColumnsChange={(columns) => {
                       handleLegendColumnsChange(columns);
+                    }}
+                    legendTitle={legendTitle}
+                    onLegendTitleChange={(title) => {
+                      setLegendTitle(title);
+                      // Update the legend title in the canvas
+                      const canvas = fabricCanvasRef.current;
+                      if (!canvas) return;
+
+                      const objects = canvas.getObjects();
+                      const legendGroup = objects.find(obj => {
+                        if (obj.type === 'group') {
+                          const group = obj as fabric.Group;
+                          return group._objects?.some((o: any) => o.type === 'text' && o.text === legendTitle);
+                        }
+                        return false;
+                      });
+
+                      if (legendGroup && legendGroup.type === 'group') {
+                        const group = legendGroup as fabric.Group;
+                        const titleText = group._objects?.find((o: any) => o.type === 'text' && o.text === legendTitle);
+                        if (titleText && titleText.type === 'text') {
+                          (titleText as fabric.Text).set('text', title);
+                          canvas.renderAll();
+                        }
+                      }
                     }}
                   />
                 )}
