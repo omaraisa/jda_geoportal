@@ -55,7 +55,7 @@ const MapLayoutComponent: React.FC = () => {
   const [zoom, setZoom] = useState(0.3); // Start with smaller zoom for better overview
   const setLayoutModeActive = useStateStore((state) => state.setLayoutModeActive);
   const layoutModeActive = useStateStore((state) => state.layoutModeActive);
-  const setMapPrintWidgetOpen = useStateStore((state) => state.setMapPrintWidgetOpen);
+  const setSidebarWidgetStatus = useStateStore((state) => state.setSidebarWidgetStatus);
 
   // Default map elements configuration - always define this hook
   const [elements, setElements] = useState<MapElement[]>([
@@ -109,13 +109,13 @@ const MapLayoutComponent: React.FC = () => {
     }
   ]);
 
-  // Set mapPrintWidgetOpen when component mounts and reset when unmounts
+  // Set print widget status when component mounts and reset when unmounts
   useEffect(() => {
-    setMapPrintWidgetOpen(true);
+    setSidebarWidgetStatus('printWidget', true);
     return () => {
-      setMapPrintWidgetOpen(false);
+      setSidebarWidgetStatus('printWidget', false);
     };
-  }, [setMapPrintWidgetOpen]);
+  }, [setSidebarWidgetStatus]);
 
   // Reset component state when layout mode becomes inactive
   useEffect(() => {

@@ -38,12 +38,15 @@ export const calculateCaptureBounds = () => {
 };
 
 const MapCapturePreview: React.FC = () => {
-  const mapPrintWidgetOpen = useStateStore((state) => state.mapPrintWidgetOpen);
+  const sidebarWidgetsOnOffStatus = useStateStore((state) => state.sidebarWidgetsOnOffStatus);
   const [previewBounds, setPreviewBounds] = useState({ width: 0, height: 0, left: 0, top: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Check if any sidebar widget that needs preview is active
+  const shouldShowPreview = sidebarWidgetsOnOffStatus.printWidget;
+
   useEffect(() => {
-    if (!mapPrintWidgetOpen) return;
+    if (!shouldShowPreview) return;
 
     const updatePreviewBounds = () => {
       setPreviewBounds(calculateCaptureBounds());
@@ -55,9 +58,9 @@ const MapCapturePreview: React.FC = () => {
     return () => {
       window.removeEventListener('resize', updatePreviewBounds);
     };
-  }, [mapPrintWidgetOpen]);
+  }, [shouldShowPreview]);
 
-  if (!mapPrintWidgetOpen) return null;
+  if (!shouldShowPreview) return null;
 
   return (
     <div
@@ -80,7 +83,7 @@ const MapCapturePreview: React.FC = () => {
       >
         {/* Label */}
         <div className="absolute -top-10 left-0 bg-blue-500 text-white px-4 py-2 rounded-t-lg text-sm font-semibold">
-          Screenshot Preview Area (A4 Landscape)
+          Capture Area (A4 Landscape)
         </div>
         
         {/* Corner markers */}

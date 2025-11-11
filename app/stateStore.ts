@@ -38,6 +38,10 @@ const useStateStore = create<State>((set, get) => ({
   bookmarks: [],
   layoutModeActive: false,
   mapPrintWidgetOpen: false,
+  sidebarWidgetsOnOffStatus: {
+    printWidget: false,
+    // Add other sidebar widgets here as needed
+  },
 
   setAppReady: (isReady: boolean) => {
     setTimeout(() => set({ appReady: isReady }), 3000);
@@ -251,6 +255,27 @@ const useStateStore = create<State>((set, get) => ({
 
   setMapPrintWidgetOpen: (open: boolean) => {
     set({ mapPrintWidgetOpen: open });
+  },
+
+  setSidebarWidgetStatus: (widgetId: string, status: boolean) => {
+    set((state) => ({
+      sidebarWidgetsOnOffStatus: {
+        ...state.sidebarWidgetsOnOffStatus,
+        [widgetId]: status,
+      },
+    }));
+  },
+
+  closeAllSidebarWidgets: () => {
+    set((state) => {
+      const updatedStatus = { ...state.sidebarWidgetsOnOffStatus };
+      Object.keys(updatedStatus).forEach((key) => {
+        updatedStatus[key] = false;
+      });
+      return {
+        sidebarWidgetsOnOffStatus: updatedStatus,
+      };
+    });
   },
 
   getTargetLayer: () => {

@@ -9,11 +9,18 @@ const SidebarHeader: React.FC = () => {
   const activeComponent = useStateStore((state) => state.activeSideBar);
   const setActiveSideBar = useStateStore((state) => state.setActiveSideBar);
   const toggleSidebar = useStateStore((state) => state.toggleSidebar);
+  const closeAllSidebarWidgets = useStateStore((state) => state.closeAllSidebarWidgets);
 
   const handleBack = () => {
     if (previousComponent) {
       setActiveSideBar(previousComponent);
     }
+  };
+
+  const handleClose = () => {
+    // Close all sidebar widgets when closing the sidebar
+    closeAllSidebarWidgets();
+    toggleSidebar(false);
   };
 
   const title = t(`menu.${activeComponent}`, "");
@@ -33,7 +40,7 @@ const SidebarHeader: React.FC = () => {
 
       <button
         className="close-btn flex items-center justify-center"
-        onClick={() => toggleSidebar(false)}
+        onClick={handleClose}
       >
        <CalciteIcon icon={"x"} scale="m" />
       </button>
