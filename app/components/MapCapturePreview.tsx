@@ -3,6 +3,40 @@
 import React, { useEffect, useState, useRef } from "react";
 import useStateStore from "@/stateStore";
 
+// Helper function to calculate capture bounds for A4 landscape
+export const calculateCaptureBounds = () => {
+  // A4 landscape ratio: 297mm x 210mm = 1.414:1
+  const targetRatio = 297 / 210;
+
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const viewportRatio = viewportWidth / viewportHeight;
+
+  let previewWidth: number;
+  let previewHeight: number;
+
+  if (viewportRatio > targetRatio) {
+    // Viewport is wider than target ratio - constrain by height
+    previewHeight = viewportHeight * 0.9; // Use 90% of viewport height
+    previewWidth = previewHeight * targetRatio;
+  } else {
+    // Viewport is taller than target ratio - constrain by width
+    previewWidth = viewportWidth * 0.9; // Use 90% of viewport width
+    previewHeight = previewWidth / targetRatio;
+  }
+
+  // Center the preview
+  const left = (viewportWidth - previewWidth) / 2;
+  const top = (viewportHeight - previewHeight) / 2;
+
+  return {
+    width: previewWidth,
+    height: previewHeight,
+    left,
+    top,
+  };
+};
+
 const MapCapturePreview: React.FC = () => {
   const mapPrintWidgetOpen = useStateStore((state) => state.mapPrintWidgetOpen);
   const [previewBounds, setPreviewBounds] = useState({ width: 0, height: 0, left: 0, top: 0 });
@@ -11,44 +45,15 @@ const MapCapturePreview: React.FC = () => {
   useEffect(() => {
     if (!mapPrintWidgetOpen) return;
 
-    const calculatePreviewBounds = () => {
-      // A4 landscape ratio: 297mm x 210mm = 1.414:1
-      const targetRatio = 297 / 210;
-
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      const viewportRatio = viewportWidth / viewportHeight;
-
-      let previewWidth: number;
-      let previewHeight: number;
-
-      if (viewportRatio > targetRatio) {
-        // Viewport is wider than target ratio - constrain by height
-        previewHeight = viewportHeight * 0.9; // Use 90% of viewport height
-        previewWidth = previewHeight * targetRatio;
-      } else {
-        // Viewport is taller than target ratio - constrain by width
-        previewWidth = viewportWidth * 0.9; // Use 90% of viewport width
-        previewHeight = previewWidth / targetRatio;
-      }
-
-      // Center the preview
-      const left = (viewportWidth - previewWidth) / 2;
-      const top = (viewportHeight - previewHeight) / 2;
-
-      setPreviewBounds({
-        width: previewWidth,
-        height: previewHeight,
-        left,
-        top,
-      });
+    const updatePreviewBounds = () => {
+      setPreviewBounds(calculateCaptureBounds());
     };
 
-    calculatePreviewBounds();
-    window.addEventListener('resize', calculatePreviewBounds);
+    updatePreviewBounds();
+    window.addEventListener('resize', updatePreviewBounds);
 
     return () => {
-      window.removeEventListener('resize', calculatePreviewBounds);
+      window.removeEventListener('resize', updatePreviewBounds);
     };
   }, [mapPrintWidgetOpen]);
 
@@ -57,9 +62,9 @@ const MapCapturePreview: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 pointer-events-none z-40"
+      className="absolute inset-0 pointer-events-none"
       style={{
-        zIndex: 40, // Below sidebar (50) but above map content
+        zIndex: 3.5, // Above map content (z-1), below Sidebar (z-4)
       }}
     >
       {/* Overlay border showing capture area */}

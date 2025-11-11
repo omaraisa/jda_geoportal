@@ -43,20 +43,18 @@ export default function App() {
 
   return (
     <div className="absolute w-screen h-screen flex flex-col overflow-hidden">
-      {/* Full Screen Layout Mode */}
-      {layoutModeActive && <FullScreenLayoutMode />}
-
-      {/* Map Capture Preview Overlay */}
-      <MapCapturePreview />
-
-      {/* Session Modal */}
+      {/* Session Modal - Highest priority (z-30) */}
       <SessionEndModal />
 
+      {/* App Loader (z-20) */}
       {!appReady && (
         <div className="absolute inset-0 z-20 bg-[#182726]  text-white flex justify-center items-center">
           <AppLoader />
         </div>
       )}
+
+      {/* Full Screen Layout Mode (z-15) */}
+      {layoutModeActive && <FullScreenLayoutMode />}
 
       <Header />
       <div
@@ -66,6 +64,9 @@ export default function App() {
           <div className="flex-1 relative">
             <ContentView />
           </div>
+
+          {/* Map Capture Preview Overlay (z-3.5) - Above map content, below sidebar */}
+          <MapCapturePreview />
 
           <div
             className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-4 transition-all duration-1000 overflow-hidden left-5`}

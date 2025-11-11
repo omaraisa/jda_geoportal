@@ -449,13 +449,27 @@ const FullScreenLayoutMode: React.FC = () => {
     if (!targetView || !fabricCanvasRef.current) return;
 
     try {
-      // Take high-resolution screenshot for crisp PDF export
-      // Since we export at 2x resolution, we need higher source resolution
+      // Import the calculateCaptureBounds function to get the exact preview area
+      const { calculateCaptureBounds } = await import('../MapCapturePreview');
+      const previewBounds = calculateCaptureBounds();
+
+      // Calculate the area parameter for takeScreenshot to match the preview exactly
+      // The area parameter uses screen coordinates (pixels on the screen)
+      const area = {
+        x: previewBounds.left,
+        y: previewBounds.top,
+        width: previewBounds.width,
+        height: previewBounds.height
+      };
+
+      // Take high-resolution screenshot of the exact preview area
+      // Use 2x multiplier for high quality while maintaining the exact area
       const screenshot = await targetView.takeScreenshot({
         format: "png",
         quality: 100,
-        width: 3840,  // 4x the original width for ultra-high quality
-        height: 2160  // 4x the original height for ultra-high quality
+        area: area,
+        width: previewBounds.width * 2,  // 2x resolution for quality
+        height: previewBounds.height * 2
       });
 
       fabric.Image.fromURL(screenshot.dataUrl, (img) => {
@@ -1493,7 +1507,8 @@ const FullScreenLayoutMode: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-gray-100 overflow-hidden"
+      className="fixed inset-0 bg-gray-100 overflow-hidden"
+      style={{ zIndex: 15 }}
       ref={containerRef}
     >
       {/* Custom styles for Esri Legend */}
