@@ -432,7 +432,27 @@
     "showProperties": "إظهار الخصائص",
     "hideProperties": "إخفاء الخصائص",
     "properties": "الخصائص",
-    "selectObject": "اختر عنصرًا لتعديل خصائصه"
+    "selectObject": "اختر عنصرًا لتعديل خصائصه",
+    "propertiesPanel": {
+      "textContent": "محتوى النص",
+      "fontSize": "حجم الخط",
+      "fontFamily": "نوع الخط",
+      "textColor": "لون النص",
+      "bold": "عريض",
+      "italic": "مائل",
+      "underline": "تحتي الخط",
+      "fillColor": "لون التعبئة",
+      "strokeColor": "لون الحدود",
+      "strokeWidth": "عرض الحدود",
+      "opacity": "الشفافية",
+      "type": "النوع:",
+      "objects": "العناصر:",
+      "columns": "الأعمدة",
+      "title": "العنوان",
+      "scaleX": "التكبير الأفقي",
+      "scaleY": "التكبير العمودي",
+      "resetScale": "إعادة تعيين التكبير"
+    }
   },
   "layerList": {
     "showHideLabels": "إظهار/إخفاء التسميات",

@@ -429,7 +429,27 @@
     "showProperties": "Show Properties",
     "hideProperties": "Hide Properties",
     "properties": "Properties",
-    "selectObject": "Select an object to edit its properties"
+    "selectObject": "Select an object to edit its properties",
+    "propertiesPanel": {
+      "textContent": "Text Content",
+      "fontSize": "Font Size",
+      "fontFamily": "Font Family",
+      "textColor": "Text Color",
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "fillColor": "Fill Color",
+      "strokeColor": "Stroke Color",
+      "strokeWidth": "Stroke Width",
+      "opacity": "Opacity",
+      "type": "Type:",
+      "objects": "Objects:",
+      "columns": "Columns",
+      "title": "Title",
+      "scaleX": "Scale X",
+      "scaleY": "Scale Y",
+      "resetScale": "Reset Scale"
+    }
   },
   "layerList": {
     "showHideLabels": "Show/Hide Labels",

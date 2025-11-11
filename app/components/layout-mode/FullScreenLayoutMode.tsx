@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 
 // Properties Panel Components
 const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas | null }> = ({ object, canvas }) => {
+  const { t } = useTranslation();
   const [text, setText] = useState(object.text || '');
   const [fontSize, setFontSize] = useState(object.fontSize || 12);
   const [fontFamily, setFontFamily] = useState(object.fontFamily || 'Arial');
@@ -32,7 +33,7 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Text Content</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.textContent', 'Text Content')}</label>
         <textarea
           value={text}
           onChange={(e) => {
@@ -45,7 +46,7 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Font Size</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.fontSize', 'Font Size')}</label>
         <input
           type="number"
           value={fontSize}
@@ -61,7 +62,7 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Font Family</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.fontFamily', 'Font Family')}</label>
         <select
           value={fontFamily}
           onChange={(e) => {
@@ -79,7 +80,7 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.textColor', 'Text Color')}</label>
         <div className="flex items-center gap-2">
           <input
             type="color"
@@ -108,19 +109,19 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
           onClick={() => updateText('fontWeight', object.fontWeight === 'bold' ? 'normal' : 'bold')}
           className={`px-3 py-1 text-xs rounded ${object.fontWeight === 'bold' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
         >
-          Bold
+          {t('layoutMode.propertiesPanel.bold', 'Bold')}
         </button>
         <button
           onClick={() => updateText('fontStyle', object.fontStyle === 'italic' ? 'normal' : 'italic')}
           className={`px-3 py-1 text-xs rounded ${object.fontStyle === 'italic' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
         >
-          Italic
+          {t('layoutMode.propertiesPanel.italic', 'Italic')}
         </button>
         <button
           onClick={() => updateText('underline', !object.underline)}
           className={`px-3 py-1 text-xs rounded ${object.underline ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
         >
-          Underline
+          {t('layoutMode.propertiesPanel.underline', 'Underline')}
         </button>
       </div>
     </div>
@@ -128,6 +129,7 @@ const TextPropertiesPanel: React.FC<{ object: fabric.Text; canvas: fabric.Canvas
 };
 
 const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canvas: fabric.Canvas | null }> = ({ object, canvas }) => {
+  const { t } = useTranslation();
   const [fill, setFill] = useState(() => {
     const objFill = object.fill;
     return typeof objFill === 'string' ? objFill : '#cccccc';
@@ -156,7 +158,7 @@ const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canv
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Fill Color</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.fillColor', 'Fill Color')}</label>
         <div className="flex items-center gap-2">
           <input
             type="color"
@@ -181,7 +183,7 @@ const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canv
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Stroke Color</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.strokeColor', 'Stroke Color')}</label>
         <div className="flex items-center gap-2">
           <input
             type="color"
@@ -206,7 +208,7 @@ const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canv
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Stroke Width</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.strokeWidth', 'Stroke Width')}</label>
         <input
           type="number"
           value={strokeWidth}
@@ -222,7 +224,7 @@ const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canv
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Opacity</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.opacity', 'Opacity')}</label>
         <input
           type="range"
           value={opacity}
@@ -243,6 +245,7 @@ const ShapePropertiesPanel: React.FC<{ object: fabric.Rect | fabric.Circle; canv
 };
 
 const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canvas | null; isLegend?: boolean; legendColumns?: number; onLegendColumnsChange?: (columns: number) => void; legendTitle?: string; onLegendTitleChange?: (title: string) => void }> = ({ object, canvas, isLegend = false, legendColumns = 1, onLegendColumnsChange, legendTitle = 'مفتاح الخريطة', onLegendTitleChange }) => {
+  const { t } = useTranslation();
   const [opacity, setOpacity] = useState(object.opacity || 1);
   const [scaleX, setScaleX] = useState(object.scaleX || 1);
   const [scaleY, setScaleY] = useState(object.scaleY || 1);
@@ -261,14 +264,14 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
   return (
     <div className="space-y-4">
       <div className="text-sm text-gray-600">
-        <p><strong>Type:</strong> {isLegend ? 'Legend' : 'Group'}</p>
-        <p><strong>Objects:</strong> {object._objects?.length || 0}</p>
+        <p><strong>{t('layoutMode.propertiesPanel.type', 'Type:')}</strong> {isLegend ? 'Legend' : 'Group'}</p>
+        <p><strong>{t('layoutMode.propertiesPanel.objects', 'Objects:')}</strong> {object._objects?.length || 0}</p>
       </div>
 
       {isLegend && (
         <>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Columns</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.columns', 'Columns')}</label>
             <select
               value={legendColumns}
               onChange={(e) => {
@@ -286,7 +289,7 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.title', 'Title')}</label>
             <input
               type="text"
               value={legendTitle}
@@ -302,7 +305,7 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Opacity</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.opacity', 'Opacity')}</label>
         <input
           type="range"
           value={opacity}
@@ -321,7 +324,7 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
 
       <div className="grid grid-cols-2 gap-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Scale X</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.scaleX', 'Scale X')}</label>
           <input
             type="number"
             value={scaleX.toFixed(2)}
@@ -337,7 +340,7 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Scale Y</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">{t('layoutMode.propertiesPanel.scaleY', 'Scale Y')}</label>
           <input
             type="number"
             value={scaleY.toFixed(2)}
@@ -363,7 +366,7 @@ const GroupPropertiesPanel: React.FC<{ object: fabric.Group; canvas: fabric.Canv
         }}
         className="w-full px-3 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600"
       >
-        Reset Scale
+        {t('layoutMode.propertiesPanel.resetScale', 'Reset Scale')}
       </button>
     </div>
   );
