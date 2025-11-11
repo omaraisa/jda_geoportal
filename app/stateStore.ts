@@ -37,6 +37,7 @@ const useStateStore = create<State>((set, get) => ({
   messages: {},
   bookmarks: [],
   layoutModeActive: false,
+  mapPrintWidgetOpen: false,
 
   setAppReady: (isReady: boolean) => {
     setTimeout(() => set({ appReady: isReady }), 3000);
@@ -246,6 +247,10 @@ const useStateStore = create<State>((set, get) => ({
 
   setLayoutModeActive: (active: boolean) => {
     set({ layoutModeActive: active });
+  },
+
+  setMapPrintWidgetOpen: (open: boolean) => {
+    set({ mapPrintWidgetOpen: open });
   },
 
   getTargetLayer: () => {

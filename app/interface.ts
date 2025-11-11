@@ -75,6 +75,7 @@ export interface State {
   messages: Record<number, Message>;
   bookmarks: Bookmark[];
   layoutModeActive: boolean;
+  mapPrintWidgetOpen: boolean;
   userInfo: ArcGISUserInfo | null;
   accessToken: string | null;
   isAuthenticated: boolean;
@@ -93,6 +94,7 @@ export interface State {
   setTargetLayerId: (id: string) => void;
   setSyncing: (isOn: boolean) => void;
   setLayoutModeActive: (active: boolean) => void;
+  setMapPrintWidgetOpen: (open: boolean) => void;
   getTargetLayer: () => __esri.FeatureLayer | null;
   switchViewMode: (mode: "2D" | "3D" | "Dual") => void;
   addWidget: (widgetId: string, widgetInstance: __esri.Widget) => void;

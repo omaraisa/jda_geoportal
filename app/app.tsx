@@ -13,6 +13,7 @@ import useAuthentication from "@/lib/hooks/use-authentication";
 import '@esri/calcite-components/dist/components/calcite-icon';
 import SessionEndModal from "./components/session-end-modal";
 import FullScreenLayoutMode from "./components/layout-mode/FullScreenLayoutMode";
+import MapCapturePreview from "./components/MapCapturePreview";
 import { useTranslation } from "react-i18next";
 
 export default function App() {
@@ -44,6 +45,9 @@ export default function App() {
     <div className="absolute w-screen h-screen flex flex-col overflow-hidden">
       {/* Full Screen Layout Mode */}
       {layoutModeActive && <FullScreenLayoutMode />}
+
+      {/* Map Capture Preview Overlay */}
+      <MapCapturePreview />
 
       {/* Session Modal */}
       <SessionEndModal />

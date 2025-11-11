@@ -55,6 +55,7 @@ const MapLayoutComponent: React.FC = () => {
   const [zoom, setZoom] = useState(0.3); // Start with smaller zoom for better overview
   const setLayoutModeActive = useStateStore((state) => state.setLayoutModeActive);
   const layoutModeActive = useStateStore((state) => state.layoutModeActive);
+  const setMapPrintWidgetOpen = useStateStore((state) => state.setMapPrintWidgetOpen);
 
   // Default map elements configuration - always define this hook
   const [elements, setElements] = useState<MapElement[]>([
@@ -107,6 +108,14 @@ const MapLayoutComponent: React.FC = () => {
       height: 200
     }
   ]);
+
+  // Set mapPrintWidgetOpen when component mounts and reset when unmounts
+  useEffect(() => {
+    setMapPrintWidgetOpen(true);
+    return () => {
+      setMapPrintWidgetOpen(false);
+    };
+  }, [setMapPrintWidgetOpen]);
 
   // Reset component state when layout mode becomes inactive
   useEffect(() => {
