@@ -55,6 +55,7 @@ const MapLayoutComponent: React.FC = () => {
   const [zoom, setZoom] = useState(0.3); // Start with smaller zoom for better overview
   const setLayoutModeActive = useStateStore((state) => state.setLayoutModeActive);
   const layoutModeActive = useStateStore((state) => state.layoutModeActive);
+  const setSidebarWidgetStatus = useStateStore((state) => state.setSidebarWidgetStatus);
 
   // Default map elements configuration - always define this hook
   const [elements, setElements] = useState<MapElement[]>([
@@ -107,6 +108,14 @@ const MapLayoutComponent: React.FC = () => {
       height: 200
     }
   ]);
+
+  // Set print widget status when component mounts and reset when unmounts
+  useEffect(() => {
+    setSidebarWidgetStatus('printWidget', true);
+    return () => {
+      setSidebarWidgetStatus('printWidget', false);
+    };
+  }, [setSidebarWidgetStatus]);
 
   // Reset component state when layout mode becomes inactive
   useEffect(() => {
@@ -192,15 +201,15 @@ const MapLayoutComponent: React.FC = () => {
   if (!layoutModeActive) {
     return (
       <div className="p-4 text-black w-full max-w-md">
-        <h3 className="text-lg font-semibold mb-4">{t('mapLayouts.title', 'Map Print')}</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('widgets.mapLayouts.title', 'Map Print')}</h3>
         <p className="text-sm text-gray-600 mb-4">
-          {t('mapLayouts.description', 'Enter full-screen layout mode to design your map with draggable elements.')}
+          {t('widgets.mapLayouts.description', 'Enter full-screen layout mode to design your map with draggable elements.')}
         </p>
         <button
           onClick={handleEnterLayoutMode}
           className="w-full font-medium py-2 px-4 rounded-md transition-colors bg-[#253080] hover:bg-[#1e2660] text-white"
         >
-          {t('mapLayouts.enterLayoutMode', 'Enter Layout Mode')}
+          {t('widgets.mapLayouts.enterLayoutMode', 'Enter Layout Mode')}
         </button>
       </div>
     );
@@ -208,7 +217,7 @@ const MapLayoutComponent: React.FC = () => {
     <div className="flex flex-col h-full">
       {/* Controls */}
       <div className="p-4 bg-white border-b">
-        <h3 className="text-lg font-semibold mb-4">{t('mapLayouts.title', 'Map Print')}</h3>
+        <h3 className="text-lg font-semibold mb-4">{t('widgets.mapLayouts.title', 'Map Print')}</h3>
         
         <div className="flex gap-2 mb-4">
           <button

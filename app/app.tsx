@@ -13,9 +13,12 @@ import useAuthentication from "@/lib/hooks/use-authentication";
 import '@esri/calcite-components/dist/components/calcite-icon';
 import SessionEndModal from "./components/session-end-modal";
 import FullScreenLayoutMode from "./components/layout-mode/FullScreenLayoutMode";
+import MapCapturePreview from "./components/MapCapturePreview";
+import { useTranslation } from "react-i18next";
 
 export default function App() {
   useAuthentication()
+  const { i18n } = useTranslation();
 
   const {
     layout: layoutState,
@@ -26,6 +29,13 @@ export default function App() {
     layoutModeActive,
   } = useStateStore((state) => state);
 
+  // Sync language with i18n immediately on language change
+  React.useEffect(() => {
+    if (language && i18n.language !== language) {
+      i18n.changeLanguage(language);
+    }
+  }, [language, i18n]);
+
   React.useEffect(() => {
     setLanguage(language);
     updateStats("page_visit")
@@ -33,17 +43,18 @@ export default function App() {
 
   return (
     <div className="absolute w-screen h-screen flex flex-col overflow-hidden">
-      {/* Full Screen Layout Mode */}
-      {layoutModeActive && <FullScreenLayoutMode />}
-
-      {/* Session Modal */}
+      {/* Session Modal - Highest priority (z-30) */}
       <SessionEndModal />
 
+      {/* App Loader (z-20) */}
       {!appReady && (
         <div className="absolute inset-0 z-20 bg-[#182726]  text-white flex justify-center items-center">
           <AppLoader />
         </div>
       )}
+
+      {/* Full Screen Layout Mode (z-15) */}
+      {layoutModeActive && <FullScreenLayoutMode />}
 
       <Header />
       <div
@@ -53,6 +64,9 @@ export default function App() {
           <div className="flex-1 relative">
             <ContentView />
           </div>
+
+          {/* Map Capture Preview Overlay (z-3.5) - Above map content, below sidebar */}
+          <MapCapturePreview />
 
           <div
             className={`absolute top-1/2 py-6 transform -translate-y-1/2 w-[270px] bg-transparent z-4 transition-all duration-1000 overflow-hidden left-5`}

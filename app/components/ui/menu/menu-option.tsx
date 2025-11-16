@@ -22,6 +22,8 @@ const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggl
     const activeSideBar = useStateStore((state) => state.activeSideBar);
     const sidebarOpen = useStateStore((state) => state.layout.sidebarOpen);
     const bottomPaneOpen = useStateStore((state) => state.layout.bottomPaneOpen);
+    const setSidebarWidgetStatus = useStateStore((state) => state.setSidebarWidgetStatus);
+    const closeAllSidebarWidgets = useStateStore((state) => state.closeAllSidebarWidgets);
 
 
     const handleClick = () => {
@@ -39,7 +41,8 @@ const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggl
             // Special handling for MapLayout - go directly to layout mode
             if (name === 'MapLayout') {
                 toggleOptionsMenu();
-                // Hide sidebar and activate layout mode
+                // Close all sidebar widgets and hide sidebar
+                closeAllSidebarWidgets();
                 toggleSidebar(false);
                 const setLayoutModeActive = useStateStore.getState().setLayoutModeActive;
                 setLayoutModeActive(true);
@@ -47,17 +50,29 @@ const MenuOption: React.FC<OptionProps> = ({ icon, name, subMenuComponent, toggl
             }
 
             toggleOptionsMenu();
+            
+            // Close all sidebar widgets when switching to a new widget
+            closeAllSidebarWidgets();
+            
             if (sidebarOpen) {
                 if (activeSideBar !== name) {
                     toggleSidebar(false);
                     setTimeout(() => {
                         setActiveSideBar(name);
                         toggleSidebar(true);
+                        // Activate the specific widget
+                        if (name === 'PrintComponent') {
+                            setSidebarWidgetStatus('printWidget', true);
+                        }
                     }, 1000);
                 }
             } else {
                 setActiveSideBar(name);
                 toggleSidebar(true);
+                // Activate the specific widget
+                if (name === 'PrintComponent') {
+                    setSidebarWidgetStatus('printWidget', true);
+                }
             }
         }
     };

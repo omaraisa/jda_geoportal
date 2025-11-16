@@ -75,6 +75,8 @@ export interface State {
   messages: Record<number, Message>;
   bookmarks: Bookmark[];
   layoutModeActive: boolean;
+  mapPrintWidgetOpen: boolean;
+  sidebarWidgetsOnOffStatus: Record<string, boolean>;
   userInfo: ArcGISUserInfo | null;
   accessToken: string | null;
   isAuthenticated: boolean;
@@ -93,6 +95,9 @@ export interface State {
   setTargetLayerId: (id: string) => void;
   setSyncing: (isOn: boolean) => void;
   setLayoutModeActive: (active: boolean) => void;
+  setMapPrintWidgetOpen: (open: boolean) => void;
+  setSidebarWidgetStatus: (widgetId: string, status: boolean) => void;
+  closeAllSidebarWidgets: () => void;
   getTargetLayer: () => __esri.FeatureLayer | null;
   switchViewMode: (mode: "2D" | "3D" | "Dual") => void;
   addWidget: (widgetId: string, widgetInstance: __esri.Widget) => void;
@@ -135,5 +140,9 @@ export interface ArcGISUserInfo {
   firstName?: string | null;
   lastName?: string | null;
   userId?: string | null;
-  groups: string[] | null;
+  groups: Array<string | {name: string; titleEn: string; titleAr: string}> | null; // Support both formats for legacy compatibility
+  groupTitles?: { // Optional new translation mappings
+    en: Record<string, string>;
+    ar: Record<string, string>;
+  };
 };

@@ -37,6 +37,11 @@ const useStateStore = create<State>((set, get) => ({
   messages: {},
   bookmarks: [],
   layoutModeActive: false,
+  mapPrintWidgetOpen: false,
+  sidebarWidgetsOnOffStatus: {
+    printWidget: false,
+    // Add other sidebar widgets here as needed
+  },
 
   setAppReady: (isReady: boolean) => {
     setTimeout(() => set({ appReady: isReady }), 3000);
@@ -248,6 +253,31 @@ const useStateStore = create<State>((set, get) => ({
     set({ layoutModeActive: active });
   },
 
+  setMapPrintWidgetOpen: (open: boolean) => {
+    set({ mapPrintWidgetOpen: open });
+  },
+
+  setSidebarWidgetStatus: (widgetId: string, status: boolean) => {
+    set((state) => ({
+      sidebarWidgetsOnOffStatus: {
+        ...state.sidebarWidgetsOnOffStatus,
+        [widgetId]: status,
+      },
+    }));
+  },
+
+  closeAllSidebarWidgets: () => {
+    set((state) => {
+      const updatedStatus = { ...state.sidebarWidgetsOnOffStatus };
+      Object.keys(updatedStatus).forEach((key) => {
+        updatedStatus[key] = false;
+      });
+      return {
+        sidebarWidgetsOnOffStatus: updatedStatus,
+      };
+    });
+  },
+
   getTargetLayer: () => {
     const map = (get() as any).map;
     const targetLayerId = (get() as any).targetLayerId;
@@ -433,6 +463,7 @@ const useStateStore = create<State>((set, get) => ({
         lastName: userInfo.lastName || null,
         userId: userInfo.userId || null,
         groups: Array.isArray(userInfo.groups) ? userInfo.groups : [],
+        ...(userInfo.groupTitles && { groupTitles: userInfo.groupTitles }),
       },
     });
   },
@@ -738,7 +769,17 @@ const useStateStore = create<State>((set, get) => ({
     console.log(`🏷️ User JWT groups: ${JSON.stringify(userInfo.groups)}`);
     const allGroupLayers: any[] = [];
 
-    for (const groupName of userInfo.groups) {
+    // Convert groups to consistent format - handle both string and object formats
+    const normalizedGroups = userInfo.groups?.map(group => {
+      if (typeof group === 'string') {
+        return group;
+      } else if (group && typeof group === 'object' && group.name) {
+        return group.name;
+      }
+      return null;
+    }).filter((group): group is string => group !== null) || [];
+
+    for (const groupName of normalizedGroups) {
       // Skip if group doesn't start with gportal_
       if (!groupName.startsWith("gportal_")) {
         console.log(`⏭️ Skipping non-gportal group: ${groupName}`);

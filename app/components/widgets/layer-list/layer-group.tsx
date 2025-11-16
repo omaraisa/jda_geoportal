@@ -8,15 +8,56 @@ import { CalciteIcon } from '@esri/calcite-components-react';
 export default function LayerGroup({group}: {group: string}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const view = useStateStore((state) => state.targetView);
+  const userInfo = useStateStore((state) => state.userInfo);
   const [activeLayerId, setactiveLayerId] = useState<string | null>(null);
   const [layers, setLayers] = useState<__esri.Layer[]>([]);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     if (view) {
       setLayers(view.map.layers.toArray());
     }
   }, [view?.map.layers]);
+
+  // Function to get group title with translations
+  const getGroupTitle = (groupName: string): string => {
+    // Check if userInfo has groupTitles with translations (new format)
+    if (userInfo?.groupTitles) {
+      const currentLang = i18n.language;
+      const groupKey = groupName; // Use group name as key
+      
+      // Check if we have a translation for this group
+      if (currentLang === 'ar' && userInfo.groupTitles.ar?.[groupKey]) {
+        return userInfo.groupTitles.ar[groupKey];
+      } else if (userInfo.groupTitles.en?.[groupKey]) {
+        return userInfo.groupTitles.en[groupKey];
+      }
+    }
+    
+    // Legacy: Check if userInfo has groups with translations (old object array format)
+    if (userInfo?.groups && Array.isArray(userInfo.groups)) {
+      for (const userGroup of userInfo.groups) {
+        // Handle object format with translations
+        if (typeof userGroup === 'object' && userGroup?.name) {
+          // Match by comparing the group name without gportal_ prefix
+          const cleanUserGroupName = userGroup.name.replace('gportal_', '');
+          const cleanGroupName = groupName;
+          
+          if (cleanUserGroupName === cleanGroupName) {
+            // Return appropriate translation based on current language
+            if (i18n.language === 'ar' && userGroup.titleAr) {
+              return userGroup.titleAr;
+            } else if (userGroup.titleEn) {
+              return userGroup.titleEn;
+            }
+          }
+        }
+      }
+    }
+    
+    // Fallback to i18n translation file
+    return t(`layerList.groupTitles.${toTranslationKey(groupName)}`, groupName);
+  };
 
   // Custom setLayers function that updates both view and local state
   const updateLayers = (updatedLayers: __esri.Layer[]) => {
@@ -74,7 +115,7 @@ export default function LayerGroup({group}: {group: string}) {
       <div className={styles.header} onClick={toggleContent}>
         <div className="flex items-center justify-between w-full">
           <span className="flex-1 text-center">
-            {t(`layerList.groupTitles.${toTranslationKey(group)}`, group)}
+            {getGroupTitle(group)}
           </span>
           <CalciteIcon 
             icon={groupVisibilityIcon} 

@@ -52,7 +52,8 @@ const useAuthentication = (customInterval?: number) => {
               firstName: payload.firstName,
               lastName: payload.lastName,
               userId: payload.userId,
-              groups: payload.groups || [],
+              groups: Array.isArray(payload.groups) ? payload.groups : [],
+              ...(payload.groupTitles && { groupTitles: payload.groupTitles }),
             };
             
             if (isMounted) {
