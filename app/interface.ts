@@ -140,5 +140,9 @@ export interface ArcGISUserInfo {
   firstName?: string | null;
   lastName?: string | null;
   userId?: string | null;
-  groups: string[] | null;
+  groups: Array<string | {name: string; titleEn: string; titleAr: string}> | null; // Support both formats for legacy compatibility
+  groupTitles?: { // Optional new translation mappings
+    en: Record<string, string>;
+    ar: Record<string, string>;
+  };
 };

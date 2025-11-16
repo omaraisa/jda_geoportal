@@ -463,6 +463,7 @@ const useStateStore = create<State>((set, get) => ({
         lastName: userInfo.lastName || null,
         userId: userInfo.userId || null,
         groups: Array.isArray(userInfo.groups) ? userInfo.groups : [],
+        ...(userInfo.groupTitles && { groupTitles: userInfo.groupTitles }),
       },
     });
   },
@@ -768,7 +769,17 @@ const useStateStore = create<State>((set, get) => ({
     console.log(`🏷️ User JWT groups: ${JSON.stringify(userInfo.groups)}`);
     const allGroupLayers: any[] = [];
 
-    for (const groupName of userInfo.groups) {
+    // Convert groups to consistent format - handle both string and object formats
+    const normalizedGroups = userInfo.groups?.map(group => {
+      if (typeof group === 'string') {
+        return group;
+      } else if (group && typeof group === 'object' && group.name) {
+        return group.name;
+      }
+      return null;
+    }).filter((group): group is string => group !== null) || [];
+
+    for (const groupName of normalizedGroups) {
       // Skip if group doesn't start with gportal_
       if (!groupName.startsWith("gportal_")) {
         console.log(`⏭️ Skipping non-gportal group: ${groupName}`);
