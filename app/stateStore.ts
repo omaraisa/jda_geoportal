@@ -3,7 +3,7 @@ import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import MapImageLayer from "@arcgis/core/layers/MapImageLayer";
 import VectorTileLayer from "@arcgis/core/layers/VectorTileLayer";
 import TileLayer from "@arcgis/core/layers/TileLayer";
-import { State, Bookmark, ArcGISUserInfo } from "@/interface";
+import { State, Bookmark, ArcGISUserInfo, GroupTranslations } from "@/interface";
 import { incrementStatisticsFeature } from "@/lib/utils/statistics-client";
 import { getCookie } from "@/lib/utils/token";
 
@@ -435,7 +435,8 @@ const useStateStore = create<State>((set, get) => ({
         username: "",
         role: "",
         groups: [],
-      }
+      },
+      groupTranslations: null, // Clear group translations on logout
     });
   },
 
@@ -448,6 +449,9 @@ const useStateStore = create<State>((set, get) => ({
   },
 
   gisToken: null,
+  
+  // Group translations from auth_gate
+  groupTranslations: null,
 
   setGisToken: (token: string | null) => {
     set({ gisToken: token });
@@ -1035,6 +1039,33 @@ const useStateStore = create<State>((set, get) => ({
     incrementStatisticsFeature(featurename, get().userInfo?.fullName || "").then((response) => {
       // console.log(response.message);
     })
+  },
+
+  // Group translations methods
+  setGroupTranslations: (translations) => {
+    set({ groupTranslations: translations });
+  },
+
+  fetchGroupTranslations: async () => {
+    try {
+      // Import the translation fetcher
+      const { fetchGroupTranslationsFromAuthGate } = await import('@/lib/utils/auth-group-translations');
+      
+      console.log('🔄 Fetching group translations from auth_gate...');
+      const result = await fetchGroupTranslationsFromAuthGate();
+      
+      if (result.success && result.translations) {
+        set({ groupTranslations: result.translations });
+        console.log('✅ Group translations loaded successfully from auth_gate');
+      } else {
+        console.warn('⚠️ Failed to load group translations from auth_gate:', result.error);
+        // Keep existing translations or set to null
+        set({ groupTranslations: null });
+      }
+    } catch (error) {
+      console.error('❌ Error loading group translations:', error);
+      set({ groupTranslations: null });
+    }
   }
 
 }));

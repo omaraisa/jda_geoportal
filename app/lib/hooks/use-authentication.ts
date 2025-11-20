@@ -8,7 +8,7 @@ const useAuthentication = (customInterval?: number) => {
   const config = getCurrentConfig();
   const interval = customInterval || config.CHECK_INTERVAL;
   
-  const { setUserInfo, setSessionModalOpen, clearAuth } = useStateStore((state) => state);
+  const { setUserInfo, setSessionModalOpen } = useStateStore((state) => state);
   const [isInitializing, setIsInitializing] = useState(true);
   
   useEffect(() => {
@@ -20,6 +20,7 @@ const useAuthentication = (customInterval?: number) => {
       
       if (!accessToken || !isAuthenticated) {
         if (isMounted) {
+          const { clearAuth } = useStateStore.getState();
           clearAuth();
           setSessionModalOpen(true);
         }
@@ -34,16 +35,15 @@ const useAuthentication = (customInterval?: number) => {
           const tokenExpiry = payload.exp;
           const timeUntilExpiry = tokenExpiry - currentTime;
           
-          if (timeUntilExpiry < config.SESSION_MODAL_BUFFER) {
-            console.log(`Token expires in ${timeUntilExpiry} seconds, showing session modal (buffer: ${config.SESSION_MODAL_BUFFER}s)`);
-            if (isMounted) {
-              clearAuth();
-              setSessionModalOpen(true);
-            }
-            return false;
+        if (timeUntilExpiry < config.SESSION_MODAL_BUFFER) {
+          console.log(`Token expires in ${timeUntilExpiry} seconds, showing session modal (buffer: ${config.SESSION_MODAL_BUFFER}s)`);
+          if (isMounted) {
+            const { clearAuth } = useStateStore.getState();
+            clearAuth();
+            setSessionModalOpen(true);
           }
-          
-          if (payload) {
+          return false;
+        }          if (payload) {
             const userInfo = {
               fullName: payload.firstName && payload.lastName ? 
                 `${payload.firstName} ${payload.lastName}` : payload.username,
@@ -58,12 +58,20 @@ const useAuthentication = (customInterval?: number) => {
             
             if (isMounted) {
               setUserInfo(userInfo);
+              
+              // Fetch group translations from auth_gate after setting user info
+              // This is done asynchronously to not block authentication
+              const { fetchGroupTranslations } = useStateStore.getState();
+              fetchGroupTranslations().catch(error => {
+                console.warn('Group translation fetch failed during authentication:', error);
+              });
             }
           }
         }
       } catch (error) {
         console.error("Failed to parse token:", error);
         if (isMounted) {
+          const { clearAuth } = useStateStore.getState();
           clearAuth();
           setSessionModalOpen(true);
         }
@@ -122,7 +130,7 @@ const useAuthentication = (customInterval?: number) => {
     return () => {
       isMounted = false;
     };
-  }, [interval, setUserInfo, setSessionModalOpen, clearAuth]);
+  }, [interval, setUserInfo, setSessionModalOpen]);
   
   return { isInitializing };
 };

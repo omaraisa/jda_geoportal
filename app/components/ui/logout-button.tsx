@@ -1,6 +1,7 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { CalciteIcon } from '@esri/calcite-components-react';
+import useStateStore from "@/stateStore";
 
 const LogoutButton: React.FC = () => {
   const logout = () => {
@@ -9,6 +10,11 @@ const LogoutButton: React.FC = () => {
     document.cookie = 'is_authenticated=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
     document.cookie = "arcgis_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = "arcgis_token_expiry=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+    // Clear auth state including group translations
+    const { clearAuth } = useStateStore.getState();
+    clearAuth();
+    
     const logoutUrl = process.env.NEXT_PUBLIC_AUTH_LOGOUT_URL;
     redirect(`${logoutUrl}?callback=${encodeURIComponent(window.location.origin)}`);
   };
