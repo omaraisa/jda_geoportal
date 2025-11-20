@@ -4,11 +4,13 @@ import LayerItem from "./layer-item";
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
 import { CalciteIcon } from '@esri/calcite-components-react';
+import { getTranslatedGroupTitle } from '@/lib/utils/auth-group-translations';
 
 export default function LayerGroup({group}: {group: string}) {
   const [isExpanded, setIsExpanded] = useState(false);
   const view = useStateStore((state) => state.targetView);
   const userInfo = useStateStore((state) => state.userInfo);
+  const groupTranslations = useStateStore((state) => state.groupTranslations);
   const [activeLayerId, setactiveLayerId] = useState<string | null>(null);
   const [layers, setLayers] = useState<__esri.Layer[]>([]);
   const { t, i18n } = useTranslation();
@@ -21,7 +23,20 @@ export default function LayerGroup({group}: {group: string}) {
 
   // Function to get group title with translations
   const getGroupTitle = (groupName: string): string => {
-    // Check if userInfo has groupTitles with translations (new format)
+    // Priority 1: Use translations from auth_gate (stored in state)
+    if (groupTranslations) {
+      const authGateTranslation = getTranslatedGroupTitle(
+        groupName,
+        i18n.language as 'en' | 'ar',
+        groupTranslations
+      );
+      // Only use if it's not just the fallback (cleaned name)
+      if (authGateTranslation !== groupName.replace(/^gportal_/, '')) {
+        return authGateTranslation;
+      }
+    }
+    
+    // Priority 2: Check if userInfo has groupTitles with translations (JWT format)
     if (userInfo?.groupTitles) {
       const currentLang = i18n.language;
       const groupKey = groupName; // Use group name as key
@@ -34,7 +49,7 @@ export default function LayerGroup({group}: {group: string}) {
       }
     }
     
-    // Legacy: Check if userInfo has groups with translations (old object array format)
+    // Priority 3: Check if userInfo has groups with translations (old object array format)
     if (userInfo?.groups && Array.isArray(userInfo.groups)) {
       for (const userGroup of userInfo.groups) {
         // Handle object format with translations
@@ -55,7 +70,7 @@ export default function LayerGroup({group}: {group: string}) {
       }
     }
     
-    // Fallback to i18n translation file
+    // Priority 4: Fallback to hardcoded i18n translation files
     return t(`layerList.groupTitles.${toTranslationKey(groupName)}`, groupName);
   };
 

@@ -63,6 +63,10 @@ const SessionEndModal = () => {
     document.cookie = 'arcgis_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     document.cookie = 'arcgis_token_expiry=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     
+    // Clear auth state including group translations
+    const { clearAuth } = useStateStore.getState();
+    clearAuth();
+    
     const authUrl = process.env.NEXT_PUBLIC_AUTH_URL || '/';
     const callbackUrl = encodeURIComponent(window.location.href);
     window.location.href = `${authUrl}?callback=${callbackUrl}`;

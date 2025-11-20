@@ -2,6 +2,12 @@ import Graphic from "@arcgis/core/Graphic";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 
+// Interface for group translations from auth_gate
+export interface GroupTranslations {
+  en: Record<string, string>;
+  ar: Record<string, string>;
+}
+
 export interface Message {
   id: string;
   title: string;
@@ -81,6 +87,8 @@ export interface State {
   accessToken: string | null;
   isAuthenticated: boolean;
   gisToken: string | null;
+  // Group translations from auth_gate
+  groupTranslations: GroupTranslations | null;
   setAppReady: (isReady: boolean) => void;
   setLanguage: (lang: string) => void;
   setMainMenuExpansion: (isExpanded: boolean) => void;
@@ -118,6 +126,9 @@ export interface State {
   clearAuth: () => void;
   setGisToken: (token: string) => void;
   updateExtent: (extent: __esri.Extent | null) => void;
+  // Group translations methods
+  setGroupTranslations: (translations: GroupTranslations | null) => void;
+  fetchGroupTranslations: () => Promise<void>;
 }
 
 export interface AttributeQueryState {
