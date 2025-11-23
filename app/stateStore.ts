@@ -1051,12 +1051,10 @@ const useStateStore = create<State>((set, get) => ({
       // Import the translation fetcher
       const { fetchGroupTranslationsFromAuthGate } = await import('@/lib/utils/auth-group-translations');
       
-      console.log('🔄 Fetching group translations from auth_gate...');
       const result = await fetchGroupTranslationsFromAuthGate();
       
       if (result.success && result.translations) {
         set({ groupTranslations: result.translations });
-        console.log('✅ Group translations loaded successfully from auth_gate');
       } else {
         console.warn('⚠️ Failed to load group translations from auth_gate:', result.error);
         // Keep existing translations or set to null

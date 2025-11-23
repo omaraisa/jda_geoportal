@@ -68,7 +68,6 @@ export async function fetchGroupTranslationsFromAuthGate(): Promise<{
     
     // Check if we have group titles in the response
     if (data.groupTitles && data.groupTitles.en && data.groupTitles.ar) {
-      console.log('Successfully fetched group translations from auth_gate');
       return {
         success: true,
         translations: data.groupTitles
