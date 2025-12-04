@@ -1,34 +1,28 @@
 
 import { NextResponse } from 'next/server';
-
-// JWT verification dependencies
 import * as jose from 'jose';
+import https from 'https';
 // Helper to verify JWT from Authorization header
-async function verifyRequestJWT(request: Request): Promise<{ userId?: string; groups?: string[] } | null> {
+async function verifyRequestJWT(request: Request): Promise<boolean> {
   try {
     const authHeader = request.headers.get('authorization') || request.headers.get('Authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       console.error('[groups API] Missing or invalid Authorization header');
-      return null;
+      return false;
     }
     const token = authHeader.replace('Bearer ', '');
-    const secret = process.env.TOKEN_SECRET; // Server-only secret
+    const secret = process.env.TOKEN_SECRET;
     if (!secret) {
       console.error('[groups API] TOKEN_SECRET not set');
-      return null;
+      return false;
     }
     const encoder = new TextEncoder();
     const secretKey = encoder.encode(secret);
-    const { payload } = await jose.jwtVerify(token, secretKey);
-    
-    // Extract user info from JWT
-    return {
-      userId: payload.sub as string,
-      groups: payload.groups as string[] || []
-    };
+    await jose.jwtVerify(token, secretKey);
+    return true;
   } catch (err) {
     console.error('[groups API] JWT verification failed:', err);
-    return null;
+    return false;
   }
 }
 
@@ -37,37 +31,11 @@ const tokenServiceUrl = process.env.PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NO
 const username = process.env.SDF_USERNAME ?? '';
 const password = process.env.SDF_PASSWORD ?? '';
 
-async function fetchUserGroupsFromAuthServer(userId: string): Promise<string[]> {
-  try {
-    const authUrl = process.env.NEXT_PUBLIC_AUTH_URL;
-    if (!authUrl) {
-      console.error('Auth URL not configured');
-      return [];
-    }
-
-    // TODO: Implement the actual auth server API endpoint
-    // This should be a secure server-to-server call
-    // For now, returning mock data - replace with actual implementation
-    console.log(`Fetching groups for user: ${userId} from auth server`);
-    
-    // Mock implementation - replace with actual API call
-    // const response = await fetch(`${authUrl}/api/user/${userId}/groups`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Authorization': `Bearer ${process.env.INTERNAL_AUTH_TOKEN}`,
-    //     'Content-Type': 'application/json',
-    //   },
-    // });
-    
-    // Mock response - replace with actual data from auth server
-    return ['gportal_admin', 'gportal_user']; // Example allowed groups
-  } catch (error) {
-    console.error('Error fetching user groups from auth server:', error);
-    return [];
-  }
-}
-
 async function getToken(): Promise<string | null> {
+  const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+  if (process.env.NODE_ENV === 'development') {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  }
   try {
     if (!username || !password) {
       console.error('Missing ArcGIS credentials in environment variables');
@@ -83,7 +51,7 @@ async function getToken(): Promise<string | null> {
       username,
       password,
       client: 'referer',
-      referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+      referer: process.env.APP_URL_SDF_GEOAPP || process.env.APP_URL || 'http://localhost:3000',
       f: 'json',
     });
     
@@ -106,13 +74,20 @@ async function getToken(): Promise<string | null> {
   } catch (error) {
     console.error('Token fetch error:', error);
     return null;
+  } finally {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalRejectUnauthorized;
   }
 }
 
 async function fetchPortalGroups(token: string): Promise<string[]> {
+  const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+  if (process.env.NODE_ENV === 'development') {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  }
   try {
     const groupsUrl = `${portalUrl}/sharing/rest/community/groups?f=json&q=gportal_&token=${token}&num=100`;
-    const response = await fetch(groupsUrl);
+    const response = await fetch(groupsUrl, {
+    });
     
     if (!response.ok) {
       throw new Error(`Failed to fetch groups: ${response.status}`);
@@ -134,25 +109,14 @@ async function fetchPortalGroups(token: string): Promise<string[]> {
   } catch (error) {
     console.error('Error fetching portal groups:', error);
     return [];
+  } finally {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalRejectUnauthorized;
   }
 }
 
 
 export async function POST(request: Request) {
-  // Verify JWT and extract user info
-  const userInfo = await verifyRequestJWT(request);
-  if (!userInfo) {
-    return NextResponse.json(
-      { error: 'Unauthorized: Invalid or missing token' },
-      { status: 401 }
-    );
-  }
-
   try {
-    // Get user's allowed groups from auth server
-    const allowedGroups = await fetchUserGroupsFromAuthServer(userInfo.userId!);
-    
-    // Get ArcGIS token for portal access
     const token = await getToken();
     if (!token) {
       return NextResponse.json(
@@ -160,28 +124,37 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-
-    // Fetch all portal groups
-    const allPortalGroups = await fetchPortalGroups(token);
     
-    // Filter groups based on user's permissions
-    const userAllowedGroups = allPortalGroups.filter(groupName => {
-      // Check if user has permission for this group
-      // This could be based on group naming convention or explicit permissions
-      return allowedGroups.some(allowedGroup => 
-        groupName.includes(allowedGroup) || allowedGroup === '*' // Wildcard for admin
-      );
-    });
+    // Test the token
+    const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+    if (process.env.NODE_ENV === 'development') {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    }
+    try {
+      const testUrl = `${portalUrl}/sharing/rest/portals/self?f=json&token=${token}`;
+      const refererUrl = process.env.GEOPORTAL_URL || process.env.APP_URL_SDF_GEOAPP || 'http://localhost:3000';
+      
+      const testResponse = await fetch(testUrl, {
+        headers: {
+          'Referer': refererUrl
+        }
+      });
+      const testData = await testResponse.json();
+      if (testData.error) {
+        console.error('Token test failed:', testData.error);
+        return NextResponse.json({ error: 'Token validation failed' }, { status: 401 });
+      }
+    } finally {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalRejectUnauthorized;
+    }
 
+    // Return the token
     return NextResponse.json({
-      groups: userAllowedGroups,
-      userId: userInfo.userId
+      token: token,
+      expires: Date.now() + (60 * 60 * 1000) // 1 hour
     });
   } catch (error) {
     console.error('API error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
   }
 }

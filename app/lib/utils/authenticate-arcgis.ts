@@ -20,8 +20,6 @@ const config = {
     apiKey: process.env.NEXT_PUBLIC_ARCGIS_API_KEY ?? 'API_KEY_NOT_SET',
     portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET',
     tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
-    username: process.env.NEXT_PUBLIC_SDF_USERNAME ?? '',
-    password: process.env.NEXT_PUBLIC_SDF_PASSWORD ?? '',
 };
 
 export const getArcGISToken = async (): Promise<string | null> => {
@@ -57,7 +55,7 @@ export const getArcGISToken = async (): Promise<string | null> => {
                         server: config.portalUrl,
                         token: cookieToken,
                         expires: expiry,
-                        userId: config.username
+                        userId: ''
                     });
                 }
                 return currentToken;
@@ -197,66 +195,37 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
             return false;
         }
 
-        const { username, password } = config;
-        
-        if (!username || !password) {
-            console.warn('ArcGIS credentials not configured in environment variables');
-            return false;
-        }
-
         try {
-            if (config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
-                console.error('Cannot authenticate: Token Service URL is not configured.');
-                return false;
-            }
-
-            if (!IdentityManager) {
-                const idManMod = await import('@arcgis/core/identity/IdentityManager');
-                IdentityManager = idManMod.default;
-            }
-
-            const refererUrl = process.env.NEXT_PUBLIC_GEOPORTAL_URL || window.location.origin;
-            
-            const params = new URLSearchParams({
-                username,
-                password,
-                client: 'referer',
-                referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || window.location.origin,
-                f: 'json',
+            const response = await fetch('/api/authenticate-arcgis', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             });
 
-            const tokenResponse = await fetch(
-                config.tokenServiceUrl,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params.toString(),
-                }
-            );
+            const data = await response.json();
 
-            const tokenData = await tokenResponse.json();
-
-            if (tokenData.error) {
-                console.error('ArcGIS Token Error:', tokenData.error);
+            if (!response.ok || data.error) {
+                console.error('ArcGIS Token Error:', data.error);
                 return false;
             }
 
             const authConfig = getCurrentConfig();
             const expiryTime = Date.now() + authConfig.TOKEN_DURATION_MINUTES * 60 * 1000;
 
-            currentToken = tokenData.token;
+            currentToken = data.token;
             tokenExpiry = expiryTime;
 
-            document.cookie = `arcgis_token=${tokenData.token}; path=/; secure; samesite=strict`;
+            document.cookie = `arcgis_token=${data.token}; path=/; secure; samesite=strict`;
             document.cookie = `arcgis_token_expiry=${expiryTime}; path=/; secure; samesite=strict`;
             
             const { default: useStateStore } = await import('../../stateStore');
-            useStateStore.getState().setGisToken(tokenData.token);
+            useStateStore.getState().setGisToken(data.token);
             
+            // Test the token (optional, since API already tested)
             try {
-                const testUrl = `${config.portalUrl}/sharing/rest/portals/self?f=json&token=${tokenData.token}`;
+                const testUrl = `${config.portalUrl}/sharing/rest/portals/self?f=json&token=${data.token}`;
+                const refererUrl = process.env.NEXT_PUBLIC_GEOPORTAL_URL || window.location.origin;
                 
                 const testResponse = await fetch(testUrl, {
                     headers: {
@@ -266,13 +235,11 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
                 const testData = await testResponse.json();
                 if (testData.error) {
                     console.error('Token test failed:', testData.error);
-                    const success = await authenticateArcGIS();
-                    return success;
+                    return false;
                 }
             } catch (testError) {
                 console.error('Token test error:', testError);
-                const success = await authenticateArcGIS();
-                return success;
+                return false;
             }
 
             if (IdentityManager && config.portalUrl) {
@@ -289,9 +256,9 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
 
                     IdentityManager.registerToken({
                         server: config.portalUrl,
-                        token: tokenData.token,
+                        token: data.token,
                         expires: expiryTime,
-                        userId: username
+                        userId: '' // No username needed
                     });
 
                     IdentityManager.registerServers([serverInfo]);
@@ -302,7 +269,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
             
             return true;
         } catch (error) {
-            console.error('ArcGIS authentication with credentials failed:', error);
+            console.error('ArcGIS authentication with API failed:', error);
             currentToken = null;
             tokenExpiry = null;
             return false;
