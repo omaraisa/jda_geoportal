@@ -474,8 +474,6 @@ const useStateStore = create<State>((set, get) => ({
 
   // Backup function to load basemap layers when user group fetching fails
   loadBackupBasemapLayers: async (portalUrl: string, gisToken: string, targetView: any, groupNameToIdMap: { [key: string]: string }) => {
-    console.log("🛡️ Loading backup basemap layers from gportal_Basemap group...");
-    
     const basemapGroupId = groupNameToIdMap["gportal_Basemap"];
     if (!basemapGroupId) {
       console.error("❌ No gportal_Basemap group found in portal");
@@ -503,8 +501,6 @@ const useStateStore = create<State>((set, get) => ({
         return;
       }
 
-      console.log(`🗺️ Found ${groupContent.items.length} basemap items`);
-      
       // Add basemap layers using the same sophisticated approach as user group layers
       const layerPromises: Promise<number>[] = [];
       
@@ -538,7 +534,6 @@ const useStateStore = create<State>((set, get) => ({
                   });
                   (subLayerInstance as any).group = item._groupName;
                   targetView.map.add(subLayerInstance);
-                  console.log(`✅ Added backup FeatureLayer: ${sublayer.name}`);
                   addedCount++;
                 });
               } else {
@@ -552,7 +547,6 @@ const useStateStore = create<State>((set, get) => ({
                 });
                 (featureLayer as any).group = item._groupName;
                 targetView.map.add(featureLayer);
-                console.log(`✅ Added backup single FeatureLayer: ${item.title}`);
                 addedCount++;
               }
             } catch (error) {
@@ -567,7 +561,6 @@ const useStateStore = create<State>((set, get) => ({
               });
               (featureLayer as any).group = item._groupName;
               targetView.map.add(featureLayer);
-              console.log(`✅ Added backup fallback FeatureLayer: ${item.title}`);
               addedCount++;
             }
             return addedCount;
@@ -595,7 +588,6 @@ const useStateStore = create<State>((set, get) => ({
                   });
                   (subLayerInstance as any).group = item._groupName;
                   targetView.map.add(subLayerInstance);
-                  console.log(`✅ Added backup Map Service FeatureLayer: ${sublayer.name}`);
                   addedCount++;
                 });
               } else {
@@ -616,7 +608,6 @@ const useStateStore = create<State>((set, get) => ({
           });
           (layer as any).group = item._groupName;
           targetView.map.add(layer);
-          console.log(`✅ Added backup TileLayer: ${item.title}`);
         } else if (item.type.includes("Vector")) {
           const layer = new VectorTileLayer({ 
             url: item.url, 
@@ -626,17 +617,14 @@ const useStateStore = create<State>((set, get) => ({
           });
           (layer as any).group = item._groupName;
           targetView.map.add(layer);
-          console.log(`✅ Added backup VectorTileLayer: ${item.title}`);
         }
       }
 
       // Wait for all async backup layer operations to complete
       if (layerPromises.length > 0) {
-        console.log(`⏳ Waiting for ${layerPromises.length} backup async layer operations to complete...`);
         try {
           const layerCounts = await Promise.all(layerPromises);
           const asyncLayersAdded = layerCounts.reduce((sum, count) => sum + count, 0);
-          console.log(`✅ Backup async layer operations completed. Added ${asyncLayersAdded} backup async layers`);
         } catch (error) {
           console.error("❌ Error waiting for backup async layer operations:", error);
         }
@@ -704,7 +692,6 @@ const useStateStore = create<State>((set, get) => ({
       }
     } catch (testError) {
       console.error('❌ Token test error:', testError);
-      console.log('🔄 Attempting to generate a new token due to test error...');
 
       // Clear the problematic token and try again
       clearArcGISToken();
@@ -739,11 +726,9 @@ const useStateStore = create<State>((set, get) => ({
         allGroupsData.results.forEach((group: any) => {
           if (group.title.startsWith("gportal_")) {
             groupNameToIdMap[group.title] = group.id;
-            // Mapped group title to ID
           }
         });
 
-        // Created mapping for portal groups
       } else {
         console.error("⚠️ No groups data returned from portal");
         return;
@@ -759,18 +744,14 @@ const useStateStore = create<State>((set, get) => ({
     }
 
     // 🔥 CLEAR EXISTING LAYERS TO PREVENT CACHING ISSUES
-    console.log("🧹 Clearing existing layers before loading user groups");
     const existingLayers = targetView.map.layers.toArray();
     existingLayers.forEach(layer => {
       if ((layer as any).group) {
         targetView.map.remove(layer);
-        console.log(`🗑️ Removed cached layer: ${layer.title} (group: ${(layer as any).group})`);
       }
     });
 
     // Processing user groups from JWT token
-    console.log(`👤 Loading layers for user: ${userInfo.username}`);
-    console.log(`🏷️ User JWT groups: ${JSON.stringify(userInfo.groups)}`);
     const allGroupLayers: any[] = [];
 
     // Convert groups to consistent format - handle both string and object formats
@@ -786,21 +767,15 @@ const useStateStore = create<State>((set, get) => ({
     for (const groupName of normalizedGroups) {
       // Skip if group doesn't start with gportal_
       if (!groupName.startsWith("gportal_")) {
-        console.log(`⏭️ Skipping non-gportal group: ${groupName}`);
         continue;
       }
-
-      console.log(`🔍 Processing group: ${groupName}`);
 
       // Get the group ID from our mapping
       const groupId = groupNameToIdMap[groupName];
       if (!groupId) {
         console.error(`❌ No group ID found for: ${groupName}`);
-        console.log(`📋 Available groups in portal: ${Object.keys(groupNameToIdMap).join(', ')}`);
         continue;
       }
-
-      console.log(`✅ Found group ID ${groupId} for ${groupName}`);
 
       try {
         // Use the correct API endpoint to get group content
@@ -829,15 +804,11 @@ const useStateStore = create<State>((set, get) => ({
           item._groupName = groupName.replace("gportal_", "");
         });
 
-        console.log(`📦 Found ${groupContent.items.length} items in group ${groupName}`);
         allGroupLayers.push(...groupContent.items);
       } catch (e) {
         console.error("❌ Failed to fetch group content for group:", groupName, e);
       }
     }
-
-    console.log(`🎯 Total layers found across all user groups: ${allGroupLayers.length}`);
-    console.log(`📊 Processing layers for user: ${userInfo.username} with groups: ${userInfo.groups?.join(', ')}`);
 
     // Check if we have any layers to process
     if (allGroupLayers.length === 0) {
@@ -993,19 +964,16 @@ const useStateStore = create<State>((set, get) => ({
 
     // Wait for all async layer operations to complete
     if (layerPromises.length > 0) {
-      console.log(`⏳ Waiting for ${layerPromises.length} async layer operations to complete...`);
       try {
         const layerCounts = await Promise.all(layerPromises);
         const asyncLayersAdded = layerCounts.reduce((sum, count) => sum + count, 0);
         successfullyAddedLayers += asyncLayersAdded;
-        console.log(`✅ Async layer operations completed. Added ${asyncLayersAdded} async layers`);
       } catch (error) {
         console.error("❌ Error waiting for async layer operations:", error);
       }
     }
 
     // Check if we successfully added any layers from user groups
-    console.log(`🎯 Successfully added ${successfullyAddedLayers} layers from user groups`);
     
     if (successfullyAddedLayers === 0) {
       console.warn("⚠️ No layers were successfully added from user groups, attempting backup basemap loading...");
