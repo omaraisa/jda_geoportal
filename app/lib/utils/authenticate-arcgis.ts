@@ -19,8 +19,15 @@ let tokenExpiry: number | null = null;
 const config = {
     apiKey: process.env.NEXT_PUBLIC_ARCGIS_API_KEY ?? 'API_KEY_NOT_SET',
     portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET',
-    tokenServiceUrl: process.env.PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
+    tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
 };
+
+// Debug logging for environment variables
+console.log('🔍 ArcGIS Config Debug:');
+console.log('  NEXT_PUBLIC_ARCGIS_API_KEY:', process.env.NEXT_PUBLIC_ARCGIS_API_KEY ? '[SET]' : '[NOT SET]');
+console.log('  NEXT_PUBLIC_PORTAL_URL:', process.env.NEXT_PUBLIC_PORTAL_URL ? `[SET: ${process.env.NEXT_PUBLIC_PORTAL_URL}]` : '[NOT SET]');
+console.log('  NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL:', process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ? `[SET: ${process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL}]` : '[NOT SET]');
+console.log('  Config values:', { apiKey: config.apiKey, portalUrl: config.portalUrl, tokenServiceUrl: config.tokenServiceUrl });
 
 export const getArcGISToken = async (): Promise<string | null> => {
     const authConfig = getCurrentConfig();
@@ -124,6 +131,8 @@ export const initializeArcGIS = async (): Promise<void> => {
 
             if (config.portalUrl === 'PORTAL_URL_NOT_SET' || config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
                  console.warn('Portal URL or Token Service URL is not set. Skipping server registration with IdentityManager.');
+                 console.warn('  portalUrl check:', config.portalUrl === 'PORTAL_URL_NOT_SET' ? 'FAILED (portalUrl not set)' : 'PASSED');
+                 console.warn('  tokenServiceUrl check:', config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET' ? 'FAILED (tokenServiceUrl not set)' : 'PASSED');
             } else {
                 const serverInfo = new ServerInfo({
                     server: config.portalUrl,
