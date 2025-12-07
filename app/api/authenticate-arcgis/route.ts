@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     }
     try {
       const testUrl = `${portalUrl}/sharing/rest/portals/self?f=json&token=${token}`;
-      const refererUrl = process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP;
+      const refererUrl = process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || 'http://localhost:3000';
       
       const testResponse = await fetch(testUrl, {
         headers: {

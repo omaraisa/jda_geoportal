@@ -83,7 +83,7 @@ async function getToken(): Promise<string | null> {
       username,
       password,
       client: 'referer',
-      referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP,
+      referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || 'http://localhost:3000',
       f: 'json',
     });
     
