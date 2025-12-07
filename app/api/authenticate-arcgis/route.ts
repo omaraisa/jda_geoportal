@@ -26,10 +26,16 @@ async function verifyRequestJWT(request: Request): Promise<boolean> {
   }
 }
 
-const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
-const tokenServiceUrl = process.env.PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET';
-const username = process.env.SDF_USERNAME ?? 'sdfuser';
-const password = process.env.SDF_PASSWORD ?? 'sdfuser@123';
+// Read envs at runtime to avoid Next.js build-time inlining and support both
+// server-only and NEXT_PUBLIC_ env var names.
+function getRuntimeEnv() {
+  return {
+    portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL || 'PORTAL_URL_NOT_SET',
+    tokenServiceUrl: process.env.PORTAL_TOKEN_SERVICE_URL || 'PORTAL_TOKEN_NOT_SET',
+    username: process.env.SDF_USERNAME || '',
+    password: process.env.SDF_PASSWORD || '',
+  };
+}
 
 async function getToken(): Promise<string | null> {
   const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
@@ -37,6 +43,8 @@ async function getToken(): Promise<string | null> {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   }
   try {
+    const { username, password, tokenServiceUrl } = getRuntimeEnv();
+
     if (!username || !password) {
       console.error('Missing ArcGIS credentials in environment variables');
       return null;
@@ -85,6 +93,7 @@ async function fetchPortalGroups(token: string): Promise<string[]> {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   }
   try {
+    const { portalUrl } = getRuntimeEnv();
     const groupsUrl = `${portalUrl}/sharing/rest/community/groups?f=json&q=gportal_&token=${token}&num=100`;
     const response = await fetch(groupsUrl, {
     });
@@ -131,6 +140,7 @@ export async function POST(request: Request) {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
     try {
+      const { portalUrl } = getRuntimeEnv();
       const testUrl = `${portalUrl}/sharing/rest/portals/self?f=json&token=${token}`;
       const refererUrl = process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || 'http://localhost:3000';
       

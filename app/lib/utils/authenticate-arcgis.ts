@@ -122,7 +122,7 @@ export const initializeArcGIS = async (): Promise<void> => {
                 console.warn('🔑 ArcGIS API Key is not set. Using default or potentially falling back to other auth methods.');
             }
 
-            if (config.portalUrl === 'NEXT_PUBLIC_PORTAL_URL_NOT_SET' || config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
+            if (config.portalUrl === 'PORTAL_URL_NOT_SET' || config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
                  console.warn('Portal URL or Token Service URL is not set. Skipping server registration with IdentityManager.');
             } else {
                 const serverInfo = new ServerInfo({
