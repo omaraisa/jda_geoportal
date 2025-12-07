@@ -32,8 +32,8 @@ async function verifyRequestJWT(request: Request): Promise<{ userId?: string; gr
   }
 }
 
-const portalUrl = process.env.PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
-const tokenServiceUrl = process.env.PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET';
+const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://gis.jda.gov.sa/portal';
+const tokenServiceUrl = process.env.PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_SERVICE_URL_NOT_SET';
 const username = process.env.SDF_USERNAME ?? '';
 const password = process.env.SDF_PASSWORD ?? '';
 
@@ -83,7 +83,7 @@ async function getToken(): Promise<string | null> {
       username,
       password,
       client: 'referer',
-      referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+      referer: process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP,
       f: 'json',
     });
     

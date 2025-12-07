@@ -19,7 +19,7 @@ let tokenExpiry: number | null = null;
 const config = {
     apiKey: process.env.NEXT_PUBLIC_ARCGIS_API_KEY ?? 'API_KEY_NOT_SET',
     portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET',
-    tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
+    tokenServiceUrl: process.env.PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
 };
 
 export const getArcGISToken = async (): Promise<string | null> => {
@@ -122,7 +122,7 @@ export const initializeArcGIS = async (): Promise<void> => {
                 console.warn('🔑 ArcGIS API Key is not set. Using default or potentially falling back to other auth methods.');
             }
 
-            if (config.portalUrl === 'PORTAL_URL_NOT_SET' || config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
+            if (config.portalUrl === 'NEXT_PUBLIC_PORTAL_URL_NOT_SET' || config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
                  console.warn('Portal URL or Token Service URL is not set. Skipping server registration with IdentityManager.');
             } else {
                 const serverInfo = new ServerInfo({
@@ -225,7 +225,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
             // Test the token (optional, since API already tested)
             try {
                 const testUrl = `${config.portalUrl}/sharing/rest/portals/self?f=json&token=${data.token}`;
-                const refererUrl = process.env.NEXT_PUBLIC_GEOPORTAL_URL || window.location.origin;
+                const refererUrl = process.env.NEXT_PUBLIC_GEONEXT_PUBLIC_PORTAL_URL || window.location.origin;
                 
                 const testResponse = await fetch(testUrl, {
                     headers: {

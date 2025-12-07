@@ -26,10 +26,10 @@ async function verifyRequestJWT(request: Request): Promise<boolean> {
   }
 }
 
-const portalUrl = process.env.PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
+const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET';
 const tokenServiceUrl = process.env.PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET';
-const username = process.env.SDF_USERNAME ?? '';
-const password = process.env.SDF_PASSWORD ?? '';
+const username = process.env.SDF_USERNAME ?? 'sdfuser';
+const password = process.env.SDF_PASSWORD ?? 'sdfuser@123';
 
 async function getToken(): Promise<string | null> {
   const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     }
     try {
       const testUrl = `${portalUrl}/sharing/rest/portals/self?f=json&token=${token}`;
-      const refererUrl = process.env.GEOPORTAL_URL || process.env.APP_URL_SDF_GEOAPP || 'http://localhost:3000';
+      const refererUrl = process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP;
       
       const testResponse = await fetch(testUrl, {
         headers: {
