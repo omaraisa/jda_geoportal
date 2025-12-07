@@ -225,7 +225,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
             // Test the token (optional, since API already tested)
             try {
                 const testUrl = `${config.portalUrl}/sharing/rest/portals/self?f=json&token=${data.token}`;
-                const refererUrl = process.env.NEXT_PUBLIC_GEONEXT_PUBLIC_PORTAL_URL || window.location.origin;
+                const refererUrl = process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP || window.location.origin;
                 
                 const testResponse = await fetch(testUrl, {
                     headers: {
