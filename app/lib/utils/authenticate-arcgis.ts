@@ -19,15 +19,9 @@ let tokenExpiry: number | null = null;
 const config = {
     apiKey: process.env.NEXT_PUBLIC_ARCGIS_API_KEY ?? 'API_KEY_NOT_SET',
     portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL ?? 'PORTAL_URL_NOT_SET',
-    tokenServiceUrl: process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ?? 'PORTAL_TOKEN_NOT_SET',
+    // Remove tokenServiceUrl from client-side config - not needed for our backend-only auth approach
 };
 
-// Debug logging for environment variables
-console.log('🔍 ArcGIS Config Debug:');
-console.log('  NEXT_PUBLIC_ARCGIS_API_KEY:', process.env.NEXT_PUBLIC_ARCGIS_API_KEY ? '[SET]' : '[NOT SET]');
-console.log('  NEXT_PUBLIC_PORTAL_URL:', process.env.NEXT_PUBLIC_PORTAL_URL ? `[SET: ${process.env.NEXT_PUBLIC_PORTAL_URL}]` : '[NOT SET]');
-console.log('  NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL:', process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL ? `[SET: ${process.env.NEXT_PUBLIC_PORTAL_TOKEN_SERVICE_URL}]` : '[NOT SET]');
-console.log('  Config values:', { apiKey: config.apiKey, portalUrl: config.portalUrl, tokenServiceUrl: config.tokenServiceUrl });
 
 export const getArcGISToken = async (): Promise<string | null> => {
     const authConfig = getCurrentConfig();
@@ -129,21 +123,25 @@ export const initializeArcGIS = async (): Promise<void> => {
                 console.warn('🔑 ArcGIS API Key is not set. Using default or potentially falling back to other auth methods.');
             }
 
-            if (config.portalUrl === 'PORTAL_URL_NOT_SET' || config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET') {
-                 console.warn('Portal URL or Token Service URL is not set. Skipping server registration with IdentityManager.');
-                 console.warn('  portalUrl check:', config.portalUrl === 'PORTAL_URL_NOT_SET' ? 'FAILED (portalUrl not set)' : 'PASSED');
-                 console.warn('  tokenServiceUrl check:', config.tokenServiceUrl === 'PORTAL_TOKEN_NOT_SET' ? 'FAILED (tokenServiceUrl not set)' : 'PASSED');
+            // Since we're using backend-only authentication, we don't need to register servers
+            // with IdentityManager. The client-side code will get tokens from our API.
+            if (config.portalUrl === 'PORTAL_URL_NOT_SET') {
+                 console.warn('Portal URL is not set. ArcGIS integration may not work properly.');
             } else {
-                const serverInfo = new ServerInfo({
-                    server: config.portalUrl,
-                    tokenServiceUrl: config.tokenServiceUrl,
-                });
+                // Optional: Register server without token service URL for basic connectivity
+                // This allows ArcGIS widgets to know about the portal without handling auth
+                try {
+                    const serverInfo = new ServerInfo({
+                        server: config.portalUrl,
+                        // Don't set tokenServiceUrl - we'll handle auth through our backend
+                    });
 
-                if (typeof IdentityManager.registerServers === 'function') {
-                    IdentityManager.registerServers([serverInfo]);
-                } else {
-                    console.error('IdentityManager.registerServers function is unexpectedly missing!');
-                    throw new Error('IdentityManager is loaded but registerServers is missing.');
+                    if (typeof IdentityManager.registerServers === 'function') {
+                        IdentityManager.registerServers([serverInfo]);
+                        // console.log('✅ ArcGIS server registered (auth handled by backend)');
+                    }
+                } catch (error) {
+                    console.warn('Failed to register ArcGIS server (non-critical):', error);
                 }
             }
 
@@ -260,7 +258,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
                     
                     const serverInfo = new ServerInfo({
                         server: config.portalUrl,
-                        tokenServiceUrl: config.tokenServiceUrl,
+                        // Don't set tokenServiceUrl - we handle auth through backend
                     });
 
                     IdentityManager.registerToken({
