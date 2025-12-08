@@ -1,4 +1,5 @@
 // API client for sending statistics to admin panel
+import { getCookie } from './token';
 
 interface StatisticsRequest {
     featureName: string;
@@ -12,7 +13,6 @@ interface StatisticsResponse {
 }
 
 const ADMIN_PANEL_URL = process.env.NEXT_PUBLIC_ADMIN_URL; 
-const API_KEY = process.env.TOKEN_SECRET;
 
 if (!ADMIN_PANEL_URL) {
     // Statistics tracking will be disabled if not set
@@ -28,8 +28,10 @@ export async function sendStatisticsToAdminPanel(data: StatisticsRequest): Promi
             'Content-Type': 'application/json',
         };
 
-        if (API_KEY) {
-            headers['x-api-key'] = API_KEY;
+        // Use JWT token from cookie for authentication
+        const accessToken = getCookie('access_token');
+        if (accessToken) {
+            headers['Authorization'] = `Bearer ${accessToken}`;
         }
 
         // const url = `${ADMIN_PANEL_URL.replace(/\/admin$/, '')}/api/statistics/increment`;
