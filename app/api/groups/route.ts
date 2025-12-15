@@ -19,11 +19,13 @@ async function verifyRequestJWT(request: Request): Promise<{ userId?: string; gr
     }
     const encoder = new TextEncoder();
     const secretKey = encoder.encode(secret);
-    const { payload } = await jose.jwtVerify(token, secretKey);
+    const { payload } = await jose.jwtVerify(token, secretKey, {
+      issuer: 'admin-panel'
+    });
     
     // Extract user info from JWT
     return {
-      userId: payload.sub as string,
+      userId: payload.userId as string,
       groups: payload.groups as string[] || []
     };
   } catch (err) {
@@ -87,22 +89,45 @@ async function getToken(): Promise<string | null> {
       f: 'json',
     });
     
-    const response = await fetch(tokenServiceUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: params.toString(),
-    });
-    
-    const data = await response.json();
-    
-    if (data.error) {
-      console.error('Error getting token:', data.error);
-      return null;
+    // Temporarily bypass SSL verification in development
+    const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+    if (process.env.NODE_ENV === 'development') {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
     
-    return data.token;
+    try {
+      const response = await fetch(tokenServiceUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString(),
+      });
+      
+      // Restore SSL setting
+      if (originalRejectUnauthorized !== undefined) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalRejectUnauthorized;
+      } else {
+        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+      }
+    
+      const data = await response.json();
+      
+      if (data.error) {
+        console.error('Error getting token:', data.error);
+        return null;
+      }
+      
+      return data.token;
+    } catch (fetchError) {
+      // Restore SSL setting on error
+      if (originalRejectUnauthorized !== undefined) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalRejectUnauthorized;
+      } else {
+        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+      }
+      throw fetchError;
+    }
   } catch (error) {
     console.error('Token fetch error:', error);
     return null;
@@ -112,31 +137,85 @@ async function getToken(): Promise<string | null> {
 async function fetchPortalGroups(token: string): Promise<string[]> {
   try {
     const groupsUrl = `${portalUrl}/sharing/rest/community/groups?f=json&q=gportal_&token=${token}&num=100`;
-    const response = await fetch(groupsUrl);
     
-    if (!response.ok) {
-      throw new Error(`Failed to fetch groups: ${response.status}`);
+    // Temporarily bypass SSL verification in development
+    const originalRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+    if (process.env.NODE_ENV === 'development') {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
     
-    const data = await response.json();
+    try {
+      const response = await fetch(groupsUrl);
+      
+      // Restore SSL setting
+      if (originalRejectUnauthorized !== undefined) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalRejectUnauthorized;
+      } else {
+        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+      }
     
-    if (data.error) {
-      throw new Error(`Portal API error: ${data.error.message}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch groups: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(`Portal API error: ${data.error.message}`);
+      }
+      
+      if (data.results && Array.isArray(data.results)) {
+        return data.results
+        .filter((group: any) => group.title && group.title.startsWith('gportal_'))
+        .map((group: any) => group.title);
+      }
+      
+      return [];
+    } catch (fetchError) {
+      // Restore SSL setting on error
+      if (originalRejectUnauthorized !== undefined) {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = originalRejectUnauthorized;
+      } else {
+        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+      }
+      throw fetchError;
     }
-    
-    if (data.results && Array.isArray(data.results)) {
-      return data.results
-      .filter((group: any) => group.title && group.title.startsWith('gportal_'))
-      .map((group: any) => group.title);
-    }
-    
-    return [];
   } catch (error) {
     console.error('Error fetching portal groups:', error);
     return [];
   }
 }
 
+
+export async function OPTIONS(request: Request) {
+  const origin = request.headers.get('origin') || '';
+
+  const normalizeOrigin = (u?: string) => {
+    try {
+      return new URL(u || '').origin;
+    } catch {
+      return undefined;
+    }
+  };
+
+  const allowed = new Set<string>([
+    normalizeOrigin(process.env.NEXT_PUBLIC_ADMIN_URL) || '',
+    normalizeOrigin(process.env.NEXT_PUBLIC_APP_URL_SDF_GEOAPP) || '',
+    'http://localhost:3000',
+  ].filter(Boolean));
+
+  const allowOrigin = allowed.has(origin) ? origin : [...allowed][0] || '';
+
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': allowOrigin,
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Credentials': 'true',
+    },
+  });
+}
 
 export async function POST(request: Request) {
   // Verify JWT and extract user info
@@ -149,9 +228,6 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Get user's allowed groups from auth server
-    const allowedGroups = await fetchUserGroupsFromAuthServer(userInfo.userId!);
-    
     // Get ArcGIS token for portal access
     const token = await getToken();
     if (!token) {
@@ -161,21 +237,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Fetch all portal groups
+    // Fetch all portal groups (admin panel middleware ensures only admins can access)
     const allPortalGroups = await fetchPortalGroups(token);
     
-    // Filter groups based on user's permissions
-    const userAllowedGroups = allPortalGroups.filter(groupName => {
-      // Check if user has permission for this group
-      // This could be based on group naming convention or explicit permissions
-      return allowedGroups.some(allowedGroup => 
-        groupName.includes(allowedGroup) || allowedGroup === '*' // Wildcard for admin
-      );
-    });
-
-    return NextResponse.json({
-      groups: userAllowedGroups,
-      userId: userInfo.userId
+    return NextResponse.json(allPortalGroups, {
+      headers: {
+        'Access-Control-Allow-Origin': request.headers.get('origin') || '',
+        'Access-Control-Allow-Credentials': 'true',
+      },
     });
   } catch (error) {
     console.error('API error:', error);

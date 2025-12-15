@@ -17,11 +17,19 @@ const nextConfig: NextConfig = {
                 ],
             },
             {
-                source: '/api/(.*)',
+                source: '/api/groups',
                 headers: [
                     {
-                        key: 'Cache-Control',
-                        value: 'no-store, no-cache, must-revalidate',
+                        key: 'Access-Control-Allow-Origin',
+                        value: process.env.NEXT_PUBLIC_ADMIN_URL || 'http://localhost:3103/admin',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Methods',
+                        value: 'POST, OPTIONS',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Headers',
+                        value: 'Content-Type, Authorization',
                     },
                 ],
             },

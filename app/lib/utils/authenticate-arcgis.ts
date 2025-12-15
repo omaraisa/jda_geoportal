@@ -50,10 +50,12 @@ export const getArcGISToken = async (): Promise<string | null> => {
             if (timeUntilExpiry > bufferMs) {
                 currentToken = cookieToken;
                 tokenExpiry = expiry;
-                // Register token with IdentityManager
+                // Register token with IdentityManager (use token service root)
                 if (IdentityManager && config.portalUrl) {
+                    const trimmedPortal = config.portalUrl.replace(/\/$/, '');
+                    const tokenServiceRoot = `${trimmedPortal}/sharing/rest`;
                     IdentityManager.registerToken({
-                        server: config.portalUrl,
+                        server: tokenServiceRoot,
                         token: cookieToken,
                         expires: expiry,
                         userId: ''
@@ -131,13 +133,18 @@ export const initializeArcGIS = async (): Promise<void> => {
                 // Optional: Register server without token service URL for basic connectivity
                 // This allows ArcGIS widgets to know about the portal without handling auth
                 try {
+                    const trimmedPortal = config.portalUrl.replace(/\/$/, '');
+                    const tokenServiceUrl = `${trimmedPortal}/sharing/rest/generateToken`;
+                    const tokenServiceRoot = `${trimmedPortal}/sharing/rest`;
+
                     const serverInfo = new ServerInfo({
                         server: config.portalUrl,
-                        // Don't set tokenServiceUrl - we'll handle auth through our backend
+                        tokenServiceUrl: tokenServiceUrl,
                     });
 
                     if (typeof IdentityManager.registerServers === 'function') {
                         IdentityManager.registerServers([serverInfo]);
+                        // Ensure IdentityManager has the token service url available
                         // console.log('✅ ArcGIS server registered (auth handled by backend)');
                     }
                 } catch (error) {
@@ -255,14 +262,19 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
                         const serverInfoMod = await import('@arcgis/core/identity/ServerInfo');
                         ServerInfo = serverInfoMod.default;
                     }
-                    
+                    const trimmedPortal = config.portalUrl.replace(/\/$/, '');
+                    const tokenServiceUrl = `${trimmedPortal}/sharing/rest/generateToken`;
+                    const tokenServiceRoot = `${trimmedPortal}/sharing/rest`;
+
                     const serverInfo = new ServerInfo({
                         server: config.portalUrl,
-                        // Don't set tokenServiceUrl - we handle auth through backend
+                        tokenServiceUrl: tokenServiceUrl,
                     });
 
+                    // Register token against the token service root so IdentityManager
+                    // has a valid server url when attempting to generate or refresh tokens
                     IdentityManager.registerToken({
-                        server: config.portalUrl,
+                        server: tokenServiceRoot,
                         token: data.token,
                         expires: expiryTime,
                         userId: '' // No username needed
