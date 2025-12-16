@@ -1,5 +1,6 @@
 services:
   geoportal1:
+    container_name: geoportal1
     build:
       context: .
       args:
@@ -35,6 +36,7 @@ services:
       - gis_net
 
   geoportal2:
+    container_name: geoportal2
     build:
       context: .
       args:
