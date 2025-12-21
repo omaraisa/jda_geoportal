@@ -126,75 +126,74 @@ export default function SearchableSelect({
   }, [highlightedIndex]);
 
   return (
-    <div className={`relative ${className}`} ref={containerRef}>
+    <div className={`relative w-full ${className}`} ref={containerRef}>
       <div className="relative">
-        <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-            🔍
-          </span>
-          <input
-            ref={inputRef}
-            type="text"
-            value={isOpen ? searchTerm : (selectedOption?.label || '')}
-            onChange={handleInputChange}
-            onFocus={handleInputFocus}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            disabled={disabled || loading}
-            className={`
-              w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-              disabled:bg-gray-100 disabled:cursor-not-allowed
-              ${disabled ? 'bg-gray-100' : 'bg-white'}
-            `}
-          />
-          <span
-            className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 transition-transform ${
-              isOpen ? 'rotate-180' : ''
-            }`}
-          >
-            ▼
-          </span>
-        </div>
-
-        {isOpen && (
-          <div
-            className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg"
-            style={{ maxHeight: `${maxHeight}px` }}
-          >
-            {loading ? (
-              <div className="px-4 py-2 text-gray-500 text-sm">Loading...</div>
-            ) : filteredOptions.length === 0 ? (
-              <div className="px-4 py-2 text-gray-500 text-sm">
-                {searchTerm ? 'No results found' : 'No options available'}
-              </div>
-            ) : (
-              <ul
-                ref={listRef}
-                className="max-h-full overflow-auto py-1"
-                role="listbox"
-              >
-                {filteredOptions.map((option, index) => (
-                  <li
-                    key={option.value}
-                    role="option"
-                    aria-selected={option.value === value}
-                    className={`
-                      px-4 py-2 cursor-pointer text-sm hover:bg-blue-50
-                      ${option.value === value ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}
-                      ${index === highlightedIndex ? 'bg-blue-50' : ''}
-                    `}
-                    onClick={() => handleSelect(option.value)}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                  >
-                    {option.label}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        )}
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none z-10">
+          🔍
+        </span>
+        <input
+          ref={inputRef}
+          type="text"
+          value={isOpen ? searchTerm : (selectedOption?.label || '')}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          disabled={disabled || loading}
+          className={`
+            w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md
+            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+            disabled:bg-gray-100 disabled:cursor-not-allowed
+            ${disabled ? 'bg-gray-100' : 'bg-white'}
+            relative z-0
+          `}
+        />
+        <span
+          className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 transition-transform pointer-events-none z-10 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
+        >
+          ▼
+        </span>
       </div>
+
+      {isOpen && (
+        <div
+          className="absolute z-[100] w-full mt-1 bg-white border border-gray-300 rounded-md shadow-xl overflow-hidden"
+        >
+          {loading ? (
+            <div className="px-4 py-2 text-gray-500 text-sm bg-white">Loading...</div>
+          ) : filteredOptions.length === 0 ? (
+            <div className="px-4 py-2 text-gray-500 text-sm bg-white">
+              {searchTerm ? 'No results found' : 'No options available'}
+            </div>
+          ) : (
+            <ul
+              ref={listRef}
+              className="overflow-y-auto py-1 bg-white"
+              style={{ maxHeight: `${maxHeight}px` }}
+              role="listbox"
+            >
+              {filteredOptions.map((option, index) => (
+                <li
+                  key={option.value}
+                  role="option"
+                  aria-selected={option.value === value}
+                  className={`
+                    px-4 py-2 cursor-pointer text-sm transition-colors
+                    ${option.value === value ? 'bg-blue-100 text-blue-900 font-medium' : 'text-gray-900 hover:bg-blue-50'}
+                    ${index === highlightedIndex ? 'bg-blue-50' : ''}
+                  `}
+                  onClick={() => handleSelect(option.value)}
+                  onMouseEnter={() => setHighlightedIndex(index)}
+                >
+                  {option.label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 }
