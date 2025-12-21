@@ -32,6 +32,7 @@ const menuOptions: MenuOptions = {
     { name: "TimeSliderComponent", icon: "multi-timeline" },
   ],
   query: [
+    { name: "SearchWidget", icon: "search" },
     { name: "AttributeQueryComponent", icon: "file-magnifying-glass" },
     { name: "SpatialQueryComponent", icon: "image-magnifying-glass" },
   ],

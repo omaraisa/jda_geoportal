@@ -21,6 +21,9 @@ const LegendComponent = dynamic(() => import("@/components/widgets/legend"), {
 const BookmarkComponent = dynamic(() => import("@/components/widgets/bookmarks"), {
   ssr: false,
 });
+const SearchWidget = dynamic(() => import("@/components/widgets/search-widget"), {
+  ssr: false,
+});
 const AttributeQueryComponent = dynamic(
   () => import("@/components/widgets/attribute-query"),
   { ssr: false }
@@ -91,6 +94,7 @@ const components = {
   LayerListComponent,
   LegendComponent,
   BookmarkComponent,
+  SearchWidget,
   AttributeQueryComponent,
   SpatialQueryComponent,
   CoordinateConversionComponent,

@@ -15,6 +15,7 @@
     }
   },
   "menu": {
+    "SearchWidget": "بحث | Search",
     "AttributeQueryComponent": "استعلام وصفي",
     "SpatialQueryComponent": "استعلام مكاني",
     "MeasurementComponent": "القياس",
@@ -418,6 +419,14 @@
       "includeScale": "تضمين المقياس",
       "includeDate": "تضمين التاريخ",
       "titlePlaceholder": "أدخل عنوان الخريطة"
+    },
+    "search": {
+      "title": "بحث | Search",
+      "placeholder": "البحث في طبقات الخرائط الأساسية...",
+      "featuresFound": "{{count}} معالم تم العثور عليها",
+      "noResults": "لم يتم العثور على نتائج",
+      "backToResults": "العودة إلى النتائج",
+      "clearResults": "مسح النتائج"
     }
   },
   "layoutMode": {

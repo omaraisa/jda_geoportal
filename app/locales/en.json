@@ -15,6 +15,7 @@
     }
   },
   "menu": {
+    "SearchWidget": "Search | بحث",
     "AttributeQueryComponent": "Attribute Query",
     "SpatialQueryComponent": "Spatial Query",
     
@@ -415,6 +416,14 @@
       "includeScale": "Include Scale",
       "includeDate": "Include Date",
       "titlePlaceholder": "Enter map title"
+    },
+    "search": {
+      "title": "Search | بحث",
+      "placeholder": "Search basemap layers...",
+      "featuresFound": "{{count}} features found",
+      "noResults": "No results found",
+      "backToResults": "Back to Results",
+      "clearResults": "Clear Results"
     }
   },
   "layoutMode": {
