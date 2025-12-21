@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
 import { LayerSelector, AnalysisControls } from "../analysis-tools";
 import { OverlayService, OverlayOperation } from "./overlay-service";
+import OutputLayerList from "../analysis-tools/output-layer-list";
 
 const OVERLAY_OPERATIONS: Array<{ value: OverlayOperation; label: string }> = [
   { value: "union", label: "Union" },
@@ -21,6 +22,7 @@ const Overlay: React.FC = () => {
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [outputLayers, setOutputLayers] = useState<__esri.Layer[]>([]);
 
   // Get the selected layers
   const layer1 = view?.map.findLayerById(layer1Id) as __esri.FeatureLayer | __esri.GraphicsLayer;
@@ -44,7 +46,9 @@ const Overlay: React.FC = () => {
     setStatus(t("widgets.overlay.status.running") || `Performing ${operation} analysis...`);
 
     try {
-      await OverlayService.runOverlayAnalysis(layer1, layer2, operation);
+      const resultLayer = await OverlayService.runOverlayAnalysis(layer1, layer2, operation);
+      
+      setOutputLayers(prev => [resultLayer, ...prev]);
 
       setStatusType("success");
       setStatus(t("widgets.overlay.status.success") || `${operation} analysis completed successfully`);
@@ -55,6 +59,29 @@ const Overlay: React.FC = () => {
       setStatus(t(err.key) || err.message || `${operation} analysis failed`);
     } finally {
       setIsRunning(false);
+    }
+  };
+
+  const handleToggleVisibility = (layer: __esri.Layer) => {
+    layer.visible = !layer.visible;
+    setOutputLayers([...outputLayers]);
+  };
+
+  const handleRename = (layer: __esri.Layer, newName: string) => {
+    layer.title = newName;
+    setOutputLayers([...outputLayers]);
+  };
+
+  const handleDelete = (layer: __esri.Layer) => {
+    if (view) {
+        view.map.remove(layer);
+    }
+    setOutputLayers(outputLayers.filter(l => l.id !== layer.id));
+  };
+
+  const handleZoomTo = (layer: __esri.Layer) => {
+    if (view) {
+        view.goTo(layer.fullExtent);
     }
   };
 
@@ -112,6 +139,14 @@ const Overlay: React.FC = () => {
         status={status}
         statusType={statusType}
         isRunning={isRunning}
+      />
+
+      <OutputLayerList 
+        layers={outputLayers}
+        onToggleVisibility={handleToggleVisibility}
+        onRename={handleRename}
+        onDelete={handleDelete}
+        onZoomTo={handleZoomTo}
       />
     </div>
   );

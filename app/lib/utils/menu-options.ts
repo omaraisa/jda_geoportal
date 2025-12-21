@@ -30,6 +30,7 @@ const menuOptions: MenuOptions = {
     { name: "NetworkAnalysis", icon: "utility-network", subMenuComponent: "NetworkAnalysis" },
     { name: "SpatialAnalysis", icon: "analysis-overlay", subMenuComponent: "SpatialAnalysis" },
     { name: "TimeSliderComponent", icon: "multi-timeline" },
+    { name: "ChartingComponent", icon: "graph-bar" },
   ],
   query: [
     { name: "SearchWidget", icon: "search" },

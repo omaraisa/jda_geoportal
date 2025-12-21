@@ -84,6 +84,10 @@ const GoToXYComponent = dynamic(() => import("@/components/widgets/go-to-xy"), {
 const MapLayoutComponent = dynamic(() => import("@/components/widgets/map-layout-fabric"), {
   ssr: false,
 });
+const ChartingComponent = dynamic(() => import("@/components/widgets/charting").then(mod => ({ default: mod.Charting })), {
+  ssr: false,
+});
+
 
 
 const components = {
@@ -114,6 +118,7 @@ const components = {
   GeometryModifyComponent,
   GoToXYComponent,
   MapLayoutComponent,
+  ChartingComponent,
 };
 
 export default function Sidebar() {

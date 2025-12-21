@@ -9,3 +9,4 @@ export * from './measurement';
 export * from './dissolve';
 export * from './geometry-modify';
 export * from './spatial-relationships';
+export * from './charting';

@@ -125,6 +125,13 @@ export const initializeArcGIS = async (): Promise<void> => {
                 console.warn('🔑 ArcGIS API Key is not set. Using default or potentially falling back to other auth methods.');
             }
 
+            // Prevent Esri IdentityManager from showing the default login dialog
+            // This ensures our custom authentication flow is the only one presented to the user
+            IdentityManager.on("dialog-create", (event: any) => {
+                event.preventDefault();
+                console.warn("Blocked Esri IdentityManager dialog. Token might be expired or invalid.");
+            });
+
             // Since we're using backend-only authentication, we don't need to register servers
             // with IdentityManager. The client-side code will get tokens from our API.
             if (config.portalUrl === 'PORTAL_URL_NOT_SET') {
