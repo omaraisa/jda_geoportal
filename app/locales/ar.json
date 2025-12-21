@@ -41,7 +41,7 @@
     "drawTool": "أداة الرسم",
     "eraseTool": "أداة المسح",
     "panTool": "أداة التحريك",
-    "bufferAnalysis": "تحليل العازل",
+    "bufferAnalysis": "تحليل الحرم",
     "overlayAnalysis": "تحليل التراكب",
     "proximityAnalysis": "تحليل التقارب",
     "statisticalAnalysis": "التحليل الإحصائي",
@@ -50,7 +50,7 @@
     "ChangeDetectionComponent": "كشف التغييرات",
     "TimeSliderComponent": "شريط الزمن",
     "DirectionsComponent": "الاتجاهات",
-    "BufferComponent": "تحليل العازل",
+    "BufferComponent": "تحليل الحرم",
     "OverlayComponent": "تحليل التراكب",
     "ClipComponent": "تحليل القص",
     "DissolveComponent": "تحليل الذوبان",
@@ -247,22 +247,22 @@
       }
     },
     "buffer": {
-      "title": "تحليل العازل",
+      "title": "تحليل الحرم",
       "inputLayer": "طبقة الإدخال",
       "selectLayer": "اختر الطبقة",
-      "distances": "مسافات العازل",
+      "distances": "مسافات الحرم",
       "unit": "وحدة المسافة",
-      "bufferDistance": "مسافة العازل",
+      "bufferDistance": "مسافة الحرم",
       "distanceUnit": "وحدة المسافة",
-      "bufferType": "نوع العازل",
+      "bufferType": "نوع الحرم",
       "geodesic": "جيوديسي",
       "planar": "مستوي",
       "addDistance": "إضافة مسافة",
       "run": "تشغيل",
       "status": {
         "running": "جاري التحليل...",
-        "success": "اكتمل تحليل العازل بنجاح.",
-        "error": "فشل تحليل العازل."
+        "success": "اكتمل تحليل الحرم بنجاح.",
+        "error": "فشل تحليل الحرم."
       },
       "errors": {
         "noLayer": "يرجى اختيار طبقة إدخال",
