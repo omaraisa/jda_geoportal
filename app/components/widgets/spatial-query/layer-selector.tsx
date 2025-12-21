@@ -30,6 +30,9 @@ export default function LayerSelector({
       label: layer.title || layer.id
     })) || [];
 
+  const defaultPlaceholder = t("widgets.query.selectLayer", { defaultValue: "Select Layer" });
+  const defaultSelectPlaceholder = t("widgets.query.select", { defaultValue: "Select" });
+
   return (
     <div className="flex flex-col space-y-2 w-full">
       <label htmlFor="targetLayer" className="font-semibold text-foreground">
@@ -40,10 +43,10 @@ export default function LayerSelector({
         value={targetLayerValue}
         onChange={onTargetLayerChange}
         options={[
-          { value: "", label: t("widgets.query.selectLayer") },
+          { value: "", label: defaultSelectPlaceholder },
           ...layerOptions
         ]}
-        placeholder={t("widgets.query.selectLayer")}
+        placeholder={defaultPlaceholder}
         maxHeight={300}
       />
 
@@ -57,7 +60,7 @@ export default function LayerSelector({
             value={selectionLayerValue}
             onChange={onSelectionLayerChange}
             options={[
-              { value: "", label: t("widgets.query.select") },
+              { value: "", label: defaultSelectPlaceholder },
               ...layerOptions
             ]}
             placeholder={t("widgets.query.select")}

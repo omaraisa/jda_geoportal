@@ -25,6 +25,8 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({ getSelectedValue }) => {
       label: layer.title || layer.id
     })) || [];
 
+  const defaultPlaceholder = t("widgets.query.selectLayer", { defaultValue: "Select Layer" });
+
   return (
     <div className="flex flex-col w-full">
       <label htmlFor="layerSelector" className="font-semibold text-2c2c2c mb-2">
@@ -37,7 +39,7 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({ getSelectedValue }) => {
           { value: "", label: t("widgets.query.select") },
           ...layerOptions
         ]}
-        placeholder={t("widgets.query.selectLayer")}
+        placeholder={defaultPlaceholder}
         maxHeight={300}
       />
     </div>

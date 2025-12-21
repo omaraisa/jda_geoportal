@@ -27,6 +27,8 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({
       label: layer.title || layer.id
     })) || [];
 
+  const defaultPlaceholder = t("widgets.analysis.selectLayer", { defaultValue: "Select Layer" });
+
   return (
     <div className="space-y-2">
       <label className="block text-sm font-medium text-gray-700">
@@ -36,10 +38,10 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({
         value={value}
         onChange={onChange}
         options={[
-          { value: "", label: placeholder || t("widgets.analysis.selectLayer") || "Select Layer" },
+          { value: "", label: placeholder || defaultPlaceholder },
           ...layerOptions
         ]}
-        placeholder={placeholder || t("widgets.analysis.selectLayer") || "Select Layer"}
+        placeholder={placeholder || defaultPlaceholder}
         maxHeight={300}
       />
     </div>
