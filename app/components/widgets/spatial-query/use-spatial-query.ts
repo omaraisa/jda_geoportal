@@ -20,6 +20,7 @@ export const useSpatialQuery = (
     selectionMethodChecked: true,
     targetLayerValue: "",
     selectionLayerValue: "",
+    hasResults: false,
   });
 
   // Refs
@@ -37,6 +38,13 @@ export const useSpatialQuery = (
     sketchContainerRef,
     graphicsLayerRef,
     sketchInitialized,
+  };
+
+  const setHasResults = (hasResults: boolean) => {
+    setState((prevState) => ({
+      ...prevState,
+      hasResults,
+    }));
   };
 
   // Initialize sketch on view change
@@ -59,7 +67,8 @@ export const useSpatialQuery = (
           graphicsLayerRef,
           widgets,
           sendMessage,
-          t
+          t,
+          setHasResults
         );
 
         SpatialQueryService.initializeSketch(
@@ -81,7 +90,8 @@ export const useSpatialQuery = (
     widgets,
     sendMessage,
     updateStats,
-    t
+    t,
+    setHasResults
   );
 
   const selectionMethodHandler = () => {
@@ -106,23 +116,44 @@ export const useSpatialQuery = (
   };
 
   const handleClearSelection = () => {
-    const targetLayer = view?.map.layers.toArray()[parseInt(state.targetLayerValue)] as __esri.FeatureLayer;
+    const targetLayer = getSelectedTargetLayer(view, state.targetLayerValue);
     clearSelection(
       graphicsLayerRef.current,
       view,
       targetLayer,
       widgets
     );
+    setHasResults(false);
   };
 
   const handleSwitchSelection = async () => {
-    const targetLayer = view?.map.layers.toArray()[parseInt(state.targetLayerValue)] as __esri.FeatureLayer;
+    const targetLayer = getSelectedTargetLayer(view, state.targetLayerValue);
     if (targetLayer && graphicsLayerRef.current && view) {
       await SpatialQueryService.switchSelection(
         targetLayer,
         graphicsLayerRef.current,
         view,
         widgets
+      );
+    }
+  };
+
+  const handleCreateLayer = () => {
+    const targetLayer = getSelectedTargetLayer(view, state.targetLayerValue);
+    if (targetLayer && graphicsLayerRef.current && view) {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      const seconds = now.getSeconds().toString().padStart(2, "0");
+      const timeCode = `${hours}${minutes}${seconds}`;
+      
+      const uniqueTitle = `Spatial Query Result - ${targetLayer.title} ${timeCode}`;
+      
+      SpatialQueryService.createLayerFromResults(
+        targetLayer,
+        graphicsLayerRef.current.graphics.toArray(),
+        view,
+        uniqueTitle
       );
     }
   };
@@ -137,6 +168,7 @@ export const useSpatialQuery = (
       handleSwitchSelection,
       handleTargetLayerChange,
       handleSelectionLayerChange,
+      handleCreateLayer,
     },
   };
 };

@@ -421,7 +421,7 @@
       "titlePlaceholder": "أدخل عنوان الخريطة"
     },
     "search": {
-      "title": "بحث | Search",
+      "title": "بحث",
       "placeholder": "البحث في طبقات الخرائط الأساسية...",
       "featuresFound": "{{count}} معالم تم العثور عليها",
       "noResults": "لم يتم العثور على نتائج",

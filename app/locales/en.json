@@ -15,7 +15,7 @@
     }
   },
   "menu": {
-    "SearchWidget": "Search | بحث",
+    "SearchWidget": "Search",
     "AttributeQueryComponent": "Attribute Query",
     "SpatialQueryComponent": "Spatial Query",
     

@@ -15,7 +15,8 @@ export const createSketchCompleteHandler = (
   graphicsLayerRef: React.RefObject<__esri.GraphicsLayer | null>,
   widgets: any,
   sendMessage: (message: MessagePayload) => void,
-  t: (key: string) => string
+  t: (key: string) => string,
+  setHasResults: (hasResults: boolean) => void
 ) => {
   return async (graphic: __esri.Graphic) => {
     const targetLayer = getSelectedTargetLayer(view, targetLayerValueRef.current);
@@ -34,11 +35,14 @@ export const createSketchCompleteHandler = (
           targetLayer,
           widgets
         );
+        setHasResults(true);
       } else {
         showNoResultsError(sendMessage, t);
+        setHasResults(false);
       }
     } catch (error) {
       showSearchError(sendMessage, t);
+      setHasResults(false);
     }
   };
 };
@@ -51,7 +55,8 @@ export const createQueryByLayerHandler = (
   widgets: any,
   sendMessage: (message: MessagePayload) => void,
   updateStats: (action: string) => void,
-  t: (key: string) => string
+  t: (key: string) => string,
+  setHasResults: (hasResults: boolean) => void
 ) => {
   return async () => {
     const targetLayer = getSelectedTargetLayer(view, targetLayerValue);
@@ -76,11 +81,14 @@ export const createQueryByLayerHandler = (
           targetLayer,
           widgets
         );
+        setHasResults(true);
       } else {
         showNoResultsError(sendMessage, t);
+        setHasResults(false);
       }
     } catch (error) {
       showSearchError(sendMessage, t);
+      setHasResults(false);
     }
     updateStats("Spatial Query");
   };

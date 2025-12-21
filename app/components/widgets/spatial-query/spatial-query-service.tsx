@@ -1,7 +1,8 @@
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import Sketch from "@arcgis/core/widgets/Sketch";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
-import { addQueryResult, runQuery } from "@/lib/utils/query";
+import { addQueryResult, runQuery, createSeparateLayer } from "@/lib/utils/query";
+import Graphic from "@arcgis/core/Graphic";
 
 export class SpatialQueryService {
   static initializeSketch(
@@ -150,5 +151,14 @@ export class SpatialQueryService {
     } catch (error) {
       console.error("Error switching selection:", error);
     }
+  }
+
+  static createLayerFromResults(
+    targetLayer: __esri.FeatureLayer,
+    resultLayerSource: Graphic[],
+    view: any,
+    uniqueTitle: string
+  ): void {
+    createSeparateLayer(targetLayer, resultLayerSource, view, uniqueTitle);
   }
 }

@@ -4,6 +4,7 @@ export interface SpatialQueryState {
   selectionMethodChecked: boolean;
   targetLayerValue: string;
   selectionLayerValue: string;
+  hasResults: boolean;
 }
 
 export interface SpatialQueryRefs {

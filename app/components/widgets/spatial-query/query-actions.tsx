@@ -7,13 +7,17 @@ interface QueryActionsProps {
   onRunQueryByLayer: () => void;
   onClearSelection: () => void;
   onSwitchSelection: () => void;
+  onCreateLayer: () => void;
+  hasResults: boolean;
 }
 
 export default function QueryActions({
   selectionMethodChecked,
   onRunQueryByLayer,
   onClearSelection,
-  onSwitchSelection
+  onSwitchSelection,
+  onCreateLayer,
+  hasResults
 }: QueryActionsProps) {
   const { t } = useTranslation();
 
@@ -40,6 +44,16 @@ export default function QueryActions({
           onClick={onClearSelection}
         >
           {t("widgets.query.clearSearch")}
+        </button>
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          className={`btn ${!hasResults ? 'btn-gray' : 'btn-primary'} flex-grow`}
+          disabled={!hasResults}
+          onClick={onCreateLayer}
+        >
+          {t("widgets.query.createNewLayer")}
         </button>
       </div>
     </div>
