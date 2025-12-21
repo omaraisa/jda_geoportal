@@ -11,14 +11,14 @@ import { MessagePayload } from './types';
 
 export const createSketchCompleteHandler = (
   view: __esri.MapView | __esri.SceneView | null,
-  targetLayerRef: React.RefObject<HTMLSelectElement | null>,
+  targetLayerValueRef: React.MutableRefObject<string>,
   graphicsLayerRef: React.RefObject<__esri.GraphicsLayer | null>,
   widgets: any,
   sendMessage: (message: MessagePayload) => void,
   t: (key: string) => string
 ) => {
   return async (graphic: __esri.Graphic) => {
-    const targetLayer = getSelectedTargetLayer(view, targetLayerRef);
+    const targetLayer = getSelectedTargetLayer(view, targetLayerValueRef.current);
     if (!targetLayer) {
       showInvalidLayerError(sendMessage, t);
       return;
@@ -45,8 +45,8 @@ export const createSketchCompleteHandler = (
 
 export const createQueryByLayerHandler = (
   view: __esri.MapView | __esri.SceneView | null,
-  targetLayerRef: React.RefObject<HTMLSelectElement | null>,
-  selectionLayerRef: React.RefObject<HTMLSelectElement | null>,
+  targetLayerValue: string,
+  selectionLayerValue: string,
   graphicsLayerRef: React.RefObject<__esri.GraphicsLayer | null>,
   widgets: any,
   sendMessage: (message: MessagePayload) => void,
@@ -54,8 +54,8 @@ export const createQueryByLayerHandler = (
   t: (key: string) => string
 ) => {
   return async () => {
-    const targetLayer = getSelectedTargetLayer(view, targetLayerRef);
-    const selectionLayer = getSelectedSelectionLayer(view, selectionLayerRef);
+    const targetLayer = getSelectedTargetLayer(view, targetLayerValue);
+    const selectionLayer = getSelectedSelectionLayer(view, selectionLayerValue);
 
     if (!targetLayer || !selectionLayer) {
       if (!targetLayer) {

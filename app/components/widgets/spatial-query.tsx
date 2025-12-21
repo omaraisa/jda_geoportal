@@ -2,11 +2,11 @@
 
 import useStateStore from "@/stateStore";
 import { useTranslation } from "react-i18next";
-import { 
-  LayerSelector, 
-  SelectionMethodToggle, 
-  QueryActions, 
-  useSpatialQuery 
+import {
+  LayerSelector,
+  SelectionMethodToggle,
+  QueryActions,
+  useSpatialQuery
 } from "./spatial-query/";
 
 export default function SpatialQueryComponent() {
@@ -28,9 +28,11 @@ export default function SpatialQueryComponent() {
     <div className="flex flex-col space-y-4 p-4">
       <LayerSelector
         view={view}
-        targetLayerRef={refs.targetLayerRef}
-        selectionLayerRef={refs.selectionLayerRef}
+        onTargetLayerChange={handlers.handleTargetLayerChange}
+        onSelectionLayerChange={handlers.handleSelectionLayerChange}
         selectionMethodChecked={state.selectionMethodChecked}
+        targetLayerValue={state.targetLayerValue}
+        selectionLayerValue={state.selectionLayerValue}
       />
 
       <SelectionMethodToggle

@@ -18,18 +18,22 @@ export const useSpatialQuery = (
     targetLayer: null,
     selectionGeometry: null,
     selectionMethodChecked: true,
+    targetLayerValue: "",
+    selectionLayerValue: "",
   });
 
   // Refs
-  const targetLayerRef = useRef<HTMLSelectElement | null>(null);
-  const selectionLayerRef = useRef<HTMLSelectElement | null>(null);
   const sketchContainerRef = useRef<HTMLDivElement | null>(null);
   const graphicsLayerRef = useRef<GraphicsLayer | null>(null);
   const sketchInitialized = useRef<boolean>(false);
+  const targetLayerValueRef = useRef<string>("");
+
+  // Update ref when state changes
+  useEffect(() => {
+    targetLayerValueRef.current = state.targetLayerValue;
+  }, [state.targetLayerValue]);
 
   const refs: SpatialQueryRefs = {
-    targetLayerRef,
-    selectionLayerRef,
     sketchContainerRef,
     graphicsLayerRef,
     sketchInitialized,
@@ -51,7 +55,7 @@ export const useSpatialQuery = (
       if (sketchContainerRef.current) {
         const handleSketchComplete = createSketchCompleteHandler(
           view,
-          targetLayerRef,
+          targetLayerValueRef,
           graphicsLayerRef,
           widgets,
           sendMessage,
@@ -71,8 +75,8 @@ export const useSpatialQuery = (
   // Handlers
   const runQueryByLayer = createQueryByLayerHandler(
     view,
-    targetLayerRef,
-    selectionLayerRef,
+    state.targetLayerValue,
+    state.selectionLayerValue,
     graphicsLayerRef,
     widgets,
     sendMessage,
@@ -87,17 +91,32 @@ export const useSpatialQuery = (
     }));
   };
 
+  const handleTargetLayerChange = (value: string) => {
+    setState((prevState) => ({
+      ...prevState,
+      targetLayerValue: value,
+    }));
+  };
+
+  const handleSelectionLayerChange = (value: string) => {
+    setState((prevState) => ({
+      ...prevState,
+      selectionLayerValue: value,
+    }));
+  };
+
   const handleClearSelection = () => {
+    const targetLayer = view?.map.layers.toArray()[parseInt(state.targetLayerValue)] as __esri.FeatureLayer;
     clearSelection(
       graphicsLayerRef.current,
       view,
-      state.targetLayer as __esri.FeatureLayer,
+      targetLayer,
       widgets
     );
   };
 
   const handleSwitchSelection = async () => {
-    const targetLayer = getSelectedTargetLayer(view, targetLayerRef);
+    const targetLayer = view?.map.layers.toArray()[parseInt(state.targetLayerValue)] as __esri.FeatureLayer;
     if (targetLayer && graphicsLayerRef.current && view) {
       await SpatialQueryService.switchSelection(
         targetLayer,
@@ -116,6 +135,8 @@ export const useSpatialQuery = (
       selectionMethodHandler,
       handleClearSelection,
       handleSwitchSelection,
+      handleTargetLayerChange,
+      handleSelectionLayerChange,
     },
   };
 };

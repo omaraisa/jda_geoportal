@@ -2,33 +2,33 @@ import { MessagePayload } from './types';
 
 export const getSelectedTargetLayer = (
   view: __esri.MapView | __esri.SceneView | null,
-  targetLayerRef: React.RefObject<HTMLSelectElement | null>
+  targetLayerValue: string
 ): __esri.FeatureLayer | null => {
-  if (!view || !targetLayerRef.current) return null;
-  
-  const layer = view.map.layers.toArray()[Number(targetLayerRef.current.value)];
-  
+  if (!view || !targetLayerValue) return null;
+
+  const layer = view.map.findLayerById(targetLayerValue);
+
   // Only allow FeatureLayer types that have queryFeatures method
   if (layer && layer.type === "feature" && typeof (layer as any).queryFeatures === "function") {
     return layer as __esri.FeatureLayer;
   }
-  
+
   return null;
 };
 
 export const getSelectedSelectionLayer = (
   view: __esri.MapView | __esri.SceneView | null,
-  selectionLayerRef: React.RefObject<HTMLSelectElement | null>
+  selectionLayerValue: string
 ): __esri.FeatureLayer | null => {
-  if (!view || !selectionLayerRef.current) return null;
-  
-  const layer = view.map.layers.toArray()[Number(selectionLayerRef.current.value)];
-  
+  if (!view || !selectionLayerValue) return null;
+
+  const layer = view.map.findLayerById(selectionLayerValue);
+
   // Only allow FeatureLayer types that have queryFeatures method
   if (layer && layer.type === "feature" && typeof (layer as any).queryFeatures === "function") {
     return layer as __esri.FeatureLayer;
   }
-  
+
   return null;
 };
 

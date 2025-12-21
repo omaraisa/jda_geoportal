@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import SelectDropdown from '../../ui/select-dropdown';
+import SearchableSelect from '../../ui/searchable-select';
 import { featureBasedLayerTypes } from "@/lib/utils/global-constants";
 
 interface LayerSelectorProps {
@@ -32,13 +32,15 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({
       <label className="block text-sm font-medium text-gray-700">
         {label}
       </label>
-      <SelectDropdown
+      <SearchableSelect
         value={value}
         onChange={onChange}
         options={[
           { value: "", label: placeholder || t("widgets.analysis.selectLayer") || "Select Layer" },
           ...layerOptions
         ]}
+        placeholder={placeholder || t("widgets.analysis.selectLayer") || "Select Layer"}
+        maxHeight={300}
       />
     </div>
   );

@@ -75,7 +75,7 @@ export class BufferService {
           })
         };
 
-        const inSR = geometries[0].spatialReference?.wkid || geometries[0].spatialReference?.latestWkid || 4326;
+        const inSR = geometries[0].spatialReference?.wkid || 4326;
         const unitCode = unit === "meters" ? 9001 : 
                          unit === "kilometers" ? 9036 : 
                          unit === "feet" ? 9002 : 

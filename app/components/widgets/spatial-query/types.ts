@@ -2,11 +2,11 @@ export interface SpatialQueryState {
   targetLayer: __esri.Layer | null;
   selectionGeometry: __esri.Geometry | null;
   selectionMethodChecked: boolean;
+  targetLayerValue: string;
+  selectionLayerValue: string;
 }
 
 export interface SpatialQueryRefs {
-  targetLayerRef: React.RefObject<HTMLSelectElement | null>;
-  selectionLayerRef: React.RefObject<HTMLSelectElement | null>;
   sketchContainerRef: React.RefObject<HTMLDivElement | null>;
   graphicsLayerRef: React.RefObject<__esri.GraphicsLayer | null>;
   sketchInitialized: React.RefObject<boolean>;
@@ -24,6 +24,8 @@ export interface SpatialQueryHandlers {
   runQueryByLayer: () => Promise<void>;
   handleClearSelection: () => void;
   selectionMethodHandler: () => void;
+  handleTargetLayerChange: (value: string) => void;
+  handleSelectionLayerChange: (value: string) => void;
 }
 
 export interface LayerSelectionResult {
