@@ -423,7 +423,7 @@
       "titlePlaceholder": "Enter map title"
     },
     "search": {
-      "title": "Search | بحث",
+      "title": "Search",
       "placeholder": "Search basemap layers...",
       "featuresFound": "{{count}} features found",
       "noResults": "No results found",
