@@ -51,6 +51,7 @@
       "ClosestFacility": "Nearest Landmark",
       "ChangeDetectionComponent": "Change Detection",
     "TimeSliderComponent": "Time Slider",
+    "ChartingComponent": "Charting",
       "DirectionsComponent": "Directions",
       "BufferComponent": "Buffer Analysis",
       "OverlayComponent": "Overlay Analysis",
@@ -100,6 +101,10 @@
       "byLayer": "By Layer",
       "clearSearch": "Clear Search",
       "switchSelection": "Switch Selection"
+    },
+    "analysis": {
+      "running": "Running...",
+      "run": "Run Analysis"
     },
     "bookmarks": {
       "addBookmark": "Add Bookmark",

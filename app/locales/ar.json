@@ -50,6 +50,7 @@
     "ClosestFacility": "أقرب معلم",
     "ChangeDetectionComponent": "كشف التغييرات",
     "TimeSliderComponent": "شريط الزمن",
+    "ChartingComponent": "الرسوم البيانية",
     "DirectionsComponent": "الاتجاهات",
     "BufferComponent": "تحليل الحرم",
     "OverlayComponent": "تحليل التراكب",
@@ -99,6 +100,10 @@
       "byLayer": "باستعمال طبقة",
       "clearSearch": "مسح البحث",
       "switchSelection": "عكس الاختيار"
+    },
+    "analysis": {
+      "running": "جاري التشغيل...",
+      "run": "تشغيل التحليل"
     },
     "bookmarks": {
       "addBookmark": "إضافة إشارة مرجعية",

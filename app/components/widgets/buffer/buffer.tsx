@@ -19,7 +19,7 @@ const Buffer: React.FC = () => {
   const view = useStateStore((state) => state.targetView);
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
-  const [distances, setDistances] = useState<number[]>([100]);
+  const [distances, setDistances] = useState<number[]>([1000]);
   const [unit, setUnit] = useState<string>("meters");
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
@@ -30,7 +30,7 @@ const Buffer: React.FC = () => {
   const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer;
 
   const handleAddDistance = () => {
-    setDistances([...distances, 100]);
+    setDistances([...distances, 1000]);
   };
 
   const handleRemoveDistance = (index: number) => {

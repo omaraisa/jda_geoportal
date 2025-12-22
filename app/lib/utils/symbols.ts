@@ -25,14 +25,14 @@ const softColors = {
     [240, 230, 140, 0.7], // Khaki
   ],
   polygon: [
-    [255, 218, 185, 0.4], // Peach puff
-    [173, 216, 230, 0.4], // Light blue
-    [255, 182, 193, 0.4], // Light pink
-    [144, 238, 144, 0.4], // Light green
-    [221, 160, 221, 0.4], // Plum
-    [176, 196, 222, 0.4], // Light steel blue
-    [255, 228, 196, 0.4], // Bisque
-    [240, 230, 140, 0.4], // Khaki
+    [255, 218, 185, 0.7], // Peach puff
+    [173, 216, 230, 0.7], // Light blue
+    [255, 182, 193, 0.7], // Light pink
+    [144, 238, 144, 0.7], // Light green
+    [221, 160, 221, 0.7], // Plum
+    [176, 196, 222, 0.7], // Light steel blue
+    [255, 228, 196, 0.7], // Bisque
+    [240, 230, 140, 0.7], // Khaki
   ]
 };
 
@@ -134,7 +134,7 @@ export const lineSymbol = new SimpleLineSymbol({
 });
 
 export const polygonSymbol = new SimpleFillSymbol({
-  color: [59, 191, 173, 0.5],
+  color: [59, 191, 173, 0.7],
   outline: {
     color: [29, 29, 29, 1],
     width: 2,
@@ -145,7 +145,7 @@ export const polygonSymbol = new SimpleFillSymbol({
 export const queryPointSymbol = new SimpleMarkerSymbol({
   color: [0, 123, 255, 1], // Blue
   outline: {
-    color: [255, 255, 255, 1],
+    color: [255, 255, 255, 0.7],
     width: 2,
   },
   size: 12,
@@ -159,7 +159,7 @@ export const queryLineSymbol = new SimpleLineSymbol({
 });
 
 export const queryPolygonSymbol = new SimpleFillSymbol({
-  color: [138, 43, 226, 0.5], // Purple
+  color: [138, 43, 226, 0.7], // Purple
   outline: {
     color: [255, 255, 255, 1],
     width: 2,
