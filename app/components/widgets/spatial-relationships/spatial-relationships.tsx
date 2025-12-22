@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
 import { LayerSelector, AnalysisControls } from "../analysis-tools";
 import { SpatialRelationshipsService, SpatialRelationship, RelationshipResult } from "./spatial-relationships-service";
+import OutputLayerList from "../analysis-tools/output-layer-list";
 
 const SPATIAL_RELATIONSHIPS: Array<{ value: SpatialRelationship; label: string; description: string }> = [
   {
@@ -54,6 +55,7 @@ const SpatialRelationships: React.FC = () => {
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [result, setResult] = useState<RelationshipResult | null>(null);
+  const [outputLayers, setOutputLayers] = useState<__esri.Layer[]>([]);
 
   // Get the selected layers
   const layer1 = view?.map.findLayerById(layer1Id) as __esri.FeatureLayer | __esri.GraphicsLayer;
@@ -84,6 +86,8 @@ const SpatialRelationships: React.FC = () => {
       );
 
       setResult(analysisResult.result);
+      setOutputLayers(prev => [analysisResult.resultLayer, ...prev]);
+
       setStatusType("success");
       setStatus(t("widgets.spatialRelationships.status.success") || `Spatial relationship check completed successfully`);
       updateStats("Spatial Relationships Analysis");
@@ -93,6 +97,29 @@ const SpatialRelationships: React.FC = () => {
       setResult(null);
     } finally {
       setIsRunning(false);
+    }
+  };
+
+  const handleToggleVisibility = (layer: __esri.Layer) => {
+    layer.visible = !layer.visible;
+    setOutputLayers([...outputLayers]);
+  };
+
+  const handleRename = (layer: __esri.Layer, newName: string) => {
+    layer.title = newName;
+    setOutputLayers([...outputLayers]);
+  };
+
+  const handleDelete = (layer: __esri.Layer) => {
+    if (view) {
+        view.map.remove(layer);
+    }
+    setOutputLayers(outputLayers.filter(l => l.id !== layer.id));
+  };
+
+  const handleZoomTo = (layer: __esri.Layer) => {
+    if (view) {
+        view.goTo(layer.fullExtent);
     }
   };
 
@@ -159,6 +186,14 @@ const SpatialRelationships: React.FC = () => {
           </div>
         </div>
       )}
+
+      <OutputLayerList 
+        layers={outputLayers}
+        onToggleVisibility={handleToggleVisibility}
+        onRename={handleRename}
+        onDelete={handleDelete}
+        onZoomTo={handleZoomTo}
+      />
     </div>
   );
 };

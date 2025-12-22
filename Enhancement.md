@@ -1,21 +1,21 @@
 # Enhancement Plan
 
-## Move Header and Action Buttons to Sidebar
+## [✔️] Move Header and Action Buttons to Sidebar
 
 Relocate header and action buttons to the right sidebar above the properties panel to maximize canvas space and improve usability, especially on laptops. Update layout and responsive styles, ensuring controls remain visible and accessible. Refactor `FullScreenLayoutMode.tsx` and test across devices for feedback.
 
-## Build Stats and Charting System
+## [✔️] Build Stats and Charting System
 
 Implement a statistics and charting system leveraging Esri libraries to visualize data for selected field(s). Enable users to choose chart types (bar, pie, line, etc.), configure chart properties, and save charts for future reference. Integrate dynamic filtering, interactive legends, and export options (image, PDF, CSV). Ensure charts update in real-time with data changes and support multi-field comparisons. Provide accessibility features, responsive design, and seamless integration with existing panels. Document API usage and offer extensibility for custom chart types.
 
 
-## Prevent Esri IdentityManager Popup on Token Expiry
+## [✔️] Prevent Esri IdentityManager Popup on Token Expiry
 
 **Issue:** When the ArcGIS token expires, Esri's IdentityManager automatically displays its own authentication popup, obscuring the custom token renewal modal and disrupting user experience.
 
 **Suggested Solution:** Investigate server-side token validation before making any ArcGIS API requests, ensuring calls to layers, groups, or portal resources only occur when the token is valid. However, since Esri widgets and modules may trigger requests independently, a complete client-side interception may be required. Explore overriding or suppressing IdentityManager's default popup behavior and tightly controlling authentication flows to prevent Esri dialogs from appearing. Document findings and propose a robust solution that maintains seamless token renewal and user control.
 
-## Enhance Buffer Tool for Optimal User Experience
+## [✔️] Enhance Buffer Tool for Optimal User Experience
 
 Redesign the buffer tool to set a new standard for analysis tools, focusing on usability, discoverability, and extensibility:
 
@@ -48,7 +48,7 @@ Redesign the buffer tool to set a new standard for analysis tools, focusing on u
 By making the buffer tool the model for analysis workflows, future tools can inherit these improvements, ensuring a consistent and high-quality user experience across the platform.
 
 
-## Add Widgets for Geometry Service Tools: Difference, Intersect, and Union
+## [✔️] Add Widgets for Geometry Service Tools: Difference, Intersect, and Union
 
 Leverage the existing buffer tool enhancements to create new widgets for the following geometry service operations:
 
