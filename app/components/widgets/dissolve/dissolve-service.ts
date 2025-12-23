@@ -33,7 +33,7 @@ export class DissolveService {
   /**
    * Runs dissolve analysis on a layer
    */
-  static async runDissolveAnalysis(layer: __esri.FeatureLayer | __esri.GraphicsLayer): Promise<FeatureLayer> {
+  static async runDissolveAnalysis(layer: __esri.FeatureLayer | __esri.GraphicsLayer, outputName?: string): Promise<FeatureLayer> {
     // Validate input layer
     const hasFeatures = await AnalysisService.validateLayerHasFeatures(layer);
     if (!hasFeatures) {
@@ -57,11 +57,12 @@ export class DissolveService {
 
     // Create result layer with new naming convention
     const layerName = layer.title || "unknown_layer";
-    const layerTitle = AnalysisService.generateOutputLayerName(
+    const defaultTitle = AnalysisService.generateOutputLayerName(
       layerName,
       "dissolve",
       "dissolved"
     );
+    const layerTitle = outputName && outputName.trim() ? outputName : defaultTitle;
     const geometryType = dissolvedGeometries[0]?.type || "polygon";
     const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
 

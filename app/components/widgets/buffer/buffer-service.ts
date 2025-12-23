@@ -16,7 +16,8 @@ export class BufferService {
   static async runBufferAnalysis(
     inputLayer: __esri.FeatureLayer,
     distances: number[],
-    unit: string
+    unit: string,
+    outputName?: string
   ): Promise<FeatureLayer> {
     const view = useStateStore.getState().targetView;
     if (!view) throw new Error("No view available");
@@ -173,7 +174,8 @@ export class BufferService {
 
     // Create result layer - buffers always result in polygon geometry
     const distanceText = distances.length === 1 ? distances[0] : distances.join('_');
-    const layerTitle = `${inputLayer.title} ${distanceText}${unit}`;
+    const defaultTitle = `${inputLayer.title} ${distanceText}${unit}`;
+    const layerTitle = outputName && outputName.trim() ? outputName : defaultTitle;
     const resultLayer = new FeatureLayer({
       title: layerTitle,
       geometryType: "polygon",

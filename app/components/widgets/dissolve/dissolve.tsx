@@ -14,6 +14,7 @@ const Dissolve: React.FC = () => {
   const getAnalysisOutputLayers = useStateStore((state) => state.getAnalysisOutputLayers);
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
+  const [outputName, setOutputName] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -35,7 +36,7 @@ const Dissolve: React.FC = () => {
     setStatus(t("widgets.dissolve.status.running") || "Dissolving geometries...");
 
     try {
-      const resultLayer = await DissolveService.runDissolveAnalysis(inputLayer);
+      const resultLayer = await DissolveService.runDissolveAnalysis(inputLayer, outputName);
       
       addAnalysisOutputLayer("dissolve", resultLayer);
 
@@ -88,6 +89,19 @@ const Dissolve: React.FC = () => {
 
       <div className="text-sm text-gray-600">
         <p>{t("widgets.dissolve.description") || "Merges overlapping or adjacent geometries into single geometries."}</p>
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium">
+          {t("widgets.dissolve.outputName") || "Output Layer Name (Optional)"}
+        </label>
+        <input
+          type="text"
+          value={outputName}
+          onChange={(e) => setOutputName(e.target.value)}
+          placeholder={t("widgets.dissolve.outputNamePlaceholder") || "Dissolved Result"}
+          className="p-2 border rounded text-sm bg-background text-foreground"
+        />
       </div>
 
       <AnalysisControls

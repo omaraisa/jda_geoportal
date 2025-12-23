@@ -87,6 +87,18 @@ const MapLayoutComponent = dynamic(() => import("@/components/widgets/map-layout
 const ChartingComponent = dynamic(() => import("@/components/widgets/charting").then(mod => ({ default: mod.Charting })), {
   ssr: false,
 });
+const MergeComponent = dynamic(() => import("@/components/widgets/merge").then(mod => ({ default: mod.MergeComponent })), {
+  ssr: false,
+});
+const ConvexHullComponent = dynamic(() => import("@/components/widgets/convex-hull").then(mod => ({ default: mod.ConvexHullComponent })), {
+  ssr: false,
+});
+const SpatialJoinComponent = dynamic(() => import("@/components/widgets/spatial-join").then(mod => ({ default: mod.SpatialJoinComponent })), {
+  ssr: false,
+});
+const AttributeJoinComponent = dynamic(() => import("@/components/widgets/attribute-join").then(mod => ({ default: mod.AttributeJoinComponent })), {
+  ssr: false,
+});
 
 
 
@@ -119,6 +131,10 @@ const components = {
   GoToXYComponent,
   MapLayoutComponent,
   ChartingComponent,
+  MergeComponent,
+  ConvexHullComponent,
+  SpatialJoinComponent,
+  AttributeJoinComponent,
 };
 
 export default function Sidebar() {

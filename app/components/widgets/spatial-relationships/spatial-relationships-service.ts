@@ -81,7 +81,8 @@ export class SpatialRelationshipsService {
   static async runSpatialRelationshipsAnalysis(
     layer1: __esri.FeatureLayer | __esri.GraphicsLayer,
     layer2: __esri.FeatureLayer | __esri.GraphicsLayer,
-    relationship: SpatialRelationship
+    relationship: SpatialRelationship,
+    outputName?: string
   ): Promise<{ result: RelationshipResult; resultLayer: FeatureLayer }> {
     // Validate input layers
     const [hasFeatures1, hasFeatures2] = await Promise.all([
@@ -111,11 +112,12 @@ export class SpatialRelationshipsService {
 
     // Create result layer with new naming convention
     const layerName = `${layer1.title || "layer1"}_${layer2.title || "layer2"}`;
-    const layerTitle = AnalysisService.generateOutputLayerName(
+    const defaultTitle = AnalysisService.generateOutputLayerName(
       layerName,
       "spatial_relationships",
       relationship
     );
+    const layerTitle = outputName && outputName.trim() ? outputName : defaultTitle;
     const geometryType = result.matchingGeometries[0]?.type || "polygon";
     const resultLayer = AnalysisService.createResultLayer(layerTitle, geometryType);
 

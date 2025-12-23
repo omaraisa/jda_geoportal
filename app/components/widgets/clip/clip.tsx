@@ -17,6 +17,7 @@ const Clip: React.FC = () => {
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
   const [clipLayerId, setClipLayerId] = useState<string>("");
+  const [outputName, setOutputName] = useState<string>("");
   const operation: ClipOperation = "clip";
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
@@ -46,7 +47,7 @@ const Clip: React.FC = () => {
     setStatus(t("widgets.clip.status.running") || `Performing ${operation} analysis...`);
 
     try {
-      const resultLayer = await ClipService.runClipAnalysis(inputLayer, clipLayer, operation);
+      const resultLayer = await ClipService.runClipAnalysis(inputLayer, clipLayer, operation, outputName);
       
       addAnalysisOutputLayer("clip", resultLayer);
 
@@ -109,6 +110,19 @@ const Clip: React.FC = () => {
 
       <div className="text-sm text-gray-600">
         <p>{t("widgets.clip.descriptions.clip") || "Extracts portions of the input layer that overlap with the clip layer."}</p>
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium">
+          {t("widgets.clip.outputName") || "Output Layer Name (Optional)"}
+        </label>
+        <input
+          type="text"
+          value={outputName}
+          onChange={(e) => setOutputName(e.target.value)}
+          placeholder={t("widgets.clip.outputNamePlaceholder") || "Clipped Result"}
+          className="p-2 border rounded text-sm bg-background text-foreground"
+        />
       </div>
 
       <AnalysisControls

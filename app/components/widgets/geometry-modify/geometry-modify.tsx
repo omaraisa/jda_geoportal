@@ -32,6 +32,7 @@ const GeometryModify: React.FC = () => {
   const getAnalysisOutputLayers = useStateStore((state) => state.getAnalysisOutputLayers);
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
+  const [outputName, setOutputName] = useState<string>("");
   const [operation, setOperation] = useState<GeometryOperation>("offset");
   const [offsetDistance, setOffsetDistance] = useState<number>(10);
   const [maxSegmentLength, setMaxSegmentLength] = useState<number>(100);
@@ -61,7 +62,7 @@ const GeometryModify: React.FC = () => {
         maxSegmentLength: operation === "densify" ? maxSegmentLength : undefined
       };
 
-      const resultLayer = await GeometryModifyService.runGeometryModifyAnalysis(inputLayer, operation, options);
+      const resultLayer = await GeometryModifyService.runGeometryModifyAnalysis(inputLayer, operation, options, outputName);
 
       addAnalysisOutputLayer("geometry-modify", resultLayer);
 
@@ -156,6 +157,19 @@ const GeometryModify: React.FC = () => {
           step={10}
         />
       )}
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium">
+          {t("widgets.geometryModify.outputName") || "Output Layer Name (Optional)"}
+        </label>
+        <input
+          type="text"
+          value={outputName}
+          onChange={(e) => setOutputName(e.target.value)}
+          placeholder={t("widgets.geometryModify.outputNamePlaceholder") || "Geometry Modify Result"}
+          className="p-2 border rounded text-sm bg-background text-foreground"
+        />
+      </div>
 
       <AnalysisControls
         onRun={handleRun}

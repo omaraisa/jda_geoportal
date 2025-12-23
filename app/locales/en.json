@@ -71,7 +71,11 @@
     "NetworkAnalysis": "Network Analysis",
     "SpatialAnalysis": "Spatial Analysis",
     "GoToXYComponent": "Go to XY",
-    "MapLayoutComponent": "Map Print"
+    "MapLayoutComponent": "Map Print",
+    "MergeComponent": "Merge",
+    "ConvexHullComponent": "Convex Hull",
+    "SpatialJoinComponent": "Spatial Join",
+    "AttributeJoinComponent": "Attribute Join"
   },
   "bottomPane": {
     "titles": {
@@ -265,6 +269,8 @@
       "geodesic": "Geodesic",
       "planar": "Planar",
       "addDistance": "Add Distance",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Buffer Result",
       "run": "Run",
       "status": {
         "running": "Running analysis...",
@@ -290,6 +296,8 @@
       "layer1": "Input Layer 1",
       "layer2": "Input Layer 2",
       "operation": "Overlay Operation",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Overlay Result",
       "descriptions": {
         "union": "Combines all geometries from both layers into a single geometry.",
         "intersect": "Creates geometries where features from both layers overlap.",
@@ -319,6 +327,8 @@
       "clip": "Clip",
       "cut": "Cut",
       "run": "Run",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Clipped Result",
       "descriptions": {
         "clip": "Extracts only the portions of input geometries that overlap with the clip geometries. Result shows intersecting areas.",
         "cut": "Splits input geometries along polylines from the cut layer, creating multiple separate geometry pieces."
@@ -346,6 +356,8 @@
       "dissolveField": "Dissolve Field (Optional)",
       "selectField": "Select Field",
       "run": "Run",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Dissolved Result",
       "description": "Merges overlapping or adjacent geometries into single geometries.",
       "status": {
         "running": "Running analysis...",
@@ -367,6 +379,8 @@
       "offsetDistance": "Offset Distance",
       "maxSegmentLength": "Max Segment Length",
       "tolerance": "Tolerance",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Geometry Modify Result",
       "run": "Run",
       "status": {
         "running": "Running analysis...",
@@ -389,6 +403,8 @@
       "overlaps": "Overlaps",
       "touches": "Touches",
       "within": "Within",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Spatial Relationships Result",
       "run": "Run",
       "results": "Results",
       "features": "features",
@@ -671,7 +687,89 @@
         "title": "Warning",
         "body": "Something is not right❗. Please try again."
       }
+    },
+    "merge": {
+      "title": "Merge Layers",
+      "layer": "Layer",
+      "addLayer": "Add another layer",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Merged Result",
+      "run": "Run Merge",
+      "status": {
+        "running": "Merging layers...",
+        "success": "Merge completed successfully"
+      },
+      "errors": {
+        "minLayers": "Please select at least two layers",
+        "invalidLayers": "Some selected layers could not be found"
+      }
+    },
+    "convexHull": {
+      "title": "Convex Hull",
+      "layer": "Input Layer",
+      "mergeResults": "Create single hull for all features",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Convex Hull Result",
+      "run": "Run Analysis",
+      "status": {
+        "running": "Calculating convex hull...",
+        "success": "Convex hull created successfully"
+      },
+      "errors": {
+        "noLayer": "Please select an input layer",
+        "layerNotFound": "Layer not found"
+      }
+    },
+    "spatialJoin": {
+      "title": "Spatial Join",
+      "targetLayer": "Target Layer",
+      "joinLayer": "Join Layer",
+      "relationship": "Spatial Relationship",
+      "relationships": {
+        "intersects": "Intersects",
+        "contains": "Contains",
+        "within": "Within",
+        "crosses": "Crosses",
+        "touches": "Touches",
+        "overlaps": "Overlaps"
+      },
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Spatial Join Result",
+      "run": "Run Analysis",
+      "status": {
+        "running": "Performing spatial join...",
+        "success": "Spatial join completed successfully"
+      },
+      "errors": {
+        "noLayers": "Please select both layers",
+        "sameLayer": "Please select different layers",
+        "layerNotFound": "Layer not found"
+      }
+    },
+    "attributeJoin": {
+      "title": "Attribute Join",
+      "targetLayer": "Target Layer",
+      "targetField": "Target Join Field",
+      "joinLayer": "Join Layer",
+      "joinField": "Join Layer Field",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Attribute Join Result",
+      "run": "Run Analysis",
+      "status": {
+        "running": "Performing attribute join...",
+        "success": "Attribute join completed successfully"
+      },
+      "errors": {
+        "noLayers": "Please select both layers",
+        "noFields": "Please select join fields",
+        "layerNotFound": "Layer not found"
+      }
     }
+  },
+  "common": {
+    "remove": "Remove",
+    "select": "Select...",
+    "processing": "Processing..."
   },
   "sessionModal" : {
     "sessionExpiringMsg": "Your session is about to expire. Do you want to extend it?",

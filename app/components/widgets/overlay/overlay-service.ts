@@ -131,7 +131,8 @@ export class OverlayService {
   static async runOverlayAnalysis(
     layer1: __esri.FeatureLayer | __esri.GraphicsLayer,
     layer2: __esri.FeatureLayer | __esri.GraphicsLayer,
-    operation: OverlayOperation
+    operation: OverlayOperation,
+    outputName?: string
   ): Promise<FeatureLayer | GraphicsLayer> {
     const view = useStateStore.getState().targetView;
     if (!view) throw new Error("No view available");
@@ -220,7 +221,8 @@ export class OverlayService {
     ];
     const fields = [...inputFields, ...newFields];
 
-    const layerTitleBase = `${layer1.title || "layer1"}_${layer2.title || "layer2"}_${operation}_${Date.now()}`;
+    const defaultTitle = `${layer1.title || "layer1"}_${layer2.title || "layer2"}_${operation}_${Date.now()}`;
+    const layerTitleBase = outputName && outputName.trim() ? outputName : defaultTitle;
 
     // If results are all of one geometry type, return a single FeatureLayer of that type
     const nonEmptyGroups = Object.entries(groups).filter(([, arr]) => arr.length > 0);

@@ -86,7 +86,8 @@ export class GeometryModifyService {
   static async runGeometryModifyAnalysis(
     layer: __esri.FeatureLayer | __esri.GraphicsLayer,
     operation: GeometryOperation,
-    options: { distance?: number; maxSegmentLength?: number; tolerance?: number }
+    options: { distance?: number; maxSegmentLength?: number; tolerance?: number },
+    outputName?: string
   ): Promise<FeatureLayer> {
     // Validate input layer
     const hasFeatures = await AnalysisService.validateLayerHasFeatures(layer);
@@ -118,7 +119,7 @@ export class GeometryModifyService {
       value = `${operation}_${options.maxSegmentLength}m`;
     }
     
-    const layerTitle = AnalysisService.generateOutputLayerName(
+    const layerTitle = outputName && outputName.trim() ? outputName : AnalysisService.generateOutputLayerName(
       layerName,
       "geometry_modify",
       value

@@ -53,6 +53,7 @@ const SpatialRelationships: React.FC = () => {
 
   const [layer1Id, setLayer1Id] = useState<string>("");
   const [layer2Id, setLayer2Id] = useState<string>("");
+  const [outputName, setOutputName] = useState<string>("");
   const [relationship, setRelationship] = useState<SpatialRelationship>("intersects");
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
@@ -87,7 +88,8 @@ const SpatialRelationships: React.FC = () => {
       const analysisResult = await SpatialRelationshipsService.runSpatialRelationshipsAnalysis(
         layer1,
         layer2,
-        relationship
+        relationship,
+        outputName
       );
 
       setResult(analysisResult.result);
@@ -171,6 +173,19 @@ const SpatialRelationships: React.FC = () => {
 
       <div className="text-sm text-gray-600">
         {SPATIAL_RELATIONSHIPS.find(rel => rel.value === relationship)?.description}
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium">
+          {t("widgets.spatialRelationships.outputName") || "Output Layer Name (Optional)"}
+        </label>
+        <input
+          type="text"
+          value={outputName}
+          onChange={(e) => setOutputName(e.target.value)}
+          placeholder={t("widgets.spatialRelationships.outputNamePlaceholder") || "Spatial Relationships Result"}
+          className="p-2 border rounded text-sm bg-background text-foreground"
+        />
       </div>
 
       <AnalysisControls

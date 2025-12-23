@@ -143,7 +143,8 @@ export class ClipService {
   static async runClipAnalysis(
     inputLayer: __esri.FeatureLayer | __esri.GraphicsLayer,
     clipLayer: __esri.FeatureLayer | __esri.GraphicsLayer,
-    operation: ClipOperation
+    operation: ClipOperation,
+    outputName?: string
   ): Promise<FeatureLayer | GraphicsLayer> {
     const view = useStateStore.getState().targetView;
     if (!view) throw new Error("No view available");
@@ -219,7 +220,8 @@ export class ClipService {
     ];
     const fields = [...inputFields, ...newFields];
 
-    const layerTitleBase = `${inputLayer.title || "input_layer"}_${clipLayer.title || "clip_layer"}_${operation}_${Date.now()}`;
+    const defaultTitle = `${inputLayer.title || "input_layer"}_${clipLayer.title || "clip_layer"}_${operation}_${Date.now()}`;
+    const layerTitleBase = outputName && outputName.trim() ? outputName : defaultTitle;
 
     // If results are all of one geometry type, return a single FeatureLayer of that type
     const nonEmptyGroups = Object.entries(groups).filter(([, arr]) => arr.length > 0);

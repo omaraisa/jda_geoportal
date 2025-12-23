@@ -70,7 +70,11 @@
     "NetworkAnalysis": "تحليل الشبكة",
     "SpatialAnalysis": "التحليل المكاني",
     "GoToXYComponent": "الذهاب إلى إحداثيات",
-    "MapLayoutComponent": "طباعة الخريطة"
+    "MapLayoutComponent": "طباعة الخريطة",
+    "MergeComponent": "دمج",
+    "ConvexHullComponent": "المحيط المحدب",
+    "SpatialJoinComponent": "الربط المكاني",
+    "AttributeJoinComponent": "الربط الوصفي"
   },
   "bottomPane": {
     "titles": {
@@ -264,6 +268,8 @@
       "geodesic": "جيوديسي",
       "planar": "مستوي",
       "addDistance": "إضافة مسافة",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة الحرم",
       "run": "تشغيل",
       "status": {
         "running": "جاري التحليل...",
@@ -285,6 +291,8 @@
       "union": "اتحاد",
       "intersect": "تقاطع",
       "difference": "فرق",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة التراكب",
       "run": "تشغيل",
       "layer1": "طبقة الإدخال 1",
       "layer2": "طبقة الإدخال 2",
@@ -317,6 +325,8 @@
       "operation": "العملية",
       "clip": "قص",
       "cut": "قطع",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة القص",
       "run": "تشغيل",
       "descriptions": {
         "clip": "يستخرج فقط الأجزاء من الأشكال الهندسية للإدخال التي تتداخل مع الأشكال الهندسية للقص. النتيجة تظهر المناطق المتقاطعة.",
@@ -345,6 +355,8 @@
       "dissolveField": "حقل الذوبان (اختياري)",
       "selectField": "اختر الحقل",
       "run": "تشغيل",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة الذوبان",
       "description": "يدمج الأشكال الهندسية المتداخلة أو المجاورة في أشكال هندسية واحدة.",
       "status": {
         "running": "جاري التحليل...",
@@ -366,6 +378,8 @@
       "offsetDistance": "مسافة الإزاحة",
       "maxSegmentLength": "أقصى طول للقطعة",
       "tolerance": "التسامح",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة تعديل الهندسة",
       "run": "تشغيل",
       "status": {
         "running": "جاري التحليل...",
@@ -388,6 +402,8 @@
       "overlaps": "يتداخل",
       "touches": "يلامس",
       "within": "داخل",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة العلاقات المكانية",
       "run": "تشغيل",
       "results": "النتائج",
       "features": "معالم",
@@ -593,7 +609,89 @@
         "title": "تحذير",
         "body": "هناك شيء غير صحيح ❗. يرجى المحاولة مرة أخرى."
       }
+    },
+    "merge": {
+      "title": "دمج الطبقات",
+      "layer": "الطبقة",
+      "addLayer": "إضافة طبقة أخرى",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "النتيجة المدمجة",
+      "run": "تشغيل الدمج",
+      "status": {
+        "running": "جارٍ دمج الطبقات...",
+        "success": "تم إكمال الدمج بنجاح"
+      },
+      "errors": {
+        "minLayers": "يرجى اختيار طبقتين على الأقل",
+        "invalidLayers": "لم يتم العثور على بعض الطبقات المحددة"
+      }
+    },
+    "convexHull": {
+      "title": "المحيط المحدب",
+      "layer": "طبقة الإدخال",
+      "mergeResults": "إنشاء محيط واحد لجميع المعالم",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة المحيط المحدب",
+      "run": "تشغيل التحليل",
+      "status": {
+        "running": "جارٍ حساب المحيط المحدب...",
+        "success": "تم إنشاء المحيط المحدب بنجاح"
+      },
+      "errors": {
+        "noLayer": "يرجى اختيار طبقة إدخال",
+        "layerNotFound": "لم يتم العثور على الطبقة"
+      }
+    },
+    "spatialJoin": {
+      "title": "الربط المكاني",
+      "targetLayer": "الطبقة المستهدفة",
+      "joinLayer": "طبقة الربط",
+      "relationship": "العلاقة المكانية",
+      "relationships": {
+        "intersects": "يتقاطع",
+        "contains": "يحتوي",
+        "within": "داخل",
+        "crosses": "يعبر",
+        "touches": "يلامس",
+        "overlaps": "يتداخل"
+      },
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة الربط المكاني",
+      "run": "تشغيل التحليل",
+      "status": {
+        "running": "جارٍ إجراء الربط المكاني...",
+        "success": "تم إكمال الربط المكاني بنجاح"
+      },
+      "errors": {
+        "noLayers": "يرجى اختيار الطبقتين",
+        "sameLayer": "يرجى اختيار طبقات مختلفة",
+        "layerNotFound": "لم يتم العثور على الطبقة"
+      }
+    },
+    "attributeJoin": {
+      "title": "الربط الوصفي",
+      "targetLayer": "الطبقة المستهدفة",
+      "targetField": "حقل الربط المستهدف",
+      "joinLayer": "طبقة الربط",
+      "joinField": "حقل طبقة الربط",
+      "outputName": "اسم طبقة الإخراج (اختياري)",
+      "outputNamePlaceholder": "نتيجة الربط الوصفي",
+      "run": "تشغيل التحليل",
+      "status": {
+        "running": "جارٍ إجراء الربط الوصفي...",
+        "success": "تم إكمال الربط الوصفي بنجاح"
+      },
+      "errors": {
+        "noLayers": "يرجى اختيار الطبقتين",
+        "noFields": "يرجى اختيار حقول الربط",
+        "layerNotFound": "لم يتم العثور على الطبقة"
+      }
     }
+  },
+  "common": {
+    "remove": "إزالة",
+    "select": "اختر...",
+    "processing": "جارٍ المعالجة..."
   },
   "sessionModal" : {
     "sessionExpiringMsg":"الجلسة الخاصة بك على وشك الانتهاء. هل ترغب في تمديدها؟",

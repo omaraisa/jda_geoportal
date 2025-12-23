@@ -22,6 +22,7 @@ const Overlay: React.FC = () => {
   const [layer1Id, setLayer1Id] = useState<string>("");
   const [layer2Id, setLayer2Id] = useState<string>("");
   const [operation, setOperation] = useState<OverlayOperation>("union");
+  const [outputName, setOutputName] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -50,7 +51,7 @@ const Overlay: React.FC = () => {
     setStatus(t("widgets.overlay.status.running") || `Performing ${operation} analysis...`);
 
     try {
-      const resultLayer = await OverlayService.runOverlayAnalysis(layer1, layer2, operation);
+      const resultLayer = await OverlayService.runOverlayAnalysis(layer1, layer2, operation, outputName);
       
       addAnalysisOutputLayer("overlay", resultLayer);
 
@@ -136,6 +137,19 @@ const Overlay: React.FC = () => {
         {operation === "difference" && (
           <p>{t("widgets.overlay.descriptions.difference") || "Removes overlapping areas of Layer 2 from Layer 1."}</p>
         )}
+      </div>
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium">
+          {t("widgets.overlay.outputName") || "Output Layer Name (Optional)"}
+        </label>
+        <input
+          type="text"
+          value={outputName}
+          onChange={(e) => setOutputName(e.target.value)}
+          placeholder={t("widgets.overlay.outputNamePlaceholder") || "Overlay Result"}
+          className="p-2 border rounded text-sm bg-background text-foreground"
+        />
       </div>
 
       <AnalysisControls

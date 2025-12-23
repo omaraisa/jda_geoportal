@@ -24,6 +24,7 @@ const Buffer: React.FC = () => {
   const [inputLayerId, setInputLayerId] = useState<string>("");
   const [distances, setDistances] = useState<number[]>([1000]);
   const [unit, setUnit] = useState<string>("meters");
+  const [outputName, setOutputName] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -67,7 +68,7 @@ const Buffer: React.FC = () => {
     setStatus(t("widgets.buffer.status.running") || "Creating buffers...");
 
     try {
-      const resultLayer = await BufferService.runBufferAnalysis(inputLayer, distances, unit);
+      const resultLayer = await BufferService.runBufferAnalysis(inputLayer, distances, unit, outputName);
       
       addAnalysisOutputLayer("buffer", resultLayer);
 
@@ -164,6 +165,19 @@ const Buffer: React.FC = () => {
         onChange={setUnit}
         units={DISTANCE_UNITS}
       />
+
+      <div className="flex flex-col space-y-1">
+        <label className="text-sm font-medium">
+          {t("widgets.buffer.outputName") || "Output Layer Name (Optional)"}
+        </label>
+        <input
+          type="text"
+          value={outputName}
+          onChange={(e) => setOutputName(e.target.value)}
+          placeholder={t("widgets.buffer.outputNamePlaceholder") || "Buffer Result"}
+          className="p-2 border rounded text-sm bg-background text-foreground"
+        />
+      </div>
 
       <AnalysisControls
         onRun={handleRun}
