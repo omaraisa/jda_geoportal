@@ -36,12 +36,14 @@ const useStateStore = create<State>((set, get) => ({
   },
   messages: {},
   bookmarks: [],
+  analysisOutputLayers: {},
   layoutModeActive: false,
   mapPrintWidgetOpen: false,
   sidebarWidgetsOnOffStatus: {
     printWidget: false,
     // Add other sidebar widgets here as needed
   },
+  forceUpdate: 0,
 
   setAppReady: (isReady: boolean) => {
     setTimeout(() => set({ appReady: isReady }), 3000);
@@ -397,6 +399,41 @@ const useStateStore = create<State>((set, get) => ({
       localStorage.getItem("localBookmarks") || "[]"
     );
     set({ bookmarks: savedBookmarks });
+  },
+
+  addAnalysisOutputLayer: (widgetId: string, layer: __esri.Layer) => {
+    set((state) => ({
+      analysisOutputLayers: {
+        ...state.analysisOutputLayers,
+        [widgetId]: [...(state.analysisOutputLayers[widgetId] || []), layer]
+      }
+    }));
+  },
+
+  removeAnalysisOutputLayer: (widgetId: string, layerId: string) => {
+    set((state) => {
+      const widgetLayers = state.analysisOutputLayers[widgetId] || [];
+      const updatedLayers = widgetLayers.filter(l => l.id !== layerId);
+      return {
+        analysisOutputLayers: {
+          ...state.analysisOutputLayers,
+          [widgetId]: updatedLayers
+        }
+      };
+    });
+  },
+
+  getAnalysisOutputLayers: (widgetId: string) => {
+    return get().analysisOutputLayers[widgetId] || [];
+  },
+
+  clearAnalysisOutputLayers: (widgetId: string) => {
+    set((state) => ({
+      analysisOutputLayers: {
+        ...state.analysisOutputLayers,
+        [widgetId]: []
+      }
+    }));
   },
 
   accessToken: null,

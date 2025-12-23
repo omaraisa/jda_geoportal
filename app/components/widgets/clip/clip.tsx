@@ -11,6 +11,9 @@ const Clip: React.FC = () => {
   const { t } = useTranslation();
   const updateStats = useStateStore((state) => state.updateStats);
   const view = useStateStore((state) => state.targetView);
+  const addAnalysisOutputLayer = useStateStore((state) => state.addAnalysisOutputLayer);
+  const removeAnalysisOutputLayer = useStateStore((state) => state.removeAnalysisOutputLayer);
+  const getAnalysisOutputLayers = useStateStore((state) => state.getAnalysisOutputLayers);
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
   const [clipLayerId, setClipLayerId] = useState<string>("");
@@ -18,7 +21,8 @@ const Clip: React.FC = () => {
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [outputLayers, setOutputLayers] = useState<__esri.Layer[]>([]);
+  const [, forceUpdate] = useState(0);
+  const outputLayers = getAnalysisOutputLayers("clip");
 
   // Get the selected layers
   const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer | __esri.GraphicsLayer;
@@ -44,7 +48,7 @@ const Clip: React.FC = () => {
     try {
       const resultLayer = await ClipService.runClipAnalysis(inputLayer, clipLayer, operation);
       
-      setOutputLayers(prev => [resultLayer, ...prev]);
+      addAnalysisOutputLayer("clip", resultLayer);
 
       setStatusType("success");
       setStatus(t("widgets.clip.status.success") || `${operation} analysis completed successfully`);
@@ -60,19 +64,19 @@ const Clip: React.FC = () => {
 
   const handleToggleVisibility = (layer: __esri.Layer) => {
     layer.visible = !layer.visible;
-    setOutputLayers([...outputLayers]);
+    forceUpdate(Math.random());
   };
 
   const handleRename = (layer: __esri.Layer, newName: string) => {
     layer.title = newName;
-    setOutputLayers([...outputLayers]);
+    forceUpdate(Math.random());
   };
 
   const handleDelete = (layer: __esri.Layer) => {
     if (view) {
         view.map.remove(layer);
     }
-    setOutputLayers(outputLayers.filter(l => l.id !== layer.id));
+    removeAnalysisOutputLayer("clip", layer.id);
   };
 
   const handleZoomTo = (layer: __esri.Layer) => {

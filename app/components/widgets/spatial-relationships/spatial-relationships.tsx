@@ -47,6 +47,9 @@ const SpatialRelationships: React.FC = () => {
   const { t } = useTranslation();
   const updateStats = useStateStore((state) => state.updateStats);
   const view = useStateStore((state) => state.targetView);
+  const addAnalysisOutputLayer = useStateStore((state) => state.addAnalysisOutputLayer);
+  const getAnalysisOutputLayers = useStateStore((state) => state.getAnalysisOutputLayers);
+  const removeAnalysisOutputLayer = useStateStore((state) => state.removeAnalysisOutputLayer);
 
   const [layer1Id, setLayer1Id] = useState<string>("");
   const [layer2Id, setLayer2Id] = useState<string>("");
@@ -55,7 +58,9 @@ const SpatialRelationships: React.FC = () => {
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [result, setResult] = useState<RelationshipResult | null>(null);
-  const [outputLayers, setOutputLayers] = useState<__esri.Layer[]>([]);
+
+  // Get output layers from stateStore
+  const outputLayers = getAnalysisOutputLayers("spatial-relationships");
 
   // Get the selected layers
   const layer1 = view?.map.findLayerById(layer1Id) as __esri.FeatureLayer | __esri.GraphicsLayer;
@@ -86,7 +91,7 @@ const SpatialRelationships: React.FC = () => {
       );
 
       setResult(analysisResult.result);
-      setOutputLayers(prev => [analysisResult.resultLayer, ...prev]);
+      addAnalysisOutputLayer("spatial-relationships", analysisResult.resultLayer);
 
       setStatusType("success");
       setStatus(t("widgets.spatialRelationships.status.success") || `Spatial relationship check completed successfully`);
@@ -102,19 +107,23 @@ const SpatialRelationships: React.FC = () => {
 
   const handleToggleVisibility = (layer: __esri.Layer) => {
     layer.visible = !layer.visible;
-    setOutputLayers([...outputLayers]);
+    // Force re-render by updating stateStore
+    const layers = getAnalysisOutputLayers("spatial-relationships");
+    // This will trigger a re-render
+    useStateStore.setState({ forceUpdate: Date.now() });
   };
 
   const handleRename = (layer: __esri.Layer, newName: string) => {
     layer.title = newName;
-    setOutputLayers([...outputLayers]);
+    // Force re-render
+    useStateStore.setState({ forceUpdate: Date.now() });
   };
 
   const handleDelete = (layer: __esri.Layer) => {
+    removeAnalysisOutputLayer("spatial-relationships", layer.id);
     if (view) {
         view.map.remove(layer);
     }
-    setOutputLayers(outputLayers.filter(l => l.id !== layer.id));
   };
 
   const handleZoomTo = (layer: __esri.Layer) => {
@@ -187,13 +196,15 @@ const SpatialRelationships: React.FC = () => {
         </div>
       )}
 
-      <OutputLayerList 
-        layers={outputLayers}
-        onToggleVisibility={handleToggleVisibility}
-        onRename={handleRename}
-        onDelete={handleDelete}
-        onZoomTo={handleZoomTo}
-      />
+      {outputLayers.length > 0 && (
+        <OutputLayerList 
+          layers={outputLayers}
+          onToggleVisibility={handleToggleVisibility}
+          onRename={handleRename}
+          onDelete={handleDelete}
+          onZoomTo={handleZoomTo}
+        />
+      )}
     </div>
   );
 };

@@ -80,6 +80,7 @@ export interface State {
   previousSideBars: Record<string, string | null>;
   messages: Record<number, Message>;
   bookmarks: Bookmark[];
+  analysisOutputLayers: Record<string, __esri.Layer[]>;
   layoutModeActive: boolean;
   mapPrintWidgetOpen: boolean;
   sidebarWidgetsOnOffStatus: Record<string, boolean>;
@@ -87,6 +88,7 @@ export interface State {
   accessToken: string | null;
   isAuthenticated: boolean;
   gisToken: string | null;
+  forceUpdate: number;
   // Group translations from auth_gate
   groupTranslations: GroupTranslations | null;
   setAppReady: (isReady: boolean) => void;
@@ -116,6 +118,10 @@ export interface State {
   addBookmark: (name: string, view: __esri.MapView | __esri.SceneView) => void;
   deleteBookmark: (id: number) => void;
   loadBookmarks: () => void;
+  addAnalysisOutputLayer: (widgetId: string, layer: __esri.Layer) => void;
+  removeAnalysisOutputLayer: (widgetId: string, layerId: string) => void;
+  getAnalysisOutputLayers: (widgetId: string) => __esri.Layer[];
+  clearAnalysisOutputLayers: (widgetId: string) => void;
   loadUserGroupLayers: () => void;
   loadBackupBasemapLayers: (portalUrl: string, gisToken: string, targetView: any, groupNameToIdMap: { [key: string]: string }) => Promise<void>;
   setUserInfo: (userInfo: ArcGISUserInfo) => void;

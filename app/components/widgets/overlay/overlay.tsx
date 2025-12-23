@@ -15,6 +15,9 @@ const Overlay: React.FC = () => {
   const { t } = useTranslation();
   const updateStats = useStateStore((state) => state.updateStats);
   const view = useStateStore((state) => state.targetView);
+  const addAnalysisOutputLayer = useStateStore((state) => state.addAnalysisOutputLayer);
+  const removeAnalysisOutputLayer = useStateStore((state) => state.removeAnalysisOutputLayer);
+  const getAnalysisOutputLayers = useStateStore((state) => state.getAnalysisOutputLayers);
 
   const [layer1Id, setLayer1Id] = useState<string>("");
   const [layer2Id, setLayer2Id] = useState<string>("");
@@ -22,7 +25,8 @@ const Overlay: React.FC = () => {
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [outputLayers, setOutputLayers] = useState<__esri.Layer[]>([]);
+  const [, forceUpdate] = useState(0);
+  const outputLayers = getAnalysisOutputLayers("overlay");
 
   // Get the selected layers
   const layer1 = view?.map.findLayerById(layer1Id) as __esri.FeatureLayer | __esri.GraphicsLayer;
@@ -48,7 +52,7 @@ const Overlay: React.FC = () => {
     try {
       const resultLayer = await OverlayService.runOverlayAnalysis(layer1, layer2, operation);
       
-      setOutputLayers(prev => [resultLayer, ...prev]);
+      addAnalysisOutputLayer("overlay", resultLayer);
 
       setStatusType("success");
       setStatus(t("widgets.overlay.status.success") || `${operation} analysis completed successfully`);
@@ -64,19 +68,19 @@ const Overlay: React.FC = () => {
 
   const handleToggleVisibility = (layer: __esri.Layer) => {
     layer.visible = !layer.visible;
-    setOutputLayers([...outputLayers]);
+    forceUpdate(Math.random());
   };
 
   const handleRename = (layer: __esri.Layer, newName: string) => {
     layer.title = newName;
-    setOutputLayers([...outputLayers]);
+    forceUpdate(Math.random());
   };
 
   const handleDelete = (layer: __esri.Layer) => {
     if (view) {
         view.map.remove(layer);
     }
-    setOutputLayers(outputLayers.filter(l => l.id !== layer.id));
+    removeAnalysisOutputLayer("overlay", layer.id);
   };
 
   const handleZoomTo = (layer: __esri.Layer) => {

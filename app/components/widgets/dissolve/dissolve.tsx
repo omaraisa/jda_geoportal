@@ -9,12 +9,16 @@ const Dissolve: React.FC = () => {
   const { t } = useTranslation();
   const updateStats = useStateStore((state) => state.updateStats);
   const view = useStateStore((state) => state.targetView);
+  const addAnalysisOutputLayer = useStateStore((state) => state.addAnalysisOutputLayer);
+  const removeAnalysisOutputLayer = useStateStore((state) => state.removeAnalysisOutputLayer);
+  const getAnalysisOutputLayers = useStateStore((state) => state.getAnalysisOutputLayers);
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [outputLayers, setOutputLayers] = useState<__esri.Layer[]>([]);
+  const [, forceUpdate] = useState(0);
+  const outputLayers = getAnalysisOutputLayers("dissolve");
 
   // Get the selected layer
   const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer | __esri.GraphicsLayer;
@@ -33,7 +37,7 @@ const Dissolve: React.FC = () => {
     try {
       const resultLayer = await DissolveService.runDissolveAnalysis(inputLayer);
       
-      setOutputLayers(prev => [resultLayer, ...prev]);
+      addAnalysisOutputLayer("dissolve", resultLayer);
 
       setStatusType("success");
       setStatus(t("widgets.dissolve.status.success") || "Dissolve analysis completed successfully");
@@ -48,19 +52,19 @@ const Dissolve: React.FC = () => {
 
   const handleToggleVisibility = (layer: __esri.Layer) => {
     layer.visible = !layer.visible;
-    setOutputLayers([...outputLayers]);
+    forceUpdate(Math.random());
   };
 
   const handleRename = (layer: __esri.Layer, newName: string) => {
     layer.title = newName;
-    setOutputLayers([...outputLayers]);
+    forceUpdate(Math.random());
   };
 
   const handleDelete = (layer: __esri.Layer) => {
     if (view) {
         view.map.remove(layer);
     }
-    setOutputLayers(outputLayers.filter(l => l.id !== layer.id));
+    removeAnalysisOutputLayer("dissolve", layer.id);
   };
 
   const handleZoomTo = (layer: __esri.Layer) => {

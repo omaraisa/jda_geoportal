@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import useStateStore from "@/stateStore";
 import { LayerSelector, AnalysisControls, NumberInput } from "../analysis-tools";
 import { GeometryModifyService, GeometryOperation } from "./geometry-modify-service";
+import OutputLayerList from "../analysis-tools/output-layer-list";
 
 const GEOMETRY_OPERATIONS: Array<{ value: GeometryOperation; label: string; description: string }> = [
   {
@@ -26,6 +27,9 @@ const GeometryModify: React.FC = () => {
   const { t } = useTranslation();
   const updateStats = useStateStore((state) => state.updateStats);
   const view = useStateStore((state) => state.targetView);
+  const addAnalysisOutputLayer = useStateStore((state) => state.addAnalysisOutputLayer);
+  const removeAnalysisOutputLayer = useStateStore((state) => state.removeAnalysisOutputLayer);
+  const getAnalysisOutputLayers = useStateStore((state) => state.getAnalysisOutputLayers);
 
   const [inputLayerId, setInputLayerId] = useState<string>("");
   const [operation, setOperation] = useState<GeometryOperation>("offset");
@@ -34,6 +38,8 @@ const GeometryModify: React.FC = () => {
   const [status, setStatus] = useState<string>("");
   const [statusType, setStatusType] = useState<"info" | "success" | "error" | "">("");
   const [isRunning, setIsRunning] = useState<boolean>(false);
+
+  const outputLayers = getAnalysisOutputLayers("geometry-modify");
 
   // Get the selected layer
   const inputLayer = view?.map.findLayerById(inputLayerId) as __esri.FeatureLayer | __esri.GraphicsLayer;
@@ -55,7 +61,9 @@ const GeometryModify: React.FC = () => {
         maxSegmentLength: operation === "densify" ? maxSegmentLength : undefined
       };
 
-      await GeometryModifyService.runGeometryModifyAnalysis(inputLayer, operation, options);
+      const resultLayer = await GeometryModifyService.runGeometryModifyAnalysis(inputLayer, operation, options);
+
+      addAnalysisOutputLayer("geometry-modify", resultLayer);
 
       setStatusType("success");
       setStatus(t("widgets.geometryModify.status.success") || `${operation} operation completed successfully`);
@@ -65,6 +73,31 @@ const GeometryModify: React.FC = () => {
       setStatus(error.message || `${operation} operation failed`);
     } finally {
       setIsRunning(false);
+    }
+  };
+
+  const handleToggleVisibility = (layer: __esri.Layer) => {
+    layer.visible = !layer.visible;
+    // Force re-render by updating stateStore
+    useStateStore.setState({ forceUpdate: Date.now() });
+  };
+
+  const handleRename = (layer: __esri.Layer, newName: string) => {
+    layer.title = newName;
+    // Force re-render
+    useStateStore.setState({ forceUpdate: Date.now() });
+  };
+
+  const handleDelete = (layer: __esri.Layer) => {
+    if (view) {
+        view.map.remove(layer);
+    }
+    removeAnalysisOutputLayer("geometry-modify", layer.id);
+  };
+
+  const handleZoomTo = (layer: __esri.Layer) => {
+    if (view) {
+        view.goTo(layer.fullExtent);
     }
   };
 
@@ -130,6 +163,16 @@ const GeometryModify: React.FC = () => {
         statusType={statusType}
         isRunning={isRunning}
       />
+
+      {outputLayers.length > 0 && (
+        <OutputLayerList
+          layers={outputLayers}
+          onToggleVisibility={handleToggleVisibility}
+          onRename={handleRename}
+          onDelete={handleDelete}
+          onZoomTo={handleZoomTo}
+        />
+      )}
     </div>
   );
 };
