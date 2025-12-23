@@ -429,6 +429,38 @@
       "noResults": "No results found",
       "backToResults": "Back to Results",
       "clearResults": "Clear Results"
+    },
+    "merge": {
+      "title": "Merge Layers",
+      "layer": "Layer",
+      "addLayer": "Add another layer",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Merged Result",
+      "run": "Run Merge",
+      "status": {
+        "running": "Merging layers...",
+        "success": "Merge completed successfully"
+      },
+      "errors": {
+        "minLayers": "Please select at least two layers",
+        "invalidLayers": "Some selected layers could not be found"
+      }
+    },
+    "convexHull": {
+      "title": "Convex Hull",
+      "layer": "Input Layer",
+      "mergeResults": "Create single hull for all features",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Convex Hull Result",
+      "run": "Run Analysis",
+      "status": {
+        "running": "Calculating convex hull...",
+        "success": "Convex hull created successfully"
+      },
+      "errors": {
+        "noLayer": "Please select an input layer",
+        "layerNotFound": "Layer not found"
+      }
     }
   },
   "layoutMode": {

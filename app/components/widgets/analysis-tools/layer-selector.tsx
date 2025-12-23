@@ -9,6 +9,7 @@ interface LayerSelectorProps {
   onChange: (value: string) => void;
   view: __esri.MapView | __esri.SceneView | null;
   placeholder?: string;
+  filter?: (layer: __esri.Layer) => boolean;
 }
 
 const LayerSelector: React.FC<LayerSelectorProps> = ({
@@ -16,12 +17,14 @@ const LayerSelector: React.FC<LayerSelectorProps> = ({
   value,
   onChange,
   view,
-  placeholder
+  placeholder,
+  filter
 }) => {
   const { t } = useTranslation();
 
   const layerOptions = view?.map.layers.toArray()
     .filter(layer => featureBasedLayerTypes.includes(layer.type))
+    .filter(layer => filter ? filter(layer) : true)
     .map(layer => ({
       value: layer.id,
       label: layer.title || layer.id
