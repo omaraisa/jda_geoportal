@@ -6,6 +6,7 @@ import {
   LayerSelector,
   SelectionMethodToggle,
   QueryActions,
+  RelationshipSelector,
   useSpatialQuery
 } from "./spatial-query/";
 
@@ -38,6 +39,11 @@ export default function SpatialQueryComponent() {
       <SelectionMethodToggle
         selectionMethodChecked={state.selectionMethodChecked}
         onToggle={handlers.selectionMethodHandler}
+      />
+
+      <RelationshipSelector
+        value={state.relationship}
+        onChange={handlers.handleRelationshipChange}
       />
 
       <div

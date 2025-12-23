@@ -21,6 +21,7 @@ export const useSpatialQuery = (
     targetLayerValue: "",
     selectionLayerValue: "",
     hasResults: false,
+    relationship: "intersects",
   });
 
   // Refs
@@ -28,11 +29,16 @@ export const useSpatialQuery = (
   const graphicsLayerRef = useRef<GraphicsLayer | null>(null);
   const sketchInitialized = useRef<boolean>(false);
   const targetLayerValueRef = useRef<string>("");
+  const relationshipRef = useRef<string>("intersects");
 
   // Update ref when state changes
   useEffect(() => {
     targetLayerValueRef.current = state.targetLayerValue;
   }, [state.targetLayerValue]);
+
+  useEffect(() => {
+    relationshipRef.current = state.relationship;
+  }, [state.relationship]);
 
   const refs: SpatialQueryRefs = {
     sketchContainerRef,
@@ -68,7 +74,8 @@ export const useSpatialQuery = (
           widgets,
           sendMessage,
           t,
-          setHasResults
+          setHasResults,
+          relationshipRef
         );
 
         SpatialQueryService.initializeSketch(
@@ -91,7 +98,8 @@ export const useSpatialQuery = (
     sendMessage,
     updateStats,
     t,
-    setHasResults
+    setHasResults,
+    state.relationship
   );
 
   const selectionMethodHandler = () => {
@@ -112,6 +120,13 @@ export const useSpatialQuery = (
     setState((prevState) => ({
       ...prevState,
       selectionLayerValue: value,
+    }));
+  };
+
+  const handleRelationshipChange = (value: string) => {
+    setState((prevState) => ({
+      ...prevState,
+      relationship: value,
     }));
   };
 
@@ -168,6 +183,7 @@ export const useSpatialQuery = (
       handleSwitchSelection,
       handleTargetLayerChange,
       handleSelectionLayerChange,
+      handleRelationshipChange,
       handleCreateLayer,
     },
   };

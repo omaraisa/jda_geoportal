@@ -37,11 +37,12 @@ export class SpatialQueryService {
 
   static async queryByGeometry(
     targetLayer: __esri.FeatureLayer,
-    geometry: __esri.Geometry
+    geometry: __esri.Geometry,
+    relationship: string = "intersects"
   ): Promise<__esri.FeatureSet | null> {
     const query = {
       geometry,
-      spatialRelationship: "intersects" as __esri.QueryProperties["spatialRelationship"],
+      spatialRelationship: relationship as __esri.QueryProperties["spatialRelationship"],
       outFields: ["*"],
       returnGeometry: true,
     };
@@ -51,7 +52,8 @@ export class SpatialQueryService {
 
   static async queryByLayer(
     targetLayer: __esri.FeatureLayer,
-    selectionLayer: __esri.FeatureLayer
+    selectionLayer: __esri.FeatureLayer,
+    relationship: string = "intersects"
   ): Promise<__esri.FeatureSet | null> {
     const selectionFeatures = await selectionLayer.queryFeatures({
       outFields: ["*"],
@@ -65,7 +67,7 @@ export class SpatialQueryService {
 
     const query = {
       geometry: combinedGeometry,
-      spatialRelationship: "intersects" as __esri.QueryProperties["spatialRelationship"],
+      spatialRelationship: relationship as __esri.QueryProperties["spatialRelationship"],
       outFields: ["*"],
       returnGeometry: true,
     };

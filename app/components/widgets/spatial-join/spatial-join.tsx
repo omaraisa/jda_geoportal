@@ -11,8 +11,7 @@ const RELATIONSHIPS: { value: SpatialJoinRelationship; label: string }[] = [
   { value: "contains", label: "Contains" },
   { value: "within", label: "Within" },
   { value: "overlaps", label: "Overlaps" },
-  { value: "touches", label: "Touches" },
-  { value: "crosses", label: "Crosses" }
+  { value: "touches", label: "Touches" }
 ];
 
 const SpatialJoin: React.FC = () => {

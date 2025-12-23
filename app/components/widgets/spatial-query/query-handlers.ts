@@ -16,7 +16,8 @@ export const createSketchCompleteHandler = (
   widgets: any,
   sendMessage: (message: MessagePayload) => void,
   t: (key: string) => string,
-  setHasResults: (hasResults: boolean) => void
+  setHasResults: (hasResults: boolean) => void,
+  relationshipRef: React.MutableRefObject<string>
 ) => {
   return async (graphic: __esri.Graphic) => {
     const targetLayer = getSelectedTargetLayer(view, targetLayerValueRef.current);
@@ -26,7 +27,7 @@ export const createSketchCompleteHandler = (
     }
 
     try {
-      const response = await SpatialQueryService.queryByGeometry(targetLayer, graphic.geometry);
+      const response = await SpatialQueryService.queryByGeometry(targetLayer, graphic.geometry, relationshipRef.current);
       if (response && response.features.length) {
         SpatialQueryService.processQueryResult(
           response,
@@ -56,7 +57,8 @@ export const createQueryByLayerHandler = (
   sendMessage: (message: MessagePayload) => void,
   updateStats: (action: string) => void,
   t: (key: string) => string,
-  setHasResults: (hasResults: boolean) => void
+  setHasResults: (hasResults: boolean) => void,
+  relationship: string
 ) => {
   return async () => {
     const targetLayer = getSelectedTargetLayer(view, targetLayerValue);
@@ -72,7 +74,7 @@ export const createQueryByLayerHandler = (
     }
 
     try {
-      const response = await SpatialQueryService.queryByLayer(targetLayer, selectionLayer);
+      const response = await SpatialQueryService.queryByLayer(targetLayer, selectionLayer, relationship);
       if (response && response.features.length) {
         SpatialQueryService.processQueryResult(
           response,

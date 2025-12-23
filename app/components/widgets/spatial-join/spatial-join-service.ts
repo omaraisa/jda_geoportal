@@ -5,7 +5,7 @@ import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import * as geometryEngine from "@arcgis/core/geometry/geometryEngine";
 import useStateStore from "../../../stateStore";
 
-export type SpatialJoinRelationship = "intersects" | "contains" | "within" | "overlaps" | "touches" | "crosses";
+export type SpatialJoinRelationship = "intersects" | "contains" | "within" | "overlaps" | "touches";
 
 export class SpatialJoinService {
   static async runSpatialJoin(
@@ -79,7 +79,6 @@ export class SpatialJoinService {
           case "within": return geometryEngine.within(targetFeature.geometry, joinFeature.geometry);
           case "overlaps": return geometryEngine.overlaps(targetFeature.geometry, joinFeature.geometry);
           case "touches": return geometryEngine.touches(targetFeature.geometry, joinFeature.geometry);
-          case "crosses": return geometryEngine.crosses(targetFeature.geometry, joinFeature.geometry);
           default: return false;
         }
       });

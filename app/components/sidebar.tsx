@@ -69,9 +69,6 @@ const OverlayComponent = dynamic(() => import("@/components/widgets/overlay").th
 const DissolveComponent = dynamic(() => import("@/components/widgets/dissolve").then(mod => ({ default: mod.Dissolve })), {
   ssr: false,
 });
-const SpatialRelationshipsComponent = dynamic(() => import("@/components/widgets/spatial-relationships").then(mod => ({ default: mod.SpatialRelationships })), {
-  ssr: false,
-});
 const ClipComponent = dynamic(() => import("@/components/widgets/clip").then(mod => ({ default: mod.Clip })), {
   ssr: false,
 });
@@ -125,7 +122,6 @@ const components = {
   BufferComponent,
   OverlayComponent,
   DissolveComponent,
-  SpatialRelationshipsComponent,
   ClipComponent,
   GeometryModifyComponent,
   GoToXYComponent,

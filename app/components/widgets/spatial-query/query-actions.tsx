@@ -40,15 +40,6 @@ export default function QueryActions({
 
       <div className="flex gap-2">
         <button
-          className="btn btn-danger flex-grow"
-          onClick={onClearSelection}
-        >
-          {t("widgets.query.clearSearch")}
-        </button>
-      </div>
-
-      <div className="flex gap-2">
-        <button
           className={`btn ${!hasResults ? 'btn-gray' : 'btn-primary'} flex-grow`}
           disabled={!hasResults}
           onClick={onCreateLayer}
@@ -56,6 +47,16 @@ export default function QueryActions({
           {t("widgets.query.createNewLayer")}
         </button>
       </div>
+      
+      <div className="flex gap-2">
+        <button
+          className="btn btn-danger flex-grow"
+          onClick={onClearSelection}
+        >
+          {t("widgets.query.clearSearch")}
+        </button>
+      </div>
+
     </div>
   );
 }

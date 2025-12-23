@@ -5,6 +5,7 @@ export interface SpatialQueryState {
   targetLayerValue: string;
   selectionLayerValue: string;
   hasResults: boolean;
+  relationship: string;
 }
 
 export interface SpatialQueryRefs {

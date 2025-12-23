@@ -58,7 +58,6 @@
       "ClipComponent": "Clip Analysis",
       "DissolveComponent": "Dissolve Analysis",
       "GeometryModifyComponent": "Geometry Modify",
-      "SpatialRelationshipsComponent": "Spatial Relationships",
       "visibilityAnalysis": "Visibility Analysis",
       "heatmapAnalysis": "Heatmap Analysis",
       "clusterAnalysis": "Cluster Analysis",
@@ -388,36 +387,6 @@
         "error": "Geometry modification failed."
       }
     },
-    "spatialRelationships": {
-      "title": "Spatial Relationships",
-      "inputLayer1": "Input Layer 1",
-      "inputLayer2": "Input Layer 2",
-      "selectLayer1": "Select First Layer",
-      "selectLayer2": "Select Second Layer",
-      "relationship": "Relationship",
-      "contains": "Contains",
-      "crosses": "Crosses",
-      "disjoint": "Disjoint",
-      "equals": "Equals",
-      "intersects": "Intersects",
-      "overlaps": "Overlaps",
-      "touches": "Touches",
-      "within": "Within",
-      "outputName": "Output Layer Name (Optional)",
-      "outputNamePlaceholder": "Spatial Relationships Result",
-      "run": "Run",
-      "results": "Results",
-      "features": "features",
-      "status": {
-        "running": "Running analysis...",
-        "success": "Spatial relationship analysis completed successfully.",
-        "error": "Spatial relationship analysis failed."
-      },
-      "errors": {
-        "noLayers": "Please select both input layers",
-        "sameLayer": "Please select different layers"
-      }
-    },
     "goToXY": {
       "title": "Go to X Y",
       "longitude": "Longitude",
@@ -521,6 +490,23 @@
         "noLayers": "Please select both layers",
         "noFields": "Please select join fields",
         "layerNotFound": "Layer not found"
+      }
+    },
+    "spatialQuery": {
+      "relationship": "Spatial Relationship",
+      "relationships": {
+        "intersects": "Intersects",
+        "contains": "Contains",
+        "within": "Within",
+        "touches": "Touches",
+        "overlaps": "Overlaps"
+      },
+      "descriptions": {
+        "intersects": "Features that share any part of their geometry.",
+        "contains": "Features that are completely inside the selection area.",
+        "within": "Features that the selection area is completely inside of.",
+        "touches": "Features that meet at the boundary but do not overlap.",
+        "overlaps": "Features of the same type that share some but not all area."
       }
     }
   },
