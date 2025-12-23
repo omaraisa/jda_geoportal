@@ -14,29 +14,7 @@ const SessionEndModal = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isExtending, setIsExtending] = useState(false);
 
-  // TEMPORARY: Add debug function to trigger modal manually
-  useEffect(() => {
-    // @ts-ignore - Temporary testing function
-    window.triggerSessionModal = () => {
-      console.log('Manually triggering session modal for testing');
-      const { setSessionModalOpen } = useStateStore.getState();
-      setSessionModalOpen(true);
-    };
-    
-    // @ts-ignore - Temporary function to corrupt token for testing
-    window.corruptToken = () => {
-      console.log('Corrupting access token for testing');
-      document.cookie = 'access_token=invalid_token; path=/; secure; samesite=strict';
-    };
-
-    return () => {
-      // @ts-ignore
-      delete window.triggerSessionModal;
-      // @ts-ignore
-      delete window.corruptToken;
-    };
-  }, []);
-
+  
   useEffect(() => {
     if (sessionModalOpen) {
       if (timeoutRef.current) {
@@ -76,24 +54,18 @@ const SessionEndModal = () => {
     if (isExtending) return;
     setIsExtending(true);
     try {
-      console.log('Starting token extension...');
       const response = await fetch('/api/refresh-token', {
         method: 'POST',
         credentials: 'include',
       });
-      console.log('Refresh token response status:', response.status);
-      console.log('Refresh token response ok:', response.ok);
       if (response.ok) {
         const data = await response.json();
-        console.log('Refresh token data:', data);
         const { setSessionModalOpen } = useStateStore.getState();
         setSessionModalOpen(false);
         
         // Refresh ArcGIS token as well
         try {
-          console.log('Attempting to refresh ArcGIS token...');
           await authenticateArcGIS();
-          console.log('ArcGIS token refreshed successfully');
         } catch (arcgisError) {
           console.warn('Failed to refresh ArcGIS token:', arcgisError);
         }
