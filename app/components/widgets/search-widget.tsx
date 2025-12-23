@@ -139,18 +139,20 @@ export default function SearchWidget() {
   const handleFeatureClick = (feature: any, layer: FeatureLayer) => {
     if (!view) return;
     
+    let targetGraphicsLayer = searchGraphicsLayer;
+
     // Ensure the search graphics layer exists
-    if (!searchGraphicsLayer) {
-      const layer = new GraphicsLayer({
+    if (!targetGraphicsLayer) {
+      targetGraphicsLayer = new GraphicsLayer({
         title: "Search Results",
         group: "My Layers"
       });
-      setSearchGraphicsLayer(layer);
-      view.map.add(layer);
+      setSearchGraphicsLayer(targetGraphicsLayer);
+      view.map.add(targetGraphicsLayer);
     }
     
     // Clear previous graphics
-    searchGraphicsLayer.removeAll();
+    targetGraphicsLayer.removeAll();
 
     let symbol;
     switch (feature.geometry.type) {
@@ -192,7 +194,7 @@ export default function SearchWidget() {
       symbol: symbol as any,
     });
 
-    searchGraphicsLayer.add(graphic);
+    targetGraphicsLayer.add(graphic);
 
     // Zoom to the feature
     if (feature.geometry && view) {
