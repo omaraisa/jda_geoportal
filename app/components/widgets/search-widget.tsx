@@ -6,6 +6,7 @@ import useStateStore from "@/stateStore";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import PopupTemplate from "@arcgis/core/PopupTemplate";
 import { addQueryResult, clearSelection } from "@/lib/utils/query";
 import Button from "@/components/ui/button";
 import TextInput from "@/components/ui/text-input";
@@ -146,7 +147,7 @@ export default function SearchWidget() {
       targetGraphicsLayer = new GraphicsLayer({
         title: "Search Results",
         group: "My Layers"
-      });
+      } as any);
       setSearchGraphicsLayer(targetGraphicsLayer);
       view.map.add(targetGraphicsLayer);
     }
@@ -192,6 +193,17 @@ export default function SearchWidget() {
       geometry: feature.geometry,
       attributes: feature.attributes,
       symbol: symbol as any,
+    });
+
+    graphic.popupTemplate = new PopupTemplate({
+      title: layer.title,
+      content: [{
+        type: "fields",
+        fieldInfos: layer.fields.map(field => ({
+          fieldName: field.name,
+          label: field.alias || field.name
+        }))
+      }]
     });
 
     targetGraphicsLayer.add(graphic);
