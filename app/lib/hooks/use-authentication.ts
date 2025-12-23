@@ -36,7 +36,6 @@ const useAuthentication = (customInterval?: number) => {
           const timeUntilExpiry = tokenExpiry - currentTime;
           
         if (timeUntilExpiry < config.SESSION_MODAL_BUFFER) {
-          console.log(`Token expires in ${timeUntilExpiry} seconds, showing session modal (buffer: ${config.SESSION_MODAL_BUFFER}s)`);
           if (isMounted) {
             const { clearAuth } = useStateStore.getState();
             clearAuth();

@@ -1,6 +1,7 @@
 import Graphic from "@arcgis/core/Graphic";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import PopupTemplate from "@arcgis/core/PopupTemplate";
 import Field from "@arcgis/core/layers/support/Field";
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer";
 import { queryPointSymbol, queryLineSymbol, queryPolygonSymbol } from "@/lib/utils/symbols";
@@ -75,6 +76,17 @@ export function addQueryResult(
       geometry: feature.geometry,
       symbol: symbol,
       attributes: feature.attributes,
+    });
+
+    outlineGraphic.popupTemplate = new PopupTemplate({
+      title: targetLayer.title,
+      content: [{
+        type: "fields",
+        fieldInfos: targetLayer.fields.map(field => ({
+          fieldName: field.name,
+          label: field.alias || field.name
+        }))
+      }]
     });
     
     graphicsLayer.add(outlineGraphic);
