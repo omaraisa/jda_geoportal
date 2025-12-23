@@ -20,6 +20,8 @@ const options: AnalysisOption[] = [
   { name: "DissolveComponent", icon: "dissolve-features" },
   { name: "MergeComponent", icon: "merge" },
   { name: "ConvexHullComponent", icon: "polygon" },
+  { name: "SpatialJoinComponent", icon: "left-right" },
+  { name: "AttributeJoinComponent", icon: "tables" },
   { name: "GeometryModifyComponent", icon: "vertex-edit" },
   { name: "SpatialRelationshipsComponent", icon: "geographic-link-chart-layout" },
 ];

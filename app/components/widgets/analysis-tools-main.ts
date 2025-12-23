@@ -9,6 +9,8 @@ export * from './measurement';
 export * from './dissolve';
 export * from './merge';
 export * from './convex-hull';
+export * from './spatial-join';
+export * from './attribute-join';
 export * from './geometry-modify';
 export * from './spatial-relationships';
 export * from './charting';

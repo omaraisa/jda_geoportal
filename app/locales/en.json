@@ -461,6 +461,51 @@
         "noLayer": "Please select an input layer",
         "layerNotFound": "Layer not found"
       }
+    },
+    "spatialJoin": {
+      "title": "Spatial Join",
+      "targetLayer": "Target Layer",
+      "joinLayer": "Join Layer",
+      "relationship": "Spatial Relationship",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Spatial Join Result",
+      "run": "Run Analysis",
+      "relationships": {
+        "intersects": "Intersects",
+        "contains": "Contains",
+        "within": "Within",
+        "overlaps": "Overlaps",
+        "touches": "Touches",
+        "crosses": "Crosses"
+      },
+      "status": {
+        "running": "Performing spatial join...",
+        "success": "Spatial join completed successfully"
+      },
+      "errors": {
+        "noLayers": "Please select both layers",
+        "sameLayer": "Please select different layers",
+        "layerNotFound": "Layer not found"
+      }
+    },
+    "attributeJoin": {
+      "title": "Attribute Join",
+      "targetLayer": "Target Layer",
+      "joinLayer": "Join Layer",
+      "targetField": "Target Join Field",
+      "joinField": "Join Layer Field",
+      "outputName": "Output Layer Name (Optional)",
+      "outputNamePlaceholder": "Attribute Join Result",
+      "run": "Run Analysis",
+      "status": {
+        "running": "Performing attribute join...",
+        "success": "Attribute join completed successfully"
+      },
+      "errors": {
+        "noLayers": "Please select both layers",
+        "noFields": "Please select join fields",
+        "layerNotFound": "Layer not found"
+      }
     }
   },
   "layoutMode": {
