@@ -11,12 +11,9 @@ export type SpatialRelationship =
   | "intersects" 
   | "contains" 
   | "crosses" 
-  | "envelope-intersects" 
-  | "index-intersects" 
   | "overlaps" 
   | "touches" 
   | "within" 
-  | "relation"
   | "equals";
 
 export interface RelationshipResult {

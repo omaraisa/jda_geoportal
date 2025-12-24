@@ -202,7 +202,7 @@ const SpatialRelationships: React.FC = () => {
           </h3>
           <div className="space-y-2">
             <div className="flex justify-between items-center p-2 bg-white rounded border">
-              <span className="font-medium capitalize">{result.relationship}:</span>
+              <span className="font-medium capitalize">{relationship}:</span>
               <span className="text-blue-600 font-mono">
                 {result.count} {t("widgets.spatialRelationships.features") || "features"}
               </span>
