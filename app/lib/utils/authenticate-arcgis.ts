@@ -232,7 +232,7 @@ export const authenticateArcGIS = async (): Promise<boolean> => {
             }
 
             const authConfig = getCurrentConfig();
-            const expiryTime = Date.now() + authConfig.TOKEN_DURATION_MINUTES * 60 * 1000;
+            const expiryTime = Date.now() + authConfig.GIS_TOKEN_DURATION_MINUTES * 60 * 1000;
 
             currentToken = data.token;
             tokenExpiry = expiryTime;

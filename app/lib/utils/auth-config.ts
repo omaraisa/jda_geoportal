@@ -11,7 +11,8 @@ export const AUTH_CONFIG = {
     // Session modal timeout (auto-logout after 30 seconds)
     SESSION_MODAL_TIMEOUT: 30000, // 30 seconds
     
-    // Token duration for server-side configuration reference
+    GIS_TOKEN_DURATION_MINUTES: 2,
+
     TOKEN_DURATION_MINUTES: 1,
   },
   
@@ -26,7 +27,9 @@ export const AUTH_CONFIG = {
     // Session modal timeout (auto-logout after 2 minutes)
     SESSION_MODAL_TIMEOUT: 120000, // 2 minutes
     
-    // Token duration for server-side configuration reference
+    GIS_TOKEN_DURATION_MINUTES: 60,
+
+      // Token duration for server-side configuration reference
     TOKEN_DURATION_MINUTES: 15,
   }
 };
