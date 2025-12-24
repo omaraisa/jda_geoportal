@@ -8,7 +8,7 @@ const useAuthentication = (customInterval?: number) => {
   const config = getCurrentConfig();
   const interval = customInterval || config.CHECK_INTERVAL;
   
-  const { setUserInfo, setSessionModalOpen } = useStateStore((state) => state);
+  const { setUserInfo, setSessionModalOpen, lastActivity } = useStateStore((state) => state);
   const [isInitializing, setIsInitializing] = useState(true);
   
   useEffect(() => {
@@ -36,12 +36,37 @@ const useAuthentication = (customInterval?: number) => {
           const timeUntilExpiry = tokenExpiry - currentTime;
           
         if (timeUntilExpiry < config.SESSION_MODAL_BUFFER) {
-          if (isMounted) {
-            const { clearAuth } = useStateStore.getState();
-            clearAuth();
-            setSessionModalOpen(true);
-          }
-          return false;
+            let refreshed = false;
+            
+            // Check the global activity timer
+            const idleTime = Date.now() - lastActivity;
+            const maxIdleTime = (config.TOKEN_DURATION_MINUTES || 15) * 60 * 1000;
+
+            // If user clicked a menu item recently
+            if (idleTime < maxIdleTime) {
+              try {
+                // console.log("User is active, refreshing token automatically...");
+                const response = await fetch('/api/refresh-token', {
+                  method: 'POST',
+                  credentials: 'include',
+                });
+                if (response.ok) {
+                  refreshed = true;
+                }
+              } catch (error) {
+                console.error("Auto-refresh failed:", error);
+              }
+            }
+
+            // If not refreshed (user was idle), show modal
+            if (!refreshed) {
+              if (isMounted) {
+                const { clearAuth } = useStateStore.getState();
+                clearAuth();
+                setSessionModalOpen(true);
+              }
+              return false;
+            }
         }          if (payload) {
             const userInfo = {
               fullName: payload.firstName && payload.lastName ? 
@@ -129,7 +154,7 @@ const useAuthentication = (customInterval?: number) => {
     return () => {
       isMounted = false;
     };
-  }, [interval, setUserInfo, setSessionModalOpen]);
+  }, [interval, setUserInfo, setSessionModalOpen, lastActivity]);
   
   return { isInitializing };
 };

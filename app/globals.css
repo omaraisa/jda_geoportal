@@ -682,3 +682,7 @@ input[type="number"]::-moz-outer-spin-button {
     display: none !important;
   }
 }
+/* Hide Esri Identity Modal when open */
+.esri-identity-modal.esri-identity-modal--open {
+  display: none !important;
+}

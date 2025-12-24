@@ -1020,6 +1020,10 @@ const useStateStore = create<State>((set, get) => ({
   },
 
   sessionModalOpen: false,
+  
+  lastActivity: Date.now(),
+  updateActivity: () => set({ lastActivity: Date.now() }),
+
   setSessionModalOpen: (open: boolean) => {
     set({ sessionModalOpen: open });
   },

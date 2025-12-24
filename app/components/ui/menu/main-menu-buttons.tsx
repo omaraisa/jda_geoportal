@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styles from "./main-menu.module.css";
 import MenuButton from './menu-button';
+import useStateStore from "@/stateStore";
 
 const menuOptions = ['analysis', 'settings', 'layers', 'query', 'tools'];
 
@@ -10,12 +11,14 @@ interface MainMenuButtonsProps {
 }
 
 export const MainMenuButtons: React.FC<MainMenuButtonsProps> = ({ onMenuChange }) => {
+  const updateActivity = useStateStore((state) => state.updateActivity);
   const [activeButtonIndex, setActiveButtonIndex] = useState<number | null>(null);
   // New state to handle container rotation
   const [containerRotation, setContainerRotation] = useState(0);
   const buttonsContainerRef = useRef<HTMLDivElement>(null);
 
   const handleButtonClick = useCallback((index: number) => {
+    updateActivity();
     setActiveButtonIndex(index);
 
     const buttons = buttonsContainerRef.current?.children;

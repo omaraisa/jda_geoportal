@@ -128,6 +128,10 @@ export interface State {
   sessionModalOpen: boolean;
   setSessionModalOpen: (open: boolean) => void;
   handleSessionExtend: () => void;
+  
+  lastActivity: number;
+  updateActivity: () => void;
+
   updateStats: (featurename: string) => void;
   clearAuth: () => void;
   setGisToken: (token: string) => void;

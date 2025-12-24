@@ -34,7 +34,7 @@ export const AUTH_CONFIG = {
   }
 };
 
-export const CURRENT_ENV = 'PRODUCTION';
+export const CURRENT_ENV = 'TESTING';
 
 export const getCurrentConfig = () => {
   return AUTH_CONFIG[CURRENT_ENV];
