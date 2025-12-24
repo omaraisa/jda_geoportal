@@ -12,10 +12,15 @@ const TimeSliderComponent = dynamic(() => import("@/components/widgets/time-slid
   ssr: false,
 });
 
+const ChartingComponent = dynamic(() => import("@/components/widgets/charting").then(mod => ({ default: mod.ChartingDisplay })), {
+  ssr: false,
+});
+
 const components: { [key: string]: React.ComponentType } = {
   DefaultComponent,
   FeatureTableComponent,
   TimeSliderComponent,
+  ChartingComponent,
 };
 
 const BottomPane: React.FC = () => {

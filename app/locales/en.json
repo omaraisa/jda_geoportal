@@ -79,7 +79,8 @@
   "bottomPane": {
     "titles": {
       "FeatureTableComponent": "Attribute Table",
-      "TimeSliderComponent": "Time Slider"
+      "TimeSliderComponent": "Time Slider",
+      "ChartingComponent": "Charts & Statistics"
     }
   },
   "widgets": {
@@ -508,6 +509,35 @@
         "touches": "Features that meet at the boundary but do not overlap.",
         "overlaps": "Features of the same type that share some but not all area."
       }
+    },
+    "charting": {
+      "title": "Statistics & Charting",
+      "targetLayer": "Target Layer",
+      "categoryField": "Category Field (X-Axis)",
+      "operation": "Operation",
+      "valueField": "Value Field (Y-Axis)",
+      "chartType": "Chart Type",
+      "visualizeData": "Visualize Data",
+      "processing": "Processing...",
+      "selectField": "Select Field",
+      "selectNumericField": "Select Numeric Field",
+      "count": "Count",
+      "sum": "Sum",
+      "average": "Average",
+      "minimum": "Minimum",
+      "maximum": "Maximum",
+      "bar": "Bar Chart",
+      "pie": "Pie Chart",
+      "line": "Line Chart",
+      "area": "Area Chart",
+      "noData": "No data to display",
+      "configureMessage": "Configure your chart in the sidebar and click \"Visualize Data\"",
+      "dataSummary": "Data Summary",
+      "totalSum": "Total Sum:",
+      "categories": "Categories:",
+      "value": "Value",
+      "errorSelectLayer": "Please select a layer and a category field.",
+      "errorValueField": "Value field is required for this operation."
     }
   },
   "layoutMode": {

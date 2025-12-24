@@ -33,6 +33,7 @@
     "react-error-boundary": "^5.0.0",
     "react-i18next": "^15.4.0",
     "react-split": "^2.0.14",
+    "recharts": "^3.6.0",
     "tailwindcss": "^3.4.1",
     "zustand": "^5.0.2"
   },

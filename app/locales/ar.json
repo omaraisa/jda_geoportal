@@ -78,7 +78,8 @@
   "bottomPane": {
     "titles": {
       "FeatureTableComponent": "جدول البيانات الوصفية",
-      "TimeSliderComponent": "شريط الزمن"
+      "TimeSliderComponent": "شريط الزمن",
+      "ChartingComponent": "الرسوم البيانية والإحصائيات"
     }
   },
   "widgets": {
@@ -507,6 +508,35 @@
         "touches": "المعالم التي تلتقي عند الحدود ولكن لا تتداخل.",
         "overlaps": "المعالم من نفس النوع التي تشترك في بعض المساحة وليس كلها."
       }
+    },
+    "charting": {
+      "title": "الإحصائيات والرسوم البيانية",
+      "targetLayer": "الطبقة المستهدفة",
+      "categoryField": "حقل الفئة (المحور X)",
+      "operation": "العملية",
+      "valueField": "حقل القيمة (المحور Y)",
+      "chartType": "نوع الرسم البياني",
+      "visualizeData": "تصور البيانات",
+      "processing": "جارٍ المعالجة...",
+      "selectField": "اختر الحقل",
+      "selectNumericField": "اختر الحقل الرقمي",
+      "count": "العد",
+      "sum": "المجموع",
+      "average": "المتوسط",
+      "minimum": "الحد الأدنى",
+      "maximum": "الحد الأقصى",
+      "bar": "رسم بياني شريطي",
+      "pie": "رسم بياني دائري",
+      "line": "رسم بياني خطي",
+      "area": "رسم بياني مساحي",
+      "noData": "لا توجد بيانات للعرض",
+      "configureMessage": "قم بتكوين الرسم البياني في الشريط الجانبي وانقر على \"تصور البيانات\"",
+      "dataSummary": "ملخص البيانات",
+      "totalSum": "المجموع الكلي:",
+      "categories": "الفئات:",
+      "value": "القيمة",
+      "errorSelectLayer": "يرجى اختيار طبقة وحقل فئة.",
+      "errorValueField": "حقل القيمة مطلوب لهذه العملية."
     }
   },
   "layoutMode": {

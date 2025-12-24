@@ -1,2 +1,3 @@
-export { default as Charting } from './charting';
+export { ChartingConfig } from './ChartingConfig';
+export { ChartingDisplay } from './ChartingDisplay';
 export { ChartingService } from './charting-service';

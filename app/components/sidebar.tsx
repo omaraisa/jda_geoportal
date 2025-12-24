@@ -81,7 +81,7 @@ const GoToXYComponent = dynamic(() => import("@/components/widgets/go-to-xy"), {
 const MapLayoutComponent = dynamic(() => import("@/components/widgets/map-layout-fabric"), {
   ssr: false,
 });
-const ChartingComponent = dynamic(() => import("@/components/widgets/charting").then(mod => ({ default: mod.Charting })), {
+const ChartingComponent = dynamic(() => import("@/components/widgets/charting").then(mod => ({ default: mod.ChartingConfig })), {
   ssr: false,
 });
 const MergeComponent = dynamic(() => import("@/components/widgets/merge").then(mod => ({ default: mod.MergeComponent })), {

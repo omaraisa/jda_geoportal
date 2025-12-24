@@ -96,7 +96,10 @@ const useStateStore = create<State>((set, get) => ({
 
   setActiveBottomPane: (component: string) => {
     // Set different heights based on component type
-    const height = component === 'FeatureTableComponent' ? 400 : 200;
+    let height = 200;
+    if (component === 'FeatureTableComponent') height = 400;
+    if (component === 'ChartingComponent') height = 500;
+    
     set((state) => ({ 
       activeBottomPane: component,
       layout: {
@@ -1073,7 +1076,26 @@ const useStateStore = create<State>((set, get) => ({
       console.error('❌ Error loading group translations:', error);
       set({ groupTranslations: null });
     }
-  }
+  },
+
+  // Charting State
+  chartingState: {
+    selectedLayerId: "",
+    categoryField: "",
+    valueField: "",
+    operation: "count",
+    chartData: [],
+    chartType: "bar",
+    title: "",
+  },
+  setChartingState: (newState: any) => {
+    set((state) => ({
+      chartingState: {
+        ...state.chartingState,
+        ...newState,
+      },
+    }));
+  },
 
 }));
 

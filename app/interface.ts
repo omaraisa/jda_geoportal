@@ -139,6 +139,18 @@ export interface State {
   // Group translations methods
   setGroupTranslations: (translations: GroupTranslations | null) => void;
   fetchGroupTranslations: () => Promise<void>;
+
+  // Charting State
+  chartingState: {
+    selectedLayerId: string;
+    categoryField: string;
+    valueField: string;
+    operation: "count" | "sum" | "avg" | "min" | "max";
+    chartData: any[];
+    chartType: "bar" | "pie" | "line" | "area";
+    title: string;
+  };
+  setChartingState: (state: any) => void;
 }
 
 export interface AttributeQueryState {
