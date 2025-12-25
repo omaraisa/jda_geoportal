@@ -96,6 +96,9 @@ const SpatialJoinComponent = dynamic(() => import("@/components/widgets/spatial-
 const AttributeJoinComponent = dynamic(() => import("@/components/widgets/attribute-join").then(mod => ({ default: mod.AttributeJoinComponent })), {
   ssr: false,
 });
+const SymbologyManagerComponent = dynamic(() => import("@/components/widgets/symbology-manager").then(mod => ({ default: mod.SymbologyManager })), {
+  ssr: false,
+});
 
 
 
@@ -131,6 +134,7 @@ const components = {
   ConvexHullComponent,
   SpatialJoinComponent,
   AttributeJoinComponent,
+  SymbologyManagerComponent,
 };
 
 export default function Sidebar() {

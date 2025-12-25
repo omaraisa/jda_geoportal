@@ -74,7 +74,8 @@
     "MergeComponent": "Merge",
     "ConvexHullComponent": "Convex Hull",
     "SpatialJoinComponent": "Spatial Join",
-    "AttributeJoinComponent": "Attribute Join"
+    "AttributeJoinComponent": "Attribute Join",
+    "SymbologyManagerComponent": "Symbology Manager"
   },
   "bottomPane": {
     "titles": {
@@ -84,6 +85,27 @@
     }
   },
   "widgets": {
+    "symbology": {
+      "title": "Symbology Manager",
+      "selectLayer": "Select Layer",
+      "rendererType": "Renderer Type",
+      "selectField": "Select Field",
+      "color": "Color",
+      "size": "Size",
+      "style": "Style",
+      "opacity": "Opacity",
+      "outlineColor": "Outline Color",
+      "outlineWidth": "Outline Width",
+      "values": "Unique Values",
+      "breaks": "Class Breaks",
+      "apply": "Apply Symbology",
+      "reset": "Reset",
+      "colorScheme": "Color Scheme",
+      "classification": "Classification",
+      "fieldStatistics": "Field Statistics",
+      "heatmapInfo": "Heatmap visualizes point density with a smooth color gradient. Optionally select a field to weight the intensity.",
+      "weightField": "Weight Field (Optional)"
+    },
     "query": {
       "queryLayerTitle": "Query Layer",
       "selectLayer": "Target Layer",

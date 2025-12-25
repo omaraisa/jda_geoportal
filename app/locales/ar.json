@@ -73,7 +73,8 @@
     "MergeComponent": "دمج",
     "ConvexHullComponent": "المحيط المحدب",
     "SpatialJoinComponent": "الربط المكاني",
-    "AttributeJoinComponent": "الربط الوصفي"
+    "AttributeJoinComponent": "الربط الوصفي",
+    "SymbologyManagerComponent": "مدير الرموز"
   },
   "bottomPane": {
     "titles": {
@@ -83,6 +84,27 @@
     }
   },
   "widgets": {
+    "symbology": {
+      "title": "مدير الرموز",
+      "selectLayer": "اختر الطبقة",
+      "rendererType": "نوع العرض",
+      "selectField": "اختر الحقل",
+      "color": "اللون",
+      "size": "الحجم",
+      "style": "النمط",
+      "opacity": "الشفافية",
+      "outlineColor": "لون الحدود",
+      "outlineWidth": "عرض الحدود",
+      "values": "القيم الفريدة",
+      "breaks": "فئات التصنيف",
+      "apply": "تطبيق الرموز",
+      "reset": "إعادة تعيين",
+      "colorScheme": "نظام الألوان",
+      "classification": "التصنيف",
+      "fieldStatistics": "إحصائيات الحقل",
+      "heatmapInfo": "تصور الخريطة الحرارية كثافة النقاط بتدرج لوني سلس. اختياريًا حدد حقلاً لوزن الكثافة.",
+      "weightField": "حقل الوزن (اختياري)"
+    },
     "query": {
       "queryLayerTitle": "طبقة الاستعلام",
       "selectLayer": "اختر الطبقة",
