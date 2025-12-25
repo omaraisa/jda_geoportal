@@ -7,8 +7,6 @@ import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
 import Color from "@arcgis/core/Color";
 import * as typeRendererCreator from "@arcgis/core/smartMapping/renderers/type";
 import * as colorRendererCreator from "@arcgis/core/smartMapping/renderers/color";
-import * as sizeRendererCreator from "@arcgis/core/smartMapping/renderers/size";
-import * as heatmapRendererCreator from "@arcgis/core/smartMapping/renderers/heatmap";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
 import HeatmapRenderer from "@arcgis/core/renderers/HeatmapRenderer";
 
@@ -98,7 +96,7 @@ export class SymbologyService {
     classificationMethod: "natural-breaks" | "equal-interval" | "quantile" | "standard-deviation",
     classCount: number = 5
   ) {
-    const result = await (colorRendererCreator as any).createRenderer({
+    const result = await (colorRendererCreator as any).createClassBreaksRenderer({
       layer: layer,
       field: field,
       classificationMethod: classificationMethod,

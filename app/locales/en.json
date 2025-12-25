@@ -75,7 +75,8 @@
     "ConvexHullComponent": "Convex Hull",
     "SpatialJoinComponent": "Spatial Join",
     "AttributeJoinComponent": "Attribute Join",
-    "SymbologyManagerComponent": "Symbology Manager"
+    "SymbologyManagerComponent": "Symbology Manager",
+    "LabelingManagerComponent": "Labeling Manager"
   },
   "bottomPane": {
     "titles": {
@@ -105,6 +106,28 @@
       "fieldStatistics": "Field Statistics",
       "heatmapInfo": "Heatmap visualizes point density with a smooth color gradient. Optionally select a field to weight the intensity.",
       "weightField": "Weight Field (Optional)"
+    },
+    "labeling": {
+      "title": "Labeling Manager",
+      "selectLayer": "Select Layer",
+      "enableLabeling": "Enable Labeling",
+      "labelField": "Label Field",
+      "selectField": "Select a field",
+      "fontSettings": "Font Settings",
+      "fontFamily": "Font Family",
+      "fontSize": "Size",
+      "fontWeight": "Weight",
+      "fontColor": "Color",
+      "normal": "Normal",
+      "bold": "Bold",
+      "haloSettings": "Halo Settings",
+      "haloColor": "Color",
+      "haloSize": "Size",
+      "placement": "Placement",
+      "minScale": "Min Scale",
+      "maxScale": "Max Scale",
+      "applyLabels": "Apply Labels",
+      "clearLabels": "Clear Labels"
     },
     "query": {
       "queryLayerTitle": "Query Layer",

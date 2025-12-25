@@ -74,7 +74,8 @@
     "ConvexHullComponent": "المحيط المحدب",
     "SpatialJoinComponent": "الربط المكاني",
     "AttributeJoinComponent": "الربط الوصفي",
-    "SymbologyManagerComponent": "مدير الرموز"
+    "SymbologyManagerComponent": "مدير الرموز",
+    "LabelingManagerComponent": "مدير التسميات"
   },
   "bottomPane": {
     "titles": {
@@ -104,6 +105,28 @@
       "fieldStatistics": "إحصائيات الحقل",
       "heatmapInfo": "تصور الخريطة الحرارية كثافة النقاط بتدرج لوني سلس. اختياريًا حدد حقلاً لوزن الكثافة.",
       "weightField": "حقل الوزن (اختياري)"
+    },
+    "labeling": {
+      "title": "مدير التسميات",
+      "selectLayer": "اختر الطبقة",
+      "enableLabeling": "تمكين التسميات",
+      "labelField": "حقل التسمية",
+      "selectField": "اختر حقل",
+      "fontSettings": "إعدادات الخط",
+      "fontFamily": "نوع الخط",
+      "fontSize": "الحجم",
+      "fontWeight": "سمك الخط",
+      "fontColor": "اللون",
+      "normal": "عادي",
+      "bold": "عريض",
+      "haloSettings": "إعدادات الهالة",
+      "haloColor": "اللون",
+      "haloSize": "الحجم",
+      "placement": "الموضع",
+      "minScale": "أقل مقياس",
+      "maxScale": "أكبر مقياس",
+      "applyLabels": "تطبيق التسميات",
+      "clearLabels": "مسح التسميات"
     },
     "query": {
       "queryLayerTitle": "طبقة الاستعلام",

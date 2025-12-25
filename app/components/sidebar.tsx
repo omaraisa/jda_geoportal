@@ -99,6 +99,9 @@ const AttributeJoinComponent = dynamic(() => import("@/components/widgets/attrib
 const SymbologyManagerComponent = dynamic(() => import("@/components/widgets/symbology-manager").then(mod => ({ default: mod.SymbologyManager })), {
   ssr: false,
 });
+const LabelingManagerComponent = dynamic(() => import("@/components/widgets/labeling-manager").then(mod => ({ default: mod.LabelingManager })), {
+  ssr: false,
+});
 
 
 
@@ -135,6 +138,7 @@ const components = {
   SpatialJoinComponent,
   AttributeJoinComponent,
   SymbologyManagerComponent,
+  LabelingManagerComponent,
 };
 
 export default function Sidebar() {
