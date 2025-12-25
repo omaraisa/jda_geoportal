@@ -73,7 +73,8 @@
     "MergeComponent": "دمج",
     "ConvexHullComponent": "المحيط المحدب",
     "SpatialJoinComponent": "الربط المكاني",
-    "AttributeJoinComponent": "الربط الوصفي"
+    "AttributeJoinComponent": "الربط الوصفي",
+    "SymbologyManagerComponent": "مدير الرموز"
   },
   "bottomPane": {
     "titles": {
@@ -83,6 +84,18 @@
     }
   },
   "widgets": {
+    "symbology": {
+      "title": "مدير الرموز",
+      "selectLayer": "اختر الطبقة",
+      "rendererType": "نوع العرض",
+      "selectField": "اختر الحقل",
+      "color": "اللون",
+      "size": "الحجم",
+      "opacity": "الشفافية",
+      "values": "القيم الفريدة",
+      "breaks": "فئات التصنيف",
+      "apply": "تطبيق الرموز"
+    },
     "query": {
       "queryLayerTitle": "طبقة الاستعلام",
       "selectLayer": "اختر الطبقة",

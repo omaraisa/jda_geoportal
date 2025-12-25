@@ -74,7 +74,8 @@
     "MergeComponent": "Merge",
     "ConvexHullComponent": "Convex Hull",
     "SpatialJoinComponent": "Spatial Join",
-    "AttributeJoinComponent": "Attribute Join"
+    "AttributeJoinComponent": "Attribute Join",
+    "SymbologyManagerComponent": "Symbology Manager"
   },
   "bottomPane": {
     "titles": {
@@ -84,6 +85,18 @@
     }
   },
   "widgets": {
+    "symbology": {
+      "title": "Symbology Manager",
+      "selectLayer": "Select Layer",
+      "rendererType": "Renderer Type",
+      "selectField": "Select Field",
+      "color": "Color",
+      "size": "Size",
+      "opacity": "Opacity",
+      "values": "Unique Values",
+      "breaks": "Class Breaks",
+      "apply": "Apply Symbology"
+    },
     "query": {
       "queryLayerTitle": "Query Layer",
       "selectLayer": "Target Layer",
