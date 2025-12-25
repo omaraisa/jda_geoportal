@@ -59,7 +59,7 @@ const Charting: React.FC = () => {
       const data = await ChartingService.getCategoryStatistics(
         selectedLayer,
         categoryField,
-        operation === "count" ? null : valueField,
+        operation === "count" ? null : [valueField],
         operation
       );
       setChartData(data);

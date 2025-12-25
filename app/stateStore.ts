@@ -1082,7 +1082,7 @@ const useStateStore = create<State>((set, get) => ({
   chartingState: {
     selectedLayerId: "",
     categoryField: "",
-    valueField: "",
+    valueFields: [],
     operation: "count",
     chartData: [],
     chartType: "bar",

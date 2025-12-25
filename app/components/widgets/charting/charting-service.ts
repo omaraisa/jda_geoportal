@@ -38,30 +38,29 @@ export class ChartingService {
   static async getCategoryStatistics(
     layer: FeatureLayer,
     categoryField: string,
-    valueField: string | null,
+    valueFields: string[] | null,
     operation: "count" | "sum" | "avg" | "min" | "max"
-  ): Promise<ChartData[]> {
+  ): Promise<any[]> {
     const query = layer.createQuery();
     
     if (operation === "count") {
         // For count, we group by categoryField and count occurrences
         const statDefinition = new StatisticDefinition({
             onStatisticField: categoryField,
-            outStatisticFieldName: "value",
+            outStatisticFieldName: "count_value",
             statisticType: "count"
         });
         query.outStatistics = [statDefinition];
         query.groupByFieldsForStatistics = [categoryField];
-    } else if (valueField) {
-        const statDefinition = new StatisticDefinition({
-            onStatisticField: valueField,
-            outStatisticFieldName: "value",
+    } else if (valueFields && valueFields.length > 0) {
+        query.outStatistics = valueFields.map(field => new StatisticDefinition({
+            onStatisticField: field,
+            outStatisticFieldName: field,
             statisticType: operation
-        });
-        query.outStatistics = [statDefinition];
+        }));
         query.groupByFieldsForStatistics = [categoryField];
     } else {
-        throw new Error("Value field is required for operations other than count");
+        throw new Error("Value fields are required for operations other than count");
     }
 
     // Order by category
@@ -70,10 +69,20 @@ export class ChartingService {
     try {
         const response = await layer.queryFeatures(query);
         
-        return response.features.map(feature => ({
-          category: feature.attributes[categoryField] || "Unknown",
-          value: feature.attributes["value"]
-        }));
+        return response.features.map(feature => {
+            const result: any = {
+                category: feature.attributes[categoryField] || "Unknown",
+            };
+            
+            if (operation === "count") {
+                result["count"] = feature.attributes["count_value"];
+            } else {
+                valueFields?.forEach(field => {
+                    result[field] = feature.attributes[field];
+                });
+            }
+            return result;
+        });
     } catch (error) {
         console.error("Error calculating statistics:", error);
         throw error;

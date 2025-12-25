@@ -144,7 +144,7 @@ export interface State {
   chartingState: {
     selectedLayerId: string;
     categoryField: string;
-    valueField: string;
+    valueFields: string[];
     operation: "count" | "sum" | "avg" | "min" | "max";
     chartData: any[];
     chartType: "bar" | "pie" | "line" | "area";

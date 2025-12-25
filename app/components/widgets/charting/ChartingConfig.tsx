@@ -4,6 +4,7 @@ import useStateStore from "@/stateStore";
 import { LayerSelector } from "../analysis-tools";
 import { ChartingService } from "./charting-service";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
+import CheckboxField from "../../ui/checkbox-field";
 
 const OPERATIONS = [
   { value: "count", label: "count" },
@@ -50,7 +51,7 @@ export const ChartingConfig: React.FC = () => {
       return;
     }
 
-    if (chartingState.operation !== "count" && !chartingState.valueField) {
+    if (chartingState.operation !== "count" && (!chartingState.valueFields || chartingState.valueFields.length === 0)) {
       setError(t("widgets.charting.errorValueField"));
       return;
     }
@@ -62,13 +63,13 @@ export const ChartingConfig: React.FC = () => {
       const data = await ChartingService.getCategoryStatistics(
         selectedLayer,
         chartingState.categoryField,
-        chartingState.operation === "count" ? null : chartingState.valueField,
+        chartingState.operation === "count" ? null : chartingState.valueFields,
         chartingState.operation
       );
       
       setChartingState({ 
         chartData: data,
-        title: `${chartingState.operation.toUpperCase()} of ${chartingState.valueField || chartingState.categoryField} by ${chartingState.categoryField}`
+        title: `${chartingState.operation.toUpperCase()} of ${chartingState.valueFields?.join(", ") || chartingState.categoryField} by ${chartingState.categoryField}`
       });
       
       // Open bottom pane with results
@@ -129,19 +130,29 @@ export const ChartingConfig: React.FC = () => {
 
             {chartingState.operation !== "count" && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t("widgets.charting.valueField")}</label>
-                <select
-                  value={chartingState.valueField}
-                  onChange={(e) => setChartingState({ valueField: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white"
-                >
-                  <option value="">{t("widgets.charting.selectNumericField")}</option>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t("widgets.charting.valueFields")}</label>
+                <div className="max-h-40 overflow-y-auto border border-gray-300 rounded-md p-2 bg-white">
                   {fields
                     .filter((f) => ["small-integer", "integer", "single", "double", "long"].includes(f.type))
                     .map((f) => (
-                      <option key={f.name} value={f.name}>{f.alias || f.name}</option>
+                      <CheckboxField
+                        key={f.name}
+                        id={`field-${f.name}`}
+                        label={f.alias || f.name}
+                        checked={chartingState.valueFields?.includes(f.name) || false}
+                        onChange={(checked) => {
+                          const currentFields = chartingState.valueFields || [];
+                          let newFields;
+                          if (checked) {
+                            newFields = [...currentFields, f.name];
+                          } else {
+                            newFields = currentFields.filter(field => field !== f.name);
+                          }
+                          setChartingState({ valueFields: newFields });
+                        }}
+                      />
                     ))}
-                </select>
+                </div>
               </div>
             )}
 
@@ -173,9 +184,9 @@ export const ChartingConfig: React.FC = () => {
 
             <button
               onClick={handleGenerateChart}
-              disabled={isLoading || !chartingState.categoryField || (chartingState.operation !== "count" && !chartingState.valueField)}
+              disabled={isLoading || !chartingState.categoryField || (chartingState.operation !== "count" && (!chartingState.valueFields || chartingState.valueFields.length === 0))}
               className={`w-full py-4 px-4 rounded-xl text-white font-black uppercase tracking-widest shadow-lg transition-all ${
-                isLoading || !chartingState.categoryField || (chartingState.operation !== "count" && !chartingState.valueField)
+                isLoading || !chartingState.categoryField || (chartingState.operation !== "count" && (!chartingState.valueFields || chartingState.valueFields.length === 0))
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 active:transform active:scale-95"
               }`}

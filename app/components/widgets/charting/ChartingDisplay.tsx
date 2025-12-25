@@ -25,7 +25,7 @@ export const ChartingDisplay: React.FC = () => {
   const { t } = useTranslation();
   const chartingState = useStateStore((state) => state.chartingState);
   const setChartingState = useStateStore((state) => state.setChartingState);
-  const { chartData, chartType, title } = chartingState;
+  const { chartData, chartType, title, valueFields, operation } = chartingState;
 
   if (!chartData || chartData.length === 0) {
     return (
@@ -47,8 +47,13 @@ export const ChartingDisplay: React.FC = () => {
   ];
 
   const renderChart = () => {
+    const isCount = operation === "count";
+    const keys = isCount ? ["count"] : (valueFields || []);
+
     switch (chartType) {
       case "pie":
+        // For Pie, we only visualize the first metric or count
+        const dataKey = isCount ? "count" : (valueFields?.[0] || "value");
         return (
           <PieChart>
             <Pie
@@ -59,7 +64,7 @@ export const ChartingDisplay: React.FC = () => {
               label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
               outerRadius={80}
               fill="#8884d8"
-              dataKey="value"
+              dataKey={dataKey}
               nameKey="category"
             >
               {chartData.map((entry, index) => (
@@ -78,7 +83,15 @@ export const ChartingDisplay: React.FC = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+            {keys.map((key, index) => (
+                <Line 
+                    key={key} 
+                    type="monotone" 
+                    dataKey={key} 
+                    stroke={COLORS[index % COLORS.length]} 
+                    activeDot={{ r: 8 }} 
+                />
+            ))}
           </LineChart>
         );
       case "area":
@@ -89,7 +102,16 @@ export const ChartingDisplay: React.FC = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Area type="monotone" dataKey="value" stroke="#8884d8" fill="#8884d8" />
+            {keys.map((key, index) => (
+                <Area 
+                    key={key} 
+                    type="monotone" 
+                    dataKey={key} 
+                    stroke={COLORS[index % COLORS.length]} 
+                    fill={COLORS[index % COLORS.length]} 
+                    fillOpacity={0.3}
+                />
+            ))}
           </AreaChart>
         );
       case "bar":
@@ -101,11 +123,9 @@ export const ChartingDisplay: React.FC = () => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="value" fill="#3b82f6">
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Bar>
+            {keys.map((key, index) => (
+                <Bar key={key} dataKey={key} fill={COLORS[index % COLORS.length]} />
+            ))}
           </BarChart>
         );
     }
@@ -156,7 +176,13 @@ export const ChartingDisplay: React.FC = () => {
               <thead className="bg-gray-50 sticky top-0">
                 <tr>
                   <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t("widgets.charting.categories")}</th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{t("widgets.charting.value")}</th>
+                  {operation === "count" ? (
+                      <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{t("widgets.charting.count")}</th>
+                  ) : (
+                      valueFields?.map(field => (
+                          <th key={field} className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{field}</th>
+                      ))
+                  )}
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -165,17 +191,25 @@ export const ChartingDisplay: React.FC = () => {
                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-900 truncate max-w-[150px]" title={String(item.category)}>
                       {item.category}
                     </td>
-                    <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600 text-right font-mono">
-                      {item.value.toLocaleString()}
-                    </td>
+                    {operation === "count" ? (
+                        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600 text-right font-mono">
+                            {Number(item.count).toLocaleString()}
+                        </td>
+                    ) : (
+                        valueFields?.map(field => (
+                            <td key={field} className="px-4 py-2 whitespace-nowrap text-sm text-gray-600 text-right font-mono">
+                                {Number(item[field]).toLocaleString()}
+                            </td>
+                        ))
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
           <div className="bg-gray-50 px-4 py-2 border-t text-xs text-gray-500 flex justify-between">
-            <span>{t("widgets.charting.totalSum")}:</span>
-            <span className="font-bold">{chartData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}</span>
+            <span>{t("widgets.charting.totalItems")}:</span>
+            <span className="font-bold">{chartData.length}</span>
           </div>
         </div>
       </div>
