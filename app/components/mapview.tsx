@@ -30,14 +30,14 @@ const MainMap = () => {
     if (!mapInitializedRef.current) {
       mapInitializedRef.current = true;
       try {
-        const jdaExtentLayer = new MapImageLayer({
-          url: process.env.NEXT_PUBLIC_JDA_EXTENT_URL!
-        });
-        (jdaExtentLayer as any).group = "HiddenLayers";
+        // const jdaExtentLayer = new MapImageLayer({
+        //   url: process.env.NEXT_PUBLIC_JDA_EXTENT_URL!
+        // });
+        // (jdaExtentLayer as any).group = "HiddenLayers";
 
         const map = new Map({
           basemap: "satellite",
-          layers: [jdaExtentLayer],
+          // layers: [jdaExtentLayer],
         });
 
         viewRef.current = new MapView({
@@ -58,12 +58,12 @@ const MainMap = () => {
 
         viewRef.current
           ?.when(async () => {
-            await jdaExtentLayer.when();
-            const extent = jdaExtentLayer.fullExtent;
-            if (extent) {
-              await viewRef.current!.goTo(extent);
-            }
-            updateExtent(extent)
+            // await jdaExtentLayer.when();
+            // const extent = jdaExtentLayer.fullExtent;
+            // if (extent) {
+            //   await viewRef.current!.goTo(extent);
+            // }
+            // updateExtent(extent)
             updateMapView(viewRef.current!);
             updateTargetView(viewRef.current!);
             loadUserGroupLayers();
